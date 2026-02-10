@@ -1,0 +1,13 @@
+.commission-sheet-list {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+.commission-sheet-header,
+.commission-sheet-item {
+  border-bottom: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: 1fr 1fr 0.5fr;
+  padding: 5px 10px;
+}

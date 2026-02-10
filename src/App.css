@@ -1,7 +1,17 @@
 @import "./styles/nav.css";
+@import "./styles/commission.css";
 
 #root {
   --black: #222222;
+  --border: rgb(225, 225, 225);
+  --grey: #777777;
+  --green: #4d8264;
+  --teal: #00ffdd;
+  --purple: #784d8e;
+}
+
+p {
+  margin: 5px 0;
 }
 
 .app-container {
@@ -10,7 +20,7 @@
   height: 100vh;
 }
 .route-wrapper {
-  padding: 15px;
+  /* padding: 15px; */
   width: calc(100% - 30px);
   height: calc(100% - 30px);
   /* background-image: url(public/p1p-orange-pink-wave-bg.jpg); */
@@ -27,4 +37,35 @@
 }
 .route-container h1 {
   font-size: 2rem;
+  margin: 0;
+}
+.page-header-wrapper {
+  display: flex;
+  padding: 15px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* status badge */
+.status-badge-wrapper {
+  display: flex;
+}
+.status-badge {
+  background-color: black;
+  border-radius: 5px;
+  padding: 0px 12px;
+  display: flex;
+  align-items: center;
+}
+.status-badge p {
+  font-size: 0.9rem;
+}
+.submitted {
+  background-color: var(--teal);
+}
+.draft {
+  background-color: var(--border);
+}
+.archived {
+  background-color: var(--green);
+  color: white;
 }

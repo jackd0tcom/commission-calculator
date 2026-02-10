@@ -3,7 +3,13 @@ import ViteExpress from "vite-express";
 import session from "express-session";
 import { configDotenv } from "dotenv";
 import productCtrl from "./controllers/productCtrl";
+import commissionCtrl from "./controllers/commissionCtrl";
+import authCtrl from "./controllers/authCtrl";
+import productCtrl from "./controllers/productCtrl";
 
+const { getProducts } = productCtrl;
+const { getCommissionSheets } = commissionCtrl;
+const { syncAuth0User } = authCtrl;
 const { getProducts } = productCtrl;
 
 configDotenv();
@@ -38,13 +44,16 @@ app.use((req, res, next) => {
 // Product endpoints
 app.get("/api/getProducts", getProducts);
 
+// Commission endpoints
+app.get("/api/getCommissionSheets", getCommissionSheets);
+
 // auth endpoints
 // app.post("/api/register", register);
 // app.post("/api/login", login);
 // app.get("/api/checkUser", checkUser);
 // app.delete("/api/logout", logout);
 // // app.put("/api/updateUser", updateUser);
-// app.post("/api/sync-auth0-user", syncAuth0User);
+app.post("/api/sync-auth0-user", syncAuth0User);
 
 ViteExpress.listen(app, PORT, () => {
   console.log(`live on http://localhost:${PORT}`);

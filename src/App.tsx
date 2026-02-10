@@ -1,21 +1,17 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { Route, Routes } from "react-router";
+import { useState } from "react";
 import "./App.css";
 import Profile from "./Pages/Profile.tsx";
 import Nav from "./components/UI/Nav.tsx";
 import Commissions from "./Pages/Commissions.tsx";
+import Auth0Sync from "./components/authentication/Auth0Sync.tsx";
 
 function App() {
   const { isAuthenticated, isLoading, error } = useAuth0();
+  const [userSynced, setUserSynced] = useState(false);
 
   if (isLoading) {
-    return (
-      <div className="app-container">
-        <div className="loading-state">
-          <div className="loading-text">Loading...</div>
-        </div>
-      </div>
-    );
   }
 
   if (error) {
@@ -29,17 +25,29 @@ function App() {
       </div>
     );
   }
+  const handleSyncComplete = () => {
+    setUserSynced(true);
+  };
 
   return (
     <div className="app-container">
+      <Auth0Sync onSyncComplete={handleSyncComplete} />
       <Nav />
-      <div className="route-wrapper">
-        <div className="route-container">
-          <Routes>
-            <Route index element={<Commissions />}></Route>
-          </Routes>
+      {isLoading ? (
+        <div className="app-container">
+          <div className="loading-state">
+            <div className="loading-text">Loading...</div>
+          </div>
         </div>
-      </div>
+      ) : (
+        <div className="route-wrapper">
+          <div className="route-container">
+            <Routes>
+              <Route index element={<Commissions />}></Route>
+            </Routes>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
