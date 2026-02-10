@@ -5,6 +5,54 @@ const db = await connectToDb(
   process.env.DATABASE_URL || "postgresql:///commission-db",
 );
 
+export class User extends Model {}
+User.init(
+  {
+    userId: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    auth0Id: {
+      type: DataTypes.STRING,
+    },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    firstName: {
+      type: DataTypes.STRING,
+    },
+    lastName: {
+      type: DataTypes.STRING,
+    },
+    profilePic: {
+      type: DataTypes.TEXT,
+    },
+    isAdmin: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+    isAllowed: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+    googleAccessToken: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    googleRefreshToken: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    googleTokenExpiry: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+  },
+  { sequelize: db, modelName: "user", tableName: "users" },
+);
+
 export class CommissionSheet extends Model {}
 CommissionSheet.init(
   {
