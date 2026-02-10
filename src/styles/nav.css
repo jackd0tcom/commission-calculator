@@ -1,0 +1,33 @@
+.nav-wrapper {
+  width: 13%;
+  padding: 30px 15px;
+  background-color: var(--black);
+  max-width: 200px;
+}
+.nav-container {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+.nav-links-wrapper {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid grey;
+  border-bottom: 1px solid grey;
+  padding: 15px 0;
+}
+.nav-link-container {
+  color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.nav-button {
+  color: white;
+  transition: 150ms;
+  padding: 10px 15px;
+}
+.nav-button:hover {
+  background-color: #515151;
+  color: white;
+}
