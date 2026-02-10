@@ -1,11 +1,21 @@
 import { Product } from "../model";
+import { Request, Response } from "express";
 
 export default {
-  getProducts: async () => {
+  getProducts: async (req: Request, res: Response) => {
     try {
       console.log("getProducts");
+
+      const products = await Product.findAll();
+
+      if (products) {
+        res.send(products);
+      } else {
+        res.status(400).send("No products found");
+      }
     } catch (error) {
-      console.log(error);
+      console.error("Error getting products:", error);
+      res.status(500).send("Internal server error");
     }
   },
 };
