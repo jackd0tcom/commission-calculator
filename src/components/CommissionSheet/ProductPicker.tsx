@@ -1,13 +1,12 @@
-import { current } from "@reduxjs/toolkit";
 import { useState, useEffect, useRef } from "react";
 
-const ClientPicker = ({ clients, currentClient }) => {
-  const [selectedClientId, setSelectedClientId] = useState(currentClient);
+const ProductPicker = ({ products, currentProduct }) => {
+  const [selectedProductId, setSelectedProductId] = useState(currentProduct);
   const [showDropDown, setShowDropdown] = useState(false);
   const dropdownRef = useRef(null);
 
-  const selectedClient = clients.find(
-    (c: any) => c.clientId === selectedClientId,
+  const selectedProduct = products.find(
+    (c: any) => c.productId === selectedProductId,
   );
 
   //   Handles blur
@@ -39,17 +38,17 @@ const ClientPicker = ({ clients, currentClient }) => {
         className="client-picker-button"
         onClick={() => setShowDropdown(!showDropDown)}
       >
-        {selectedClient?.clientName}
+        {selectedProduct?.productName}
       </button>
       {showDropDown && (
         <div className="client-picker-dropdown" ref={dropdownRef}>
-          {clients.map((c: any) => (
+          {products.map((product: any) => (
             <div
               className="client-picker-item"
-              key={c.clientId}
-              onClick={() => setSelectedClientId(c.clientId)}
+              key={product.productId}
+              onClick={() => setSelectedProductId(product.productId)}
             >
-              {c.clientName}
+              {product.productName}
             </div>
           ))}
         </div>
@@ -57,4 +56,4 @@ const ClientPicker = ({ clients, currentClient }) => {
     </div>
   );
 };
-export default ClientPicker;
+export default ProductPicker;

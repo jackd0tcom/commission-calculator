@@ -15,8 +15,8 @@ export default {
 
       const clients = await Client.findAll({ where: { userId } });
 
-      if (sheets) {
-        res.send(sheets);
+      if (clients) {
+        res.send(clients);
       } else {
         res.status(400).send("No sheets found");
       }

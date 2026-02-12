@@ -3,10 +3,13 @@ import { useSelector } from "react-redux";
 import { useParams } from "react-router";
 import axios from "axios";
 import SheetItem from "../components/CommissionSheet/SheetItem";
+import CommissionSheetFooter from "./CommissionSheetFooter";
 
 const CommissionSheet = () => {
   const { sheetId } = useParams();
   const user = useSelector((state: any) => state.user);
+  const [clientList, setClientList] = useState([{}]);
+  const [productList, setProductList] = useState([{}]);
   const [sheetData, setSheetData] = useState({
     sheetId: sheetId ? sheetId : 0,
     userId: user?.userId || 0,
@@ -17,30 +20,49 @@ const CommissionSheet = () => {
   const [sheetItems, setSheetItems] = useState([{}]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const getSheet = async () => {
+  const fetchData = async () => {
+    setIsLoading(true);
     try {
-      await axios.get(`/api/getSheet/${sheetId}`).then((res) => {
-        console.log(res.data);
-        if (res.status === 200) {
-          setSheetData({
-            ...sheetData,
-            sheetTitle: res.data.sheetTitle,
-            sheetDescription: res.data.sheetDescription,
-            sheetStatus: res.data.sheetStatus,
-          });
-          setSheetItems(res.data.items);
-          setIsLoading(false);
-        }
-      });
+      const promises = [];
+
+      if (sheetId) {
+        promises.push(
+          axios.get(`/api/getSheet/${sheetId}`).then((res) => {
+            if (res.status === 200) {
+              setSheetData((prev) => ({
+                ...prev,
+                sheetTitle: res.data.sheetTitle,
+                sheetDescription: res.data.sheetDescription,
+                sheetStatus: res.data.sheetStatus,
+              }));
+              setSheetItems(res.data.items);
+            }
+          }),
+        );
+      }
+
+      promises.push(
+        axios.get("/api/getClients").then((res) => {
+          if (res.status === 200) setClientList(res.data);
+        }),
+      );
+
+      promises.push(
+        axios.get("/api/getProducts").then((res) => {
+          if (res.status === 200) setProductList(res.data);
+        }),
+      );
+
+      await Promise.all(promises);
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    if (sheetId) {
-      getSheet();
-    }
+    fetchData();
   }, []);
 
   return (
@@ -63,8 +85,15 @@ const CommissionSheet = () => {
         {isLoading ? (
           <p>Loading...</p>
         ) : (
-          sheetItems?.map((item) => <SheetItem item={item} />)
+          sheetItems?.map((item) => (
+            <SheetItem
+              item={item}
+              clientList={clientList}
+              productList={productList}
+            />
+          ))
         )}
+        <CommissionSheetFooter items={sheetItems} />
       </div>
     </div>
   );
