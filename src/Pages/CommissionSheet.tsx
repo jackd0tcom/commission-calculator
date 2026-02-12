@@ -93,7 +93,7 @@ const CommissionSheet = () => {
             />
           ))
         )}
-        <CommissionSheetFooter items={sheetItems} />
+        {!isLoading && <CommissionSheetFooter items={sheetItems} />}
       </div>
     </div>
   );
