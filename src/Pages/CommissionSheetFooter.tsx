@@ -11,7 +11,8 @@ const CommissionSheetFooter = ({ items }) => {
     0,
   );
   const commission: number = items.reduce(
-    (acc, item) => acc + item.product.commissionRate * item.price * 2,
+    (acc, item) =>
+      acc + item.product.commissionRate * item.price * item.quantity,
     0,
   );
   const contribution: number = items.reduce(

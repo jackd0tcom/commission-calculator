@@ -3,7 +3,8 @@ import ProductPicker from "./ProductPicker";
 import { formatDollar } from "../../helpers";
 
 const SheetItem = ({ clientList, item, productList }) => {
-  const totalCommission = item.product.commissionRate * item.price * 2;
+  const totalCommission =
+    item.product.commissionRate * item.price * item.quantity;
   const bonus = item.product.spiff * item.quantity;
   const contribution = (item.price - item.product.cost) * item.quantity;
 
