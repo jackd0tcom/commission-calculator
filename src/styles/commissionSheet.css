@@ -15,3 +15,6 @@ h2 {
 .sheet-items-list-head {
   border-bottom: 1px solid var(--border);
 }
+.client-picker-button {
+  font-size: 0.9rem;
+}

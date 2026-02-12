@@ -6,6 +6,11 @@ export default {
     try {
       console.log("getProducts");
 
+      if (!req.session.user) {
+        console.log("user not logged in / no session set up");
+        return;
+      }
+
       const products = await Product.findAll();
 
       if (products) {
