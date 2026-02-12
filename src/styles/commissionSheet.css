@@ -1,0 +1,17 @@
+h2 {
+  margin: 0;
+}
+.sheet-items-list {
+  display: flex;
+  flex-direction: column;
+  margin: 15px;
+  border: 1px solid var(--border);
+}
+.sheet-item {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  padding: 5px 15px;
+}
+.sheet-items-list-head {
+  border-bottom: 1px solid var(--border);
+}

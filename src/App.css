@@ -1,5 +1,6 @@
 @import "./styles/nav.css";
 @import "./styles/commission.css";
+@import "./styles/commissionSheet.css";
 
 #root {
   --black: #222222;

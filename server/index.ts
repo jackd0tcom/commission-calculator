@@ -5,12 +5,10 @@ import { configDotenv } from "dotenv";
 import productCtrl from "./controllers/productCtrl";
 import commissionCtrl from "./controllers/commissionCtrl";
 import authCtrl from "./controllers/authCtrl";
-import productCtrl from "./controllers/productCtrl";
 
 const { getProducts } = productCtrl;
-const { getCommissionSheets } = commissionCtrl;
+const { getCommissionSheets, getSheet } = commissionCtrl;
 const { syncAuth0User } = authCtrl;
-const { getProducts } = productCtrl;
 
 configDotenv();
 
@@ -46,6 +44,7 @@ app.get("/api/getProducts", getProducts);
 
 // Commission endpoints
 app.get("/api/getCommissionSheets", getCommissionSheets);
+app.get(`/api/getSheet/:sheetId`, getSheet);
 
 // auth endpoints
 // app.post("/api/register", register);

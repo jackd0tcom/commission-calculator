@@ -1,11 +1,11 @@
 import { useEffect } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
-// import { useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import axios from "axios";
 
-const Auth0Sync = ({ onSyncComplete }) => {
+const Auth0Sync = ({ onSyncComplete }: { onSyncComplete: () => void }) => {
   const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
-  //   const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (isAuthenticated && user) {
@@ -15,42 +15,35 @@ const Auth0Sync = ({ onSyncComplete }) => {
 
   const syncUser = async () => {
     try {
-      // Debug: Log the full user object to see what Auth0 provides
-      // console.log('🔍 Auth0 user object:', user);
-
       // Get Auth0 access token for Management API calls
       const auth0AccessToken = await getAccessTokenSilently();
 
-      // console.log('🔄 Syncing user with Auth0...');
-      // console.log('🔑 Auth0 access token available:', !!auth0AccessToken);
-
       const response = await axios.post("/api/sync-auth0-user", {
-        auth0Id: user.sub,
-        email: user.email,
-        name: user.name,
-        picture: user.picture,
-        auth0AccessToken, // Pass Auth0 token for Management API calls
+        auth0Id: user?.sub,
+        email: user?.email,
+        name: user?.name,
+        picture: user?.picture,
+        auth0AccessToken,
       });
 
       // Update Redux store with user data from sync response
-      //   if (response.data.user) {
-      //     dispatch({
-      //       type: "LOGIN",
-      //       payload: {
-      //         userId: response.data.user.userId,
-      //         userName: response.data.user.username,
-      //         firstName: response.data.user.firstName,
-      //         lastName: response.data.user.lastName,
-      //         role: response.data.user.role,
-      //         profilePic: response.data.user.profilePic,
-      //         isAllowed: response.data.user.isAllowed,
-      //       },
-      //     });
-      //   }
+      if (response.data) {
+        const payload = {
+          userId: response.data.user.userId,
+          userName: response.data.user.username,
+          firstName: response.data.user.firstName,
+          lastName: response.data.user.lastName,
+          profilePic: response.data.user.profilePic,
+          isAdmin: response.data.user.isAdmin,
+          isAllowed: response.data.user.isAllowed,
+        };
+        // console.log("[Auth0Sync] Dispatching LOGIN with payload:", payload);
+        dispatch({ type: "LOGIN", payload });
+      }
 
       onSyncComplete();
     } catch (error) {
-      // console.error("❌ Failed to sync user:", error);
+      console.error("❌ Failed to sync user:", error);
       // For any error, still complete sync so app can handle it
       onSyncComplete();
     }

@@ -100,6 +100,11 @@ CommissionItem.init(
       references: { model: "products", key: "product_id" },
     },
     price: { type: DataTypes.DECIMAL(10, 2), allowNull: false },
+    clientId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: { model: "clients", key: "client_id" },
+    },
   },
   {
     sequelize: db,
@@ -134,6 +139,11 @@ Client.init(
       autoIncrement: true,
     },
     clientName: { type: DataTypes.STRING, allowNull: false },
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: { model: "users", key: "user_id" },
+    },
   },
   { sequelize: db, modelName: "client", tableName: "clients" },
 );

@@ -12,7 +12,7 @@ const Nav = () => {
         <div className="nav-links-wrapper">
           <div className="nav-link-container">
             <NavLink
-              to="/"
+              to="/commission-sheets"
               className={({ isActive }) =>
                 isActive ? "active-nav nav-button" : "inactive-nav nav-button"
               }
@@ -34,6 +34,14 @@ const Nav = () => {
               }
             >
               Clients
+            </NavLink>
+            <NavLink
+              to="/profile"
+              className={({ isActive }) =>
+                isActive ? "active-nav nav-button" : "inactive-nav nav-button"
+              }
+            >
+              Profile
             </NavLink>
           </div>
         </div>
