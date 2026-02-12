@@ -6,6 +6,9 @@ import Profile from "./Pages/Profile.tsx";
 import Nav from "./components/UI/Nav.tsx";
 import Commissions from "./Pages/Commissions.tsx";
 import Auth0Sync from "./components/authentication/Auth0Sync.tsx";
+import Login from "./Pages/Login.tsx";
+import CommissionSheet from "./Pages/CommissionSheet.tsx";
+import { Navigate } from "react-router";
 
 function App() {
   const { isAuthenticated, isLoading, error } = useAuth0();
@@ -43,7 +46,16 @@ function App() {
         <div className="route-wrapper">
           <div className="route-container">
             <Routes>
-              <Route index element={<Commissions />}></Route>
+              <Route index path="/" element={<Login />}></Route>
+              <Route
+                path="/commission-sheets"
+                element={<Commissions />}
+              ></Route>
+              <Route path="/profile" element={<Profile />}></Route>
+              <Route
+                path="/sheet/:sheetId"
+                element={<CommissionSheet />}
+              ></Route>
             </Routes>
           </div>
         </div>

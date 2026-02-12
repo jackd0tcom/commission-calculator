@@ -1,4 +1,6 @@
 import { useAuth0 } from "@auth0/auth0-react";
+import LogoutButton from "../components/authentication/LogoutButton";
+import LoginButton from "../components/authentication/LoginButton";
 
 const Profile = () => {
   const { user, isAuthenticated, isLoading } = useAuth0();
@@ -53,9 +55,12 @@ const Profile = () => {
         >
           {user.email}
         </div>
+        <LogoutButton />
       </div>
     </div>
-  ) : null;
+  ) : (
+    <LoginButton />
+  );
 };
 
 export default Profile;
