@@ -9,6 +9,19 @@
   --green: #4d8264;
   --teal: #00ffdd;
   --purple: #784d8e;
+  --hover: #f6f6f6;
+  --shadow: 0px 2px 5px -1px lightgrey;
+}
+
+button {
+  font-size: 0.9rem;
+  border-radius: 0;
+  border: 1px solid var(--border);
+  background-color: unset;
+  transition: 100ms;
+}
+button:hover {
+  background-color: var(--hover);
 }
 
 p {
@@ -69,4 +82,28 @@ p {
 .archived {
   background-color: var(--green);
   color: white;
+}
+.dropdown {
+  position: absolute;
+  border: 1px solid var(--border);
+  background-color: white;
+  max-height: 250px;
+  overflow-y: scroll;
+  scrollbar-width: none;
+  top: 110%;
+  z-index: 100;
+  box-shadow: var(--shadow);
+}
+.dropdown-item {
+  padding: 8px 15px;
+  font-size: 0.9rem;
+  transition: 100ms;
+  cursor: pointer;
+  min-width: 200px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--border);
+}
+.dropdown-item:hover {
+  background-color: var(--hover);
 }

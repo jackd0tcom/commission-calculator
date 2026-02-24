@@ -21,7 +21,6 @@ const CommissionSheet = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchData = async () => {
-    setIsLoading(true);
     try {
       const promises = [];
 
@@ -65,6 +64,18 @@ const CommissionSheet = () => {
     fetchData();
   }, []);
 
+  const handleQuantityChange = (itemId: number, quantity: number) => {
+    setSheetItems((prev) =>
+      prev.map((it: any) => (it.itemId === itemId ? { ...it, quantity } : it)),
+    );
+  };
+
+  const handlePriceChange = (itemId: number, price: number) => {
+    setSheetItems((prev) =>
+      prev.map((it: any) => (it.itemId === itemId ? { ...it, price } : it)),
+    );
+  };
+
   return (
     <div className="commission-sheet-page-wrapper">
       <div className="page-header-wrapper">
@@ -72,6 +83,7 @@ const CommissionSheet = () => {
       </div>
       <div className="sheet-items-list">
         <div className="sheet-item sheet-items-list-head">
+          <p>#</p>
           <p>Client</p>
           <p>Product</p>
           <p>Quantity</p>
@@ -85,14 +97,18 @@ const CommissionSheet = () => {
         {isLoading ? (
           <p>Loading...</p>
         ) : (
-          sheetItems?.map((item) => (
+          sheetItems?.map((item, index) => (
             <SheetItem
+              index={index}
               item={item}
               clientList={clientList}
               productList={productList}
+              onQuantityChange={handleQuantityChange}
+              onPriceChange={handlePriceChange}
             />
           ))
         )}
+        <div className="sheet-item new-item-row"></div>
         {!isLoading && <CommissionSheetFooter items={sheetItems} />}
       </div>
     </div>

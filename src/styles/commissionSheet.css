@@ -9,12 +9,44 @@ h2 {
 }
 .sheet-item {
   display: grid;
-  grid-template-columns: repeat(9, 1fr);
+  grid-template-columns: 0.2fr 2fr 2fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+  gap: 10px;
   padding: 5px 15px;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+}
+.sheet-item-number {
+  font-size: 0.75rem;
+}
+.quantity-input,
+.price-input {
+  padding: 5px;
+}
+.quantity-input {
+  max-width: 50px;
+}
+.price-input {
+  max-width: 75px;
+}
+.price-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 3px;
 }
 .sheet-items-list-head {
   border-bottom: 1px solid var(--border);
 }
 .client-picker-button {
   font-size: 0.9rem;
+}
+.client-picker,
+.product-picker {
+  position: relative;
+}
+.client-picker-button,
+.product-picker-button {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 150px;
 }

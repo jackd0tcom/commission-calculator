@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
+import axios from "axios";
 
-const ProductPicker = ({ products, currentProduct }) => {
+const ProductPicker = ({ item, products, currentProduct }) => {
   const [selectedProductId, setSelectedProductId] = useState(currentProduct);
   const [showDropDown, setShowDropdown] = useState(false);
   const dropdownRef = useRef(null);
@@ -8,6 +9,25 @@ const ProductPicker = ({ products, currentProduct }) => {
   const selectedProduct = products.find(
     (c: any) => c.productId === selectedProductId,
   );
+
+  const updateProduct = async (id: number) => {
+    try {
+      await axios
+        .post("/api/updateSheetItem", {
+          itemId: item.itemId,
+          fieldName: "productId",
+          value: id,
+        })
+        .then((res) => {
+          if (res.status === 200) {
+            setSelectedProductId(id);
+            setShowDropdown(false);
+          }
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   //   Handles blur
   useEffect(() => {
@@ -33,20 +53,20 @@ const ProductPicker = ({ products, currentProduct }) => {
   }, [showDropDown]);
 
   return (
-    <div className="client-picker">
+    <div className="product-picker">
       <button
-        className="client-picker-button"
+        className="product-picker-button"
         onClick={() => setShowDropdown(!showDropDown)}
       >
         {selectedProduct?.productName}
       </button>
       {showDropDown && (
-        <div className="client-picker-dropdown" ref={dropdownRef}>
+        <div className="dropdown product-picker-dropdown" ref={dropdownRef}>
           {products.map((product: any) => (
             <div
-              className="client-picker-item"
+              className="dropdown-item product-picker-item"
               key={product.productId}
-              onClick={() => setSelectedProductId(product.productId)}
+              onClick={() => updateProduct(product.productId)}
             >
               {product.productName}
             </div>

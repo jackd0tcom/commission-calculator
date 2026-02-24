@@ -29,6 +29,7 @@ const CommissionSheetFooter = ({ items }) => {
     <div className="sheet-item commission-sheet-footer">
       <p></p>
       <p></p>
+      <p></p>
       <p>{quantity}</p>
       <p>{formatDollar(price)}</p>
       <p>{formatDollar(cost)}</p>
