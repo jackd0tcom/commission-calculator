@@ -21,11 +21,21 @@ const SheetItem = ({
   onQuantityChange,
   onPriceChange,
 }: SheetItemProps) => {
+  const [currentProduct, setCurrentProduct] = useState(
+    item.product ? item.product : null,
+  );
   const [quantity, setQuantity] = useState(item.quantity ? item.quantity : 0);
   const [price, setPrice] = useState(item.price ? item.price : 0);
-  const totalCommission = item.product.commissionRate * price * quantity;
-  const bonus = item.product.spiff * quantity;
-  const contribution = (price - item.product.cost) * quantity;
+  const commissionRate = currentProduct ? currentProduct.commissionRate : 0;
+  const spiff = currentProduct ? currentProduct.spiff : 0;
+  const cost = currentProduct ? currentProduct.cost : 0;
+  const totalCommission = commissionRate * price * quantity;
+  const bonus = spiff * quantity;
+  const contribution = (price - cost) * quantity;
+
+  const handleProductChange = async (newProduct: any) => {
+    setCurrentProduct(newProduct);
+  };
 
   const persistQuantityChange = async (newQuantity: number) => {
     try {
@@ -69,6 +79,7 @@ const SheetItem = ({
         item={item}
         products={productList}
         currentProduct={item.productId}
+        handleProductChange={handleProductChange}
       />
       <input
         className="quantity-input"
@@ -95,7 +106,7 @@ const SheetItem = ({
           onBlur={() => persistPriceChange(price)}
         />
       </div>
-      <p>${item.product.cost}</p>
+      <p>${cost}</p>
       <p>{formatDollar(contribution)}</p>
       <p>{formatDollar(totalCommission)}</p>
       <p>{formatDollar(bonus)}</p>

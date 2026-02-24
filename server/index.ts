@@ -8,7 +8,8 @@ import authCtrl from "./controllers/authCtrl";
 import clientCtrl from "./controllers/clientCtrl";
 
 const { getProducts } = productCtrl;
-const { getCommissionSheets, getSheet, updateSheetItem } = commissionCtrl;
+const { getCommissionSheets, getSheet, updateSheetItem, newSheetItem } =
+  commissionCtrl;
 const { syncAuth0User } = authCtrl;
 const { getClients } = clientCtrl;
 
@@ -48,6 +49,7 @@ app.get("/api/getProducts", getProducts);
 app.get("/api/getCommissionSheets", getCommissionSheets);
 app.get(`/api/getSheet/:sheetId`, getSheet);
 app.post(`/api/updateSheetItem`, updateSheetItem);
+app.post(`/api/newSheetItem`, newSheetItem);
 
 // Client endpoints
 app.get(`/api/getClients`, getClients);

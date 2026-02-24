@@ -96,13 +96,13 @@ CommissionItem.init(
     quantity: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 1 },
     productId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
       references: { model: "products", key: "product_id" },
     },
-    price: { type: DataTypes.DECIMAL(10, 2), allowNull: false },
+    price: { type: DataTypes.DECIMAL(10, 2), allowNull: true },
     clientId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
       references: { model: "clients", key: "client_id" },
     },
   },

@@ -10,6 +10,7 @@ const CommissionSheet = () => {
   const user = useSelector((state: any) => state.user);
   const [clientList, setClientList] = useState([{}]);
   const [productList, setProductList] = useState([{}]);
+  const [addingNewProduct, setAddingNewProduct] = useState(false);
   const [sheetData, setSheetData] = useState({
     sheetId: sheetId ? sheetId : 0,
     userId: user?.userId || 0,
@@ -76,6 +77,19 @@ const CommissionSheet = () => {
     );
   };
 
+  const handleAddItem = async () => {
+    try {
+      await axios.post("/api/newSheetItem", { sheetId }).then((res) => {
+        console.log(res.data);
+        setSheetItems((prev) => [...prev, res.data]);
+        setAddingNewProduct(true);
+      });
+    } catch (error) {
+      setAddingNewProduct(false);
+      console.log(error);
+    }
+  };
+
   return (
     <div className="commission-sheet-page-wrapper">
       <div className="page-header-wrapper">
@@ -108,7 +122,13 @@ const CommissionSheet = () => {
             />
           ))
         )}
-        <div className="sheet-item new-item-row"></div>
+        <div
+          className="sheet-item new-item-row"
+          onClick={() => handleAddItem()}
+        >
+          <p>+</p>
+          <p>Add Product</p>
+        </div>
         {!isLoading && <CommissionSheetFooter items={sheetItems} />}
       </div>
     </div>
