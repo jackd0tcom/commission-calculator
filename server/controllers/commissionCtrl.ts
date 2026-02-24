@@ -26,6 +26,37 @@ export default {
       res.status(500).send("Internal server error");
     }
   },
+  newSheet: async (req: Request, res: Response) => {
+    try {
+      console.log("newSheet");
+
+      if (!req.session.user) {
+        console.log("user not logged in / no session set up");
+        return;
+      }
+
+      const { sheetTitle } = req.body;
+
+      const sheet = await CommissionSheet.create({
+        sheetTitle,
+        userId: req.session.user.userId,
+      });
+
+      if (!sheet) {
+        res.status(400).send("No sheet found");
+        return;
+      }
+
+      if (sheet) {
+        res.send(sheet);
+      } else {
+        res.status(400).send("No sheet found");
+      }
+    } catch (error) {
+      console.error("Error getting sheets:", error);
+      res.status(500).send("Internal server error");
+    }
+  },
   getSheet: async (req: Request, res: Response) => {
     try {
       console.log("getSheet");
@@ -66,6 +97,36 @@ export default {
         res.send(sheetWithItems);
       } else {
         res.status(400).send("No sheet found");
+      }
+    } catch (error) {
+      console.error("Error getting sheets:", error);
+      res.status(500).send("Internal server error");
+    }
+  },
+  updateSheet: async (req: Request, res: Response) => {
+    try {
+      console.log("updateSheet");
+
+      if (!req.session.user) {
+        console.log("user not logged in / no session set up");
+        return;
+      }
+
+      const { sheetId, fieldName, value } = req.body;
+
+      const sheet = await CommissionSheet.findOne({ where: { sheetId } });
+
+      if (!sheet) {
+        res.status(400).send("No sheet found");
+        return;
+      }
+
+      await sheet?.update({ [fieldName]: value });
+
+      if (sheet) {
+        res.send(sheet);
+      } else {
+        res.status(400).send("No item found");
       }
     } catch (error) {
       console.error("Error getting sheets:", error);
@@ -140,6 +201,32 @@ export default {
       } else {
         res.status(400).send("No sheet found");
       }
+    } catch (error) {
+      console.error("Error getting sheets:", error);
+      res.status(500).send("Internal server error");
+    }
+  },
+  deleteSheetItem: async (req: Request, res: Response) => {
+    try {
+      console.log("deleteSheetItem");
+
+      if (!req.session.user) {
+        console.log("user not logged in / no session set up");
+        return;
+      }
+
+      const { itemId } = req.body;
+
+      const item = await CommissionItem.findOne({ where: { itemId } });
+
+      if (!item) {
+        res.status(400).send("Error creating item");
+        return;
+      }
+
+      await item.destroy();
+
+      res.status(200).send("Item deleted successfully");
     } catch (error) {
       console.error("Error getting sheets:", error);
       res.status(500).send("Internal server error");

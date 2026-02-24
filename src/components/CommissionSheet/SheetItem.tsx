@@ -9,6 +9,8 @@ interface SheetItemProps {
   clientList: any[];
   item: any;
   productList: any[];
+  sheetItems: any;
+  setSheetItems: any;
   onQuantityChange?: (itemId: number, quantity: number) => void;
   onPriceChange?: (itemId: number, price: number) => void;
 }
@@ -18,6 +20,8 @@ const SheetItem = ({
   clientList,
   item,
   productList,
+  sheetItems,
+  setSheetItems,
   onQuantityChange,
   onPriceChange,
 }: SheetItemProps) => {
@@ -67,6 +71,22 @@ const SheetItem = ({
     }
   };
 
+  const handleDeleteItem = async () => {
+    try {
+      await axios
+        .post("/api/deleteSheetItem", { itemId: item.itemId })
+        .then((res) => {
+          if (res.status === 200) {
+            setSheetItems((prev) =>
+              prev.filter((sheetItem) => sheetItem.itemId !== item.itemId),
+            );
+          }
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="sheet-item">
       <p className="sheet-item-number">{index + 1}</p>
@@ -111,6 +131,7 @@ const SheetItem = ({
       <p>{formatDollar(totalCommission)}</p>
       <p>{formatDollar(bonus)}</p>
       <p>{formatDollar(totalCommission + bonus)}</p>
+      <button onClick={() => handleDeleteItem()}>x</button>
     </div>
   );
 };
