@@ -50,7 +50,7 @@ User.init(
       allowNull: true,
     },
   },
-  { sequelize: db, modelName: "user", tableName: "users" },
+  { sequelize: db, modelName: "user", tableName: "users", timestamps: true },
 );
 
 export class CommissionSheet extends Model {}
@@ -77,6 +77,7 @@ CommissionSheet.init(
     sequelize: db,
     modelName: "commission_sheet",
     tableName: "commission_sheets",
+    timestamps: true,
   },
 );
 
@@ -110,6 +111,7 @@ CommissionItem.init(
     sequelize: db,
     modelName: "commission_item",
     tableName: "commission_items",
+    timestamps: true,
   },
 );
 
@@ -127,7 +129,12 @@ Product.init(
     commissionRate: { type: DataTypes.DECIMAL(5, 4), allowNull: false },
     spiff: { type: DataTypes.DECIMAL(10, 2), allowNull: true },
   },
-  { sequelize: db, modelName: "product", tableName: "products" },
+  {
+    sequelize: db,
+    modelName: "product",
+    tableName: "products",
+    timestamps: true,
+  },
 );
 
 export class Client extends Model {}
@@ -145,7 +152,12 @@ Client.init(
       references: { model: "users", key: "user_id" },
     },
   },
-  { sequelize: db, modelName: "client", tableName: "clients" },
+  {
+    sequelize: db,
+    modelName: "client",
+    tableName: "clients",
+    timestamps: true,
+  },
 );
 
 CommissionSheet.hasMany(CommissionItem, { foreignKey: "sheetId" });

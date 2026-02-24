@@ -6,6 +6,7 @@ import SheetItem from "../components/CommissionSheet/SheetItem";
 import CommissionSheetFooter from "./CommissionSheetFooter";
 import StatusPicker from "../components/CommissionSheet/StatusPicker";
 import { useNavigate } from "react-router";
+import { formatDateWithDay } from "../helpers";
 
 const CommissionSheet = () => {
   const { sheetId } = useParams();
@@ -22,6 +23,8 @@ const CommissionSheet = () => {
     sheetTitle: "",
     sheetDescription: "",
     sheetStatus: "draft",
+    createdAt: null,
+    updatedAt: null,
   });
   const [sheetItems, setSheetItems] = useState([{}]);
   const [isLoading, setIsLoading] = useState(true);
@@ -39,6 +42,8 @@ const CommissionSheet = () => {
                 sheetTitle: res.data.sheetTitle,
                 sheetDescription: res.data.sheetDescription,
                 sheetStatus: res.data.sheetStatus,
+                createdAt: res.data.createdAt,
+                updatedAt: res.data.updatedAt,
               }));
               setSheetItems(res.data.items);
             }
@@ -144,6 +149,7 @@ const CommissionSheet = () => {
             }
           }}
         />
+        <p>{formatDateWithDay(sheetData?.createdAt)}</p>
         <StatusPicker
           status={sheetData.sheetStatus}
           sheetData={sheetData}
