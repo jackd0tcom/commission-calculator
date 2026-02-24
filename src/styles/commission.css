@@ -16,11 +16,21 @@
 .commission-sheet-item {
   border-bottom: 1px solid var(--border);
   display: grid;
-  grid-template-columns: 1fr 1fr 0.5fr;
+  grid-template-columns: 0.25fr 1fr 1fr 1fr 0.5fr;
   padding: 5px 10px;
 }
 .commission-sheet-item:hover {
   transition: 100ms;
   background-color: var(--hover);
   cursor: pointer;
+}
+.commission-list-dots {
+  border-radius: 5px;
+}
+.commission-list-dots:hover {
+  background-color: var(--dark-hover);
+}
+.commission-list-dots-wrapper {
+  position: relative;
+  z-index: 10;
 }

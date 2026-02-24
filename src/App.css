@@ -10,6 +10,7 @@
   --teal: #00ffdd;
   --purple: #784d8e;
   --hover: #f6f6f6;
+  --dark-hover: #e0e0e0;
   --shadow: 0px 2px 5px -1px lightgrey;
 }
 
@@ -108,4 +109,13 @@ p {
 }
 .dropdown-item:hover {
   background-color: var(--hover);
+}
+.profile-image {
+  height: 25px;
+  width: auto;
+  border-radius: 50%;
+}
+.profile-pic-wrapper {
+  display: flex;
+  align-items: center;
 }
