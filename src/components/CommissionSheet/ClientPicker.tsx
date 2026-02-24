@@ -1,7 +1,8 @@
 import { current } from "@reduxjs/toolkit";
 import { useState, useEffect, useRef } from "react";
+import axios from "axios";
 
-const ClientPicker = ({ clients, currentClient }) => {
+const ClientPicker = ({ item, clients, currentClient }) => {
   const [selectedClientId, setSelectedClientId] = useState(currentClient);
   const [showDropDown, setShowDropdown] = useState(false);
   const dropdownRef = useRef(null);
@@ -9,6 +10,25 @@ const ClientPicker = ({ clients, currentClient }) => {
   const selectedClient = clients.find(
     (c: any) => c.clientId === selectedClientId,
   );
+
+  const updateClient = async (id: number) => {
+    try {
+      await axios
+        .post("/api/updateSheetItem", {
+          itemId: item.itemId,
+          fieldName: "clientId",
+          value: id,
+        })
+        .then((res) => {
+          if (res.status === 200) {
+            setSelectedClientId(id);
+            setShowDropdown(false);
+          }
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   //   Handles blur
   useEffect(() => {
@@ -42,12 +62,12 @@ const ClientPicker = ({ clients, currentClient }) => {
         {selectedClient?.clientName}
       </button>
       {showDropDown && (
-        <div className="client-picker-dropdown" ref={dropdownRef}>
+        <div className="dropdown client-picker-dropdown" ref={dropdownRef}>
           {clients.map((c: any) => (
             <div
-              className="client-picker-item"
+              className="dropdown-item client-picker-item"
               key={c.clientId}
-              onClick={() => setSelectedClientId(c.clientId)}
+              onClick={() => updateClient(c.clientId)}
             >
               {c.clientName}
             </div>
