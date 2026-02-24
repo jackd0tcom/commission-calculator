@@ -1,3 +1,11 @@
+.commissions-page-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.commission-sheet-list-wrapper {
+  overflow-y: scroll;
+}
 .commission-sheet-list {
   padding: 15px;
   display: flex;
@@ -10,4 +18,9 @@
   display: grid;
   grid-template-columns: 1fr 1fr 0.5fr;
   padding: 5px 10px;
+}
+.commission-sheet-item:hover {
+  transition: 100ms;
+  background-color: var(--hover);
+  cursor: pointer;
 }
