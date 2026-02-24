@@ -50,3 +50,11 @@ h2 {
   text-overflow: ellipsis;
   max-width: 150px;
 }
+.new-item-row {
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: 100ms;
+}
+.new-item-row:hover {
+  background-color: var(--hover);
+}

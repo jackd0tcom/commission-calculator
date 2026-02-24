@@ -1,7 +1,12 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 
-const ProductPicker = ({ item, products, currentProduct }) => {
+const ProductPicker = ({
+  item,
+  products,
+  currentProduct,
+  handleProductChange,
+}) => {
   const [selectedProductId, setSelectedProductId] = useState(currentProduct);
   const [showDropDown, setShowDropdown] = useState(false);
   const dropdownRef = useRef(null);
@@ -20,6 +25,7 @@ const ProductPicker = ({ item, products, currentProduct }) => {
         })
         .then((res) => {
           if (res.status === 200) {
+            handleProductChange(res.data.newProduct);
             setSelectedProductId(id);
             setShowDropdown(false);
           }
@@ -58,7 +64,9 @@ const ProductPicker = ({ item, products, currentProduct }) => {
         className="product-picker-button"
         onClick={() => setShowDropdown(!showDropDown)}
       >
-        {selectedProduct?.productName}
+        {selectedProduct?.productName
+          ? selectedProduct.productName
+          : "Add a product"}
       </button>
       {showDropDown && (
         <div className="dropdown product-picker-dropdown" ref={dropdownRef}>

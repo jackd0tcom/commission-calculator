@@ -82,6 +82,8 @@ export default {
       }
 
       const { itemId, fieldName, value } = req.body;
+      let newProduct;
+      let payload;
 
       const item = await CommissionItem.findOne({ where: { itemId } });
 
@@ -91,6 +93,47 @@ export default {
       }
 
       await item?.update({ [fieldName]: value });
+
+      if (fieldName === "productId") {
+        newProduct = await Product.findOne({
+          where: { productId: value },
+        });
+        payload = { ...item.toJSON(), newProduct };
+      } else payload = item.toJSON();
+
+      if (item) {
+        res.send(payload);
+      } else {
+        res.status(400).send("No item found");
+      }
+    } catch (error) {
+      console.error("Error getting sheets:", error);
+      res.status(500).send("Internal server error");
+    }
+  },
+  newSheetItem: async (req: Request, res: Response) => {
+    try {
+      console.log("newSheetItem");
+
+      if (!req.session.user) {
+        console.log("user not logged in / no session set up");
+        return;
+      }
+
+      const { sheetId } = req.body;
+
+      const sheet = await CommissionSheet.findOne({ where: { sheetId } });
+
+      if (!sheet) {
+        res.status(400).send("No sheet found");
+        return;
+      }
+      const item = await CommissionItem.create({ sheetId });
+
+      if (!item) {
+        res.status(400).send("Error creating item");
+        return;
+      }
 
       if (item) {
         res.send(item);

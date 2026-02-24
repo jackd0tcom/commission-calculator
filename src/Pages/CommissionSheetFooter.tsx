@@ -1,25 +1,29 @@
 import { formatDollar } from "../helpers";
 
 const CommissionSheetFooter = ({ items }) => {
-  const quantity: number = items.reduce((acc, item) => acc + item.quantity, 0);
-  const price: number = items.reduce(
+  const filteredItems = items.filter((item) => item.product);
+  const quantity: number = filteredItems.reduce(
+    (acc, item) => acc + item.quantity,
+    0,
+  );
+  const price: number = filteredItems.reduce(
     (acc, item) => acc + item.price * item.quantity,
     0,
   );
-  const cost: number = items.reduce(
+  const cost: number = filteredItems.reduce(
     (acc, item) => acc + item.product.cost * item.quantity,
     0,
   );
-  const commission: number = items.reduce(
+  const commission: number = filteredItems.reduce(
     (acc, item) =>
       acc + item.product.commissionRate * item.price * item.quantity,
     0,
   );
-  const contribution: number = items.reduce(
+  const contribution: number = filteredItems.reduce(
     (acc, item) => acc + (item.price - item.product.cost) * item.quantity,
     0,
   );
-  const bonus: number = items.reduce(
+  const bonus: number = filteredItems.reduce(
     (acc, item) => acc + item.product.spiff * item.quantity,
     0,
   );
