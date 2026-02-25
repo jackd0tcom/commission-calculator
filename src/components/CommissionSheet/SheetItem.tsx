@@ -1,8 +1,9 @@
 import ClientPicker from "./ClientPicker";
 import ProductPicker from "./ProductPicker";
-import { formatDollar } from "../../helpers";
+import { formatDollar, formatDollarNoCents } from "../../helpers";
 import { useState } from "react";
 import axios from "axios";
+import { TiDelete } from "react-icons/ti";
 
 interface SheetItemProps {
   index: number;
@@ -126,12 +127,15 @@ const SheetItem = ({
           onBlur={() => persistPriceChange(price)}
         />
       </div>
-      <p>${cost}</p>
-      <p>{formatDollar(contribution)}</p>
-      <p>{formatDollar(totalCommission)}</p>
-      <p>{formatDollar(bonus)}</p>
-      <p>{formatDollar(totalCommission + bonus)}</p>
-      <button onClick={() => handleDeleteItem()}>x</button>
+      <p>{formatDollarNoCents(cost)}</p>
+      <p>{formatDollarNoCents(contribution)}</p>
+      <p>{formatDollarNoCents(totalCommission)}</p>
+      <p>{formatDollarNoCents(bonus)}</p>
+      <p>{formatDollarNoCents(totalCommission + bonus)}</p>
+      <TiDelete
+        className="sheet-item-delete"
+        onClick={() => handleDeleteItem()}
+      />
     </div>
   );
 };

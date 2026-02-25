@@ -1,6 +1,7 @@
 @import "./styles/nav.css";
 @import "./styles/commission.css";
 @import "./styles/commissionSheet.css";
+@import "./styles/products.css";
 
 #root {
   --black: #222222;
@@ -11,6 +12,8 @@
   --purple: #784d8e;
   --hover: #f6f6f6;
   --dark-hover: #e0e0e0;
+  --red: #de3333;
+  --dark-red: #881f1f;
   --shadow: 0px 2px 5px -1px lightgrey;
 }
 

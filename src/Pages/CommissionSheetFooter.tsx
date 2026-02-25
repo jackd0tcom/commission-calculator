@@ -1,4 +1,4 @@
-import { formatDollar } from "../helpers";
+import { formatDollar, formatDollarNoCents } from "../helpers";
 
 const CommissionSheetFooter = ({ items }) => {
   const filteredItems = items.filter((item) => item.product);

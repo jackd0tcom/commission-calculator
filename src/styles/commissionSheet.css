@@ -1,6 +1,26 @@
 h2 {
   margin: 0;
 }
+.title-input {
+  width: 100%;
+  max-width: 300px;
+  padding: 0px 12px;
+  font-size: 0.9rem;
+  border: 1px solid transparent;
+  transition: 100ms;
+  outline: none;
+}
+.title-input:hover {
+  background-color: var(--hover);
+}
+.sheet-header-container {
+  display: flex;
+  gap: 2rem;
+}
+.sheet-date {
+  font-size: 0.9rem;
+  width: 100%;
+}
 .sheet-items-list {
   display: flex;
   flex-direction: column;
@@ -9,7 +29,7 @@ h2 {
 }
 .sheet-item {
   display: grid;
-  grid-template-columns: 0.2fr 2fr 2fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 0.1fr;
+  grid-template-columns: 0.2fr 2fr 2fr 1fr 1.2fr 1fr 1.2fr 1.2fr 1fr 1fr 0.1fr;
   gap: 10px;
   padding: 5px 15px;
   align-items: center;
@@ -20,13 +40,17 @@ h2 {
 }
 .quantity-input,
 .price-input {
-  padding: 5px;
+  padding: 8px;
 }
 .quantity-input {
   max-width: 50px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
 }
 .price-input {
   max-width: 75px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
 }
 .price-input-wrapper {
   display: flex;
@@ -35,6 +59,8 @@ h2 {
 }
 .sheet-items-list-head {
   border-bottom: 1px solid var(--border);
+  font-size: 0.9rem;
+  font-weight: 500;
 }
 .client-picker-button {
   font-size: 0.9rem;
@@ -49,15 +75,34 @@ h2 {
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 150px;
+  width: 100%;
+  text-align: left;
 }
 .new-item-row {
   font-size: 0.9rem;
   cursor: pointer;
   transition: 100ms;
+  display: flex;
+  padding-left: 20px;
 }
 .new-item-row:hover {
   background-color: var(--hover);
 }
 .status-picker-wrapper {
   position: relative;
+}
+.sheet-item-delete {
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  font-size: 1.5rem;
+  color: var(--grey);
+  transition: 100ms;
+  cursor: pointer;
+}
+.sheet-item-delete:hover {
+  color: var(--red);
+}
+.trash-can-icon {
+  padding: 0px 10px;
 }

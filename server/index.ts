@@ -7,7 +7,7 @@ import commissionCtrl from "./controllers/commissionCtrl";
 import authCtrl from "./controllers/authCtrl";
 import clientCtrl from "./controllers/clientCtrl";
 
-const { getProducts } = productCtrl;
+const { getProducts, updateProduct, deleteProduct, newProduct } = productCtrl;
 const {
   getCommissionSheets,
   getSheet,
@@ -51,6 +51,9 @@ app.use((req, res, next) => {
 
 // Product endpoints
 app.get("/api/getProducts", getProducts);
+app.post("/api/updateProduct", updateProduct);
+app.post("/api/deleteProduct", deleteProduct);
+app.post("/api/newProduct", newProduct);
 
 // Commission endpoints
 app.get("/api/getCommissionSheets", getCommissionSheets);

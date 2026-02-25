@@ -10,6 +10,14 @@ export function formatDollar(number: number) {
     currency: "USD",
   }).format(number);
 }
+export function formatDollarNoCents(number: number) {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(number);
+}
 export function formatRelativeTime(data: any) {
   const now = new Date();
   const activityDate = new Date(data);
