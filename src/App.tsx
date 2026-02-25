@@ -8,6 +8,7 @@ import Commissions from "./Pages/Commissions.tsx";
 import Auth0Sync from "./components/authentication/Auth0Sync.tsx";
 import Login from "./Pages/Login.tsx";
 import CommissionSheet from "./Pages/CommissionSheet.tsx";
+import Products from "./Pages/Products.tsx";
 import { Navigate } from "react-router";
 
 function App() {
@@ -56,6 +57,7 @@ function App() {
                 path="/sheet/:sheetId"
                 element={<CommissionSheet />}
               ></Route>
+              <Route path="/products" element={<Products />}></Route>
             </Routes>
           </div>
         </div>

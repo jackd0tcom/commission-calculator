@@ -7,6 +7,7 @@ import CommissionSheetFooter from "./CommissionSheetFooter";
 import StatusPicker from "../components/CommissionSheet/StatusPicker";
 import { useNavigate } from "react-router";
 import { formatDateWithDay } from "../helpers";
+import { FaTrashCan } from "react-icons/fa6";
 
 const CommissionSheet = () => {
   const { sheetId } = useParams();
@@ -94,7 +95,6 @@ const CommissionSheet = () => {
   const handleAddItem = async () => {
     try {
       await axios.post("/api/newSheetItem", { sheetId }).then((res) => {
-        console.log(res.data);
         setSheetItems((prev) => [...prev, res.data]);
         setAddingNewProduct(true);
       });
@@ -137,7 +137,9 @@ const CommissionSheet = () => {
     <div className="commission-sheet-page-wrapper">
       <div className="page-header-wrapper">
         <input
+          placeholder="Sheet title"
           ref={titleRef}
+          className="title-input"
           type="text"
           value={sheetData.sheetTitle}
           onChange={(e) => handleTitleChange(e)}
@@ -149,13 +151,17 @@ const CommissionSheet = () => {
             }
           }}
         />
-        <p>{formatDateWithDay(sheetData?.createdAt)}</p>
-        <StatusPicker
-          status={sheetData.sheetStatus}
-          sheetData={sheetData}
-          setSheetData={setSheetData}
-          sheetId={sheetId}
-        />
+        <div className="sheet-header-container">
+          <p className="sheet-date">
+            {formatDateWithDay(sheetData?.createdAt)}
+          </p>
+          <StatusPicker
+            status={sheetData.sheetStatus}
+            sheetData={sheetData}
+            setSheetData={setSheetData}
+            sheetId={sheetId}
+          />
+        </div>
       </div>
       <div className="sheet-items-list">
         <div className="sheet-item sheet-items-list-head">
@@ -169,7 +175,7 @@ const CommissionSheet = () => {
           <p>Commission</p>
           <p>Bonus</p>
           <p>Total</p>
-          <p>trash</p>
+          <FaTrashCan className={"trash-can-icon"} />
         </div>
         {isLoading ? (
           <p>Loading...</p>

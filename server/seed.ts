@@ -47,6 +47,7 @@ async function seed() {
       defaultPrice: 24.99,
       commissionRate: 0.1,
       spiff: 5.0,
+      isArchived: false,
     },
     {
       productName: "Widget B",
@@ -54,6 +55,7 @@ async function seed() {
       defaultPrice: 49.99,
       commissionRate: 0.15,
       spiff: null,
+      isArchived: false,
     },
     {
       productName: "Premium Bundle",
@@ -61,6 +63,7 @@ async function seed() {
       defaultPrice: 149.99,
       commissionRate: 0.2,
       spiff: 25.0,
+      isArchived: false,
     },
     {
       productName: "Enterprise License",
@@ -68,6 +71,7 @@ async function seed() {
       defaultPrice: 499.99,
       commissionRate: 0.12,
       spiff: 50.0,
+      isArchived: false,
     },
     {
       productName: "Starter Kit",
@@ -75,6 +79,7 @@ async function seed() {
       defaultPrice: 39.99,
       commissionRate: 0.08,
       spiff: 10.0,
+      isArchived: false,
     },
     {
       productName: "Pro Add-on",
@@ -82,6 +87,7 @@ async function seed() {
       defaultPrice: 99.99,
       commissionRate: 0.18,
       spiff: 15.0,
+      isArchived: false,
     },
     {
       productName: "Annual Support",
@@ -89,6 +95,7 @@ async function seed() {
       defaultPrice: 249.99,
       commissionRate: 0.1,
       spiff: null,
+      isArchived: false,
     },
     {
       productName: "Consulting Package",
@@ -96,6 +103,15 @@ async function seed() {
       defaultPrice: 1999.99,
       commissionRate: 0.25,
       spiff: 100.0,
+      isArchived: false,
+    },
+    {
+      productName: "Editorial Links",
+      cost: 0,
+      defaultPrice: 1999.99,
+      commissionRate: 0.25,
+      spiff: 100.0,
+      isArchived: true,
     },
   ]);
 

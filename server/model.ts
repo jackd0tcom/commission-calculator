@@ -123,11 +123,28 @@ Product.init(
       primaryKey: true,
       autoIncrement: true,
     },
-    productName: { type: DataTypes.STRING, allowNull: false },
-    cost: { type: DataTypes.DECIMAL(10, 2), allowNull: false },
-    defaultPrice: { type: DataTypes.DECIMAL(10, 2), allowNull: false },
-    commissionRate: { type: DataTypes.DECIMAL(5, 4), allowNull: false },
+    productName: { type: DataTypes.STRING, allowNull: true },
+    cost: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: false,
+      defaultValue: 10,
+    },
+    defaultPrice: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: false,
+      defaultValue: 10,
+    },
+    commissionRate: {
+      type: DataTypes.DECIMAL(5, 4),
+      allowNull: false,
+      defaultValue: 0.5,
+    },
     spiff: { type: DataTypes.DECIMAL(10, 2), allowNull: true },
+    isArchived: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
   },
   {
     sequelize: db,
