@@ -5,12 +5,15 @@ import StatusBadge from "../UI/StatusBadge";
 import { useNavigate } from "react-router";
 import ProfilePic from "../UI/ProfilePic";
 import { formatRelativeTime } from "../../helpers";
+import Loader from "../UI/Loader";
+import { useSelector } from "react-redux";
 
 const CommissionSheetList = () => {
   const [commissionList, setCommissionList] = useState([{}]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const nav = useNavigate();
+  const userId = useSelector((state: any) => state.user.userId);
 
   const getCommissionSheets = async () => {
     try {
@@ -26,13 +29,15 @@ const CommissionSheetList = () => {
   };
 
   useEffect(() => {
-    getCommissionSheets();
-  }, []);
+    if (userId) {
+      getCommissionSheets();
+    }
+  }, [userId]);
 
   return (
     <div className="commission-sheet-list-wrapper">
       {isLoading ? (
-        <p>Loading...</p>
+        <Loader />
       ) : (
         <div className="commission-sheet-list">
           <div className="commission-sheet-header">

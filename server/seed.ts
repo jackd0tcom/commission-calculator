@@ -28,16 +28,16 @@ async function seed() {
   ]);
 
   const clients = await Client.bulkCreate([
-    { clientName: "Acme Corp", userId: 1 },
-    { clientName: "Globex Industries", userId: 1 },
-    { clientName: "Initech", userId: 1 },
-    { clientName: "Umbrella Corp", userId: 1 },
-    { clientName: "Stark Industries", userId: 1 },
-    { clientName: "Wayne Enterprises", userId: 1 },
-    { clientName: "Cyberdyne Systems", userId: 1 },
-    { clientName: "Wonka Industries", userId: 1 },
-    { clientName: "Dunder Mifflin", userId: 1 },
-    { clientName: "Pied Piper", userId: 1 },
+    { clientName: "Acme Corp", userId: 1, isArchived: false },
+    { clientName: "Globex Industries", userId: 1, isArchived: false },
+    { clientName: "Initech", userId: 1, isArchived: false },
+    { clientName: "Umbrella Corp", userId: 1, isArchived: false },
+    { clientName: "Stark Industries", userId: 1, isArchived: false },
+    { clientName: "Wayne Enterprises", userId: 1, isArchived: false },
+    { clientName: "Cyberdyne Systems", userId: 1, isArchived: false },
+    { clientName: "Wonka Industries", userId: 1, isArchived: false },
+    { clientName: "Dunder Mifflin", userId: 1, isArchived: false },
+    { clientName: "Pied Piper", userId: 1, isArchived: false },
   ]);
 
   const products = await Product.bulkCreate([
@@ -132,7 +132,7 @@ async function seed() {
       userId: 1,
       sheetTitle: "December 2024 Commissions",
       sheetDescription: "Year-end",
-      sheetStatus: "archived",
+      sheetStatus: "approved",
     },
     {
       userId: 1,
@@ -150,7 +150,7 @@ async function seed() {
       userId: 1,
       sheetTitle: "November 2024 Commissions",
       sheetDescription: null,
-      sheetStatus: "archived",
+      sheetStatus: "approved",
     },
     {
       userId: 1,
@@ -168,7 +168,7 @@ async function seed() {
       userId: 1,
       sheetTitle: "October 2024 Commissions",
       sheetDescription: null,
-      sheetStatus: "archived",
+      sheetStatus: "approved",
     },
     {
       userId: 1,
@@ -186,7 +186,19 @@ async function seed() {
       userId: 1,
       sheetTitle: "September 2024 Commissions",
       sheetDescription: null,
-      sheetStatus: "archived",
+      sheetStatus: "approved",
+    },
+    {
+      userId: 1,
+      sheetTitle: "October 2028 Commissions",
+      sheetDescription: null,
+      sheetStatus: "approved",
+    },
+    {
+      userId: 1,
+      sheetTitle: "September 2030 Commissions",
+      sheetDescription: null,
+      sheetStatus: "approved",
     },
   ]);
 

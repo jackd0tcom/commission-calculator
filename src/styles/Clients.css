@@ -1,0 +1,86 @@
+.clients-page-wrapper {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.clients-list-container {
+  overflow-y: scroll;
+}
+.clients-list-wrapper {
+  margin: 15px;
+  border: 1px solid var(--border);
+}
+.clients-page-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  height: 100%;
+}
+
+.clients-list-item {
+  display: grid;
+  grid-template-columns: 0.1fr 2fr 1fr 0.2fr;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 15px;
+  border-bottom: 1px solid var(--border);
+  transition: 100ms;
+}
+.client-list-name {
+  padding: 10px;
+  border: 1px solid transparent;
+  background-color: unset;
+  font-size: 0.9rem;
+  max-width: 200px;
+}
+.client-list-name:hover {
+  border: 1px solid var(--border);
+}
+.clients-list-item p {
+  font-size: 0.9rem;
+}
+.clients-list-item:hover {
+  background-color: var(--hover);
+}
+.clients-sheet-item:hover {
+  background-color: var(--hover);
+}
+.clients-list-head:hover,
+.clients-sheet-head:hover {
+  background-color: white;
+}
+.current-client {
+  background-color: var(--hover);
+}
+.new-client-row {
+  cursor: pointer;
+  transition: 100ms;
+}
+.clients-sheet-wrapper {
+  margin: 15px 15px 15px 0;
+  border: 1px solid var(--border);
+}
+.clients-sheet-head {
+  cursor: default !important;
+}
+.clients-sheet-item {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  padding: 5px 15px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: 100ms;
+}
+.no-sheets-available {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 5%;
+  gap: 1rem;
+  color: var(--grey);
+}
+.magnifying {
+  font-size: 2rem;
+  color: var(--blue);
+}

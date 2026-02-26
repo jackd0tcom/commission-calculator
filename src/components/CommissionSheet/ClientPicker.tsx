@@ -59,9 +59,7 @@ const ClientPicker = ({ item, clients, currentClient }) => {
         className="client-picker-button"
         onClick={() => setShowDropdown(!showDropDown)}
       >
-        {selectedClient?.clientName
-          ? selectedClient.clientName
-          : "Add a client"}
+        {currentClient?.clientName ? currentClient.clientName : "Add a client"}
       </button>
       {showDropDown && (
         <div className="dropdown client-picker-dropdown" ref={dropdownRef}>

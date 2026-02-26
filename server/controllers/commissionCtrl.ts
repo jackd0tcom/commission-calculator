@@ -1,4 +1,10 @@
-import { CommissionSheet, CommissionItem, Product } from "../model";
+import {
+  CommissionSheet,
+  CommissionItem,
+  Product,
+  User,
+  Client,
+} from "../model";
 import { Request, Response } from "express";
 import { Order } from "sequelize";
 
@@ -15,6 +21,41 @@ export default {
       const { userId } = req.session.user;
 
       const sheets = await CommissionSheet.findAll({ where: { userId } });
+
+      if (sheets) {
+        res.send(sheets);
+      } else {
+        res.status(400).send("No sheets found");
+      }
+    } catch (error) {
+      console.error("Error getting sheets:", error);
+      res.status(500).send("Internal server error");
+    }
+  },
+  getPendingSheets: async (req: Request, res: Response) => {
+    try {
+      console.log("getPendingCommissionSheets");
+
+      if (!req.session.user) {
+        console.log("user not logged in / no session set up");
+        return;
+      }
+
+      if (!req.session.user?.isAdmin) {
+        res.status(401).send("Current user is not an admin");
+      }
+
+      const sheets = await CommissionSheet.findAll({
+        where: { sheetStatus: "submitted" },
+        include: [
+          {
+            model: User,
+            as: "user",
+            attributes: ["profilePic", "firstName", "lastName"],
+          },
+        ],
+        order: [["createdAt", "DESC"]],
+      });
 
       if (sheets) {
         res.send(sheets);
@@ -70,9 +111,22 @@ export default {
 
       const sheet = await CommissionSheet.findOne({ where: { sheetId } });
 
+      if (sheet.userId !== req.session.user.userId) {
+        if (!req.session.user.isAdmin) {
+          res.status(401).send("User is not allowed to view this sheet!");
+          return;
+        }
+      }
+
       const items = await CommissionItem.findAll({
         where: { sheetId },
         order: [["itemId", "ASC"]],
+        include: [
+          {
+            model: Client,
+            as: "client",
+          },
+        ],
       });
 
       const itemsWithProducts = await Promise.all(

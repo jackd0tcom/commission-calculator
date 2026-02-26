@@ -106,3 +106,17 @@ h2 {
 .trash-can-icon {
   padding: 0px 10px;
 }
+.commission-sheet-bottom-wrapper {
+  margin: 15px;
+}
+.commission-sheet-notes {
+  border: 1px solid var(--border);
+  width: 100%;
+  resize: none;
+}
+.unauthorized {
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

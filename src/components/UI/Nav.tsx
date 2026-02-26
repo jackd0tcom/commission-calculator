@@ -1,6 +1,14 @@
 import { NavLink } from "react-router";
+import { FaCalculator } from "react-icons/fa6";
+import { FaBasketShopping } from "react-icons/fa6";
+import { BsFillPersonBadgeFill } from "react-icons/bs";
+import ProfilePic from "./ProfilePic";
+import { useSelector } from "react-redux";
+import { FaListCheck } from "react-icons/fa6";
 
 const Nav = () => {
+  const user = useSelector((state) => state.user);
+
   return (
     <div className="nav-wrapper">
       <div className="nav-container">
@@ -17,7 +25,7 @@ const Nav = () => {
                 isActive ? "active-nav nav-button" : "inactive-nav nav-button"
               }
             >
-              Commission Sheets
+              <FaCalculator /> Commission Sheets
             </NavLink>
             <NavLink
               to="/products"
@@ -25,6 +33,7 @@ const Nav = () => {
                 isActive ? "active-nav nav-button" : "inactive-nav nav-button"
               }
             >
+              <FaBasketShopping />
               Products
             </NavLink>
             <NavLink
@@ -33,18 +42,33 @@ const Nav = () => {
                 isActive ? "active-nav nav-button" : "inactive-nav nav-button"
               }
             >
+              <BsFillPersonBadgeFill />
               Clients
             </NavLink>
-            <NavLink
-              to="/profile"
-              className={({ isActive }) =>
-                isActive ? "active-nav nav-button" : "inactive-nav nav-button"
-              }
-            >
-              Profile
-            </NavLink>
+            {user.isAdmin && (
+              <NavLink
+                to="/pending"
+                className={({ isActive }) =>
+                  isActive ? "active-nav nav-button" : "inactive-nav nav-button"
+                }
+              >
+                <FaListCheck />
+                Pending Sheets
+              </NavLink>
+            )}
           </div>
         </div>
+      </div>
+      <div className="nav-links-wrapper no-bottom-border">
+        <NavLink
+          to="/profile"
+          className={({ isActive }) =>
+            isActive ? "active-nav nav-button" : "inactive-nav nav-button"
+          }
+        >
+          <ProfilePic />
+          Profile
+        </NavLink>
       </div>
     </div>
   );
