@@ -9,11 +9,16 @@ import Auth0Sync from "./components/authentication/Auth0Sync.tsx";
 import Login from "./Pages/Login.tsx";
 import CommissionSheet from "./Pages/CommissionSheet.tsx";
 import Products from "./Pages/Products.tsx";
+import Clients from "./Pages/Clients.tsx";
+import Loader from "./components/UI/Loader.tsx";
+import Pending from "./Pages/Pending.tsx";
 import { Navigate } from "react-router";
+import { useSelector } from "react-redux";
 
 function App() {
   const { isAuthenticated, isLoading, error } = useAuth0();
   const [userSynced, setUserSynced] = useState(false);
+  const user = useSelector((state) => state.user);
 
   if (isLoading) {
   }
@@ -36,18 +41,26 @@ function App() {
   return (
     <div className="app-container">
       <Auth0Sync onSyncComplete={handleSyncComplete} />
-      <Nav />
-      {isLoading ? (
+      {isAuthenticated && <Nav />}
+      {isLoading || (isAuthenticated && !userSynced) ? (
         <div className="app-container">
-          <div className="loading-state">
-            <div className="loading-text">Loading...</div>
-          </div>
+          <Loader />
         </div>
       ) : (
         <div className="route-wrapper">
           <div className="route-container">
             <Routes>
-              <Route index path="/" element={<Login />}></Route>
+              <Route
+                index
+                path="/"
+                element={
+                  !isAuthenticated ? (
+                    <Login />
+                  ) : (
+                    <Navigate to="/commission-sheets" />
+                  )
+                }
+              ></Route>
               <Route
                 path="/commission-sheets"
                 element={<Commissions />}
@@ -58,6 +71,19 @@ function App() {
                 element={<CommissionSheet />}
               ></Route>
               <Route path="/products" element={<Products />}></Route>
+              <Route path="/clients" element={<Clients />}></Route>
+              <Route
+                path="/pending"
+                element={
+                  !isAuthenticated ? (
+                    <Login />
+                  ) : user.isAdmin ? (
+                    <Pending />
+                  ) : (
+                    <Navigate to="/commission-sheets" />
+                  )
+                }
+              ></Route>
             </Routes>
           </div>
         </div>

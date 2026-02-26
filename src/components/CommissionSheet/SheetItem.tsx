@@ -94,7 +94,7 @@ const SheetItem = ({
       <ClientPicker
         item={item}
         clients={clientList}
-        currentClient={item.clientId}
+        currentClient={item.client}
       />
       <ProductPicker
         item={item}

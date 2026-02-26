@@ -10,6 +10,7 @@ import clientCtrl from "./controllers/clientCtrl";
 const { getProducts, updateProduct, deleteProduct, newProduct } = productCtrl;
 const {
   getCommissionSheets,
+  getPendingSheets,
   getSheet,
   updateSheetItem,
   newSheetItem,
@@ -18,7 +19,8 @@ const {
   newSheet,
 } = commissionCtrl;
 const { syncAuth0User } = authCtrl;
-const { getClients } = clientCtrl;
+const { getClients, updateClient, deleteClient, newClient, getClientSheets } =
+  clientCtrl;
 
 configDotenv();
 
@@ -57,6 +59,7 @@ app.post("/api/newProduct", newProduct);
 
 // Commission endpoints
 app.get("/api/getCommissionSheets", getCommissionSheets);
+app.get("/api/getPendingSheets", getPendingSheets);
 app.get(`/api/getSheet/:sheetId`, getSheet);
 app.post(`/api/updateSheetItem`, updateSheetItem);
 app.post(`/api/newSheet`, newSheet);
@@ -66,6 +69,10 @@ app.post(`/api/deleteSheetItem`, deleteSheetItem);
 
 // Client endpoints
 app.get(`/api/getClients`, getClients);
+app.post("/api/updateClient", updateClient);
+app.post("/api/deleteClient", deleteClient);
+app.post("/api/newClient", newClient);
+app.get("/api/getClientSheets/:clientId", getClientSheets);
 
 // auth endpoints
 // app.post("/api/register", register);

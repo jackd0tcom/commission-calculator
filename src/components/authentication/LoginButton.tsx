@@ -4,7 +4,8 @@ const LoginButton = () => {
   const { loginWithRedirect } = useAuth0();
   return (
     <button onClick={() => loginWithRedirect()} className="button login">
-      Log In
+      <img src="/public/google-logo.png" className="google-logo" alt="" />
+      Log in with Google
     </button>
   );
 };

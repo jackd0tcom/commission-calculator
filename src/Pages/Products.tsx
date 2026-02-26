@@ -45,7 +45,11 @@ const Products = () => {
       await axios.post("/api/deleteProduct", { productId }).then((res) => {
         if (res.status === 200) {
           setProductList((prev) =>
-            prev.filter((p) => Number((p as { productId?: number }).productId) !== Number(productId)),
+            prev.filter(
+              (p) =>
+                Number((p as { productId?: number }).productId) !==
+                Number(productId),
+            ),
           );
         }
       });

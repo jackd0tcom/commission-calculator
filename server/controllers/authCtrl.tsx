@@ -11,6 +11,8 @@ export default {
       let user = await User.findOne({ where: { auth0Id } });
       let isNewUser = false;
 
+      console.log(user);
+
       if (!user) {
         isNewUser = true;
         // Create new user from Auth0 data

@@ -16,6 +16,7 @@ const CommissionSheet = () => {
   const [clientList, setClientList] = useState([{}]);
   const [productList, setProductList] = useState([{}]);
   const [addingNewProduct, setAddingNewProduct] = useState(false);
+  const [unauthorized, setUnauthorized] = useState(false);
   const titleRef = useRef(null);
   const descriptionRef = useRef(null);
   const [sheetData, setSheetData] = useState({
@@ -42,6 +43,7 @@ const CommissionSheet = () => {
                 ...prev,
                 sheetTitle: res.data.sheetTitle,
                 sheetDescription: res.data.sheetDescription,
+                userId: res.data.userId,
                 sheetStatus: res.data.sheetStatus,
                 createdAt: res.data.createdAt,
                 updatedAt: res.data.updatedAt,
@@ -67,17 +69,22 @@ const CommissionSheet = () => {
       await Promise.all(promises);
     } catch (error) {
       console.log(error);
+      if (error.status === 401) {
+        setUnauthorized(true);
+      }
     } finally {
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    if (Number(sheetId) !== 0) {
-      if (user.userId) {
-        fetchData();
-      }
+    if (Number(sheetId) === 0) {
+      return;
     }
+    if (!user.userId) {
+      return;
+    }
+    fetchData();
   }, [user?.userId, sheetId]);
 
   const handleQuantityChange = (itemId: number, quantity: number) => {
@@ -160,6 +167,7 @@ const CommissionSheet = () => {
             sheetData={sheetData}
             setSheetData={setSheetData}
             sheetId={sheetId}
+            isAdmin={user.isAdmin && user.userId !== sheetData.userId}
           />
         </div>
       </div>
@@ -179,31 +187,40 @@ const CommissionSheet = () => {
         </div>
         {isLoading ? (
           <p>Loading...</p>
+        ) : unauthorized ? (
+          <div className="unauthorized">
+            <p>You do not have permission to see this sheet!</p>
+          </div>
         ) : (
-          sheetItems?.map((item, index) => (
-            <SheetItem
-              index={index}
-              item={item}
-              clientList={clientList}
-              productList={productList}
-              onQuantityChange={handleQuantityChange}
-              onPriceChange={handlePriceChange}
-              sheetItems={sheetItems}
-              setSheetItems={setSheetItems}
-            />
-          ))
+          <>
+            {sheetItems?.map((item, idx) => {
+              return (
+                <SheetItem
+                  index={idx}
+                  item={item}
+                  clientList={clientList}
+                  productList={productList}
+                  onQuantityChange={handleQuantityChange}
+                  onPriceChange={handlePriceChange}
+                  sheetItems={sheetItems}
+                  setSheetItems={setSheetItems}
+                />
+              );
+            })}
+            <div
+              className="sheet-item new-item-row"
+              onClick={() => handleAddItem()}
+            >
+              <p>+</p>
+              <p>Add Product</p>
+            </div>
+            {!isLoading && <CommissionSheetFooter items={sheetItems} />}
+          </>
         )}
-        <div
-          className="sheet-item new-item-row"
-          onClick={() => handleAddItem()}
-        >
-          <p>+</p>
-          <p>Add Product</p>
-        </div>
-        {!isLoading && <CommissionSheetFooter items={sheetItems} />}
       </div>
       <div className="commission-sheet-bottom-wrapper">
         <textarea
+          className="commission-sheet-notes"
           ref={descriptionRef}
           name="notes"
           id="notes"

@@ -1,13 +1,19 @@
 .nav-wrapper {
-  width: 13%;
+  width: 18%;
   padding: 30px 15px;
   background-color: var(--black);
-  max-width: 200px;
+  max-width: 220px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 .nav-container {
   display: flex;
   flex-direction: column;
   gap: 40px;
+}
+.nav-logo {
+  width: 150px;
 }
 .nav-links-wrapper {
   display: flex;
@@ -15,6 +21,10 @@
   border-top: 1px solid grey;
   border-bottom: 1px solid grey;
   padding: 15px 0;
+}
+.no-bottom-border {
+  border-bottom: 0;
+  padding-bottom: 0;
 }
 .nav-link-container {
   color: white;
@@ -26,6 +36,18 @@
   color: white;
   transition: 150ms;
   padding: 10px 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.nav-button svg {
+  stroke: var(--dark-hover);
+  fill: var(--dark-hover);
+  height: 1.2rem;
+  width: 1.2rem;
+}
+.active-nav {
+  background-color: rgb(81, 81, 81);
 }
 .nav-button:hover {
   background-color: #515151;

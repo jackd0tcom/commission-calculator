@@ -1,0 +1,20 @@
+.pending-sheets-list {
+  margin: 15px;
+  border: 1px solid var(--border);
+}
+.pending-item {
+  display: grid;
+  grid-template-columns: 0.25fr 2fr 1.5fr 1fr 1fr;
+  border-bottom: 1px solid var(--border);
+  gap: 5px;
+  padding: 5px 15px;
+  transition: 100ms;
+}
+.pending-item:hover {
+  cursor: pointer;
+  background-color: var(--hover);
+}
+.pending-sheets-head:hover {
+  background-color: white;
+  cursor: default;
+}

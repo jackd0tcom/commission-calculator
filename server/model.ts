@@ -68,7 +68,7 @@ CommissionSheet.init(
     sheetTitle: { type: DataTypes.STRING, allowNull: false },
     sheetDescription: { type: DataTypes.TEXT, allowNull: true },
     sheetStatus: {
-      type: DataTypes.ENUM("draft", "submitted", "archived"),
+      type: DataTypes.ENUM("draft", "submitted", "approved"),
       allowNull: false,
       defaultValue: "draft",
     },
@@ -162,11 +162,16 @@ Client.init(
       primaryKey: true,
       autoIncrement: true,
     },
-    clientName: { type: DataTypes.STRING, allowNull: false },
+    clientName: { type: DataTypes.STRING, allowNull: true },
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: { model: "users", key: "user_id" },
+    },
+    isArchived: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
     },
   },
   {
@@ -180,7 +185,16 @@ Client.init(
 CommissionSheet.hasMany(CommissionItem, { foreignKey: "sheetId" });
 CommissionItem.belongsTo(CommissionSheet, { foreignKey: "sheetId" });
 
+CommissionItem.belongsTo(Client, { foreignKey: "clientId", as: "client" });
+Client.hasMany(CommissionItem, {
+  foreignKey: "clientId",
+  as: "commissionItems",
+});
+
 Product.hasMany(CommissionItem, { foreignKey: "productId" });
 CommissionItem.belongsTo(Product, { foreignKey: "productId" });
+
+User.hasMany(CommissionSheet, { foreignKey: "userId" });
+CommissionSheet.belongsTo(User, { foreignKey: "userId" });
 
 export { db };
