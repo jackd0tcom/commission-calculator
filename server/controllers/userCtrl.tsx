@@ -69,4 +69,52 @@ export default {
       res.status(500).json({ message: "Failed to sync user" });
     }
   },
+  getUsers: async (req: Request, res: Response) => {
+    try {
+      console.log("getUsers");
+
+      if (!req.session.user) {
+        res.status(401).send("No user signed in!");
+        return;
+      }
+
+      const users = await User.findAll();
+
+      if (users) {
+        res.send(users);
+      } else {
+        res.status(400).send("No sheets found");
+      }
+    } catch (error) {
+      console.error("Error getting sheets:", error);
+      res.status(500).send("Internal server error");
+    }
+  },
+  updateAdmin: async (req: Request, res: Response) => {
+    try {
+      console.log("getUsers");
+
+      if (!req.session.user) {
+        res.status(401).send("No user signed in!");
+        return;
+      }
+
+      const { userId } = req.body;
+
+      const user = await User.findOne({ where: { userId } });
+
+      if (user.isAdmin) {
+        await user?.update({ isAdmin: false });
+      } else await user?.update({ isAdmin: true });
+
+      if (user) {
+        res.send(user);
+      } else {
+        res.status(400).send("No sheets found");
+      }
+    } catch (error) {
+      console.error("Error getting sheets:", error);
+      res.status(500).send("Internal server error");
+    }
+  },
 };

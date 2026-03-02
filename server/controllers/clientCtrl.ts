@@ -8,6 +8,7 @@ export default {
       console.log("getClients");
 
       if (!req.session.user) {
+        res.status(401).send("No user signed in!");
         console.log("user not logged in / no session set up");
         return;
       }
@@ -33,6 +34,7 @@ export default {
       console.log("updateClient");
 
       if (!req.session.user) {
+        res.status(401).send("No user signed in!");
         console.log("user not logged in / no session set up");
         return;
       }
@@ -58,6 +60,7 @@ export default {
       console.log("deleteClient");
 
       if (!req.session.user) {
+        res.status(401).send("No user signed in!");
         console.log("user not logged in / no session set up");
         return;
       }
@@ -83,6 +86,7 @@ export default {
       console.log("newClient");
 
       if (!req.session.user) {
+        res.status(401).send("No user signed in!");
         console.log("user not logged in / no session set up");
         return;
       }
@@ -106,6 +110,7 @@ export default {
       console.log("getClientSheets");
 
       if (!req.session.user) {
+        res.status(401).send("No user signed in!");
         console.log("user not logged in / no session set up");
         return;
       }
