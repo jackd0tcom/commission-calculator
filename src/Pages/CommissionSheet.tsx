@@ -19,6 +19,7 @@ const CommissionSheet = () => {
   const [unauthorized, setUnauthorized] = useState(false);
   const titleRef = useRef(null);
   const descriptionRef = useRef(null);
+  const creatingSheetRef = useRef(false);
   const [sheetData, setSheetData] = useState({
     sheetId: sheetId ? sheetId : 0,
     userId: user?.userId || 0,
@@ -118,6 +119,9 @@ const CommissionSheet = () => {
 
   const updateSheet = async (fieldName: string, value: string) => {
     if (Number(sheetId) === 0) {
+      if (creatingSheetRef.current) return;
+      if (fieldName !== "sheetTitle") return;
+      creatingSheetRef.current = true;
       try {
         await axios.post("/api/newSheet", { sheetTitle: value }).then((res) => {
           if (res.status === 200) {
@@ -125,6 +129,7 @@ const CommissionSheet = () => {
           }
         });
       } catch (error) {
+        creatingSheetRef.current = false;
         console.log(error);
       }
     } else
@@ -166,7 +171,6 @@ const CommissionSheet = () => {
           onBlur={() => updateSheet("sheetTitle", sheetData.sheetTitle)}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
-              updateSheet("sheetTitle", sheetData.sheetTitle);
               titleRef.current.blur();
             }
           }}
@@ -180,7 +184,7 @@ const CommissionSheet = () => {
             sheetData={sheetData}
             setSheetData={setSheetData}
             sheetId={sheetId}
-            isAdmin={user.isAdmin && user.userId !== sheetData.userId}
+            isAdmin={user.isAdmin}
           />
         </div>
       </div>

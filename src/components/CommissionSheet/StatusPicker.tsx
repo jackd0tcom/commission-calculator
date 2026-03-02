@@ -38,37 +38,62 @@ const StatusPicker = ({
 
   return (
     <div className="status-picker-wrapper">
-      {status === "submitted" && !isAdmin && (
-        <button
-          className="draft-switch"
-          onClick={() => handleStatusChange("draft")}
-        >
-          Switch to draft
-        </button>
+      {!isAdmin ? (
+        <>
+          {status === "submitted" && !isAdmin && (
+            <button
+              className="draft-switch"
+              onClick={() => handleStatusChange("draft")}
+            >
+              Switch to draft
+            </button>
+          )}
+          <button
+            onClick={() =>
+              handleStatusChange(
+                !isAdmin
+                  ? status === "draft"
+                    ? "submitted"
+                    : status
+                  : status !== "submitted"
+                    ? status
+                    : "approved",
+              )
+            }
+            className={`status-picker-button ${status}-button`}
+            disabled={status === "approved"}
+          >
+            {status === "draft" ? "Submit" : capitalize(status)}
+          </button>
+        </>
+      ) : (
+        <>
+          {status !== "approved" && status !== "denied" && (
+            <button
+              onClick={() => handleStatusChange("denied")}
+              className={`status-picker-button ${status}-button`}
+              disabled={status === "approved"}
+            >
+              {status === "draft"
+                ? "Deny"
+                : status === "submitted"
+                  ? "Deny"
+                  : capitalize(status)}
+            </button>
+          )}
+          <button
+            onClick={() => handleStatusChange("approved")}
+            className={`status-picker-button ${status}-button`}
+            disabled={status === "approved"}
+          >
+            {status === "draft"
+              ? "Approve"
+              : status === "submitted"
+                ? "Approve"
+                : capitalize(status)}
+          </button>
+        </>
       )}
-      <button
-        onClick={() =>
-          handleStatusChange(
-            !isAdmin
-              ? status === "draft"
-                ? "submitted"
-                : status
-              : status !== "submitted"
-                ? status
-                : "approved",
-          )
-        }
-        className={`status-picker-button ${status}-button`}
-        disabled={status === "approved"}
-      >
-        {!isAdmin
-          ? status === "draft"
-            ? "Submit"
-            : capitalize(status)
-          : status !== "submitted"
-            ? capitalize(status)
-            : "Approve"}
-      </button>
     </div>
   );
 };

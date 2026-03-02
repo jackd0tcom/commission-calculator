@@ -18,3 +18,7 @@
   background-color: white;
   cursor: default;
 }
+.status-picker-wrapper {
+  display: flex;
+  align-items: center;
+}

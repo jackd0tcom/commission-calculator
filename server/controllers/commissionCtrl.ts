@@ -20,7 +20,31 @@ export default {
 
       const { userId } = req.session.user;
 
-      const sheets = await CommissionSheet.findAll({ where: { userId } });
+      let sheets;
+
+      if (req.session.user.isAdmin) {
+        sheets = await CommissionSheet.findAll({
+          order: [["updatedAt", "DESC"]],
+          include: [
+            {
+              model: User,
+              as: "user",
+              attributes: ["profilePic", "firstName", "lastName"],
+            },
+          ],
+        });
+      } else
+        sheets = await CommissionSheet.findAll({
+          where: { userId },
+          order: [["updatedAt", "DESC"]],
+          include: [
+            {
+              model: User,
+              as: "user",
+              attributes: ["profilePic", "firstName", "lastName"],
+            },
+          ],
+        });
 
       if (sheets) {
         res.send(sheets);
@@ -45,13 +69,10 @@ export default {
         res.status(401).send("Current user is not an admin");
       }
 
+      const { status } = req.body;
+
       const sheets = await CommissionSheet.findAll({
-        where: {
-          [Op.or]: [
-            { sheetStatus: "submitted" },
-            { sheetStatus: "approved" },
-          ],
-        },
+        where: { sheetStatus: status },
         include: [
           {
             model: User,
