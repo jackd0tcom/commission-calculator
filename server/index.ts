@@ -60,8 +60,8 @@ app.post("/api/newProduct", newProduct);
 
 // Commission endpoints
 app.get("/api/getCommissionSheets", getCommissionSheets);
-app.get("/api/getPendingSheets", getPendingSheets);
 app.get(`/api/getSheet/:sheetId`, getSheet);
+app.post("/api/getPendingSheets", getPendingSheets);
 app.post(`/api/updateSheetItem`, updateSheetItem);
 app.post(`/api/newSheet`, newSheet);
 app.post("/api/updateSheet", updateSheet);

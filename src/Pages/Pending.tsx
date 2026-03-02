@@ -13,11 +13,13 @@ const Pending = () => {
 
   const fetchPendingSheets = async () => {
     try {
-      await axios.get("/api/getPendingSheets").then((res) => {
-        console.log(res.data);
-        setPendingList(res.data);
-        setIsLoading(false);
-      });
+      await axios
+        .post("/api/getPendingSheets", { status: "submitted" })
+        .then((res) => {
+          console.log(res.data);
+          setPendingList(res.data);
+          setIsLoading(false);
+        });
     } catch (error) {
       console.log(error);
     }
@@ -49,7 +51,7 @@ const Pending = () => {
                 className="pending-item"
                 onClick={() => navigate(`/sheet/${sheet.sheetId}`)}
               >
-                <ProfilePic />
+                <ProfilePic src={sheet.user?.profilePic} />
                 <p>{sheet.sheetTitle}</p>
                 <p>{sheet.sheetTitle}</p>
                 <StatusBadge status={sheet.sheetStatus} />

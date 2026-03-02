@@ -52,7 +52,7 @@ const CommissionSheetList = () => {
               className="commission-sheet-item"
               onClick={() => nav(`/sheet/${sheet.sheetId}`)}
             >
-              <ProfilePic src={null} />
+              <ProfilePic src={sheet.user.profilePic} />
               <p>{sheet.sheetTitle}</p>
               <p>{sheet.sheetDescription}</p>
               <StatusBadge status={sheet.sheetStatus} />

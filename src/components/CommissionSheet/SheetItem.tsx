@@ -4,6 +4,7 @@ import { formatDollar, formatDollarNoCents } from "../../helpers";
 import { useState } from "react";
 import axios from "axios";
 import { TiDelete } from "react-icons/ti";
+import { current } from "@reduxjs/toolkit";
 
 interface SheetItemProps {
   index: number;
@@ -30,11 +31,13 @@ const SheetItem = ({
     item.product ? item.product : null,
   );
   const [quantity, setQuantity] = useState(item.quantity ? item.quantity : 0);
-  const [price, setPrice] = useState(item.price ? item.price : 0);
+  const [price, setPrice] = useState(
+    currentProduct ? currentProduct?.defaultPrice : 0,
+  );
   const commissionRate = currentProduct ? currentProduct.commissionRate : 0;
   const spiff = currentProduct ? currentProduct.spiff : 0;
   const cost = currentProduct ? currentProduct.cost : 0;
-  const isSpiff = price >= item.product.defaultPrice;
+  const isSpiff = price >= item?.product?.defaultPrice;
   const totalCommission = commissionRate * price * quantity;
   const bonus = isSpiff ? spiff * quantity : 0;
   const contribution = (price - cost) * quantity;
