@@ -38,12 +38,12 @@ const Pending = () => {
           <p>Title</p>
           <p>Amount?</p>
           <p>Status</p>
-          <p>Date</p>
+          <p>Date Submitted</p>
         </div>
         <div className="pending-sheets-items-wrapper">
           {isLoading ? (
             <Loader />
-          ) : (
+          ) : pendingList.length > 0 ? (
             pendingList?.map((sheet) => (
               <div
                 className="pending-item"
@@ -53,9 +53,14 @@ const Pending = () => {
                 <p>{sheet.sheetTitle}</p>
                 <p>{sheet.sheetTitle}</p>
                 <StatusBadge status={sheet.sheetStatus} />
-                <p>{formatDate(sheet.createdAt)}</p>
+                <p>{formatDate(sheet.submitDate)}</p>
               </div>
             ))
+          ) : (
+            <div className="pending-item">
+              <p></p>
+              <p>No Pending sheets to show</p>
+            </div>
           )}
         </div>
       </div>

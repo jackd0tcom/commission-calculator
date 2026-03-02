@@ -68,9 +68,13 @@ CommissionSheet.init(
     sheetTitle: { type: DataTypes.STRING, allowNull: false },
     sheetDescription: { type: DataTypes.TEXT, allowNull: true },
     sheetStatus: {
-      type: DataTypes.ENUM("draft", "submitted", "approved"),
+      type: DataTypes.ENUM("draft", "submitted", "approved", "denied", "paid"),
       allowNull: false,
       defaultValue: "draft",
+    },
+    submitDate: {
+      type: DataTypes.DATE,
+      allowNull: true,
     },
   },
   {
