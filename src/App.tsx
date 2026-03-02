@@ -14,6 +14,7 @@ import Loader from "./components/UI/Loader.tsx";
 import Pending from "./Pages/Pending.tsx";
 import { Navigate } from "react-router";
 import { useSelector } from "react-redux";
+import Admin from "./Pages/Admin.tsx";
 
 function App() {
   const { isAuthenticated, isLoading, error } = useAuth0();
@@ -79,6 +80,18 @@ function App() {
                     <Login />
                   ) : user.isAdmin ? (
                     <Pending />
+                  ) : (
+                    <Navigate to="/commission-sheets" />
+                  )
+                }
+              ></Route>
+              <Route
+                path="/admin"
+                element={
+                  !isAuthenticated ? (
+                    <Login />
+                  ) : user.isAdmin ? (
+                    <Admin />
                   ) : (
                     <Navigate to="/commission-sheets" />
                   )

@@ -5,6 +5,7 @@
 @import "./styles/Clients.css";
 @import "./styles/Loader.css";
 @import "./styles/Pending.css";
+@import "./styles/Admin.css";
 
 #root {
   --black: #222222;

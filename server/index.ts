@@ -4,7 +4,7 @@ import session from "express-session";
 import { configDotenv } from "dotenv";
 import productCtrl from "./controllers/productCtrl";
 import commissionCtrl from "./controllers/commissionCtrl";
-import authCtrl from "./controllers/authCtrl";
+import userCtrl from "./controllers/userCtrl";
 import clientCtrl from "./controllers/clientCtrl";
 
 const { getProducts, updateProduct, deleteProduct, newProduct } = productCtrl;
@@ -19,7 +19,7 @@ const {
   newSheet,
   deleteSheet,
 } = commissionCtrl;
-const { syncAuth0User } = authCtrl;
+const { syncAuth0User, getUsers, updateAdmin } = userCtrl;
 const { getClients, updateClient, deleteClient, newClient, getClientSheets } =
   clientCtrl;
 
@@ -83,6 +83,8 @@ app.get("/api/getClientSheets/:clientId", getClientSheets);
 // app.delete("/api/logout", logout);
 // // app.put("/api/updateUser", updateUser);
 app.post("/api/sync-auth0-user", syncAuth0User);
+app.post("/api/updateAdmin", updateAdmin);
+app.get("/api/getUsers", getUsers);
 
 ViteExpress.listen(app, PORT, () => {
   console.log(`live on http://localhost:${PORT}`);

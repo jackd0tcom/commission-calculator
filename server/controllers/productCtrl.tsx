@@ -7,6 +7,7 @@ export default {
       console.log("getProducts");
 
       if (!req.session.user) {
+        res.status(401).send("No user signed in!");
         return;
       }
 
