@@ -30,6 +30,7 @@ const CommissionSheet = () => {
   });
   const [sheetItems, setSheetItems] = useState([{}]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const fetchData = async () => {
     try {
@@ -140,6 +141,18 @@ const CommissionSheet = () => {
       }
   };
 
+  const handleDeleteSheet = async () => {
+    try {
+      await axios.post("/api/deleteSheet", { sheetId }).then((res) => {
+        if (res.status === 200) {
+          navigate(`/commission-sheets`);
+        }
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="commission-sheet-page-wrapper">
       <div className="page-header-wrapper">
@@ -221,6 +234,7 @@ const CommissionSheet = () => {
       <div className="commission-sheet-bottom-wrapper">
         <textarea
           className="commission-sheet-notes"
+          placeholder="Add a note"
           ref={descriptionRef}
           name="notes"
           id="notes"
@@ -238,6 +252,17 @@ const CommissionSheet = () => {
           }}
           value={sheetData.sheetDescription}
         ></textarea>
+        <div className="delete-sheet">
+          {!isDeleting ? (
+            <button onClick={() => setIsDeleting(true)}>Delete Sheet</button>
+          ) : (
+            <>
+              <p>Are you sure you want to delete this sheet?</p>
+              <button onClick={() => handleDeleteSheet()}>Delete</button>
+              <button onClick={() => setIsDeleting(false)}>Cancel</button>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );

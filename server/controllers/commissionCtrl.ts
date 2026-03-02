@@ -6,7 +6,7 @@ import {
   Client,
 } from "../model";
 import { Request, Response } from "express";
-import { Order } from "sequelize";
+import { Order, Op } from "sequelize";
 
 export default {
   getCommissionSheets: async (req: Request, res: Response) => {
@@ -46,7 +46,12 @@ export default {
       }
 
       const sheets = await CommissionSheet.findAll({
-        where: { sheetStatus: "submitted" },
+        where: {
+          [Op.or]: [
+            { sheetStatus: "submitted" },
+            { sheetStatus: "approved" },
+          ],
+        },
         include: [
           {
             model: User,
@@ -175,6 +180,10 @@ export default {
         return;
       }
 
+      if (value === "submitted") {
+        await sheet?.update({ submitDate: new Date() });
+      }
+
       await sheet?.update({ [fieldName]: value });
 
       if (sheet) {
@@ -281,6 +290,37 @@ export default {
       await item.destroy();
 
       res.status(200).send("Item deleted successfully");
+    } catch (error) {
+      console.error("Error getting sheets:", error);
+      res.status(500).send("Internal server error");
+    }
+  },
+  deleteSheet: async (req: Request, res: Response) => {
+    try {
+      console.log("deleteSheet");
+
+      if (!req.session.user) {
+        console.log("user not logged in / no session set up");
+        return;
+      }
+
+      const { sheetId } = req.body;
+
+      const sheet = await CommissionSheet.findOne({ where: { sheetId } });
+
+      if (!sheet) {
+        res.status(400).send("No sheet found");
+        return;
+      }
+
+      if (sheet.userId !== req.session.user.userId) {
+        res.status(401).send("You do not have permission to delete this sheet");
+        return;
+      }
+
+      await sheet.destroy();
+
+      res.status(200).send("Sheet deleted successfully");
     } catch (error) {
       console.error("Error getting sheets:", error);
       res.status(500).send("Internal server error");

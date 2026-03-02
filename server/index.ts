@@ -17,6 +17,7 @@ const {
   deleteSheetItem,
   updateSheet,
   newSheet,
+  deleteSheet,
 } = commissionCtrl;
 const { syncAuth0User } = authCtrl;
 const { getClients, updateClient, deleteClient, newClient, getClientSheets } =
@@ -66,6 +67,7 @@ app.post(`/api/newSheet`, newSheet);
 app.post("/api/updateSheet", updateSheet);
 app.post(`/api/newSheetItem`, newSheetItem);
 app.post(`/api/deleteSheetItem`, deleteSheetItem);
+app.post(`/api/deleteSheet`, deleteSheet);
 
 // Client endpoints
 app.get(`/api/getClients`, getClients);
