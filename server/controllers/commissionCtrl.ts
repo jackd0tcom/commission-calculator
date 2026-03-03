@@ -20,33 +20,60 @@ export default {
 
       const { userId } = req.session.user;
 
+      const sheetInclude: object[] = [
+        {
+          model: User,
+          as: "user",
+          attributes: ["profilePic", "firstName", "lastName"],
+        },
+        {
+          model: CommissionItem,
+          required: false,
+          include: [
+            {
+              model: Product,
+              attributes: ["cost", "defaultPrice", "commissionRate"],
+              required: false,
+            },
+          ],
+        },
+      ];
+
       let sheets;
 
       if (req.session.user.isAdmin) {
         sheets = await CommissionSheet.findAll({
           order: [["updatedAt", "DESC"]],
-          include: [
-            {
-              model: User,
-              as: "user",
-              attributes: ["profilePic", "firstName", "lastName"],
-            },
-          ],
+          include: sheetInclude,
         });
-      } else
+      } else {
         sheets = await CommissionSheet.findAll({
           where: { userId },
           order: [["updatedAt", "DESC"]],
-          include: [
-            {
-              model: User,
-              as: "user",
-              attributes: ["profilePic", "firstName", "lastName"],
-            },
-          ],
+          include: sheetInclude,
         });
+      }
 
       if (sheets) {
+        // const sheetsWithCommission = sheets.map((sheet) => {
+        //   const plain = sheet.get({ plain: true });
+        //   const items = plain.CommissionItems ?? [];
+        //   let totalCommission = 0;
+        //   for (const item of items) {
+        //     const product = item.Product;
+        //     if (!product) continue;
+        //     const qty = Number(item.quantity) || 0;
+        //     const price =
+        //       item.price != null
+        //         ? Number(item.price)
+        //         : (Number(product.defaultPrice) ?? 0);
+        //     const cost = Number(product.cost) ?? 0;
+        //     const rate = Number(product.commissionRate) ?? 0;
+        //     totalCommission += qty * price - cost * rate;
+        //   }
+        //   const { CommissionItems: _omit, ...rest } = plain;
+        //   return { ...rest, totalCommission };
+        // });
         res.send(sheets);
       } else {
         res.status(400).send("No sheets found");

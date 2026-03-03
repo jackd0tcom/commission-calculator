@@ -7,6 +7,7 @@ import { formatRelativeTime } from "../../helpers";
 import Loader from "../UI/Loader";
 import { useSelector } from "react-redux";
 import { FaMagnifyingGlass } from "react-icons/fa6";
+import { formatDollarNoCents } from "../../helpers";
 
 const CommissionSheetList = () => {
   const [commissionList, setCommissionList] = useState([{}]);
@@ -33,6 +34,19 @@ const CommissionSheetList = () => {
     }
   }, [userId]);
 
+  const getCommissionAmount = (sheet: any) => {
+    if (!sheet?.commission_items || sheet?.commission_items?.length === 0) {
+      return "$0";
+    }
+    return formatDollarNoCents(
+      sheet.commission_items?.reduce((acc: number, item: any) => {
+        const price = item.price ?? item.product?.defaultPrice ?? 0;
+        const contribution = item.quantity * price;
+        return acc + contribution * (item.product?.commissionRate ?? 0);
+      }, 0),
+    );
+  };
+
   return (
     <div className="commission-sheet-list-wrapper">
       {isLoading ? (
@@ -42,8 +56,8 @@ const CommissionSheetList = () => {
           <div className="commission-sheet-header">
             <p>User</p>
             <p>Title</p>
-            <p>Description</p>
             <p>Status</p>
+            <p>Commission</p>
             <p>Date Created</p>
           </div>
           {commissionList?.length > 0 ? (
@@ -54,8 +68,8 @@ const CommissionSheetList = () => {
               >
                 <ProfilePic src={sheet.user.profilePic} />
                 <p>{sheet.sheetTitle}</p>
-                <p>{sheet.sheetDescription}</p>
                 <StatusBadge status={sheet.sheetStatus} />
+                <p>{getCommissionAmount(sheet)}</p>
                 <p>{formatRelativeTime(sheet.createdAt)}</p>
               </div>
             ))
