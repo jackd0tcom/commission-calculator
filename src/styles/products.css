@@ -1,8 +1,17 @@
+.products-page-wrapper {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
 .products-list-wrapper {
   display: flex;
   flex-direction: column;
   margin: 15px;
   border: 1px solid var(--border);
+  height: 100%;
+  overflow-y: scroll;
+  scrollbar-width: thin;
 }
 .product-list-head {
   font-size: 0.9rem;
