@@ -1,11 +1,18 @@
-import { current } from "@reduxjs/toolkit";
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 
-const ClientPicker = ({ item, clients, currentClient }) => {
-  const [selectedClientId, setSelectedClientId] = useState(currentClient);
+interface props {
+  item: any;
+  clients: any;
+  currentClient: any;
+}
+
+const ClientPicker = ({ item, clients, currentClient }: props) => {
+  const [selectedClientId, setSelectedClientId] = useState(
+    currentClient?.clientId,
+  );
   const [showDropDown, setShowDropdown] = useState(false);
-  const dropdownRef = useRef(null);
+  const dropdownRef = useRef<HTMLInputElement>(null);
 
   const selectedClient = clients.find(
     (c: any) => c.clientId === selectedClientId,
@@ -32,7 +39,7 @@ const ClientPicker = ({ item, clients, currentClient }) => {
 
   //   Handles blur
   useEffect(() => {
-    const handleClickOutside = (event) => {
+    const handleClickOutside = (event: any) => {
       // Don't close if clicking on the project-picker-button or its children
       const isButtonClick = event.target.closest(".user-picker-button");
       if (
@@ -59,7 +66,7 @@ const ClientPicker = ({ item, clients, currentClient }) => {
         className="client-picker-button"
         onClick={() => setShowDropdown(!showDropDown)}
       >
-        {currentClient?.clientName ? currentClient.clientName : "Add a client"}
+        {selectedClient ? selectedClient.clientName : "Add a client"}
       </button>
       {showDropDown && (
         <div className="dropdown client-picker-dropdown" ref={dropdownRef}>

@@ -22,7 +22,7 @@ const Admin = () => {
     fetchUsers();
   }, []);
 
-  const handleRoleChange = async (user) => {
+  const handleRoleChange = async (user: any) => {
     try {
       const response = await axios.post("/api/updateAdmin", {
         userId: user.userId,
@@ -32,7 +32,7 @@ const Admin = () => {
         console.log(response.data);
         // Update the user in place
         setUserList((prevUsers) =>
-          prevUsers.map((u) =>
+          prevUsers.map((u: any) =>
             u.userId === user.userId ? { ...u, isAdmin: !user.isAdmin } : u,
           ),
         );
@@ -56,7 +56,7 @@ const Admin = () => {
           <p>Admin</p>
         </div>
         {userList?.length > 0 ? (
-          userList.map((user) => (
+          userList.map((user: any) => (
             <div className="user-list-item">
               <ProfilePic src={user.profilePic} />
               <p>

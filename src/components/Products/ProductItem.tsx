@@ -2,7 +2,14 @@ import { useState, useRef } from "react";
 import axios from "axios";
 import { TiDelete } from "react-icons/ti";
 
-const ProductItem = ({ product, index, handleDeleteItem, isAdmin }) => {
+interface props {
+  product: any;
+  index: number;
+  handleDeleteItem: any;
+  isAdmin: boolean;
+}
+
+const ProductItem = ({ product, index, handleDeleteItem, isAdmin }: props) => {
   const [name, setName] = useState(
     product?.productName ? product?.productName : "Add a name",
   );
@@ -16,11 +23,11 @@ const ProductItem = ({ product, index, handleDeleteItem, isAdmin }) => {
   const [spiff, setSpiff] = useState(product?.spiff ? product.spiff : 0);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const nameRef = useRef(null);
-  const costRef = useRef(null);
-  const priceRef = useRef(null);
-  const commissionRef = useRef(null);
-  const spiffRef = useRef(null);
+  const nameRef = useRef<HTMLInputElement>(null);
+  const costRef = useRef<HTMLInputElement>(null);
+  const priceRef = useRef<HTMLInputElement>(null);
+  const commissionRef = useRef<HTMLInputElement>(null);
+  const spiffRef = useRef<HTMLInputElement>(null);
 
   const updateProduct = async (fieldName: string, value: string) => {
     try {

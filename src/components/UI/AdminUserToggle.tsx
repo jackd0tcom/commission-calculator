@@ -1,17 +1,13 @@
 import { useState } from "react";
-import ProfilePic from "../UI/ProfilePic";
 
-const AdminUserToggle = ({ user, handleRoleChange }) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [roleLoading, setRoleLoading] = useState(false);
+interface props {
+  user: any;
+  handleRoleChange: any;
+}
 
+const AdminUserToggle = ({ user, handleRoleChange }: props) => {
   const handleRoleToggle = async () => {
-    setRoleLoading(true);
-    try {
-      await handleRoleChange(user);
-    } finally {
-      setRoleLoading(false);
-    }
+    await handleRoleChange(user);
   };
 
   return (
@@ -25,7 +21,6 @@ const AdminUserToggle = ({ user, handleRoleChange }) => {
             name={`allow-toggle-${user.userId}`}
             id={`allow-toggle-${user.userId}`}
             checked={user.isAdmin}
-            disabled={isLoading}
           />
           <span className="slider round"></span>
         </label>

@@ -4,15 +4,23 @@ import axios from "axios";
 import { formatDateNoTime } from "../../helpers";
 import { TiDelete } from "react-icons/ti";
 
+interface props {
+  client: any;
+  index: number;
+  handleDeleteClient: any;
+  handleSelectClient: any;
+  currentClient: any;
+}
+
 const ClientItem = ({
   client,
   index,
   handleDeleteClient,
   handleSelectClient,
   currentClient,
-}) => {
+}: props) => {
   const [name, setName] = useState(client?.clientName ? client.clientName : "");
-  const nameRef = useRef(null);
+  const nameRef = useRef<HTMLDivElement>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
   const updateClient = async (fieldName: string, value: string) => {

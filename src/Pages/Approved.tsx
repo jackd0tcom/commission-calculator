@@ -44,7 +44,7 @@ const Approved = () => {
           {isLoading ? (
             <Loader />
           ) : approvedList.length > 0 ? (
-            approvedList?.map((sheet) => (
+            approvedList?.map((sheet: any) => (
               <div
                 className="pending-item"
                 onClick={() => navigate(`/sheet/${sheet.sheetId}`)}
