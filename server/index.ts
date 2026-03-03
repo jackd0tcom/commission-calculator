@@ -28,7 +28,10 @@ configDotenv();
 
 // Express setup
 const app = express();
-const PORT: number = 2020;
+const PORT: number = Number(process.env.PORT) || 2020;
+
+// Required when behind a reverse proxy (e.g. Railway) so redirects and protocol are correct
+app.set("trust proxy", 1);
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
@@ -93,5 +96,5 @@ console.log("Database synced");
 
 
 ViteExpress.listen(app, PORT, () => {
-  console.log(`live on http://localhost:${PORT}`);
+  console.log(`live on PORT ${PORT}`);
 });
