@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 interface props {
   user: any;
   handleRoleChange: any;

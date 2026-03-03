@@ -1,30 +1,35 @@
-import { formatDollar, formatDollarNoCents } from "../helpers";
+import { formatDollar } from "../helpers";
 
-const CommissionSheetFooter = ({ items }) => {
-  const filteredItems = items.filter((item) => item.product);
+interface props {
+  items: any;
+}
+
+const CommissionSheetFooter = ({ items }: props) => {
+  const filteredItems = items.filter((item: any) => item.product);
   const quantity: number = filteredItems.reduce(
-    (acc, item) => acc + item.quantity,
+    (acc: number, item: any) => acc + item.quantity,
     0,
   );
   const price: number = filteredItems.reduce(
-    (acc, item) => acc + item.price * item.quantity,
+    (acc: number, item: any) => acc + item.price * item.quantity,
     0,
   );
   const cost: number = filteredItems.reduce(
-    (acc, item) => acc + item.product.cost * item.quantity,
+    (acc: number, item: any) => acc + item.product.cost * item.quantity,
     0,
   );
   const commission: number = filteredItems.reduce(
-    (acc, item) =>
+    (acc: number, item: any) =>
       acc + item.product.commissionRate * item.price * item.quantity,
     0,
   );
   const contribution: number = filteredItems.reduce(
-    (acc, item) => acc + (item.price - item.product.cost) * item.quantity,
+    (acc: number, item: any) =>
+      acc + (item.price - item.product.cost) * item.quantity,
     0,
   );
   const bonus: number = filteredItems.reduce(
-    (acc, item) => acc + item.product.spiff * item.quantity,
+    (acc: number, item: any) => acc + item.product.spiff * item.quantity,
     0,
   );
   const grandTotal: number = commission + bonus;

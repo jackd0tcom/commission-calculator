@@ -18,10 +18,10 @@ export function formatDollarNoCents(number: number) {
     maximumFractionDigits: 0,
   }).format(number);
 }
-export function formatRelativeTime(data: any) {
+export function formatRelativeTime(data: string | number | Date) {
   const now = new Date();
   const activityDate = new Date(data);
-  const diffInMs = now - activityDate;
+  const diffInMs = now.getTime() - activityDate.getTime();
   const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
   const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
 

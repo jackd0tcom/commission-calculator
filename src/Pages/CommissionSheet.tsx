@@ -15,11 +15,10 @@ const CommissionSheet = () => {
   const user = useSelector((state: any) => state.user);
   const [clientList, setClientList] = useState([{}]);
   const [productList, setProductList] = useState([{}]);
-  const [addingNewProduct, setAddingNewProduct] = useState(false);
   const [unauthorized, setUnauthorized] = useState(false);
   const titleRef = useRef<HTMLInputElement>(null);
-  const descriptionRef = useRef<HTMLInputElement>(null);
-  const creatingSheetRef = useRef<HTMLInputElement>(null);
+  const descriptionRef = useRef<HTMLTextAreaElement>(null);
+  const creatingSheetRef = useRef<boolean>(false);
   const [sheetData, setSheetData] = useState({
     sheetId: sheetId ? sheetId : 0,
     userId: user?.userId || 0,
@@ -106,10 +105,8 @@ const CommissionSheet = () => {
       await axios.post("/api/newSheetItem", { sheetId }).then((res) => {
         console.log(res.data);
         setSheetItems((prev) => [...prev, res.data]);
-        setAddingNewProduct(true);
       });
     } catch (error) {
-      setAddingNewProduct(false);
       console.log(error);
     }
   };
@@ -172,7 +169,7 @@ const CommissionSheet = () => {
           onBlur={() => updateSheet("sheetTitle", sheetData.sheetTitle)}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
-              titleRef.current.blur();
+              titleRef.current?.blur();
             }
           }}
         />
@@ -184,7 +181,7 @@ const CommissionSheet = () => {
             status={sheetData.sheetStatus}
             sheetData={sheetData}
             setSheetData={setSheetData}
-            sheetId={sheetId}
+            sheetId={Number(sheetId)}
             isAdmin={user.isAdmin}
           />
         </div>
@@ -220,7 +217,6 @@ const CommissionSheet = () => {
                   productList={productList}
                   onQuantityChange={handleQuantityChange}
                   onPriceChange={handlePriceChange}
-                  sheetItems={sheetItems}
                   setSheetItems={setSheetItems}
                 />
               );
@@ -252,7 +248,7 @@ const CommissionSheet = () => {
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               updateSheet("sheetDescription", sheetData.sheetDescription);
-              descriptionRef.current.blur();
+              descriptionRef.current?.blur();
             }
           }}
           value={sheetData.sheetDescription}

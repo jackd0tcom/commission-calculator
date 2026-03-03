@@ -1,10 +1,9 @@
 import ClientPicker from "./ClientPicker";
 import ProductPicker from "./ProductPicker";
-import { formatDollar, formatDollarNoCents } from "../../helpers";
+import { formatDollarNoCents } from "../../helpers";
 import { useState } from "react";
 import axios from "axios";
 import { TiDelete } from "react-icons/ti";
-import { current } from "@reduxjs/toolkit";
 
 interface SheetItemProps {
   index: number;

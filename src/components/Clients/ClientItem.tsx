@@ -88,7 +88,7 @@ const ClientItem = ({
           }
           if (e.key === "Enter") {
             updateClient("clientName", name);
-            nameRef.current.blur();
+            nameRef.current?.blur();
           }
         }}
       />
