@@ -16,7 +16,6 @@ const Submitted = () => {
       await axios
         .post("/api/getPendingSheets", { status: "submitted" })
         .then((res) => {
-          console.log(res.data);
           setPendingList(res.data);
           setIsLoading(false);
         });

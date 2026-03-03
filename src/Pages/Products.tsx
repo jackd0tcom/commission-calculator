@@ -7,7 +7,7 @@ import { FaTrashCan } from "react-icons/fa6";
 const Products = () => {
   const [productList, setProductList] = useState([{}]);
   const [isLoading, setIsLoading] = useState(true);
-  const userId = useSelector((state: any) => state.user.userId);
+  const user = useSelector((state: any) => state.user);
 
   const fetchProducts = async () => {
     try {
@@ -23,10 +23,10 @@ const Products = () => {
   };
 
   useEffect(() => {
-    if (userId) {
+    if (user.userId) {
       fetchProducts();
     }
-  }, [userId]);
+  }, [user.userId]);
 
   const handleAddProduct = async () => {
     try {
@@ -84,18 +84,21 @@ const Products = () => {
                   product={product}
                   index={index}
                   handleDeleteItem={handleDeleteItem}
+                  isAdmin={user.isAdmin}
                 />
               );
             })}
           </>
         )}
-        <div
-          onClick={() => handleAddProduct()}
-          className="product-list-item add-product-wrapper"
-        >
-          <p>+</p>
-          <p>Add Product</p>
-        </div>
+        {user?.isAdmin && (
+          <div
+            onClick={() => handleAddProduct()}
+            className="product-list-item add-product-wrapper"
+          >
+            <p>+</p>
+            <p>Add Product</p>
+          </div>
+        )}
       </div>
     </div>
   );
