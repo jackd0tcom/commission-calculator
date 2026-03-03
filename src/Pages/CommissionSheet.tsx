@@ -248,7 +248,7 @@ const CommissionSheet = () => {
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               updateSheet("sheetDescription", sheetData.sheetDescription);
-              descriptionRef.current?.blur();
+              descriptionRef.current.blur();
             }
           }}
           value={sheetData.sheetDescription}
