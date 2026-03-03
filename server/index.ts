@@ -94,7 +94,10 @@ await db.sync();
 
 console.log("Database synced");
 
-
 ViteExpress.listen(app, PORT, () => {
-  console.log(`live on PORT ${PORT}`);
+  console.log(
+    `live on ${PORT} ${
+      process.env.NODE_ENV === "production" ? "production" : "development"
+    }`,
+  );
 });
