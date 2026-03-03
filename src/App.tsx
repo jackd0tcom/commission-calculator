@@ -11,10 +11,12 @@ import CommissionSheet from "./Pages/CommissionSheet.tsx";
 import Products from "./Pages/Products.tsx";
 import Clients from "./Pages/Clients.tsx";
 import Loader from "./components/UI/Loader.tsx";
-import Pending from "./Pages/Pending.tsx";
+import Pending from "./Pages/Submitted.tsx";
 import { Navigate } from "react-router";
 import { useSelector } from "react-redux";
 import Admin from "./Pages/Admin.tsx";
+import Submitted from "./Pages/Submitted.tsx";
+import Approved from "./Pages/Approved.tsx";
 
 function App() {
   const { isAuthenticated, isLoading, error } = useAuth0();
@@ -74,12 +76,24 @@ function App() {
               <Route path="/products" element={<Products />}></Route>
               <Route path="/clients" element={<Clients />}></Route>
               <Route
-                path="/pending"
+                path="/submitted-sheets"
                 element={
                   !isAuthenticated ? (
                     <Login />
                   ) : user.isAdmin ? (
-                    <Pending />
+                    <Submitted />
+                  ) : (
+                    <Navigate to="/commission-sheets" />
+                  )
+                }
+              ></Route>
+              <Route
+                path="/approved-sheets"
+                element={
+                  !isAuthenticated ? (
+                    <Login />
+                  ) : user.isAdmin ? (
+                    <Approved />
                   ) : (
                     <Navigate to="/commission-sheets" />
                   )

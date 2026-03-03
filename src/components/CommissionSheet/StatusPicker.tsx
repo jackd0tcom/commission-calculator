@@ -66,6 +66,24 @@ const StatusPicker = ({
             {status === "draft" ? "Submit" : capitalize(status)}
           </button>
         </>
+      ) : status === "approved" || status === "paid" ? (
+        <>
+          {status !== "paid" && (
+            <button
+              onClick={() => handleStatusChange("denied")}
+              className={`status-picker-button ${status}-button`}
+            >
+              Deny
+            </button>
+          )}
+          <button
+            onClick={() => handleStatusChange("paid")}
+            className={`status-picker-button ${status}-button`}
+            disabled={status === "paid"}
+          >
+            {status === "paid" ? "Paid" : "Pay"}
+          </button>
+        </>
       ) : (
         <>
           {status !== "approved" && status !== "denied" && (
