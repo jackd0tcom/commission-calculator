@@ -34,3 +34,17 @@
   position: relative;
   z-index: 10;
 }
+.no-sheets {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-top: 5%;
+}
+.no-sheets h3 {
+  margin: 25px 0 15px;
+}
+.no-sheets-icon {
+  font-size: 3rem;
+  color: var(--blue);
+}
