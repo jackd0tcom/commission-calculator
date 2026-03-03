@@ -87,7 +87,7 @@ const ProductItem = ({ product, index, handleDeleteItem, isAdmin }: props) => {
           }
           if (e.key === "Enter") {
             updateProduct("sheetTitle", name);
-            nameRef.current.blur();
+            nameRef.current?.blur();
           }
         }}
       />
@@ -109,7 +109,7 @@ const ProductItem = ({ product, index, handleDeleteItem, isAdmin }: props) => {
             }
             if (e.key === "Enter") {
               updateProduct("cost", cost);
-              costRef.current.blur();
+              costRef.current?.blur();
             }
           }}
         />
@@ -132,7 +132,7 @@ const ProductItem = ({ product, index, handleDeleteItem, isAdmin }: props) => {
             }
             if (e.key === "Enter") {
               updateProduct("defaultPrice", defaultPrice);
-              priceRef.current.blur();
+              priceRef.current?.blur();
             }
           }}
         />
@@ -151,9 +151,9 @@ const ProductItem = ({ product, index, handleDeleteItem, isAdmin }: props) => {
           if (commissionRate === product.commissionRate) {
             return;
           }
-          if (e.key === "Enter") {
+            if (e.key === "Enter") {
             updateProduct("commissionRate", commissionRate);
-            commissionRef.current.blur();
+            commissionRef.current?.blur();
           }
         }}
       />
@@ -175,7 +175,7 @@ const ProductItem = ({ product, index, handleDeleteItem, isAdmin }: props) => {
             }
             if (e.key === "Enter") {
               updateProduct("spiff", spiff);
-              spiffRef.current.blur();
+              spiffRef.current?.blur();
             }
           }}
         />

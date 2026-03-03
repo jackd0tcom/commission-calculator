@@ -45,7 +45,7 @@ const Submitted = () => {
           {isLoading ? (
             <Loader />
           ) : pendingList.length > 0 ? (
-            pendingList?.map((sheet) => (
+            pendingList?.map((sheet: any) => (
               <div
                 className="pending-item"
                 onClick={() => navigate(`/sheet/${sheet.sheetId}`)}

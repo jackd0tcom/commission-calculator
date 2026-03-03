@@ -4,7 +4,6 @@ import axios from "axios";
 interface props {
   item: any;
   products: any;
-  product: any;
   currentProduct: any;
   handleProductChange: any;
 }
