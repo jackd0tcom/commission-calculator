@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 import axios from "axios";
 import { TiDelete } from "react-icons/ti";
 
-const ProductItem = ({ product, index, handleDeleteItem }) => {
+const ProductItem = ({ product, index, handleDeleteItem, isAdmin }) => {
   const [name, setName] = useState(
     product?.productName ? product?.productName : "Add a name",
   );
@@ -61,7 +61,7 @@ const ProductItem = ({ product, index, handleDeleteItem }) => {
         </button>
       </div>
     </div>
-  ) : (
+  ) : isAdmin ? (
     <div className="product-list-item">
       <p>{index + 1}</p>
       <input
@@ -177,6 +177,16 @@ const ProductItem = ({ product, index, handleDeleteItem }) => {
         className="sheet-item-delete"
         onClick={() => setIsDeleting(true)}
       />
+    </div>
+  ) : (
+    <div className="product-list-item">
+      <p>{index + 1}</p>
+      <p>{name}</p>
+      <p>${cost}</p>
+      <p>${defaultPrice}</p>
+      <p>{commissionRate}</p>
+      <p>${spiff}</p>
+      <p></p>
     </div>
   );
 };

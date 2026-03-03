@@ -13,7 +13,6 @@ const LOGIN = "LOGIN";
 const LOGOUT = "LOGOUT";
 
 const reducer = (state = initialState, action: any) => {
-
   switch (action.type) {
     case LOGIN:
       return {
@@ -23,7 +22,7 @@ const reducer = (state = initialState, action: any) => {
           lastName: action.payload.lastName,
           profilePic: action.payload.profilePic,
           isAllowed: action.payload.isAllowed,
-          isAdmin: action.payload.isAdmin ? "admin" : false,
+          isAdmin: action.payload.isAdmin,
         },
       };
     case LOGOUT:
