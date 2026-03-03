@@ -6,6 +6,7 @@ import productCtrl from "./controllers/productCtrl";
 import commissionCtrl from "./controllers/commissionCtrl";
 import userCtrl from "./controllers/userCtrl";
 import clientCtrl from "./controllers/clientCtrl";
+import { db } from "./model.js";
 
 const { getProducts, updateProduct, deleteProduct, newProduct } = productCtrl;
 const {
@@ -85,6 +86,11 @@ app.get("/api/getClientSheets/:clientId", getClientSheets);
 app.post("/api/sync-auth0-user", syncAuth0User);
 app.post("/api/updateAdmin", updateAdmin);
 app.get("/api/getUsers", getUsers);
+
+await db.sync();
+
+console.log("Database synced");
+
 
 ViteExpress.listen(app, PORT, () => {
   console.log(`live on http://localhost:${PORT}`);
