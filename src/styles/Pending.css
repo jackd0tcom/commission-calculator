@@ -1,6 +1,14 @@
+.pending-page-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
 .pending-sheets-list {
   margin: 15px;
   border: 1px solid var(--border);
+  height: 100%;
+  overflow-y: scroll;
+  scrollbar-width: thin;
 }
 .pending-item {
   display: grid;
