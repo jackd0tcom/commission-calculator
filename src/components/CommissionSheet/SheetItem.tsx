@@ -11,7 +11,6 @@ interface SheetItemProps {
   clientList: any[];
   item: any;
   productList: any[];
-  sheetItems: any;
   setSheetItems: any;
   onQuantityChange?: (itemId: number, quantity: number) => void;
   onPriceChange?: (itemId: number, price: number) => void;
@@ -22,7 +21,6 @@ const SheetItem = ({
   clientList,
   item,
   productList,
-  sheetItems,
   setSheetItems,
   onQuantityChange,
   onPriceChange,
@@ -83,8 +81,8 @@ const SheetItem = ({
         .post("/api/deleteSheetItem", { itemId: item.itemId })
         .then((res) => {
           if (res.status === 200) {
-            setSheetItems((prev) =>
-              prev.filter((sheetItem) => sheetItem.itemId !== item.itemId),
+            setSheetItems((prev: any) =>
+              prev.filter((sheetItem: any) => sheetItem.itemId !== item.itemId),
             );
           }
         });

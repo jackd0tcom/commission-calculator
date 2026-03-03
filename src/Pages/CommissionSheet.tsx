@@ -17,9 +17,9 @@ const CommissionSheet = () => {
   const [productList, setProductList] = useState([{}]);
   const [addingNewProduct, setAddingNewProduct] = useState(false);
   const [unauthorized, setUnauthorized] = useState(false);
-  const titleRef = useRef(null);
-  const descriptionRef = useRef(null);
-  const creatingSheetRef = useRef(false);
+  const titleRef = useRef<HTMLInputElement>(null);
+  const descriptionRef = useRef<HTMLInputElement>(null);
+  const creatingSheetRef = useRef<HTMLInputElement>(null);
   const [sheetData, setSheetData] = useState({
     sheetId: sheetId ? sheetId : 0,
     userId: user?.userId || 0,
@@ -69,7 +69,7 @@ const CommissionSheet = () => {
       );
 
       await Promise.all(promises);
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
       if (error.status === 401) {
         setUnauthorized(true);
@@ -104,6 +104,7 @@ const CommissionSheet = () => {
   const handleAddItem = async () => {
     try {
       await axios.post("/api/newSheetItem", { sheetId }).then((res) => {
+        console.log(res.data);
         setSheetItems((prev) => [...prev, res.data]);
         setAddingNewProduct(true);
       });

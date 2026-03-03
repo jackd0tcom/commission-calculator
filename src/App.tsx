@@ -11,7 +11,6 @@ import CommissionSheet from "./Pages/CommissionSheet.tsx";
 import Products from "./Pages/Products.tsx";
 import Clients from "./Pages/Clients.tsx";
 import Loader from "./components/UI/Loader.tsx";
-import Pending from "./Pages/Submitted.tsx";
 import { Navigate } from "react-router";
 import { useSelector } from "react-redux";
 import Admin from "./Pages/Admin.tsx";
@@ -21,7 +20,7 @@ import Approved from "./Pages/Approved.tsx";
 function App() {
   const { isAuthenticated, isLoading, error } = useAuth0();
   const [userSynced, setUserSynced] = useState(false);
-  const user = useSelector((state) => state.user);
+  const user = useSelector((state: any) => state.user);
 
   if (isLoading) {
   }

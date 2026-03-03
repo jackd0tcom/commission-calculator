@@ -62,7 +62,7 @@ export function formatRelativeTime(data: any) {
   // More than 1 day ago - use the regular formatDate
   return formatDate(data);
 }
-export function formatDate(data) {
+export function formatDate(data: any) {
   const date = new Date(data);
   return new Intl.DateTimeFormat("en-US", {
     day: "numeric",
@@ -72,14 +72,14 @@ export function formatDate(data) {
     hour12: true,
   }).format(date);
 }
-export function formatDateNoTime(data) {
+export function formatDateNoTime(data: any) {
   const date = new Date(data);
   return new Intl.DateTimeFormat("en-US", {
     day: "numeric",
     month: "short",
   }).format(date);
 }
-export function formatDateWithDay(data) {
+export function formatDateWithDay(data: any) {
   const date = new Date(data);
   return new Intl.DateTimeFormat("en-US", {
     weekday: "long",

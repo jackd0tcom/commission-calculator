@@ -1,15 +1,23 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 
+interface props {
+  item: any;
+  products: any;
+  product: any;
+  currentProduct: any;
+  handleProductChange: any;
+}
+
 const ProductPicker = ({
   item,
   products,
   currentProduct,
   handleProductChange,
-}) => {
+}: props) => {
   const [selectedProductId, setSelectedProductId] = useState(currentProduct);
   const [showDropDown, setShowDropdown] = useState(false);
-  const dropdownRef = useRef(null);
+  const dropdownRef = useRef<HTMLInputElement>(null);
 
   const selectedProduct = products.find(
     (c: any) => c.productId === selectedProductId,
@@ -37,7 +45,7 @@ const ProductPicker = ({
 
   //   Handles blur
   useEffect(() => {
-    const handleClickOutside = (event) => {
+    const handleClickOutside = (event: any) => {
       // Don't close if clicking on the project-picker-button or its children
       const isButtonClick = event.target.closest(".user-picker-button");
       if (

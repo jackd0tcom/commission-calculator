@@ -9,7 +9,7 @@ import { FaUserTie } from "react-icons/fa";
 import { FaMoneyCheckDollar } from "react-icons/fa6";
 
 const Nav = () => {
-  const user = useSelector((state) => state.user);
+  const user = useSelector((state: any) => state.user);
 
   return (
     <div className="nav-wrapper">
@@ -94,7 +94,7 @@ const Nav = () => {
             isActive ? "active-nav nav-button" : "inactive-nav nav-button"
           }
         >
-          <ProfilePic />
+          <ProfilePic src={user.profilePic} />
           Profile
         </NavLink>
       </div>

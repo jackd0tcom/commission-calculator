@@ -2,7 +2,11 @@ import { useNavigate } from "react-router";
 import StatusBadge from "../UI/StatusBadge";
 import { formatDateNoTime } from "../../helpers";
 
-const ClientsSheetItem = ({ sheet }) => {
+interface props {
+  sheet: any;
+}
+
+const ClientsSheetItem = ({ sheet }: props) => {
   const navigate = useNavigate();
 
   return (

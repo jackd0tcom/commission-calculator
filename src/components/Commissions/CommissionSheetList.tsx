@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { capitalize } from "../../helpers";
 import StatusBadge from "../UI/StatusBadge";
 import { useNavigate } from "react-router";
 import ProfilePic from "../UI/ProfilePic";
@@ -10,7 +9,6 @@ import { useSelector } from "react-redux";
 
 const CommissionSheetList = () => {
   const [commissionList, setCommissionList] = useState([{}]);
-  const [showDropdown, setShowDropdown] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const nav = useNavigate();
   const userId = useSelector((state: any) => state.user.userId);
@@ -47,7 +45,7 @@ const CommissionSheetList = () => {
             <p>Status</p>
             <p>Date Created</p>
           </div>
-          {commissionList?.map((sheet) => (
+          {commissionList?.map((sheet: any) => (
             <div
               className="commission-sheet-item"
               onClick={() => nav(`/sheet/${sheet.sheetId}`)}
