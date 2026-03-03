@@ -1,7 +1,7 @@
-@import "./styles/Nav.css";
-@import "./styles/Commission.css";
-@import "./styles/CommissionSheet.css";
-@import "./styles/Products.css";
+@import "./styles/nav.css";
+@import "./styles/commission.css";
+@import "./styles/commissionSheet.css";
+@import "./styles/products.css";
 @import "./styles/Clients.css";
 @import "./styles/Loader.css";
 @import "./styles/Pending.css";
