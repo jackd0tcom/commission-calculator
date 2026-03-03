@@ -6,6 +6,7 @@ import ProfilePic from "../UI/ProfilePic";
 import { formatRelativeTime } from "../../helpers";
 import Loader from "../UI/Loader";
 import { useSelector } from "react-redux";
+import { FaMagnifyingGlass } from "react-icons/fa6";
 
 const CommissionSheetList = () => {
   const [commissionList, setCommissionList] = useState([{}]);
@@ -45,35 +46,26 @@ const CommissionSheetList = () => {
             <p>Status</p>
             <p>Date Created</p>
           </div>
-          {commissionList?.map((sheet: any) => (
-            <div
-              className="commission-sheet-item"
-              onClick={() => nav(`/sheet/${sheet.sheetId}`)}
-            >
-              <ProfilePic src={sheet.user.profilePic} />
-              <p>{sheet.sheetTitle}</p>
-              <p>{sheet.sheetDescription}</p>
-              <StatusBadge status={sheet.sheetStatus} />
-              <p>{formatRelativeTime(sheet.createdAt)}</p>
-              {/* <div className="commission-list-dots-wrapper">
-                <button
-                  onClick={() =>
-                    showDropdown
-                      ? setShowDropdown(false)
-                      : setShowDropdown(true)
-                  }
-                  className="commission-list-dots"
-                >
-                  ...
-                </button>
-                {showDropdown && (
-                  <div className="dropdown commission-dots-wrapper">
-                    <div className="dropdown-item">Delete Sheet</div>
-                  </div>
-                )}
-              </div> */}
+          {commissionList?.length > 0 ? (
+            commissionList?.map((sheet: any) => (
+              <div
+                className="commission-sheet-item"
+                onClick={() => nav(`/sheet/${sheet.sheetId}`)}
+              >
+                <ProfilePic src={sheet.user.profilePic} />
+                <p>{sheet.sheetTitle}</p>
+                <p>{sheet.sheetDescription}</p>
+                <StatusBadge status={sheet.sheetStatus} />
+                <p>{formatRelativeTime(sheet.createdAt)}</p>
+              </div>
+            ))
+          ) : (
+            <div className="no-sheets">
+              <FaMagnifyingGlass className="no-sheets-icon" />
+              <h3>No sheets found</h3>
+              <p>Hit the button in the top right to create a new sheet</p>
             </div>
-          ))}
+          )}
         </div>
       )}
     </div>
