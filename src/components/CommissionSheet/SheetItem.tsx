@@ -44,6 +44,7 @@ const SheetItem = ({
 
   const handleProductChange = async (newProduct: any) => {
     setCurrentProduct(newProduct);
+    setPrice(newProduct.defaultPrice);
   };
 
   const persistQuantityChange = async (newQuantity: number) => {

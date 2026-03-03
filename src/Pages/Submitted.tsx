@@ -6,7 +6,7 @@ import ProfilePic from "../components/UI/ProfilePic";
 import { formatDate } from "../helpers";
 import { useNavigate } from "react-router";
 
-const Pending = () => {
+const Submitted = () => {
   const [pendingList, setPendingList] = useState([{}]);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
@@ -32,7 +32,7 @@ const Pending = () => {
   return (
     <div className="pending-page-wrapper">
       <div className="page-header-wrapper">
-        <h2>Pending Sheets</h2>
+        <h2>Submitted Sheets</h2>
       </div>
       <div className="pending-sheets-list">
         <div className="pending-sheets-head pending-item">
@@ -69,4 +69,4 @@ const Pending = () => {
     </div>
   );
 };
-export default Pending;
+export default Submitted;

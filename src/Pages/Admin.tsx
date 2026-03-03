@@ -58,7 +58,7 @@ const Admin = () => {
         {userList?.length > 0 ? (
           userList.map((user) => (
             <div className="user-list-item">
-              <ProfilePic />
+              <ProfilePic src={user.profilePic} />
               <p>
                 {user.firstName} {user.lastName}
               </p>

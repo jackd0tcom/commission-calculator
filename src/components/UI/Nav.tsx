@@ -6,6 +6,7 @@ import ProfilePic from "./ProfilePic";
 import { useSelector } from "react-redux";
 import { FaListCheck } from "react-icons/fa6";
 import { FaUserTie } from "react-icons/fa";
+import { FaMoneyCheckDollar } from "react-icons/fa6";
 
 const Nav = () => {
   const user = useSelector((state) => state.user);
@@ -47,15 +48,30 @@ const Nav = () => {
               Clients
             </NavLink>
             {user.isAdmin && (
-              <NavLink
-                to="/pending"
-                className={({ isActive }) =>
-                  isActive ? "active-nav nav-button" : "inactive-nav nav-button"
-                }
-              >
-                <FaListCheck />
-                Pending Sheets
-              </NavLink>
+              <>
+                <NavLink
+                  to="/submitted-sheets"
+                  className={({ isActive }) =>
+                    isActive
+                      ? "active-nav nav-button"
+                      : "inactive-nav nav-button"
+                  }
+                >
+                  <FaListCheck />
+                  Submitted Sheets
+                </NavLink>
+                <NavLink
+                  to="/approved-sheets"
+                  className={({ isActive }) =>
+                    isActive
+                      ? "active-nav nav-button"
+                      : "inactive-nav nav-button"
+                  }
+                >
+                  <FaMoneyCheckDollar />
+                  Approved Sheets
+                </NavLink>
+              </>
             )}
           </div>
         </div>
