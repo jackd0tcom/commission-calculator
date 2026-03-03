@@ -14,11 +14,7 @@ const Nav = () => {
   return (
     <div className="nav-wrapper">
       <div className="nav-container">
-        <img
-          src="/public/p1p-logo-white.png"
-          alt="p1p-logo"
-          className="nav-logo"
-        />
+        <img src="/p1p-logo-white.png" alt="p1p-logo" className="nav-logo" />
         <div className="nav-links-wrapper">
           <div className="nav-link-container">
             <NavLink
