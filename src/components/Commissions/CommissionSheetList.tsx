@@ -16,7 +16,7 @@ const CommissionSheetList = () => {
   const getCommissionSheets = async () => {
     try {
       await axios.get("/api/getCommissionSheets").then((res) => {
-        if (res.statusText === "OK") {
+        if (res.status === 200) {
           setCommissionList(res.data);
           setIsLoading(false);
         }
