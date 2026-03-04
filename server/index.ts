@@ -21,8 +21,14 @@ const {
   deleteSheet,
 } = commissionCtrl;
 const { syncAuth0User, getUsers, updateAdmin } = userCtrl;
-const { getClients, updateClient, deleteClient, newClient, getClientSheets } =
-  clientCtrl;
+const {
+  getClients,
+  updateClient,
+  deleteClient,
+  newClient,
+  addNewClient,
+  getClientSheets,
+} = clientCtrl;
 
 configDotenv();
 
@@ -78,6 +84,7 @@ app.get(`/api/getClients`, getClients);
 app.post("/api/updateClient", updateClient);
 app.post("/api/deleteClient", deleteClient);
 app.post("/api/newClient", newClient);
+app.post("/api/addNewClient", addNewClient);
 app.get("/api/getClientSheets/:clientId", getClientSheets);
 
 // auth endpoints
