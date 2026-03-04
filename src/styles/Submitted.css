@@ -9,6 +9,7 @@
   height: 100%;
   overflow-y: scroll;
   scrollbar-width: thin;
+  font-size: 0.95rem;
 }
 .pending-item {
   display: grid;
@@ -25,8 +26,4 @@
 .pending-sheets-head:hover {
   background-color: white;
   cursor: default;
-}
-.status-picker-wrapper {
-  display: flex;
-  align-items: center;
 }

@@ -9,11 +9,15 @@
 .clients-list-wrapper {
   margin: 15px;
   border: 1px solid var(--border);
+  background-color: white;
+  height: calc(100% - 30px);
 }
 .clients-page-container {
   display: grid;
   grid-template-columns: 1fr 1fr;
   height: 100%;
+  background-color: var(--hover);
+  overflow: hidden;
 }
 
 .clients-list-item {
@@ -58,9 +62,16 @@
 .clients-sheet-wrapper {
   margin: 15px 15px 15px 0;
   border: 1px solid var(--border);
+  background-color: white;
+  overflow-y: scroll;
+  scrollbar-width: thin;
+  font-size: 0.95rem;
 }
 .clients-sheet-head {
   cursor: default !important;
+  position: sticky;
+  background-color: white;
+  top: 0;
 }
 .clients-sheet-item {
   display: grid;

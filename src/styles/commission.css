@@ -4,19 +4,36 @@
   height: 100%;
 }
 .commission-sheet-list-wrapper {
-  overflow-y: scroll;
+  overflow-y: hidden;
+  background-color: var(--hover);
 }
 .commission-sheet-list {
-  padding: 15px;
+  margin: 15px;
+  overflow-y: scroll;
+  height: calc(100% - 30px);
   display: flex;
   flex-direction: column;
+  border: 1px solid var(--border);
+  scrollbar-width: thin;
+  background-color: white;
+  box-shadow: var(--shadow);
+  overscroll-behavior: none;
+}
+.commission-sheet-list p {
+  font-size: 0.95rem;
+}
+
+.commission-sheet-header {
+  position: sticky;
+  top: 0;
+  background-color: white;
 }
 
 .commission-sheet-header,
 .commission-sheet-item {
   border-bottom: 1px solid var(--border);
   display: grid;
-  grid-template-columns: 0.25fr 1fr 1fr 1fr 0.5fr;
+  grid-template-columns: 0.25fr 1.5fr 1fr 1fr 0.5fr;
   padding: 5px 10px;
 }
 .commission-sheet-item:hover {
@@ -47,4 +64,14 @@
 .no-sheets-icon {
   font-size: 3rem;
   color: var(--blue);
+}
+.new-sheet-button {
+  background-color: var(--green);
+  color: white;
+  font-weight: 500;
+  border: 1px solid transparent;
+}
+.new-sheet-button:hover {
+  background-color: var(--dark-green);
+  color: white;
 }

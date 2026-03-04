@@ -159,20 +159,24 @@ const CommissionSheet = () => {
   return (
     <div className="commission-sheet-page-wrapper">
       <div className="page-header-wrapper">
-        <input
-          placeholder="Sheet title"
-          ref={titleRef}
-          className="title-input"
-          type="text"
-          value={sheetData.sheetTitle}
-          onChange={(e) => handleTitleChange(e)}
-          onBlur={() => updateSheet("sheetTitle", sheetData.sheetTitle)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              titleRef.current?.blur();
-            }
-          }}
-        />
+        {sheetData.sheetStatus === "draft" ? (
+          <input
+            placeholder="Sheet title"
+            ref={titleRef}
+            className="title-input"
+            type="text"
+            value={sheetData.sheetTitle}
+            onChange={(e) => handleTitleChange(e)}
+            onBlur={() => updateSheet("sheetTitle", sheetData.sheetTitle)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                titleRef.current?.blur();
+              }
+            }}
+          />
+        ) : (
+          <h2>{sheetData.sheetTitle}</h2>
+        )}
         <div className="sheet-header-container">
           <p className="sheet-date">
             {formatDateWithDay(sheetData?.createdAt)}
@@ -218,16 +222,19 @@ const CommissionSheet = () => {
                   onQuantityChange={handleQuantityChange}
                   onPriceChange={handlePriceChange}
                   setSheetItems={setSheetItems}
+                  isDraft={sheetData.sheetStatus === "draft"}
                 />
               );
             })}
-            <div
-              className="sheet-item new-item-row"
-              onClick={() => handleAddItem()}
-            >
-              <p>+</p>
-              <p>Add Product</p>
-            </div>
+            {sheetData?.sheetStatus === "draft" && (
+              <div
+                className="sheet-item new-item-row"
+                onClick={() => handleAddItem()}
+              >
+                <p>+</p>
+                <p>Add Product</p>
+              </div>
+            )}
             {!isLoading && <CommissionSheetFooter items={sheetItems} />}
           </>
         )}
@@ -239,6 +246,7 @@ const CommissionSheet = () => {
           ref={descriptionRef}
           name="notes"
           id="notes"
+          disabled={sheetData?.sheetStatus !== "draft"}
           onChange={(e) =>
             setSheetData({ ...sheetData, sheetDescription: e.target.value })
           }
@@ -248,7 +256,7 @@ const CommissionSheet = () => {
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               updateSheet("sheetDescription", sheetData.sheetDescription);
-              descriptionRef.current.blur();
+              descriptionRef.current?.blur();
             }
           }}
           value={sheetData.sheetDescription}

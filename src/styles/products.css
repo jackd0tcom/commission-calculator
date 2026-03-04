@@ -3,6 +3,7 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  background-color: var(--hover);
 }
 .products-list-wrapper {
   display: flex;
@@ -12,10 +13,15 @@
   height: 100%;
   overflow-y: scroll;
   scrollbar-width: thin;
+  background-color: white;
+  overscroll-behavior: none;
 }
 .product-list-head {
-  font-size: 0.9rem;
-  font-weight: 500;
+  font-size: 0.95rem;
+  position: sticky;
+  top: 0;
+  background-color: white;
+  z-index: 10;
 }
 .product-list-item {
   display: grid;
@@ -26,7 +32,7 @@
   padding: 8px 15px;
 }
 .product-list-item p {
-  font-size: 0.9rem;
+  font-size: 0.95rem;
 }
 .product-list-number-wrapper {
   display: flex;

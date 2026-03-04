@@ -73,26 +73,28 @@ const Nav = () => {
         </div>
       </div>
       <div className="nav-links-wrapper no-bottom-border">
-        {user.isAdmin && (
+        <div className="nav-link-container">
+          {user.isAdmin && (
+            <NavLink
+              to="/admin"
+              className={({ isActive }) =>
+                isActive ? "active-nav nav-button" : "inactive-nav nav-button"
+              }
+            >
+              <FaUserTie />
+              Admin
+            </NavLink>
+          )}
           <NavLink
-            to="/admin"
+            to="/profile"
             className={({ isActive }) =>
               isActive ? "active-nav nav-button" : "inactive-nav nav-button"
             }
           >
-            <FaUserTie />
-            Admin
+            <ProfilePic src={user.profilePic} />
+            Profile
           </NavLink>
-        )}
-        <NavLink
-          to="/profile"
-          className={({ isActive }) =>
-            isActive ? "active-nav nav-button" : "inactive-nav nav-button"
-          }
-        >
-          <ProfilePic src={user.profilePic} />
-          Profile
-        </NavLink>
+        </div>
       </div>
     </div>
   );
