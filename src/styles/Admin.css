@@ -1,9 +1,25 @@
+.admin-page-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: var(--hover);
+}
+
 .user-list-wrapper {
   display: flex;
   flex-direction: column;
   margin: 15px;
   border: 1px solid var(--border);
-  border-bottom: 0px;
+  font-size: 0.95rem;
+  height: 100%;
+  background-color: white;
+  overflow-y: scroll;
+  scrollbar-width: thin;
+}
+.user-list-head {
+  position: sticky;
+  top: 0;
+  background-color: white;
 }
 .user-list-item {
   display: grid;

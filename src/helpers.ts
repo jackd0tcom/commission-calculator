@@ -93,8 +93,9 @@ export const getCommissionAmount = (sheet: any) => {
   }
   return formatDollarNoCents(
     sheet.commission_items?.reduce((acc: number, item: any) => {
+      if (!item.product) return acc;
       const price = item.price ?? item.product?.defaultPrice ?? 0;
-      const contribution = item.quantity * price;
+      const contribution = (price - item.product?.cost) * item.quantity;
       return acc + contribution * (item.product?.commissionRate ?? 0);
     }, 0),
   );

@@ -17,7 +17,6 @@ const StatusPicker = ({
   isAdmin,
 }: props) => {
   const handleStatusChange = async (status: string) => {
-    console.log(status);
     try {
       await axios
         .post("/api/updateSheet", {
@@ -39,7 +38,7 @@ const StatusPicker = ({
     <div className="status-picker-wrapper">
       {!isAdmin ? (
         <>
-          {status === "submitted" && !isAdmin && (
+          {status === "submitted" && (
             <button
               className="draft-switch"
               onClick={() => handleStatusChange("draft")}
@@ -59,8 +58,8 @@ const StatusPicker = ({
                     : "approved",
               )
             }
-            className={`status-picker-button ${status}-button`}
-            disabled={status === "approved"}
+            className={`status-picker-button user-${status}-button`}
+            disabled={status !== "draft"}
           >
             {status === "draft" ? "Submit" : capitalize(status)}
           </button>
@@ -70,14 +69,14 @@ const StatusPicker = ({
           {status !== "paid" && (
             <button
               onClick={() => handleStatusChange("denied")}
-              className={`status-picker-button ${status}-button`}
+              className={`status-picker-button deny ${status}-button`}
             >
               Deny
             </button>
           )}
           <button
             onClick={() => handleStatusChange("paid")}
-            className={`status-picker-button ${status}-button`}
+            className={`status-picker-button pay-button ${status}-button`}
             disabled={status === "paid"}
           >
             {status === "paid" ? "Paid" : "Pay"}
@@ -88,7 +87,7 @@ const StatusPicker = ({
           {status !== "approved" && status !== "denied" && (
             <button
               onClick={() => handleStatusChange("denied")}
-              className={`status-picker-button ${status}-button`}
+              className={`status-picker-button deny ${status}-button`}
               disabled={status === "approved"}
             >
               {status === "draft"
@@ -100,7 +99,7 @@ const StatusPicker = ({
           )}
           <button
             onClick={() => handleStatusChange("approved")}
-            className={`status-picker-button ${status}-button`}
+            className={`status-picker-button approve-button ${status}-button`}
             disabled={status === "approved"}
           >
             {status === "draft"

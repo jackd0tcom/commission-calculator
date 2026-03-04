@@ -1,4 +1,4 @@
-import { formatDollar } from "../helpers";
+import { formatDollarNoCents } from "../helpers";
 
 interface props {
   items: any;
@@ -18,14 +18,19 @@ const CommissionSheetFooter = ({ items }: props) => {
     (acc: number, item: any) => acc + item.product.cost * item.quantity,
     0,
   );
-  const commission: number = filteredItems.reduce(
-    (acc: number, item: any) =>
-      acc + item.product.commissionRate * item.price * item.quantity,
+  const contribution: number = filteredItems.reduce(
+    (acc: number, item: any) => {
+      const price = item?.price ? item.price : item.product?.defaultPrice ?? 0;
+      return acc + (price - item.product.cost) * item.quantity;
+    },
     0,
   );
-  const contribution: number = filteredItems.reduce(
-    (acc: number, item: any) =>
-      acc + (item.price - item.product.cost) * item.quantity,
+  const commission: number = filteredItems.reduce(
+    (acc: number, item: any) => {
+      const price = item?.price ? item.price : item.product?.defaultPrice;
+      const itemContribution = (price - item.product.cost) * item.quantity;
+      return acc + item.product.commissionRate * itemContribution;
+    },
     0,
   );
   const bonus: number = filteredItems.reduce(
@@ -35,17 +40,33 @@ const CommissionSheetFooter = ({ items }: props) => {
   const grandTotal: number = commission + bonus;
 
   return (
-    <div className="sheet-item commission-sheet-footer">
-      <p></p>
-      <p></p>
-      <p></p>
-      <p>{quantity}</p>
-      <p>{formatDollar(price)}</p>
-      <p>{formatDollar(cost)}</p>
-      <p>{formatDollar(contribution)}</p>
-      <p>{formatDollar(commission)}</p>
-      <p>{formatDollar(bonus)}</p>
-      <p>{formatDollar(grandTotal)}</p>
+    <div className="commission-sheet-footer">
+      <div className="sheet-item sheet-items-list-head">
+        <p></p>
+        <p></p>
+        <p></p>
+        <p>Quantity</p>
+        <p>Price</p>
+        <p>Cost</p>
+        <p>Contribution</p>
+        <p>Commission</p>
+        <p>Bonus</p>
+        <p>Total</p>
+        <p className="delete-placeholder"></p>
+      </div>
+      <div className="sheet-item">
+        <p></p>
+        <p></p>
+        <p></p>
+        <p>{quantity}</p>
+        <p>{formatDollarNoCents(price)}</p>
+        <p>{formatDollarNoCents(cost)}</p>
+        <p>{formatDollarNoCents(contribution)}</p>
+        <p>{formatDollarNoCents(commission)}</p>
+        <p>{formatDollarNoCents(bonus)}</p>
+        <p>{formatDollarNoCents(grandTotal)}</p>
+        <p className="delete-placeholder"></p>
+      </div>
     </div>
   );
 };

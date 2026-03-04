@@ -1,3 +1,10 @@
+.commission-sheet-page-wrapper {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--hover);
+}
+
 h2 {
   margin: 0;
 }
@@ -5,10 +12,10 @@ h2 {
   width: 100%;
   max-width: 300px;
   padding: 0px 12px;
-  font-size: 0.9rem;
+  font-size: 1rem;
   border: 1px solid transparent;
   transition: 100ms;
-  outline: none;
+  border: 1px solid var(--border);
 }
 .title-input:hover {
   background-color: var(--hover);
@@ -19,13 +26,16 @@ h2 {
 }
 .sheet-date {
   font-size: 0.9rem;
-  width: 100%;
 }
 .sheet-items-list {
   display: flex;
   flex-direction: column;
   margin: 15px;
   border: 1px solid var(--border);
+  background-color: white;
+  height: 100%;
+  position: relative;
+  background-color: rgb(250, 250, 250);
 }
 .sheet-item {
   display: grid;
@@ -34,6 +44,7 @@ h2 {
   padding: 5px 15px;
   align-items: center;
   border-bottom: 1px solid var(--border);
+  background-color: white;
 }
 .sheet-item-number {
   font-size: 0.75rem;
@@ -61,6 +72,17 @@ h2 {
   border-bottom: 1px solid var(--border);
   font-size: 0.9rem;
   font-weight: 500;
+  position: sticky;
+  top: 0;
+  background-color: white;
+}
+.commission-sheet-footer {
+  position: absolute;
+  bottom: 0;
+  border-top: 1px solid var(--border);
+  width: calc(100%);
+  display: flex;
+  flex-direction: column;
 }
 .client-picker-button {
   font-size: 0.9rem;
@@ -90,7 +112,43 @@ h2 {
 }
 .status-picker-wrapper {
   position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
+.status-picker-button {
+  background-color: var(--yellow);
+  border: 1px solid transparent;
+}
+.status-picker-button:hover {
+  background-color: var(--dark-yellow);
+}
+.user-approved-button {
+  background-color: var(--blue);
+  color: white;
+}
+.user-paid-button {
+  background-color: var(--green);
+  color: white;
+}
+.pay-button {
+  background-color: var(--green);
+  color: white;
+}
+.pay-button:hover {
+  background-color: var(--dark-green);
+  color: white;
+}
+
+.approve-button {
+  background-color: var(--blue);
+  color: white;
+}
+.approve-button:hover {
+  background-color: var(--dark-blue);
+  color: white;
+}
+
 .sheet-item-delete {
   padding: 5px;
   display: flex;
@@ -107,16 +165,35 @@ h2 {
   padding: 0px 10px;
 }
 .commission-sheet-bottom-wrapper {
-  margin: 15px;
+  margin: 0px 15px 15px;
+  background-color: white;
+  padding: 15px;
+  border: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
 }
 .commission-sheet-notes {
   border: 1px solid var(--border);
-  width: 100%;
+  width: 80%;
   resize: none;
+  padding: 10px;
 }
 .unauthorized {
   padding: 15px;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+.paid-button {
+  background-color: var(--green);
+  color: white;
+}
+.paid-button:hover {
+  background-color: var(--green);
+  color: white;
+  cursor: default;
+}
+.delete-placeholder {
+  width: 30px;
 }

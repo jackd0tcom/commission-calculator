@@ -13,6 +13,7 @@ interface SheetItemProps {
   setSheetItems: any;
   onQuantityChange?: (itemId: number, quantity: number) => void;
   onPriceChange?: (itemId: number, price: number) => void;
+  isDraft: boolean;
 }
 
 const SheetItem = ({
@@ -23,25 +24,37 @@ const SheetItem = ({
   setSheetItems,
   onQuantityChange,
   onPriceChange,
+  isDraft,
 }: SheetItemProps) => {
   const [currentProduct, setCurrentProduct] = useState(
     item.product ? item.product : null,
   );
   const [quantity, setQuantity] = useState(item.quantity ? item.quantity : 0);
   const [price, setPrice] = useState(
-    currentProduct ? currentProduct?.defaultPrice : 0,
+    item.price
+      ? item.price
+      : currentProduct?.defaultPrice
+        ? currentProduct.defaultPrice
+        : 0,
   );
   const commissionRate = currentProduct ? currentProduct.commissionRate : 0;
   const spiff = currentProduct ? currentProduct.spiff : 0;
-  const cost = currentProduct ? currentProduct.cost : 0;
+  const cost = currentProduct ? currentProduct.cost * item.quantity : 0;
   const isSpiff = price >= item?.product?.defaultPrice;
-  const totalCommission = commissionRate * price * quantity;
   const bonus = isSpiff ? spiff * quantity : 0;
   const contribution = (price - cost) * quantity;
+  const totalCommission = commissionRate * contribution;
 
   const handleProductChange = async (newProduct: any) => {
     setCurrentProduct(newProduct);
     setPrice(newProduct.defaultPrice);
+    setSheetItems((prev: any) =>
+      prev.map((it: any) =>
+        it.itemId === item.itemId
+          ? { ...it, product: newProduct, price: newProduct.defaultPrice }
+          : it,
+      ),
+    );
   };
 
   const persistQuantityChange = async (newQuantity: number) => {
@@ -67,6 +80,7 @@ const SheetItem = ({
         value: newPrice,
       });
       if (res.status === 200) {
+        console.log(res.data);
         setPrice(newPrice);
       }
     } catch (error) {
@@ -90,7 +104,7 @@ const SheetItem = ({
     }
   };
 
-  return (
+  return isDraft ? (
     <div className="sheet-item">
       <p className="sheet-item-number">{index + 1}</p>
       <ClientPicker
@@ -138,6 +152,20 @@ const SheetItem = ({
         className="sheet-item-delete"
         onClick={() => handleDeleteItem()}
       />
+    </div>
+  ) : (
+    <div className="sheet-item">
+      <p className="sheet-item-number">{index + 1}</p>
+      <p>{item.client?.clientName}</p>
+      <p>{item.product?.productName}</p>
+      <p>{quantity}</p>
+      <p>${price}</p>
+      <p>{formatDollarNoCents(cost)}</p>
+      <p>{formatDollarNoCents(contribution)}</p>
+      <p>{formatDollarNoCents(totalCommission)}</p>
+      <p>{formatDollarNoCents(bonus)}</p>
+      <p>{formatDollarNoCents(totalCommission + bonus)}</p>
+      <p className="delete-placeholder"></p>
     </div>
   );
 };

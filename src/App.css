@@ -6,25 +6,30 @@
 @import "./styles/Loader.css";
 @import "./styles/Submitted.css";
 @import "./styles/Admin.css";
+@import "./styles/Profile.css";
 
 #root {
   --black: #222222;
   --border: rgb(225, 225, 225);
   --grey: #777777;
-  --green: #008817;
-  --teal: #5bffff;
-  --blue: #128484;
+  --green: #008a5d;
+  --dark-green: #006745;
+  --teal: #00bdae;
+  --blue: #009fa5;
+  --dark-blue: #006f73;
+  --yellow: #ffb62f;
+  --dark-yellow: #eba118;
   --purple: #784d8e;
   --hover: #f6f6f6;
   --dark-hover: #e0e0e0;
   --red: #de3333;
   --dark-red: #881f1f;
-  --shadow: 0px 2px 5px -1px lightgrey;
+  --shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 }
 
 button {
   font-size: 0.9rem;
-  border-radius: 0;
+  border-radius: 5px;
   border: 1px solid var(--border);
   background-color: unset;
   transition: 100ms;
@@ -68,6 +73,7 @@ p {
   justify-content: space-between;
   padding: 15px;
   border-bottom: 1px solid var(--border);
+  background-color: white;
 }
 
 /* status badge */
@@ -85,12 +91,16 @@ p {
   font-size: 0.9rem;
 }
 .submitted {
-  background-color: var(--teal);
+  background-color: var(--yellow);
 }
 .draft {
   background-color: var(--border);
 }
 .approved {
+  background-color: var(--teal);
+  color: white;
+}
+.paid {
   background-color: var(--green);
   color: white;
 }
