@@ -4,7 +4,7 @@ import { db, Product } from "./model.js";
 configDotenv();
 
 async function seed() {
-  await db.sync({ force: true });
+  await db.sync();
 
   const products = await Product.bulkCreate([
     {
