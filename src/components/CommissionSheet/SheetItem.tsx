@@ -8,6 +8,7 @@ import { TiDelete } from "react-icons/ti";
 interface SheetItemProps {
   index: number;
   clientList: any[];
+  setClientList: any;
   item: any;
   productList: any[];
   setSheetItems: any;
@@ -19,6 +20,7 @@ interface SheetItemProps {
 const SheetItem = ({
   index,
   clientList,
+  setClientList,
   item,
   productList,
   setSheetItems,
@@ -42,7 +44,7 @@ const SheetItem = ({
   const cost = currentProduct ? currentProduct.cost * item.quantity : 0;
   const isSpiff = price >= item?.product?.defaultPrice;
   const bonus = isSpiff ? spiff * quantity : 0;
-  const contribution = (price - item?.product?.cost) * quantity;
+  const contribution = (price - (item?.product?.cost ?? 0)) * quantity;
   const totalCommission = commissionRate * contribution;
 
   const handleProductChange = async (newProduct: any) => {
@@ -80,7 +82,6 @@ const SheetItem = ({
         value: newPrice,
       });
       if (res.status === 200) {
-        console.log(res.data);
         setPrice(newPrice);
       }
     } catch (error) {
@@ -109,7 +110,8 @@ const SheetItem = ({
       <p className="sheet-item-number">{index + 1}</p>
       <ClientPicker
         item={item}
-        clients={clientList}
+        clientList={clientList}
+        setClientList={setClientList}
         currentClient={item.client}
       />
       <ProductPicker
@@ -124,6 +126,9 @@ const SheetItem = ({
         value={quantity}
         onChange={(e) => {
           const val = Number(e.target.value);
+          if (val < 0) {
+            return;
+          }
           setQuantity(val);
           onQuantityChange?.(item.itemId, val);
         }}

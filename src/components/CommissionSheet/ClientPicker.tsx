@@ -3,18 +3,27 @@ import axios from "axios";
 
 interface props {
   item: any;
-  clients: any;
+  clientList: any;
+  setClientList: any;
   currentClient: any;
 }
 
-const ClientPicker = ({ item, clients, currentClient }: props) => {
+const ClientPicker = ({
+  item,
+  clientList,
+  setClientList,
+  currentClient,
+}: props) => {
+  const [name, setName] = useState("");
   const [selectedClientId, setSelectedClientId] = useState(
     currentClient?.clientId,
   );
   const [showDropDown, setShowDropdown] = useState(false);
   const dropdownRef = useRef<HTMLInputElement>(null);
+  const nameRef = useRef<HTMLInputElement>(null);
+  const [addingClient, setAddingClient] = useState(false);
 
-  const selectedClient = clients.find(
+  const selectedClient = clientList.find(
     (c: any) => c.clientId === selectedClientId,
   );
 
@@ -37,6 +46,22 @@ const ClientPicker = ({ item, clients, currentClient }: props) => {
     }
   };
 
+  const handleAddClient = async () => {
+    try {
+      await axios
+        .post("/api/addNewClient", { clientName: name })
+        .then((res) => {
+          if (res.status === 200) {
+            console.log(res.data);
+            setClientList([...clientList, res.data]);
+            setName("");
+          }
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   //   Handles blur
   useEffect(() => {
     const handleClickOutside = (event: any) => {
@@ -48,6 +73,7 @@ const ClientPicker = ({ item, clients, currentClient }: props) => {
         !isButtonClick
       ) {
         setShowDropdown(false);
+        setAddingClient(false);
       }
     };
 
@@ -60,6 +86,13 @@ const ClientPicker = ({ item, clients, currentClient }: props) => {
     };
   }, [showDropDown]);
 
+  // Focus the name input when user clicks "+ Add Client" (after the input is in the DOM)
+  useEffect(() => {
+    if (addingClient) {
+      nameRef.current?.focus();
+    }
+  }, [addingClient]);
+
   return (
     <div className="client-picker">
       <button
@@ -70,7 +103,7 @@ const ClientPicker = ({ item, clients, currentClient }: props) => {
       </button>
       {showDropDown && (
         <div className="dropdown client-picker-dropdown" ref={dropdownRef}>
-          {clients.map((c: any) => (
+          {clientList.map((c: any) => (
             <div
               className="dropdown-item client-picker-item"
               key={c.clientId}
@@ -79,6 +112,36 @@ const ClientPicker = ({ item, clients, currentClient }: props) => {
               {c.clientName}
             </div>
           ))}
+          <div className="dropdown-item new-client-item">
+            {!addingClient ? (
+              <p onClick={() => setAddingClient(true)}>+ Add Client</p>
+            ) : (
+              <input
+                ref={nameRef}
+                placeholder="Client Name"
+                type="text"
+                className="client-list-name new-client-input"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                onBlur={() => {
+                  if (name.length > 0) {
+                    console.log(name);
+                    handleAddClient();
+                  }
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    console.log("enter");
+                    if (name.length > 0) {
+                      console.log(name);
+                      handleAddClient();
+                    }
+                    nameRef.current?.blur();
+                  }
+                }}
+              />
+            )}
+          </div>
         </div>
       )}
     </div>

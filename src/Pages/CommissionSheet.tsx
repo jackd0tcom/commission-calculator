@@ -245,6 +245,7 @@ const CommissionSheet = () => {
                         index={idx}
                         item={item}
                         clientList={clientList}
+                        setClientList={setClientList}
                         productList={productList}
                         onQuantityChange={handleQuantityChange}
                         onPriceChange={handlePriceChange}

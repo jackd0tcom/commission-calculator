@@ -97,7 +97,13 @@ const ProductItem = ({ product, index, handleDeleteItem, isAdmin }: props) => {
           type="number"
           className="product-list-number"
           value={cost}
-          onChange={(e) => setCost(e.target.value)}
+          onChange={(e) => {
+            const val = Number(e.target.value);
+            if (val < 0) {
+              return;
+            }
+            setCost(e.target.value);
+          }}
           onBlur={() => {
             if (cost !== product.cost) {
               updateProduct("cost", cost);
@@ -120,7 +126,13 @@ const ProductItem = ({ product, index, handleDeleteItem, isAdmin }: props) => {
           type="number"
           className="product-list-number"
           value={defaultPrice}
-          onChange={(e) => setDefaultPrice(e.target.value)}
+          onChange={(e) => {
+            const val = Number(e.target.value);
+            if (val < 0) {
+              return;
+            }
+            setDefaultPrice(e.target.value);
+          }}
           onBlur={() => {
             if (defaultPrice !== product.defaultPrice) {
               updateProduct("defaultPrice", defaultPrice);
@@ -141,7 +153,13 @@ const ProductItem = ({ product, index, handleDeleteItem, isAdmin }: props) => {
         type="number"
         className="product-list-number"
         value={commissionRate}
-        onChange={(e) => setCommissionRate(e.target.value)}
+        onChange={(e) => {
+          const val = Number(e.target.value);
+          if (val < 0) {
+            return;
+          }
+          setCommissionRate(e.target.value);
+        }}
         onBlur={() => {
           if (commissionRate !== product.commissionRate) {
             updateProduct("commissionRate", commissionRate);
@@ -151,7 +169,7 @@ const ProductItem = ({ product, index, handleDeleteItem, isAdmin }: props) => {
           if (commissionRate === product.commissionRate) {
             return;
           }
-            if (e.key === "Enter") {
+          if (e.key === "Enter") {
             updateProduct("commissionRate", commissionRate);
             commissionRef.current?.blur();
           }
@@ -163,7 +181,13 @@ const ProductItem = ({ product, index, handleDeleteItem, isAdmin }: props) => {
           type="number"
           className="product-list-number"
           value={spiff}
-          onChange={(e) => setSpiff(e.target.value)}
+          onChange={(e) => {
+            const val = Number(e.target.value);
+            if (val < 0) {
+              return;
+            }
+            setSpiff(e.target.value);
+          }}
           onBlur={() => {
             if (spiff !== product.spiff) {
               updateProduct("spiff", spiff);

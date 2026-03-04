@@ -105,6 +105,33 @@ export default {
       res.status(500).send("Internal server error");
     }
   },
+  addNewClient: async (req: Request, res: Response) => {
+    try {
+      console.log("addNewClient");
+
+      if (!req.session.user) {
+        res.status(401).send("No user signed in!");
+        console.log("user not logged in / no session set up");
+        return;
+      }
+
+      const { clientName } = req.body;
+
+      const client = await Client.create({
+        userId: req.session.user.userId,
+        clientName,
+      });
+
+      if (!client) {
+        res.status(400).send("No client found");
+      }
+
+      res.status(200).send(client);
+    } catch (error) {
+      console.error("Error getting clients:", error);
+      res.status(500).send("Internal server error");
+    }
+  },
   getClientSheets: async (req: Request, res: Response) => {
     try {
       console.log("getClientSheets");
