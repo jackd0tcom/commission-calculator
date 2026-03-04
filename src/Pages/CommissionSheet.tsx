@@ -238,29 +238,31 @@ const CommissionSheet = () => {
               </div>
             ) : (
               <>
-                {sheetItems?.map((item, idx) => {
-                  return (
-                    <SheetItem
-                      index={idx}
-                      item={item}
-                      clientList={clientList}
-                      productList={productList}
-                      onQuantityChange={handleQuantityChange}
-                      onPriceChange={handlePriceChange}
-                      setSheetItems={setSheetItems}
-                      isDraft={sheetData.sheetStatus === "draft"}
-                    />
-                  );
-                })}
-                {sheetData?.sheetStatus === "draft" && (
-                  <div
-                    className="sheet-item new-item-row"
-                    onClick={() => handleAddItem()}
-                  >
-                    <p>+</p>
-                    <p>Add Product</p>
-                  </div>
-                )}
+                <div className="sheet-list-container">
+                  {sheetItems?.map((item, idx) => {
+                    return (
+                      <SheetItem
+                        index={idx}
+                        item={item}
+                        clientList={clientList}
+                        productList={productList}
+                        onQuantityChange={handleQuantityChange}
+                        onPriceChange={handlePriceChange}
+                        setSheetItems={setSheetItems}
+                        isDraft={sheetData.sheetStatus === "draft"}
+                      />
+                    );
+                  })}
+                  {sheetData?.sheetStatus === "draft" && (
+                    <div
+                      className="sheet-item new-item-row"
+                      onClick={() => handleAddItem()}
+                    >
+                      <p>+</p>
+                      <p>Add Product</p>
+                    </div>
+                  )}
+                </div>
                 {!isLoading && <CommissionSheetFooter items={sheetItems} />}
               </>
             )}
@@ -289,15 +291,18 @@ const CommissionSheet = () => {
             ></textarea>
             <div className="delete-sheet">
               {!isDeleting ? (
-                <button onClick={() => setIsDeleting(true)}>
+                <button
+                  className="delete-sheet-button"
+                  onClick={() => setIsDeleting(true)}
+                >
                   Delete Sheet
                 </button>
               ) : (
-                <>
+                <div className="delete-sheet-buttons">
                   <p>Are you sure you want to delete this sheet?</p>
                   <button onClick={() => handleDeleteSheet()}>Delete</button>
                   <button onClick={() => setIsDeleting(false)}>Cancel</button>
-                </>
+                </div>
               )}
             </div>
           </div>
