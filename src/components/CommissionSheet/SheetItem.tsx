@@ -42,7 +42,7 @@ const SheetItem = ({
   const cost = currentProduct ? currentProduct.cost * item.quantity : 0;
   const isSpiff = price >= item?.product?.defaultPrice;
   const bonus = isSpiff ? spiff * quantity : 0;
-  const contribution = (price - cost) * quantity;
+  const contribution = (price - item?.product?.cost) * quantity;
   const totalCommission = commissionRate * contribution;
 
   const handleProductChange = async (newProduct: any) => {

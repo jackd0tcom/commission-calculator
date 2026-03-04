@@ -90,6 +90,10 @@ p {
 .status-badge p {
   font-size: 0.9rem;
 }
+.denied {
+  background-color: var(--red);
+  color: white;
+}
 .submitted {
   background-color: var(--yellow);
 }

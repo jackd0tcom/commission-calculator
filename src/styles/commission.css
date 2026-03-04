@@ -6,6 +6,7 @@
 .commission-sheet-list-wrapper {
   overflow-y: hidden;
   background-color: var(--hover);
+  height: 100%;
 }
 .commission-sheet-list {
   margin: 15px;

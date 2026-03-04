@@ -38,14 +38,15 @@ const StatusPicker = ({
     <div className="status-picker-wrapper">
       {!isAdmin ? (
         <>
-          {status === "submitted" && (
-            <button
-              className="draft-switch"
-              onClick={() => handleStatusChange("draft")}
-            >
-              Switch to draft
-            </button>
-          )}
+          {status === "submitted" ||
+            (status === "denied" && (
+              <button
+                className="draft-switch"
+                onClick={() => handleStatusChange("draft")}
+              >
+                Switch to draft
+              </button>
+            ))}
           <button
             onClick={() =>
               handleStatusChange(
@@ -84,17 +85,20 @@ const StatusPicker = ({
         </>
       ) : (
         <>
-          {status !== "approved" && status !== "denied" && (
+          {status === "denied" && (
+            <button
+              className="draft-switch"
+              onClick={() => handleStatusChange("draft")}
+            >
+              Switch to draft
+            </button>
+          )}
+          {status === "submitted" && (
             <button
               onClick={() => handleStatusChange("denied")}
               className={`status-picker-button deny ${status}-button`}
-              disabled={status === "approved"}
             >
-              {status === "draft"
-                ? "Deny"
-                : status === "submitted"
-                  ? "Deny"
-                  : capitalize(status)}
+              Deny
             </button>
           )}
           <button

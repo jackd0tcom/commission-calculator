@@ -43,6 +43,11 @@ export default {
 
       if (req.session.user.isAdmin) {
         sheets = await CommissionSheet.findAll({
+          where: {
+            sheetStatus: {
+              [Op.not]: "draft",
+            },
+          },
           order: [["updatedAt", "DESC"]],
           include: sheetInclude,
         });
