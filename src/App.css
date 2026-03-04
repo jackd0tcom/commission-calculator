@@ -4,7 +4,7 @@
 @import "./styles/products.css";
 @import "./styles/Clients.css";
 @import "./styles/Loader.css";
-@import "./styles/Pending.css";
+@import "./styles/Submitted.css";
 @import "./styles/Admin.css";
 
 #root {
