@@ -7,7 +7,7 @@ import { formatRelativeTime } from "../../helpers";
 import Loader from "../UI/Loader";
 import { useSelector } from "react-redux";
 import { FaMagnifyingGlass } from "react-icons/fa6";
-import { formatDollarNoCents } from "../../helpers";
+import { getCommissionAmount } from "../../helpers";
 
 const CommissionSheetList = () => {
   const [commissionList, setCommissionList] = useState([{}]);
@@ -33,19 +33,6 @@ const CommissionSheetList = () => {
       getCommissionSheets();
     }
   }, [userId]);
-
-  const getCommissionAmount = (sheet: any) => {
-    if (!sheet?.commission_items || sheet?.commission_items?.length === 0) {
-      return "$0";
-    }
-    return formatDollarNoCents(
-      sheet.commission_items?.reduce((acc: number, item: any) => {
-        const price = item.price ?? item.product?.defaultPrice ?? 0;
-        const contribution = item.quantity * price;
-        return acc + contribution * (item.product?.commissionRate ?? 0);
-      }, 0),
-    );
-  };
 
   return (
     <div className="commission-sheet-list-wrapper">

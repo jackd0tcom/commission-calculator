@@ -106,6 +106,17 @@ export default {
             as: "user",
             attributes: ["profilePic", "firstName", "lastName"],
           },
+          {
+            model: CommissionItem,
+            required: false,
+            include: [
+              {
+                model: Product,
+                attributes: ["cost", "defaultPrice", "commissionRate"],
+                required: false,
+              },
+            ],
+          },
         ],
         order: [["createdAt", "DESC"]],
       });

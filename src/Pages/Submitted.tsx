@@ -5,6 +5,7 @@ import StatusBadge from "../components/UI/StatusBadge";
 import ProfilePic from "../components/UI/ProfilePic";
 import { formatDate } from "../helpers";
 import { useNavigate } from "react-router";
+import { getCommissionAmount } from "../helpers";
 
 const Submitted = () => {
   const [pendingList, setPendingList] = useState([{}]);
@@ -37,8 +38,8 @@ const Submitted = () => {
         <div className="pending-sheets-head pending-item">
           <p>User</p>
           <p>Title</p>
-          <p>Amount?</p>
           <p>Status</p>
+          <p>Commission</p>
           <p>Date Submitted</p>
         </div>
         <div className="pending-sheets-items-wrapper">
@@ -52,8 +53,8 @@ const Submitted = () => {
               >
                 <ProfilePic src={sheet.user?.profilePic} />
                 <p>{sheet.sheetTitle}</p>
-                <p>{sheet.sheetTitle}</p>
                 <StatusBadge status={sheet.sheetStatus} />
+                <p>{getCommissionAmount(sheet)}</p>
                 <p>{formatDate(sheet.submitDate)}</p>
               </div>
             ))

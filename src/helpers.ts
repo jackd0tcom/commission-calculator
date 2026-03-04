@@ -87,3 +87,15 @@ export function formatDateWithDay(data: any) {
     month: "short",
   }).format(date);
 }
+export const getCommissionAmount = (sheet: any) => {
+  if (!sheet?.commission_items || sheet?.commission_items?.length === 0) {
+    return "$0";
+  }
+  return formatDollarNoCents(
+    sheet.commission_items?.reduce((acc: number, item: any) => {
+      const price = item.price ?? item.product?.defaultPrice ?? 0;
+      const contribution = item.quantity * price;
+      return acc + contribution * (item.product?.commissionRate ?? 0);
+    }, 0),
+  );
+};
