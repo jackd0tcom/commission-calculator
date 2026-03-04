@@ -251,6 +251,7 @@ const CommissionSheet = () => {
                         onPriceChange={handlePriceChange}
                         setSheetItems={setSheetItems}
                         isDraft={sheetData.sheetStatus === "draft"}
+                        isPaid={sheetData.sheetStatus === "paid"}
                       />
                     );
                   })}

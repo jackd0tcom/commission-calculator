@@ -110,6 +110,13 @@ CommissionItem.init(
       allowNull: true,
       references: { model: "clients", key: "client_id" },
     },
+    productNameSnapshot: { type: DataTypes.STRING, allowNull: true },
+    defaultPriceSnapshot: { type: DataTypes.DECIMAL(10, 2), allowNull: true },
+    commissionRateSnapshot: { type: DataTypes.DECIMAL(5, 4), allowNull: true },
+    spiffSnapshot: { type: DataTypes.DECIMAL(10, 2), allowNull: true },
+    costSnapshot: { type: DataTypes.DECIMAL(10, 2), allowNull: true },
+    clientNameSnapshot: { type: DataTypes.STRING, allowNull: true },
+    priceSnapshot: { type: DataTypes.DECIMAL(10, 2), allowNull: true },
   },
   {
     sequelize: db,
