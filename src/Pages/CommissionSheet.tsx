@@ -8,6 +8,7 @@ import StatusPicker from "../components/CommissionSheet/StatusPicker";
 import { useNavigate } from "react-router";
 import { formatDateWithDay } from "../helpers";
 import { FaTrashCan } from "react-icons/fa6";
+import ProfilePic from "../components/UI/ProfilePic";
 
 const CommissionSheet = () => {
   const { sheetId } = useParams();
@@ -158,121 +159,150 @@ const CommissionSheet = () => {
 
   return (
     <div className="commission-sheet-page-wrapper">
-      <div className="page-header-wrapper">
-        {sheetData.sheetStatus === "draft" ? (
+      {Number(sheetId) === 0 ? (
+        <div className="new-sheet-wrapper">
+          <ProfilePic src={user.profilePic} />
           <input
-            placeholder="Sheet title"
+            placeholder="Give your new sheet a title"
             ref={titleRef}
-            className="title-input"
+            className="new-sheet-input title-input"
             type="text"
             value={sheetData.sheetTitle}
             onChange={(e) => handleTitleChange(e)}
-            onBlur={() => updateSheet("sheetTitle", sheetData.sheetTitle)}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
-                titleRef.current?.blur();
+                updateSheet("sheetTitle", sheetData.sheetTitle);
               }
             }}
           />
-        ) : (
-          <h2>{sheetData.sheetTitle}</h2>
-        )}
-        <div className="sheet-header-container">
-          <p className="sheet-date">
-            {formatDateWithDay(sheetData?.createdAt)}
-          </p>
-          <StatusPicker
-            status={sheetData.sheetStatus}
-            sheetData={sheetData}
-            setSheetData={setSheetData}
-            sheetId={Number(sheetId)}
-            isAdmin={user.isAdmin}
-          />
+          <button
+            onClick={() => updateSheet("sheetTitle", sheetData.sheetTitle)}
+            className="create-sheet-button"
+          >
+            Create New Sheet
+          </button>
         </div>
-      </div>
-      <div className="sheet-items-list">
-        <div className="sheet-item sheet-items-list-head">
-          <p>#</p>
-          <p>Client</p>
-          <p>Product</p>
-          <p>Quantity</p>
-          <p>Price</p>
-          <p>Cost</p>
-          <p>Contribution</p>
-          <p>Commission</p>
-          <p>Bonus</p>
-          <p>Total</p>
-          <FaTrashCan className={"trash-can-icon"} />
-        </div>
-        {isLoading ? (
-          <p>Loading...</p>
-        ) : unauthorized ? (
-          <div className="unauthorized">
-            <p>You do not have permission to see this sheet!</p>
-          </div>
-        ) : (
-          <>
-            {sheetItems?.map((item, idx) => {
-              return (
-                <SheetItem
-                  index={idx}
-                  item={item}
-                  clientList={clientList}
-                  productList={productList}
-                  onQuantityChange={handleQuantityChange}
-                  onPriceChange={handlePriceChange}
-                  setSheetItems={setSheetItems}
-                  isDraft={sheetData.sheetStatus === "draft"}
-                />
-              );
-            })}
-            {sheetData?.sheetStatus === "draft" && (
-              <div
-                className="sheet-item new-item-row"
-                onClick={() => handleAddItem()}
-              >
-                <p>+</p>
-                <p>Add Product</p>
-              </div>
+      ) : (
+        <>
+          <div className="page-header-wrapper">
+            {sheetData.sheetStatus === "draft" ? (
+              <input
+                placeholder="Sheet title"
+                ref={titleRef}
+                className="title-input"
+                type="text"
+                value={sheetData.sheetTitle}
+                onChange={(e) => handleTitleChange(e)}
+                onBlur={() => updateSheet("sheetTitle", sheetData.sheetTitle)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    titleRef.current?.blur();
+                  }
+                }}
+              />
+            ) : (
+              <h2>{sheetData.sheetTitle}</h2>
             )}
-            {!isLoading && <CommissionSheetFooter items={sheetItems} />}
-          </>
-        )}
-      </div>
-      <div className="commission-sheet-bottom-wrapper">
-        <textarea
-          className="commission-sheet-notes"
-          placeholder="Add a note"
-          ref={descriptionRef}
-          name="notes"
-          id="notes"
-          disabled={sheetData?.sheetStatus !== "draft"}
-          onChange={(e) =>
-            setSheetData({ ...sheetData, sheetDescription: e.target.value })
-          }
-          onBlur={() =>
-            updateSheet("sheetDescription", sheetData.sheetDescription)
-          }
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              updateSheet("sheetDescription", sheetData.sheetDescription);
-              descriptionRef.current?.blur();
-            }
-          }}
-          value={sheetData.sheetDescription}
-        ></textarea>
-        <div className="delete-sheet">
-          {!isDeleting ? (
-            <button onClick={() => setIsDeleting(true)}>Delete Sheet</button>
-          ) : (
-            <>
-              <p>Are you sure you want to delete this sheet?</p>
-              <button onClick={() => handleDeleteSheet()}>Delete</button>
-              <button onClick={() => setIsDeleting(false)}>Cancel</button>
-            </>
-          )}
-        </div>
-      </div>
+            <div className="sheet-header-container">
+              <p className="sheet-date">
+                {formatDateWithDay(sheetData?.createdAt)}
+              </p>
+              <StatusPicker
+                status={sheetData.sheetStatus}
+                sheetData={sheetData}
+                setSheetData={setSheetData}
+                sheetId={Number(sheetId)}
+                isAdmin={user.isAdmin}
+              />
+            </div>
+          </div>
+          <div className="sheet-items-list">
+            <div className="sheet-item sheet-items-list-head">
+              <p>#</p>
+              <p>Client</p>
+              <p>Product</p>
+              <p>Quantity</p>
+              <p>Price</p>
+              <p>Cost</p>
+              <p>Contribution</p>
+              <p>Commission</p>
+              <p>Bonus</p>
+              <p>Total</p>
+              <FaTrashCan className={"trash-can-icon"} />
+            </div>
+            {isLoading ? (
+              <p>Loading...</p>
+            ) : unauthorized ? (
+              <div className="unauthorized">
+                <p>You do not have permission to see this sheet!</p>
+              </div>
+            ) : (
+              <>
+                {sheetItems?.map((item, idx) => {
+                  return (
+                    <SheetItem
+                      index={idx}
+                      item={item}
+                      clientList={clientList}
+                      productList={productList}
+                      onQuantityChange={handleQuantityChange}
+                      onPriceChange={handlePriceChange}
+                      setSheetItems={setSheetItems}
+                      isDraft={sheetData.sheetStatus === "draft"}
+                    />
+                  );
+                })}
+                {sheetData?.sheetStatus === "draft" && (
+                  <div
+                    className="sheet-item new-item-row"
+                    onClick={() => handleAddItem()}
+                  >
+                    <p>+</p>
+                    <p>Add Product</p>
+                  </div>
+                )}
+                {!isLoading && <CommissionSheetFooter items={sheetItems} />}
+              </>
+            )}
+          </div>
+          <div className="commission-sheet-bottom-wrapper">
+            <textarea
+              className="commission-sheet-notes"
+              placeholder="Add a note"
+              ref={descriptionRef}
+              name="notes"
+              id="notes"
+              disabled={sheetData?.sheetStatus !== "draft"}
+              onChange={(e) =>
+                setSheetData({ ...sheetData, sheetDescription: e.target.value })
+              }
+              onBlur={() =>
+                updateSheet("sheetDescription", sheetData.sheetDescription)
+              }
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  updateSheet("sheetDescription", sheetData.sheetDescription);
+                  descriptionRef.current?.blur();
+                }
+              }}
+              value={sheetData.sheetDescription}
+            ></textarea>
+            <div className="delete-sheet">
+              {!isDeleting ? (
+                <button onClick={() => setIsDeleting(true)}>
+                  Delete Sheet
+                </button>
+              ) : (
+                <>
+                  <p>Are you sure you want to delete this sheet?</p>
+                  <button onClick={() => handleDeleteSheet()}>Delete</button>
+                  <button onClick={() => setIsDeleting(false)}>Cancel</button>
+                </>
+              )}
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };
