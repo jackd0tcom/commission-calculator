@@ -15,6 +15,7 @@ interface SheetItemProps {
   onQuantityChange?: (itemId: number, quantity: number) => void;
   onPriceChange?: (itemId: number, price: number) => void;
   isDraft: boolean;
+  isPaid: boolean;
 }
 
 const SheetItem = ({
@@ -27,6 +28,7 @@ const SheetItem = ({
   onQuantityChange,
   onPriceChange,
   isDraft,
+  isPaid,
 }: SheetItemProps) => {
   const [currentProduct, setCurrentProduct] = useState(
     item.product ? item.product : null,
@@ -41,11 +43,18 @@ const SheetItem = ({
   );
   const commissionRate = currentProduct ? currentProduct.commissionRate : 0;
   const spiff = currentProduct ? currentProduct.spiff : 0;
-  const cost = currentProduct ? currentProduct.cost * item.quantity : 0;
+  let cost = currentProduct ? currentProduct.cost * item.quantity : 0;
   const isSpiff = price >= item?.product?.defaultPrice;
-  const bonus = isSpiff ? spiff * quantity : 0;
-  const contribution = (price - (item?.product?.cost ?? 0)) * quantity;
-  const totalCommission = commissionRate * contribution;
+  let bonus = isSpiff ? spiff * quantity : 0;
+  let contribution = (price - (item?.product?.cost ?? 0)) * quantity;
+  let totalCommission = commissionRate * contribution;
+
+  if (isPaid) {
+    cost = item.costSnapshot;
+    contribution = (item.priceSnapshot - item.costSnapshot) * quantity;
+    totalCommission = item.commissionRateSnapshot * contribution;
+    bonus = isSpiff ? item.spiffSnapshot * quantity : 0;
+  }
 
   const handleProductChange = async (newProduct: any) => {
     setCurrentProduct(newProduct);
@@ -158,7 +167,7 @@ const SheetItem = ({
         onClick={() => handleDeleteItem()}
       />
     </div>
-  ) : (
+  ) : !isPaid ? (
     <div className="sheet-item">
       <p className="sheet-item-number">{index + 1}</p>
       <p>{item.client?.clientName}</p>
@@ -166,6 +175,20 @@ const SheetItem = ({
       <p>{quantity}</p>
       <p>${price}</p>
       <p>{formatDollarNoCents(cost)}</p>
+      <p>{formatDollarNoCents(contribution)}</p>
+      <p>{formatDollarNoCents(totalCommission)}</p>
+      <p>{formatDollarNoCents(bonus)}</p>
+      <p>{formatDollarNoCents(totalCommission + bonus)}</p>
+      <p className="delete-placeholder"></p>
+    </div>
+  ) : (
+    <div className="sheet-item">
+      <p className="sheet-item-number">{index + 1}</p>
+      <p>{item.clientNameSnapshot}</p>
+      <p>{item.productNameSnapshot}</p>
+      <p>{quantity}</p>
+      <p>${item.priceSnapshot}</p>
+      <p>{formatDollarNoCents(item.costSnapshot)}</p>
       <p>{formatDollarNoCents(contribution)}</p>
       <p>{formatDollarNoCents(totalCommission)}</p>
       <p>{formatDollarNoCents(bonus)}</p>

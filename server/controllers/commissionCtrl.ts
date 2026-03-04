@@ -43,11 +43,6 @@ export default {
 
       if (req.session.user.isAdmin) {
         sheets = await CommissionSheet.findAll({
-          where: {
-            sheetStatus: {
-              [Op.not]: "draft",
-            },
-          },
           order: [["updatedAt", "DESC"]],
           include: sheetInclude,
         });
@@ -246,6 +241,30 @@ export default {
 
       if (value === "submitted") {
         await sheet?.update({ submitDate: new Date() });
+      }
+
+      if (value === "paid") {
+        const items = await CommissionItem.findAll({ where: { sheetId } });
+        await Promise.all(
+          items.map(async (item) => {
+            if (!item.productId) return;
+            const product = await Product.findOne({
+              where: { productId: item.productId },
+            });
+            const client = await Client.findOne({
+              where: { clientId: item.clientId },
+            });
+            await item.update({
+              productNameSnapshot: product?.productName,
+              defaultPriceSnapshot: product?.defaultPrice,
+              commissionRateSnapshot: product?.commissionRate,
+              spiffSnapshot: product?.spiff ?? 0,
+              costSnapshot: product?.cost,
+              clientNameSnapshot: client?.clientName,
+              priceSnapshot: item.price ?? product?.defaultPrice,
+            });
+          }),
+        );
       }
 
       await sheet?.update({ [fieldName]: value });
