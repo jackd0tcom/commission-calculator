@@ -97,7 +97,7 @@ app.post("/api/sync-auth0-user", syncAuth0User);
 app.post("/api/updateAdmin", updateAdmin);
 app.get("/api/getUsers", getUsers);
 
-await db.sync();
+await db.sync({ alter: true });
 
 console.log("Database synced");
 
