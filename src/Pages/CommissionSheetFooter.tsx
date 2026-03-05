@@ -6,10 +6,10 @@ interface props {
 
 const CommissionSheetFooter = ({ items }: props) => {
   const filteredItems = items.filter((item: any) => item.product);
-  const quantity: number = filteredItems.reduce(
-    (acc: number, item: any) => acc + item.quantity,
-    0,
-  );
+  // const quantity: number = filteredItems.reduce(
+  //   (acc: number, item: any) => acc + item.quantity,
+  //   0,
+  // );
   const price: number = filteredItems.reduce(
     (acc: number, item: any) => acc + item.price * item.quantity,
     0,
