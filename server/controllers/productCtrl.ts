@@ -1,4 +1,4 @@
-import { Product } from "../model";
+import { Product, UserProductCommission } from "../model";
 import { Request, Response } from "express";
 
 export default {
@@ -11,7 +11,18 @@ export default {
         return;
       }
 
-      const products = await Product.findAll({ where: { isArchived: false } });
+      const { userId } = req.params;
+
+      const products = await Product.findAll({
+        where: { isArchived: false },
+        include: [
+          {
+            model: UserProductCommission,
+            where: { userId },
+            required: false,
+          },
+        ],
+      });
 
       if (products) {
         res.send(products);

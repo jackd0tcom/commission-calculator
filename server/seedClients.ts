@@ -6,12 +6,13 @@ import {
   Product,
   CommissionSheet,
   CommissionItem,
+  UserProductCommission,
 } from "./model.js";
 
 configDotenv();
 
 async function seed() {
-  await db.sync({ force: true });
+  await db.sync();
 
   const clients = await Client.bulkCreate([
     { clientName: "Acme Corp", userId: 1 },
@@ -26,7 +27,18 @@ async function seed() {
     { clientName: "Pied Piper", userId: 1 },
   ]);
 
-  console.log(`Seeded ${clients.length} clients`);
+  const commissionRates = await UserProductCommission.bulkCreate([
+    { userId: 1, productId: 1, commissionRate: 0.1 },
+    { userId: 1, productId: 2, commissionRate: 0.2 },
+    { userId: 1, productId: 3, commissionRate: 0.3 },
+    { userId: 1, productId: 4, commissionRate: 0.15 },
+    { userId: 1, productId: 5, commissionRate: 0.12 },
+    { userId: 1, productId: 6, commissionRate: 0.08 },
+  ]);
+
+  console.log(
+    `Seeded ${clients.length} clients and ${commissionRates.length} commission rates`,
+  );
   process.exit(0);
 }
 
