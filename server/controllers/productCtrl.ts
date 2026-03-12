@@ -1,5 +1,6 @@
-import { Product, UserProductCommission } from "../model";
+import { Product, UserProductCommission, User } from "../model";
 import { Request, Response } from "express";
+import { Order } from "sequelize";
 
 export default {
   getProducts: async (req: Request, res: Response) => {
@@ -22,10 +23,48 @@ export default {
             required: false,
           },
         ],
+        order: [["productId", "DESC"]],
       });
 
       if (products) {
         res.send(products);
+      } else {
+        res.status(400).send("No products found");
+      }
+    } catch (error) {
+      console.error("Error getting products:", error);
+      res.status(500).send("Internal server error");
+    }
+  },
+  getAdminProducts: async (req: Request, res: Response) => {
+    try {
+      console.log("getAdminProducts");
+
+      if (!req.session.user) {
+        console.log("user not logged in / no session set up");
+        return;
+      }
+
+      const products = await Product.findAll({
+        where: { isArchived: false },
+        include: [
+          {
+            model: UserProductCommission,
+            required: false,
+          },
+        ],
+        order: [["productId", "DESC"]],
+      });
+
+      const users = await User.findAll();
+
+      const payload = {
+        products: products,
+        users: users,
+      };
+
+      if (products) {
+        res.send(payload);
       } else {
         res.status(400).send("No products found");
       }
@@ -56,6 +95,48 @@ export default {
       res.send(product);
     } catch (error) {
       console.error("Error getting products:", error);
+      res.status(500).send("Internal server error");
+    }
+  },
+  updateUserCommissionRate: async (req: Request, res: Response) => {
+    try {
+      console.log("updateUserCommissionRate");
+
+      if (!req.session.user) {
+        console.log("user not logged in / no session set up");
+        return;
+      }
+
+      const { id, productId, userId, commissionRate } = req.body;
+
+      let commission;
+
+      if (id) {
+        commission = await UserProductCommission.findByPk(id);
+      }
+
+      if (!commission && productId && userId) {
+        commission = await UserProductCommission.findOne({
+          where: { productId, userId },
+        });
+      }
+
+      if (!commission) {
+        commission = await UserProductCommission.create({
+          productId,
+          userId,
+          commissionRate,
+        });
+        console.log("🐸 new commission created");
+        res.status(200).send(commission);
+        return;
+      }
+
+      await commission.update({ commissionRate });
+
+      res.send(commission);
+    } catch (error) {
+      console.error("Error getting commission:", error);
       res.status(500).send("Internal server error");
     }
   },

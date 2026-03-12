@@ -8,7 +8,14 @@ import userCtrl from "./controllers/userCtrl";
 import clientCtrl from "./controllers/clientCtrl";
 import { db } from "./model.js";
 
-const { getProducts, updateProduct, deleteProduct, newProduct } = productCtrl;
+const {
+  getProducts,
+  updateProduct,
+  deleteProduct,
+  newProduct,
+  getAdminProducts,
+  updateUserCommissionRate,
+} = productCtrl;
 const {
   getCommissionSheets,
   getPendingSheets,
@@ -64,7 +71,9 @@ app.use((req, res, next) => {
 
 // Product endpoints
 app.get("/api/getProducts/:userId", getProducts);
+app.get("/api/getAdminProducts/", getAdminProducts);
 app.post("/api/updateProduct", updateProduct);
+app.post("/api/updateUserCommissionRate", updateUserCommissionRate);
 app.post("/api/deleteProduct", deleteProduct);
 app.post("/api/newProduct", newProduct);
 
