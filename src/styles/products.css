@@ -95,3 +95,19 @@
 .delete-product:hover {
   background-color: var(--dark-red);
 }
+
+.product-list-toggle {
+  padding: 8px;
+  font-size: 0.9rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 200ms;
+  display: flex;
+}
+.product-list-toggle:hover {
+  background-color: var(--hover);
+}
+
+.users-toggled {
+  transform: rotate(90deg);
+}

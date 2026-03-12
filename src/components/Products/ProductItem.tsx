@@ -1,15 +1,24 @@
 import { useState, useRef } from "react";
 import axios from "axios";
 import { TiDelete } from "react-icons/ti";
+import { FaAngleRight } from "react-icons/fa6";
+import UserProductRow from "./UserProductRow";
 
 interface props {
   product: any;
   index: number;
   handleDeleteItem: any;
   isAdmin: boolean;
+  users: any;
 }
 
-const ProductItem = ({ product, index, handleDeleteItem, isAdmin }: props) => {
+const ProductItem = ({
+  users,
+  product,
+  index,
+  handleDeleteItem,
+  isAdmin,
+}: props) => {
   const [name, setName] = useState(
     product?.productName ? product?.productName : "Add a name",
   );
@@ -22,6 +31,7 @@ const ProductItem = ({ product, index, handleDeleteItem, isAdmin }: props) => {
   );
   const [spiff, setSpiff] = useState(product?.spiff ? product.spiff : 0);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [showUsers, setShowUsers] = useState(false);
 
   const nameRef = useRef<HTMLInputElement>(null);
   const costRef = useRef<HTMLInputElement>(null);
@@ -69,145 +79,166 @@ const ProductItem = ({ product, index, handleDeleteItem, isAdmin }: props) => {
       </div>
     </div>
   ) : isAdmin ? (
-    <div className="product-list-item">
-      <p>{index + 1}</p>
-      <input
-        type="text"
-        className="product-list-name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        onBlur={() => {
-          if (name !== product.productName) {
-            updateProduct("productName", name);
+    <div className="product-list-wrapper">
+      <div className="product-list-item">
+        <div
+          className={
+            showUsers
+              ? "product-list-toggle users-toggled"
+              : "product-list-toggle"
           }
-        }}
-        onKeyDown={(e) => {
-          if (name === product.productName) {
-            return;
-          }
-          if (e.key === "Enter") {
-            updateProduct("sheetTitle", name);
-            nameRef.current?.blur();
-          }
-        }}
-      />
-      <div className="product-list-number-wrapper">
-        <p>$</p>
+          onClick={() => setShowUsers(!showUsers)}
+        >
+          <FaAngleRight />
+        </div>
+        <input
+          type="text"
+          className="product-list-name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          onBlur={() => {
+            if (name !== product.productName) {
+              updateProduct("productName", name);
+            }
+          }}
+          onKeyDown={(e) => {
+            if (name === product.productName) {
+              return;
+            }
+            if (e.key === "Enter") {
+              updateProduct("sheetTitle", name);
+              nameRef.current?.blur();
+            }
+          }}
+        />
+        <div className="product-list-number-wrapper">
+          <p>$</p>
+          <input
+            type="number"
+            className="product-list-number"
+            value={cost}
+            onChange={(e) => {
+              const val = Number(e.target.value);
+              if (val < 0) {
+                return;
+              }
+              setCost(e.target.value);
+            }}
+            onBlur={() => {
+              if (cost !== product.cost) {
+                updateProduct("cost", cost);
+              }
+            }}
+            onKeyDown={(e) => {
+              if (cost === product.cost) {
+                return;
+              }
+              if (e.key === "Enter") {
+                updateProduct("cost", cost);
+                costRef.current?.blur();
+              }
+            }}
+          />
+        </div>
+        <div className="product-list-number-wrapper">
+          <p>$</p>
+          <input
+            type="number"
+            className="product-list-number"
+            value={defaultPrice}
+            onChange={(e) => {
+              const val = Number(e.target.value);
+              if (val < 0) {
+                return;
+              }
+              setDefaultPrice(e.target.value);
+            }}
+            onBlur={() => {
+              if (defaultPrice !== product.defaultPrice) {
+                updateProduct("defaultPrice", defaultPrice);
+              }
+            }}
+            onKeyDown={(e) => {
+              if (defaultPrice === product.defaultPrice) {
+                return;
+              }
+              if (e.key === "Enter") {
+                updateProduct("defaultPrice", defaultPrice);
+                priceRef.current?.blur();
+              }
+            }}
+          />
+        </div>
         <input
           type="number"
           className="product-list-number"
-          value={cost}
+          value={commissionRate}
           onChange={(e) => {
             const val = Number(e.target.value);
             if (val < 0) {
               return;
             }
-            setCost(e.target.value);
+            setCommissionRate(e.target.value);
           }}
           onBlur={() => {
-            if (cost !== product.cost) {
-              updateProduct("cost", cost);
+            if (commissionRate !== product.commissionRate) {
+              updateProduct("commissionRate", commissionRate);
             }
           }}
           onKeyDown={(e) => {
-            if (cost === product.cost) {
+            if (commissionRate === product.commissionRate) {
               return;
             }
             if (e.key === "Enter") {
-              updateProduct("cost", cost);
-              costRef.current?.blur();
+              updateProduct("commissionRate", commissionRate);
+              commissionRef.current?.blur();
             }
           }}
         />
-      </div>
-      <div className="product-list-number-wrapper">
-        <p>$</p>
-        <input
-          type="number"
-          className="product-list-number"
-          value={defaultPrice}
-          onChange={(e) => {
-            const val = Number(e.target.value);
-            if (val < 0) {
-              return;
-            }
-            setDefaultPrice(e.target.value);
-          }}
-          onBlur={() => {
-            if (defaultPrice !== product.defaultPrice) {
-              updateProduct("defaultPrice", defaultPrice);
-            }
-          }}
-          onKeyDown={(e) => {
-            if (defaultPrice === product.defaultPrice) {
-              return;
-            }
-            if (e.key === "Enter") {
-              updateProduct("defaultPrice", defaultPrice);
-              priceRef.current?.blur();
-            }
-          }}
+        <div className="product-list-number-wrapper">
+          <p>$</p>
+          <input
+            type="number"
+            className="product-list-number"
+            value={spiff}
+            onChange={(e) => {
+              const val = Number(e.target.value);
+              if (val < 0) {
+                return;
+              }
+              setSpiff(e.target.value);
+            }}
+            onBlur={() => {
+              if (spiff !== product.spiff) {
+                updateProduct("spiff", spiff);
+              }
+            }}
+            onKeyDown={(e) => {
+              if (spiff === product.spiff) {
+                return;
+              }
+              if (e.key === "Enter") {
+                updateProduct("spiff", spiff);
+                spiffRef.current?.blur();
+              }
+            }}
+          />
+        </div>
+        <TiDelete
+          className="sheet-item-delete"
+          onClick={() => setIsDeleting(true)}
         />
       </div>
-      <input
-        type="number"
-        className="product-list-number"
-        value={commissionRate}
-        onChange={(e) => {
-          const val = Number(e.target.value);
-          if (val < 0) {
-            return;
-          }
-          setCommissionRate(e.target.value);
-        }}
-        onBlur={() => {
-          if (commissionRate !== product.commissionRate) {
-            updateProduct("commissionRate", commissionRate);
-          }
-        }}
-        onKeyDown={(e) => {
-          if (commissionRate === product.commissionRate) {
-            return;
-          }
-          if (e.key === "Enter") {
-            updateProduct("commissionRate", commissionRate);
-            commissionRef.current?.blur();
-          }
-        }}
-      />
-      <div className="product-list-number-wrapper">
-        <p>$</p>
-        <input
-          type="number"
-          className="product-list-number"
-          value={spiff}
-          onChange={(e) => {
-            const val = Number(e.target.value);
-            if (val < 0) {
-              return;
-            }
-            setSpiff(e.target.value);
-          }}
-          onBlur={() => {
-            if (spiff !== product.spiff) {
-              updateProduct("spiff", spiff);
-            }
-          }}
-          onKeyDown={(e) => {
-            if (spiff === product.spiff) {
-              return;
-            }
-            if (e.key === "Enter") {
-              updateProduct("spiff", spiff);
-              spiffRef.current?.blur();
-            }
-          }}
-        />
-      </div>
-      <TiDelete
-        className="sheet-item-delete"
-        onClick={() => setIsDeleting(true)}
-      />
+      {showUsers &&
+        users?.map((user: any) => {
+          return (
+            <UserProductRow
+              key={`user-${user.userId}-${product.productId}`}
+              user={user}
+              product={product}
+            />
+          );
+        })}
     </div>
   ) : (
     <div className="product-list-item">

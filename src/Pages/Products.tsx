@@ -6,17 +6,28 @@ import { FaTrashCan } from "react-icons/fa6";
 
 const Products = () => {
   const [productList, setProductList] = useState([{}]);
+  const [users, setUsers] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const user = useSelector((state: any) => state.user);
 
   const fetchProducts = async () => {
     try {
-      await axios.get("/api/getProducts").then((res) => {
-        if (res.status === 200) {
-          setProductList(res.data);
-          setIsLoading(false);
-        }
-      });
+      if (!user.isAdmin) {
+        await axios.get(`/api/getProducts/${user.userId}`).then((res) => {
+          if (res.status === 200) {
+            setProductList(res.data);
+            setIsLoading(false);
+          }
+        });
+      } else
+        await axios.get(`/api/getAdminProducts`).then((res) => {
+          if (res.status === 200) {
+            console.log(res.data);
+            setProductList(res.data.products);
+            setUsers(res.data.users);
+            setIsLoading(false);
+          }
+        });
     } catch (error) {
       console.log(error);
     }
@@ -32,7 +43,7 @@ const Products = () => {
     try {
       await axios.post("/api/newProduct").then((res) => {
         if (res.status === 200) {
-          setProductList([...productList, res.data]);
+          setProductList((prev) => [res.data, ...prev]);
         }
       });
     } catch (error) {
@@ -80,6 +91,7 @@ const Products = () => {
             {productList?.map((product, index) => {
               return (
                 <ProductItem
+                  users={users}
                   key={(product as { productId?: number }).productId ?? index}
                   product={product}
                   index={index}
