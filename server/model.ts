@@ -165,6 +165,34 @@ Product.init(
   },
 );
 
+export class UserProductCommission extends Model {}
+UserProductCommission.init(
+  {
+    id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: { model: "users", key: "user_id" },
+    },
+    productId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: { model: "products", key: "product_id" },
+    },
+    commissionRate: {
+      type: DataTypes.DECIMAL(5, 4),
+      allowNull: false,
+    },
+  },
+  {
+    sequelize: db,
+    modelName: "user_product_commission",
+    tableName: "user_product_commissions",
+    timestamps: true,
+    indexes: [{ unique: true, fields: ["user_id", "product_id"] }],
+  },
+);
+
 export class Client extends Model {}
 Client.init(
   {
@@ -207,5 +235,16 @@ CommissionItem.belongsTo(Product, { foreignKey: "productId" });
 
 User.hasMany(CommissionSheet, { foreignKey: "userId" });
 CommissionSheet.belongsTo(User, { foreignKey: "userId" });
+
+User.belongsToMany(Product, {
+  through: UserProductCommission,
+  foreignKey: "userId",
+});
+Product.belongsToMany(User, {
+  through: UserProductCommission,
+  foreignKey: "productId",
+});
+Product.hasMany(UserProductCommission, { foreignKey: "productId" });
+UserProductCommission.belongsTo(Product, { foreignKey: "productId" });
 
 export { db };

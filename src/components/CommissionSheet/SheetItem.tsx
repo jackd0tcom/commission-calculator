@@ -33,6 +33,10 @@ const SheetItem = ({
   const [currentProduct, setCurrentProduct] = useState(
     item.product ? item.product : null,
   );
+  const userCommissionRate = currentProduct?.user_product_commissions
+    ? (currentProduct?.user_product_commissions[0].commissionRate ?? 0)
+    : null;
+
   const [quantity, setQuantity] = useState(item.quantity ? item.quantity : 0);
   const [price, setPrice] = useState(
     item.price
@@ -41,7 +45,11 @@ const SheetItem = ({
         ? currentProduct.defaultPrice
         : 0,
   );
-  const commissionRate = currentProduct ? currentProduct.commissionRate : 0;
+
+  // if there is no product selected, i.e. when a new item is added, it is 0, else if there is not a userproductCommission item, it is the default commission, else if there is a userproductcommission rate then it is that
+  const commissionRate = currentProduct
+    ? (userCommissionRate ?? currentProduct?.commissionRate)
+    : 0;
   const spiff = currentProduct ? currentProduct.spiff : 0;
   let cost = currentProduct ? currentProduct.cost * item.quantity : 0;
   const isSpiff = price >= item?.product?.defaultPrice;

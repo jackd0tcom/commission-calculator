@@ -63,7 +63,7 @@ const CommissionSheet = () => {
       );
 
       promises.push(
-        axios.get("/api/getProducts").then((res) => {
+        axios.get(`/api/getProducts/${sheetData.userId}`).then((res) => {
           if (res.status === 200) setProductList(res.data);
         }),
       );

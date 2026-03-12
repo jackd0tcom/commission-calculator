@@ -4,6 +4,7 @@ import {
   Product,
   User,
   Client,
+  UserProductCommission,
 } from "../model";
 import { Request, Response } from "express";
 import { Order, Op } from "sequelize";
@@ -55,25 +56,6 @@ export default {
       }
 
       if (sheets) {
-        // const sheetsWithCommission = sheets.map((sheet) => {
-        //   const plain = sheet.get({ plain: true });
-        //   const items = plain.CommissionItems ?? [];
-        //   let totalCommission = 0;
-        //   for (const item of items) {
-        //     const product = item.Product;
-        //     if (!product) continue;
-        //     const qty = Number(item.quantity) || 0;
-        //     const price =
-        //       item.price != null
-        //         ? Number(item.price)
-        //         : (Number(product.defaultPrice) ?? 0);
-        //     const cost = Number(product.cost) ?? 0;
-        //     const rate = Number(product.commissionRate) ?? 0;
-        //     totalCommission += qty * price - cost * rate;
-        //   }
-        //   const { CommissionItems: _omit, ...rest } = plain;
-        //   return { ...rest, totalCommission };
-        // });
         res.send(sheets);
       } else {
         res.status(400).send("No sheets found");
@@ -198,6 +180,13 @@ export default {
           const itemData = item.toJSON();
           const product = await Product.findOne({
             where: { productId: item.productId },
+            include: [
+              {
+                model: UserProductCommission,
+                where: { userId: sheet?.userId },
+                required: false,
+              },
+            ],
           });
           return {
             ...itemData,

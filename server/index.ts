@@ -63,7 +63,7 @@ app.use((req, res, next) => {
 // Endpoints
 
 // Product endpoints
-app.get("/api/getProducts", getProducts);
+app.get("/api/getProducts/:userId", getProducts);
 app.post("/api/updateProduct", updateProduct);
 app.post("/api/deleteProduct", deleteProduct);
 app.post("/api/newProduct", newProduct);
