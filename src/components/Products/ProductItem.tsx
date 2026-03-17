@@ -10,6 +10,8 @@ interface props {
   handleDeleteItem: any;
   isAdmin: boolean;
   users: any;
+  productList: any;
+  setProductList: any;
 }
 
 const ProductItem = ({
@@ -18,6 +20,8 @@ const ProductItem = ({
   index,
   handleDeleteItem,
   isAdmin,
+  productList,
+  setProductList,
 }: props) => {
   const [name, setName] = useState(
     product?.productName ? product?.productName : "Add a name",
@@ -49,6 +53,14 @@ const ProductItem = ({
         })
         .then((res) => {
           if (res.status === 200) {
+            const listCopy = [...productList];
+            const currentProduct = listCopy.find(
+              (product: any) => product.productId === product.productId,
+            );
+            if (fieldName === "commissionRate") {
+              currentProduct[fieldName] = value;
+            }
+            setProductList(listCopy);
             return;
           }
         });
@@ -233,7 +245,7 @@ const ProductItem = ({
         users?.map((user: any) => {
           return (
             <UserProductRow
-              key={`user-${user.userId}-${product.productId}`}
+              key={`user-${user.userId}-${product.productId}-${commissionRate}`}
               user={user}
               product={product}
             />

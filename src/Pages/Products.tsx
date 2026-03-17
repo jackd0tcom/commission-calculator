@@ -97,6 +97,8 @@ const Products = () => {
                   index={index}
                   handleDeleteItem={handleDeleteItem}
                   isAdmin={user.isAdmin}
+                  productList={productList}
+                  setProductList={setProductList}
                 />
               );
             })}
