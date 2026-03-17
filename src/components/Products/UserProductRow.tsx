@@ -1,5 +1,5 @@
 import ProfilePic from "../UI/ProfilePic";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 
 interface props {
@@ -39,8 +39,11 @@ const UserProductRow = ({ user, product }: props) => {
 
   return (
     <div className="product-list-item user-product-row">
-      <ProfilePic src={user.profilePic} />
-      <p>{user.firstName + " " + user.lastName}</p>
+      <p></p>
+      <div style={{ display: "flex", gap: 15 }}>
+        <ProfilePic src={user.profilePic} />
+        <p>{user.firstName + " " + user.lastName}</p>
+      </div>
       <p></p>
       <p></p>
       <input
