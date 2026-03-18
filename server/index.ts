@@ -20,9 +20,9 @@ const {
   getCommissionSheets,
   getPendingSheets,
   getSheet,
-  updateSheetItem,
-  newSheetItem,
-  deleteSheetItem,
+  // updateSheetItem,
+  // newSheetItem,
+  // deleteSheetItem,
   updateSheet,
   newSheet,
   deleteSheet,
@@ -34,7 +34,7 @@ const {
   deleteClient,
   newClient,
   addNewClient,
-  getClientSheets,
+  // getClientSheets,
 } = clientCtrl;
 
 configDotenv();
@@ -81,11 +81,11 @@ app.post("/api/newProduct", newProduct);
 app.get("/api/getCommissionSheets", getCommissionSheets);
 app.get(`/api/getSheet/:sheetId`, getSheet);
 app.post("/api/getPendingSheets", getPendingSheets);
-app.post(`/api/updateSheetItem`, updateSheetItem);
+// app.post(`/api/updateSheetItem`, updateSheetItem);
 app.post(`/api/newSheet`, newSheet);
 app.post("/api/updateSheet", updateSheet);
-app.post(`/api/newSheetItem`, newSheetItem);
-app.post(`/api/deleteSheetItem`, deleteSheetItem);
+// app.post(`/api/newSheetItem`, newSheetItem);
+// app.post(`/api/deleteSheetItem`, deleteSheetItem);
 app.post(`/api/deleteSheet`, deleteSheet);
 
 // Client endpoints
@@ -94,7 +94,7 @@ app.post("/api/updateClient", updateClient);
 app.post("/api/deleteClient", deleteClient);
 app.post("/api/newClient", newClient);
 app.post("/api/addNewClient", addNewClient);
-app.get("/api/getClientSheets/:clientId", getClientSheets);
+// app.get("/api/getClientSheets/:clientId", getClientSheets);
 
 // auth endpoints
 // app.post("/api/register", register);

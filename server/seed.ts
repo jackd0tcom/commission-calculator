@@ -5,7 +5,8 @@ import {
   Client,
   Product,
   CommissionSheet,
-  CommissionItem,
+  Order,
+  OrderItem,
 } from "./model.js";
 
 configDotenv();
@@ -244,39 +245,82 @@ async function seed() {
     },
   ]);
 
-  const items = await CommissionItem.bulkCreate([
-    { sheetId: 1, quantity: 3, productId: 1, price: 24.99, clientId: 1 },
-    { sheetId: 1, quantity: 1, productId: 2, price: 49.99, clientId: 2 },
-    { sheetId: 1, quantity: 2, productId: 3, price: 139.99, clientId: 1 },
-    { sheetId: 1, quantity: 1, productId: 4, price: 499.99, clientId: 3 },
-    { sheetId: 2, quantity: 5, productId: 1, price: 22.0, clientId: 1 },
-    { sheetId: 2, quantity: 2, productId: 3, price: 149.99, clientId: 2 },
-    { sheetId: 2, quantity: 4, productId: 5, price: 39.99, clientId: 4 },
-    { sheetId: 3, quantity: 10, productId: 1, price: 24.99, clientId: 1 },
-    { sheetId: 3, quantity: 1, productId: 8, price: 1999.99, clientId: 5 },
-    { sheetId: 4, quantity: 2, productId: 2, price: 49.99, clientId: 2 },
-    { sheetId: 4, quantity: 1, productId: 6, price: 99.99, clientId: 6 },
-    { sheetId: 4, quantity: 3, productId: 7, price: 249.99, clientId: 1 },
-    { sheetId: 5, quantity: 8, productId: 1, price: 24.99, clientId: 7 },
-    { sheetId: 5, quantity: 1, productId: 3, price: 149.99, clientId: 8 },
-    { sheetId: 6, quantity: 6, productId: 5, price: 35.0, clientId: 9 },
-    { sheetId: 6, quantity: 2, productId: 4, price: 449.99, clientId: 10 },
-    { sheetId: 7, quantity: 4, productId: 2, price: 49.99, clientId: 3 },
-    { sheetId: 7, quantity: 1, productId: 8, price: 1999.99, clientId: 4 },
-    { sheetId: 8, quantity: 12, productId: 1, price: 24.99, clientId: 5 },
-    { sheetId: 8, quantity: 2, productId: 6, price: 99.99, clientId: 6 },
-    { sheetId: 9, quantity: 1, productId: 4, price: 499.99, clientId: 7 },
-    { sheetId: 9, quantity: 5, productId: 3, price: 139.99, clientId: 8 },
-    { sheetId: 10, quantity: 3, productId: 7, price: 249.99, clientId: 9 },
-    { sheetId: 10, quantity: 2, productId: 5, price: 39.99, clientId: 10 },
-    { sheetId: 11, quantity: 7, productId: 1, price: 24.99, clientId: 1 },
-    { sheetId: 11, quantity: 1, productId: 2, price: 49.99, clientId: 2 },
-    { sheetId: 12, quantity: 4, productId: 3, price: 149.99, clientId: 3 },
-    { sheetId: 12, quantity: 1, productId: 8, price: 1999.99, clientId: 4 },
+  // Create some example orders for userId 1
+  const orders = await Order.bulkCreate([
+    {
+      userId: 1,
+      sheetId: sheets[0].sheetId, // January 2025 Commissions
+      clientId: clients[0].clientId, // Acme Corp
+      orderStatus: "placed",
+    },
+    {
+      userId: 1,
+      sheetId: sheets[0].sheetId,
+      clientId: clients[1].clientId, // Globex Industries
+      orderStatus: "in progress",
+    },
+    {
+      userId: 1,
+      sheetId: sheets[2].sheetId, // December 2024 Commissions
+      clientId: clients[2].clientId, // Initech
+      orderStatus: "delivered",
+    },
+  ]);
+
+  // Create order items tied to those orders and products
+  await OrderItem.bulkCreate([
+    {
+      orderId: orders[0].orderId,
+      productId: products[0].productId, // Editorial Links
+      quantity: 2,
+      price: 600,
+      productNameSnapshot: products[0].productName,
+      defaultPriceSnapshot: products[0].defaultPrice,
+      commissionRateSnapshot: products[0].commissionRate,
+      spiffSnapshot: products[0].spiff,
+      costSnapshot: products[0].cost,
+      priceSnapshot: 600,
+    },
+    {
+      orderId: orders[0].orderId,
+      productId: products[3].productId, // News Links
+      quantity: 5,
+      price: 900,
+      productNameSnapshot: products[3].productName,
+      defaultPriceSnapshot: products[3].defaultPrice,
+      commissionRateSnapshot: products[3].commissionRate,
+      spiffSnapshot: products[3].spiff,
+      costSnapshot: products[3].cost,
+      priceSnapshot: 900,
+    },
+    {
+      orderId: orders[1].orderId,
+      productId: products[1].productId, // Expert Links
+      quantity: 1,
+      price: 5000,
+      productNameSnapshot: products[1].productName,
+      defaultPriceSnapshot: products[1].defaultPrice,
+      commissionRateSnapshot: products[1].commissionRate,
+      spiffSnapshot: products[1].spiff,
+      costSnapshot: products[1].cost,
+      priceSnapshot: 5000,
+    },
+    {
+      orderId: orders[2].orderId,
+      productId: products[8].productId, // Linkable Content
+      quantity: 3,
+      price: 700,
+      productNameSnapshot: products[8].productName,
+      defaultPriceSnapshot: products[8].defaultPrice,
+      commissionRateSnapshot: products[8].commissionRate,
+      spiffSnapshot: products[8].spiff,
+      costSnapshot: products[8].cost,
+      priceSnapshot: 700,
+    },
   ]);
 
   console.log(
-    `Seeded 1 user, ${clients.length} clients, ${products.length} products, ${sheets.length} commission sheets, ${items.length} commission items.`,
+    `Seeded 1 user, ${clients.length} clients, ${products.length} products, ${sheets.length} commission sheets, ${orders.length} orders, 4 order items`,
   );
   process.exit(0);
 }

@@ -1,4 +1,4 @@
-import { CommissionSheet, CommissionItem, Product, Client } from "../model";
+import { CommissionSheet, Order, OrderItem, Client } from "../model";
 import { Request, Response } from "express";
 import { Op } from "sequelize";
 
@@ -132,9 +132,9 @@ export default {
       res.status(500).send("Internal server error");
     }
   },
-  getClientSheets: async (req: Request, res: Response) => {
+  getClientOrders: async (req: Request, res: Response) => {
     try {
-      console.log("getClientSheets");
+      console.log("getClientOrders");
 
       if (!req.session.user) {
         res.status(401).send("No user signed in!");
@@ -144,16 +144,10 @@ export default {
 
       const { clientId } = req.params;
 
-      const items = await CommissionItem.findAll({ where: { clientId } });
+      const orders = await Order.findAll({ where: { clientId } });
 
-      const sheetIds = [...new Set(items.map((item) => item.sheetId))];
-
-      const sheets = await CommissionSheet.findAll({
-        where: { sheetId: { [Op.in]: sheetIds } },
-      });
-
-      if (sheets.length) {
-        res.send(sheets);
+      if (orders) {
+        res.send(orders);
       } else {
         res.status(400).send("No sheets found");
       }

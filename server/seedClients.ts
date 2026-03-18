@@ -5,7 +5,6 @@ import {
   Client,
   Product,
   CommissionSheet,
-  CommissionItem,
   UserProductCommission,
 } from "./model.js";
 

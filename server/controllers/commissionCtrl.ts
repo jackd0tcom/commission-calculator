@@ -1,13 +1,5 @@
-import {
-  CommissionSheet,
-  CommissionItem,
-  Product,
-  User,
-  Client,
-  UserProductCommission,
-} from "../model";
+import { CommissionSheet, Product, Order, OrderItem, User } from "../model";
 import { Request, Response } from "express";
-import { Order, Op } from "sequelize";
 
 export default {
   getCommissionSheets: async (req: Request, res: Response) => {
@@ -28,15 +20,8 @@ export default {
           attributes: ["profilePic", "firstName", "lastName"],
         },
         {
-          model: CommissionItem,
+          model: Order,
           required: false,
-          include: [
-            {
-              model: Product,
-              attributes: ["cost", "defaultPrice", "commissionRate"],
-              required: false,
-            },
-          ],
         },
       ];
 
@@ -89,7 +74,7 @@ export default {
             attributes: ["profilePic", "firstName", "lastName"],
           },
           {
-            model: CommissionItem,
+            model: Order,
             required: false,
             include: [
               {
@@ -164,44 +149,43 @@ export default {
         }
       }
 
-      const items = await CommissionItem.findAll({
+      const orders = await Order.findAll({
         where: { sheetId },
-        order: [["itemId", "ASC"]],
         include: [
           {
-            model: Client,
-            as: "client",
+            model: OrderItem,
+            as: "item",
           },
         ],
       });
 
-      const itemsWithProducts = await Promise.all(
-        items.map(async (item) => {
-          const itemData = item.toJSON();
-          const product = await Product.findOne({
-            where: { productId: item.productId },
-            include: [
-              {
-                model: UserProductCommission,
-                where: { userId: sheet?.userId },
-                required: false,
-              },
-            ],
-          });
-          return {
-            ...itemData,
-            product,
-          };
-        }),
-      );
+      // const itemsWithProducts = await Promise.all(
+      //   items.map(async (item) => {
+      //     const itemData = item.toJSON();
+      //     const product = await Product.findOne({
+      //       where: { productId: item.productId },
+      //       include: [
+      //         {
+      //           model: UserProductCommission,
+      //           where: { userId: sheet?.userId },
+      //           required: false,
+      //         },
+      //       ],
+      //     });
+      //     return {
+      //       ...itemData,
+      //       product,
+      //     };
+      //   }),
+      // );
 
-      const sheetWithItems = {
+      const sheetWithOrders = {
         ...sheet?.dataValues,
-        items: [...itemsWithProducts],
+        orders,
       };
 
-      if (sheetWithItems) {
-        res.send(sheetWithItems);
+      if (sheetWithOrders) {
+        res.send(sheetWithOrders);
       } else {
         res.status(400).send("No sheet found");
       }
@@ -232,29 +216,29 @@ export default {
         await sheet?.update({ submitDate: new Date() });
       }
 
-      if (value === "paid") {
-        const items = await CommissionItem.findAll({ where: { sheetId } });
-        await Promise.all(
-          items.map(async (item) => {
-            if (!item.productId) return;
-            const product = await Product.findOne({
-              where: { productId: item.productId },
-            });
-            const client = await Client.findOne({
-              where: { clientId: item.clientId },
-            });
-            await item.update({
-              productNameSnapshot: product?.productName,
-              defaultPriceSnapshot: product?.defaultPrice,
-              commissionRateSnapshot: product?.commissionRate,
-              spiffSnapshot: product?.spiff ?? 0,
-              costSnapshot: product?.cost,
-              clientNameSnapshot: client?.clientName,
-              priceSnapshot: item.price ?? product?.defaultPrice,
-            });
-          }),
-        );
-      }
+      // if (value === "paid") {
+      //   const items = await CommissionItem.findAll({ where: { sheetId } });
+      //   await Promise.all(
+      //     items.map(async (item) => {
+      //       if (!item.productId) return;
+      //       const product = await Product.findOne({
+      //         where: { productId: item.productId },
+      //       });
+      //       const client = await Client.findOne({
+      //         where: { clientId: item.clientId },
+      //       });
+      //       await item.update({
+      //         productNameSnapshot: product?.productName,
+      //         defaultPriceSnapshot: product?.defaultPrice,
+      //         commissionRateSnapshot: product?.commissionRate,
+      //         spiffSnapshot: product?.spiff ?? 0,
+      //         costSnapshot: product?.cost,
+      //         clientNameSnapshot: client?.clientName,
+      //         priceSnapshot: item.price ?? product?.defaultPrice,
+      //       });
+      //     }),
+      //   );
+      // }
 
       await sheet?.update({ [fieldName]: value });
 
@@ -268,105 +252,105 @@ export default {
       res.status(500).send("Internal server error");
     }
   },
-  updateSheetItem: async (req: Request, res: Response) => {
-    try {
-      console.log("updateSheetItem");
+  // updateSheetItem: async (req: Request, res: Response) => {
+  //   try {
+  //     console.log("updateSheetItem");
 
-      if (!req.session.user) {
-        console.log("user not logged in / no session set up");
-        return;
-      }
+  //     if (!req.session.user) {
+  //       console.log("user not logged in / no session set up");
+  //       return;
+  //     }
 
-      const { itemId, fieldName, value } = req.body;
-      let newProduct;
-      let payload;
+  //     const { itemId, fieldName, value } = req.body;
+  //     let newProduct;
+  //     let payload;
 
-      const item = await CommissionItem.findOne({ where: { itemId } });
+  //     const item = await CommissionItem.findOne({ where: { itemId } });
 
-      if (!item) {
-        res.status(400).send("No sheet found");
-        return;
-      }
+  //     if (!item) {
+  //       res.status(400).send("No sheet found");
+  //       return;
+  //     }
 
-      await item?.update({ [fieldName]: value });
+  //     await item?.update({ [fieldName]: value });
 
-      if (fieldName === "productId") {
-        newProduct = await Product.findOne({
-          where: { productId: value },
-        });
-        payload = { ...item.toJSON(), newProduct };
-      } else payload = item.toJSON();
+  //     if (fieldName === "productId") {
+  //       newProduct = await Product.findOne({
+  //         where: { productId: value },
+  //       });
+  //       payload = { ...item.toJSON(), newProduct };
+  //     } else payload = item.toJSON();
 
-      if (item) {
-        res.send(payload);
-      } else {
-        res.status(400).send("No item found");
-      }
-    } catch (error) {
-      console.error("Error getting sheets:", error);
-      res.status(500).send("Internal server error");
-    }
-  },
-  newSheetItem: async (req: Request, res: Response) => {
-    try {
-      console.log("newSheetItem");
+  //     if (item) {
+  //       res.send(payload);
+  //     } else {
+  //       res.status(400).send("No item found");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error getting sheets:", error);
+  //     res.status(500).send("Internal server error");
+  //   }
+  // },
+  // newSheetItem: async (req: Request, res: Response) => {
+  //   try {
+  //     console.log("newSheetItem");
 
-      if (!req.session.user) {
-        console.log("user not logged in / no session set up");
-        return;
-      }
+  //     if (!req.session.user) {
+  //       console.log("user not logged in / no session set up");
+  //       return;
+  //     }
 
-      const { sheetId } = req.body;
+  //     const { sheetId } = req.body;
 
-      const sheet = await CommissionSheet.findOne({ where: { sheetId } });
+  //     const sheet = await CommissionSheet.findOne({ where: { sheetId } });
 
-      if (!sheet) {
-        res.status(400).send("No sheet found");
-        return;
-      }
-      const item = await CommissionItem.create({ sheetId });
+  //     if (!sheet) {
+  //       res.status(400).send("No sheet found");
+  //       return;
+  //     }
+  //     const item = await CommissionItem.create({ sheetId });
 
-      if (!item) {
-        res.status(400).send("Error creating item");
-        return;
-      }
+  //     if (!item) {
+  //       res.status(400).send("Error creating item");
+  //       return;
+  //     }
 
-      if (item) {
-        res.send(item);
-      } else {
-        res.status(400).send("No sheet found");
-      }
-    } catch (error) {
-      console.error("Error getting sheets:", error);
-      res.status(500).send("Internal server error");
-    }
-  },
-  deleteSheetItem: async (req: Request, res: Response) => {
-    try {
-      console.log("deleteSheetItem");
+  //     if (item) {
+  //       res.send(item);
+  //     } else {
+  //       res.status(400).send("No sheet found");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error getting sheets:", error);
+  //     res.status(500).send("Internal server error");
+  //   }
+  // },
+  // deleteSheetItem: async (req: Request, res: Response) => {
+  //   try {
+  //     console.log("deleteSheetItem");
 
-      if (!req.session.user) {
-        console.log("user not logged in / no session set up");
-        return;
-      }
+  //     if (!req.session.user) {
+  //       console.log("user not logged in / no session set up");
+  //       return;
+  //     }
 
-      const { itemId } = req.body;
+  //     const { itemId } = req.body;
 
-      const item = await CommissionItem.findOne({ where: { itemId } });
+  //     const item = await CommissionItem.findOne({ where: { itemId } });
 
-      if (!item) {
-        res.status(400).send("Error creating item");
-        return;
-      }
+  //     if (!item) {
+  //       res.status(400).send("Error creating item");
+  //       return;
+  //     }
 
-      await item.destroy();
+  //     await item.destroy();
 
-      res.status(200).send("Item deleted successfully");
-    } catch (error) {
-      console.error("Error getting sheets:", error);
-      res.status(500).send("Internal server error");
-    }
-  },
+  //     res.status(200).send("Item deleted successfully");
+  //   } catch (error) {
+  //     console.error("Error getting sheets:", error);
+  //     res.status(500).send("Internal server error");
+  //   }
+  // },
   deleteSheet: async (req: Request, res: Response) => {
     try {
       console.log("deleteSheet");
