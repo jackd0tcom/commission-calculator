@@ -1,0 +1,29 @@
+.orders-list-wrapper {
+  padding: 15px;
+}
+.orders-list-item {
+  display: grid;
+  grid-template-columns: 0.3fr 2fr 1fr 1fr 1fr;
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.9rem;
+  align-items: center;
+  justify-items: start;
+  transition: 100ms;
+}
+.orders-list-item:hover {
+  background-color: var(--hover);
+  cursor: pointer;
+}
+
+.order-status-badge {
+  padding: 5px 12px;
+  border-radius: 5px;
+  color: white;
+}
+.delivered-badge {
+  background-color: var(--green);
+}
+.in-progress-badge {
+  background-color: var(--blue);
+}

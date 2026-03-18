@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import { FaListCheck } from "react-icons/fa6";
 import { FaUserTie } from "react-icons/fa";
 import { FaMoneyCheckDollar } from "react-icons/fa6";
+import { FaBoxOpen } from "react-icons/fa6";
 
 const Nav = () => {
   const user = useSelector((state: any) => state.user);
@@ -24,6 +25,15 @@ const Nav = () => {
               }
             >
               <FaCalculator /> Commission Sheets
+            </NavLink>
+            <NavLink
+              to="/orders"
+              className={({ isActive }) =>
+                isActive ? "active-nav nav-button" : "inactive-nav nav-button"
+              }
+            >
+              <FaBoxOpen />
+              Orders
             </NavLink>
             <NavLink
               to="/products"

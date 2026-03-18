@@ -1,4 +1,11 @@
-import { CommissionSheet, Product, Order, OrderItem, User } from "../model";
+import {
+  CommissionSheet,
+  Product,
+  Order,
+  OrderItem,
+  User,
+  Client,
+} from "../model";
 import { Request, Response } from "express";
 
 export default {
@@ -22,6 +29,10 @@ export default {
         {
           model: OrderItem,
           required: false,
+        },
+        {
+          model: Client,
+          as: "client",
         },
       ];
 

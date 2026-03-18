@@ -251,7 +251,7 @@ async function seed() {
       userId: 1,
       sheetId: sheets[0].sheetId, // January 2025 Commissions
       clientId: clients[0].clientId, // Acme Corp
-      orderStatus: "placed",
+      orderStatus: "in progress",
     },
     {
       userId: 1,
