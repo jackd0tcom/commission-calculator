@@ -33,7 +33,7 @@ const Clients = () => {
 
   const getSheets = async (clientId: number) => {
     try {
-      await axios.get(`/api/getClientSheets/${clientId}`).then((res) => {
+      await axios.get(`/api/getClientOrders/${clientId}`).then((res) => {
         if (res.status === 200) {
           setSheetList(res.data);
         }

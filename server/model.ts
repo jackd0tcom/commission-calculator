@@ -85,43 +85,73 @@ CommissionSheet.init(
   },
 );
 
-export class CommissionItem extends Model {}
-CommissionItem.init(
+export class Order extends Model {}
+Order.init(
+  {
+    orderId: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    sheetId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: { model: "commission_sheets", key: "sheet_id" },
+    },
+    clientId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: { model: "clients", key: "client_id" },
+    },
+    orderStatus: {
+      type: DataTypes.ENUM("placed", "in progress", "delivered"),
+      allowNull: false,
+      defaultValue: "placed",
+    },
+  },
+  {
+    sequelize: db,
+    modelName: "order",
+    tableName: "orders",
+    timestamps: true,
+  },
+);
+
+export class OrderItem extends Model {}
+OrderItem.init(
   {
     itemId: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    sheetId: {
+    orderId: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: { model: "commission_sheets", key: "sheet_id" },
+      references: { model: "orders", key: "orderId" },
     },
     quantity: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 1 },
     productId: {
       type: DataTypes.INTEGER,
       allowNull: true,
-      references: { model: "products", key: "product_id" },
+      references: { model: "products", key: "productId" },
     },
     price: { type: DataTypes.DECIMAL(10, 2), allowNull: true },
-    clientId: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-      references: { model: "clients", key: "client_id" },
-    },
     productNameSnapshot: { type: DataTypes.STRING, allowNull: true },
     defaultPriceSnapshot: { type: DataTypes.DECIMAL(10, 2), allowNull: true },
     commissionRateSnapshot: { type: DataTypes.DECIMAL(5, 4), allowNull: true },
     spiffSnapshot: { type: DataTypes.DECIMAL(10, 2), allowNull: true },
     costSnapshot: { type: DataTypes.DECIMAL(10, 2), allowNull: true },
-    clientNameSnapshot: { type: DataTypes.STRING, allowNull: true },
     priceSnapshot: { type: DataTypes.DECIMAL(10, 2), allowNull: true },
   },
   {
     sequelize: db,
-    modelName: "commission_item",
-    tableName: "commission_items",
+    modelName: "order_item",
+    tableName: "order_items",
     timestamps: true,
   },
 );
@@ -177,7 +207,7 @@ UserProductCommission.init(
     productId: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: { model: "products", key: "product_id" },
+      references: { model: "products", key: "productId" },
     },
     commissionRate: {
       type: DataTypes.DECIMAL(5, 4),
@@ -221,20 +251,26 @@ Client.init(
   },
 );
 
-CommissionSheet.hasMany(CommissionItem, { foreignKey: "sheetId" });
-CommissionItem.belongsTo(CommissionSheet, { foreignKey: "sheetId" });
+CommissionSheet.hasMany(Order, { foreignKey: "sheet_id" });
+Order.belongsTo(CommissionSheet, { foreignKey: "sheet_id" });
 
-CommissionItem.belongsTo(Client, { foreignKey: "clientId", as: "client" });
-Client.hasMany(CommissionItem, {
-  foreignKey: "clientId",
-  as: "commissionItems",
+Order.hasMany(OrderItem, { foreignKey: "order_id" });
+OrderItem.belongsTo(Order, { foreignKey: "order_id" });
+
+Order.belongsTo(Client, { foreignKey: "client_id", as: "client" });
+Client.hasMany(Order, {
+  foreignKey: "client_id",
+  as: "orderItems",
 });
 
-Product.hasMany(CommissionItem, { foreignKey: "productId" });
-CommissionItem.belongsTo(Product, { foreignKey: "productId" });
+Product.hasMany(OrderItem, { foreignKey: "product_id" });
+OrderItem.belongsTo(Product, { foreignKey: "product_id" });
 
 User.hasMany(CommissionSheet, { foreignKey: "userId" });
 CommissionSheet.belongsTo(User, { foreignKey: "userId" });
+
+User.hasMany(Order, { foreignKey: "userId" });
+Order.belongsTo(User, { foreignKey: "userId" });
 
 User.belongsToMany(Product, {
   through: UserProductCommission,
@@ -244,7 +280,7 @@ Product.belongsToMany(User, {
   through: UserProductCommission,
   foreignKey: "productId",
 });
-Product.hasMany(UserProductCommission, { foreignKey: "productId" });
-UserProductCommission.belongsTo(Product, { foreignKey: "productId" });
+Product.hasMany(UserProductCommission, { foreignKey: "product_id" });
+UserProductCommission.belongsTo(Product, { foreignKey: "product_id" });
 
 export { db };
