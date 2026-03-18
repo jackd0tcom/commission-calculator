@@ -6,6 +6,7 @@ import productCtrl from "./controllers/productCtrl";
 import commissionCtrl from "./controllers/commissionCtrl";
 import userCtrl from "./controllers/userCtrl";
 import clientCtrl from "./controllers/clientCtrl";
+import orderCtrl from "./controllers/orderCtrl.js";
 import { db } from "./model.js";
 
 const {
@@ -16,6 +17,16 @@ const {
   getAdminProducts,
   updateUserCommissionRate,
 } = productCtrl;
+const {
+  getOrders,
+  newOrder,
+  getOrder,
+  updateOrderItem,
+  newOrderItem,
+  deleteOrderItem,
+  updateOrder,
+  deleteOrder,
+} = orderCtrl;
 const {
   getCommissionSheets,
   getPendingSheets,
@@ -87,6 +98,16 @@ app.post("/api/updateSheet", updateSheet);
 // app.post(`/api/newSheetItem`, newSheetItem);
 // app.post(`/api/deleteSheetItem`, deleteSheetItem);
 app.post(`/api/deleteSheet`, deleteSheet);
+
+// Order endpoints
+app.get("/api/getOrders", getOrders);
+app.get(`/api/getOrder/:orderId`, getOrder);
+app.post(`/api/updateOrderItem`, updateOrderItem);
+app.post(`/api/newOrder`, newOrder);
+app.post("/api/updateOrder", updateOrder);
+app.post(`/api/newOrderItem`, newOrderItem);
+app.post(`/api/deleteOrderItem`, deleteOrderItem);
+app.post(`/api/deleteOrder`, deleteOrder);
 
 // Client endpoints
 app.get(`/api/getClients`, getClients);
