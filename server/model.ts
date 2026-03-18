@@ -108,7 +108,7 @@ Order.init(
       references: { model: "clients", key: "client_id" },
     },
     orderStatus: {
-      type: DataTypes.ENUM("placed", "in progress", "delivered"),
+      type: DataTypes.ENUM("in progress", "delivered"),
       allowNull: false,
       defaultValue: "placed",
     },

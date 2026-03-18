@@ -7,6 +7,7 @@
 @import "./styles/Submitted.css";
 @import "./styles/Admin.css";
 @import "./styles/Profile.css";
+@import "./styles/Orders.css";
 
 #root {
   --black: #222222;

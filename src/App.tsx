@@ -16,6 +16,7 @@ import { useSelector } from "react-redux";
 import Admin from "./Pages/Admin.tsx";
 import Submitted from "./Pages/Submitted.tsx";
 import Approved from "./Pages/Approved.tsx";
+import Orders from "./Pages/Orders.tsx";
 
 function App() {
   const { isAuthenticated, isLoading, error } = useAuth0();
@@ -67,6 +68,7 @@ function App() {
                 path="/commission-sheets"
                 element={<Commissions />}
               ></Route>
+              <Route path="/orders" element={<Orders />}></Route>
               <Route path="/profile" element={<Profile />}></Route>
               <Route
                 path="/sheet/:sheetId"
