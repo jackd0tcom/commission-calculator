@@ -5,18 +5,28 @@ import ProfilePic from "../components/UI/ProfilePic";
 import { useNavigate } from "react-router";
 import axios from "axios";
 import ClientPicker from "../components/Orders/ClientPicker";
+import OrderItem from "../components/Orders/OrderItem";
+import OrderFooter from "../components/Orders/OrderFooter";
+import { FaMagnifyingGlass } from "react-icons/fa6";
+import { FaTrashCan } from "react-icons/fa6";
 
 const OrderPage = () => {
   const { orderId } = useParams();
   const user = useSelector((state: any) => state.user);
   const navigate = useNavigate();
   const [newClient, setNewClient] = useState({ clientId: 0 });
-  const [orderData, setOrderData] = useState({});
+  const [orderData, setOrderData] = useState({
+    orderId: orderId,
+    sheetId: null,
+    clientId: null,
+    orderStatus: "in progress",
+  });
   const [orderItems, setOrderItems] = useState([{}]);
   const [clientList, setClientList] = useState([{}]);
   const [productList, setProductList] = useState([{}]);
   const [unauthorized, setUnauthorized] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [notFound, setNotFound] = useState(false);
 
   const fetchData = async () => {
     try {
@@ -51,7 +61,10 @@ const OrderPage = () => {
       await Promise.all(promises);
     } catch (error: any) {
       console.log(error);
-      if (error.status === 401) {
+      if (error?.response?.status === 404) {
+        setNotFound(true);
+      }
+      if (error?.response?.status === 401) {
         setUnauthorized(true);
       }
     } finally {
@@ -130,10 +143,63 @@ const OrderPage = () => {
             Create New Order
           </button>
         </div>
+      ) : notFound ? (
+        <>
+          <div className="page-header-wrapper">
+            <h2>Order #{orderId}</h2>
+          </div>
+          <div className="order-page-body order-not-found">
+            <FaMagnifyingGlass className="not-found-icon" />
+            <div className="order-not-found-content">
+              <h2>404</h2>
+              <h3>Order Not Found</h3>
+              <button onClick={() => navigate("/orders")}>View Orders</button>
+            </div>
+          </div>
+        </>
       ) : (
         <>
           <div className="page-header-wrapper">
             <h2>Order #{orderId}</h2>
+          </div>
+          <div className="order-page-body">
+            <div className="order-items-list">
+              <div className="order-items-list-item order-items-list-head">
+                <p>#</p>
+                <p>Product</p>
+                <p>Quantity</p>
+                <p>Price</p>
+                <p>Cost</p>
+                <p>Contribution</p>
+                <p>Commission</p>
+                <p>Bonus</p>
+                <p>Total</p>
+                <FaTrashCan className={"trash-can-icon"} />
+              </div>
+              <div className="order-items-list-wrapper">
+                {orderItems?.map((item, index) => (
+                  <OrderItem
+                    item={item}
+                    index={index}
+                    setOrderItems={setOrderItems}
+                    products={productList}
+                    onQuantityChange={handleQuantityChange}
+                    onPriceChange={handlePriceChange}
+                    orderStatus={orderData.orderStatus}
+                  />
+                ))}
+                {orderData?.orderStatus === "in progress" && (
+                  <div
+                    className="sheet-item new-item-row"
+                    onClick={() => handleAddItem()}
+                  >
+                    <p>+</p>
+                    <p>Add Product</p>
+                  </div>
+                )}
+              </div>
+              <OrderFooter items={orderItems} />
+            </div>
           </div>
         </>
       )}

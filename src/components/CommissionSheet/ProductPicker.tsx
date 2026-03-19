@@ -14,7 +14,9 @@ const ProductPicker = ({
   currentProduct,
   handleProductChange,
 }: props) => {
-  const [selectedProductId, setSelectedProductId] = useState(currentProduct);
+  const [selectedProductId, setSelectedProductId] = useState(
+    currentProduct.productId,
+  );
   const [showDropDown, setShowDropdown] = useState(false);
   const dropdownRef = useRef<HTMLInputElement>(null);
 
@@ -25,7 +27,7 @@ const ProductPicker = ({
   const updateProduct = async (id: number) => {
     try {
       await axios
-        .post("/api/updateSheetItem", {
+        .post("/api/updateOrderItem", {
           itemId: item.itemId,
           fieldName: "productId",
           value: id,
