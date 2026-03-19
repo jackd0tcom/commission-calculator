@@ -27,3 +27,8 @@
 .in-progress-badge {
   background-color: var(--blue);
 }
+
+/* Client Picker */
+.client-picker-wrapper {
+  position: relative;
+}
