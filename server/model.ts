@@ -110,7 +110,7 @@ Order.init(
     orderStatus: {
       type: DataTypes.ENUM("in progress", "delivered"),
       allowNull: false,
-      defaultValue: "placed",
+      defaultValue: "in progress",
     },
   },
   {

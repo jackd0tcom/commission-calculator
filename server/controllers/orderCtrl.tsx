@@ -105,6 +105,11 @@ export default {
 
       const order = await Order.findOne({ where: { orderId } });
 
+      if (!order) {
+        res.status(404).send("Order not found");
+        return;
+      }
+
       if (order.userId !== req.session.user.userId) {
         if (!req.session.user.isAdmin) {
           res.status(401).send("User is not allowed to view this order!");
@@ -114,6 +119,7 @@ export default {
 
       const orderItems = await OrderItem.findAll({
         where: { orderId },
+        include: [{ model: Product, required: false }],
       });
 
       // const itemsWithProducts = await Promise.all(

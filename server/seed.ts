@@ -274,36 +274,18 @@ async function seed() {
       productId: products[0].productId, // Editorial Links
       quantity: 2,
       price: 600,
-      productNameSnapshot: products[0].productName,
-      defaultPriceSnapshot: products[0].defaultPrice,
-      commissionRateSnapshot: products[0].commissionRate,
-      spiffSnapshot: products[0].spiff,
-      costSnapshot: products[0].cost,
-      priceSnapshot: 600,
     },
     {
       orderId: orders[0].orderId,
       productId: products[3].productId, // News Links
       quantity: 5,
       price: 900,
-      productNameSnapshot: products[3].productName,
-      defaultPriceSnapshot: products[3].defaultPrice,
-      commissionRateSnapshot: products[3].commissionRate,
-      spiffSnapshot: products[3].spiff,
-      costSnapshot: products[3].cost,
-      priceSnapshot: 900,
     },
     {
       orderId: orders[1].orderId,
       productId: products[1].productId, // Expert Links
       quantity: 1,
       price: 5000,
-      productNameSnapshot: products[1].productName,
-      defaultPriceSnapshot: products[1].defaultPrice,
-      commissionRateSnapshot: products[1].commissionRate,
-      spiffSnapshot: products[1].spiff,
-      costSnapshot: products[1].cost,
-      priceSnapshot: 5000,
     },
     {
       orderId: orders[2].orderId,
