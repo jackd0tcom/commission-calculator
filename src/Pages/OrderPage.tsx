@@ -7,6 +7,7 @@ import axios from "axios";
 import ClientPicker from "../components/Orders/ClientPicker";
 import OrderItem from "../components/Orders/OrderItem";
 import OrderFooter from "../components/Orders/OrderFooter";
+import Loader from "../components/UI/Loader";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import { FaTrashCan } from "react-icons/fa6";
 
@@ -124,7 +125,13 @@ const OrderPage = () => {
       }
   };
 
-  return (
+  return isLoading ? (
+    <Loader />
+  ) : unauthorized ? (
+    <div className="unauthorized">
+      <h2>You are not authorized to view this order</h2>
+    </div>
+  ) : (
     <div className="order-page-wrapper">
       {Number(orderId) === 0 ? (
         <div className="new-sheet-wrapper">
