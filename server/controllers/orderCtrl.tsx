@@ -70,8 +70,11 @@ export default {
         return;
       }
 
+      const { clientId } = req.body;
+
       const order = await Order.create({
-        userId: req.session.userId,
+        userId: req.session.user.userId,
+        clientId,
       });
 
       if (!order) {

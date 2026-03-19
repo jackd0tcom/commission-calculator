@@ -119,6 +119,7 @@ p {
   top: 110%;
   z-index: 100;
   box-shadow: var(--shadow);
+  overscroll-behavior: none;
 }
 .dropdown-item {
   padding: 8px 15px;

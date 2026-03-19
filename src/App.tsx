@@ -17,6 +17,7 @@ import Admin from "./Pages/Admin.tsx";
 import Submitted from "./Pages/Submitted.tsx";
 import Approved from "./Pages/Approved.tsx";
 import Orders from "./Pages/Orders.tsx";
+import OrderPage from "./Pages/OrderPage.tsx";
 
 function App() {
   const { isAuthenticated, isLoading, error } = useAuth0();
@@ -69,6 +70,7 @@ function App() {
                 element={<Commissions />}
               ></Route>
               <Route path="/orders" element={<Orders />}></Route>
+              <Route path="/order/:orderId" element={<OrderPage />}></Route>
               <Route path="/profile" element={<Profile />}></Route>
               <Route
                 path="/sheet/:sheetId"
