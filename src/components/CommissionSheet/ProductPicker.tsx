@@ -15,7 +15,7 @@ const ProductPicker = ({
   handleProductChange,
 }: props) => {
   const [selectedProductId, setSelectedProductId] = useState(
-    currentProduct.productId,
+    currentProduct?.productId,
   );
   const [showDropDown, setShowDropdown] = useState(false);
   const dropdownRef = useRef<HTMLInputElement>(null);
