@@ -6,6 +6,33 @@
 .orders-list-wrapper {
   padding: 15px;
 }
+.order-page-body {
+  height: 100%;
+  padding: 15px;
+  overflow: hidden;
+  background-color: var(--hover);
+}
+.order-items-list {
+  border: 1px solid var(--border);
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.order-items-list-head {
+  font-weight: 500;
+}
+.order-items-list-item {
+  display: grid;
+  grid-template-columns: 0.2fr 1.5fr 1fr 1.2fr 1fr 1fr 1fr 1fr 1fr 0.2fr;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.9rem;
+  background-color: white;
+}
 .orders-list-item {
   display: grid;
   grid-template-columns: 0.3fr 2fr 1fr 1fr 1fr;
@@ -19,6 +46,19 @@
 .orders-list-item:hover {
   background-color: var(--hover);
   cursor: pointer;
+}
+.order-items-list-wrapper {
+  height: calc(100% - 135px);
+  display: flex;
+  flex-direction: column;
+  overflow-y: scroll;
+  scrollbar-width: thin;
+}
+.order-sheet-footer {
+  position: absolute;
+  width: 100%;
+  border-top: 1px solid var(--border);
+  bottom: 0;
 }
 
 .order-status-badge {
@@ -36,22 +76,6 @@
 /* Client Picker */
 .client-picker-wrapper {
   position: relative;
-}
-.order-page-body {
-  height: 100%;
-  padding: 15px;
-}
-.order-items-list {
-  border: 1px solid var(--border);
-  height: 100%;
-}
-.order-items-list-item {
-  display: grid;
-  grid-template-columns: 0.2fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 0.2fr;
-  align-items: center;
-  gap: 10px;
-  padding: 6px 12px;
-  border-bottom: 1px solid var(--border);
 }
 
 /* order not found */
@@ -75,4 +99,8 @@
 }
 .order-not-found-content h3 {
   margin: 0;
+}
+
+.new-item-row {
+  margin-bottom: 30px;
 }
