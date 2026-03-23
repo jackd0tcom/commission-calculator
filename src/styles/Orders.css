@@ -6,6 +6,17 @@
 .orders-list-wrapper {
   padding: 15px;
 }
+.order-settings-wrapper {
+  position: relative;
+}
+.order-settings-dropdown {
+  right: 0;
+}
+.order-profile-wrapper {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
 .order-page-body {
   height: 100%;
   padding: 15px;
@@ -25,7 +36,7 @@
 }
 .order-items-list-item {
   display: grid;
-  grid-template-columns: 0.2fr 1.5fr 1fr 1.2fr 1fr 1fr 1fr 1fr 1fr 0.2fr;
+  grid-template-columns: 0.2fr 1.5fr 1fr 1.2fr 1fr 1fr 0.1fr;
   align-items: center;
   gap: 10px;
   padding: 6px 12px;

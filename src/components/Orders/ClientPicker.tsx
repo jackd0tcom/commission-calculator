@@ -6,6 +6,10 @@ interface props {
   setClientList: any;
   newClient: any;
   setNewClient: any;
+  currentClient: any;
+  setCurrentClient: any;
+  updateOrder: any;
+  orderId: number;
 }
 
 const ClientPicker = ({
@@ -13,6 +17,10 @@ const ClientPicker = ({
   clientList,
   newClient,
   setNewClient,
+  currentClient,
+  setCurrentClient,
+  updateOrder,
+  orderId,
 }: props) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef<HTMLInputElement>(null);
@@ -59,19 +67,29 @@ const ClientPicker = ({
     }
   };
 
+  const handleClientClick = (client: any) => {
+    if (orderId !== 0) {
+      updateOrder("clientId", client.clientId);
+      setCurrentClient(client);
+      setShowDropdown(false);
+    } else {
+      setNewClient(client);
+      setShowDropdown(false);
+    }
+  };
+
   return (
     <div className="client-picker-wrapper">
       <button onClick={() => setShowDropdown(!showDropdown)}>
-        {newClient.clientName ?? "Select a client"}
+        {currentClient?.clientName ??
+          newClient?.clientName ??
+          "Select a client"}
       </button>
       {showDropdown && (
         <div className="dropdown client-picker-dropdown" ref={dropdownRef}>
           {clientList?.map((client: any) => (
             <div
-              onClick={() => {
-                setNewClient(client);
-                setShowDropdown(false);
-              }}
+              onClick={() => handleClientClick(client)}
               className="dropdown-item client-picker-dropdown-item"
             >
               {client.clientName}

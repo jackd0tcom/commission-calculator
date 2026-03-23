@@ -14,7 +14,6 @@ const Orders = () => {
       await axios.get("/api/getOrders").then((res) => {
         if (res.status === 200) {
           setOrders(res.data);
-          console.log(res.data);
         }
       });
     } catch (error) {
@@ -39,7 +38,9 @@ const Orders = () => {
       <div className="page-header-wrapper">
         <h2>Orders</h2>
         <button
-          onClick={() => navigate("/order/0")}
+          onClick={() => {
+            navigate("/order/0");
+          }}
           className="new-sheet-button"
         >
           New Order

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import ProductPicker from "../CommissionSheet/ProductPicker";
+import OrderStatusPicker from "./OrderStatusPicker";
 import axios from "axios";
 import { formatDollarNoCents } from "../../helpers";
 import { TiDelete } from "react-icons/ti";
@@ -27,9 +28,7 @@ const OrderItem = ({
     item?.product ? item?.product : null,
   );
   const [quantity, setQuantity] = useState(item.quantity ? item.quantity : 0);
-  const userCommissionRate = currentProduct?.user_product_commissions
-    ? (currentProduct?.user_product_commissions[0].commissionRate ?? 0)
-    : null;
+  const [status, setStatus] = useState(item.itemStatus ?? "");
   const [price, setPrice] = useState(
     item.price
       ? item.price
@@ -37,16 +36,6 @@ const OrderItem = ({
         ? currentProduct.defaultPrice
         : 0,
   );
-  // if there is no product selected, i.e. when a new item is added, it is 0, else if there is not a userproductCommission item, it is the default commission, else if there is a userproductcommission rate then it is that
-  const commissionRate = currentProduct
-    ? (userCommissionRate ?? currentProduct?.commissionRate)
-    : 0;
-  const spiff = currentProduct ? currentProduct.spiff : 0;
-  let cost = currentProduct ? currentProduct.cost * item.quantity : 0;
-  const isSpiff = price >= item?.product?.defaultPrice;
-  let bonus = isSpiff ? spiff * quantity : 0;
-  let contribution = (price - (item?.product?.cost ?? 0)) * quantity;
-  let totalCommission = commissionRate * contribution;
 
   const handleProductChange = async (newProduct: any) => {
     setCurrentProduct(newProduct);
@@ -105,6 +94,25 @@ const OrderItem = ({
     }
   };
 
+  const handleUpdateStatus = async (status: string) => {
+    const newStatus = status === "in progress" ? "delivered" : "in progress";
+    try {
+      await axios
+        .post("/api/updateOrderItem", {
+          itemId: item.itemId,
+          fieldName: "itemStatus",
+          value: newStatus,
+        })
+        .then((res) => {
+          if (res.status === 200) {
+            setStatus(newStatus);
+          }
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return orderStatus === "in progress" ? (
     <div className="order-items-list-item">
       <p className="sheet-item-number">{index + 1}</p>
@@ -142,11 +150,11 @@ const OrderItem = ({
           onBlur={() => persistPriceChange(price)}
         />
       </div>
-      <p>{formatDollarNoCents(cost)}</p>
-      <p>{formatDollarNoCents(contribution)}</p>
-      <p>{formatDollarNoCents(totalCommission)}</p>
-      <p>{formatDollarNoCents(bonus)}</p>
-      <p>{formatDollarNoCents(totalCommission + bonus)}</p>
+      <OrderStatusPicker
+        currentStatus={status}
+        handleUpdateStatus={handleUpdateStatus}
+      />
+      <p>{formatDollarNoCents(quantity * price)}</p>
       <TiDelete
         className="sheet-item-delete"
         onClick={() => handleDeleteItem()}
@@ -155,15 +163,11 @@ const OrderItem = ({
   ) : (
     <div className="order-items-list-item">
       <p className="sheet-item-number">{index + 1}</p>
-      <p>{item.clientNameSnapshot}</p>
       <p>{item.productNameSnapshot}</p>
       <p>{quantity}</p>
       <p>${item.priceSnapshot}</p>
-      <p>{formatDollarNoCents(item.costSnapshot)}</p>
-      <p>{formatDollarNoCents(contribution)}</p>
-      <p>{formatDollarNoCents(totalCommission)}</p>
-      <p>{formatDollarNoCents(bonus)}</p>
-      <p>{formatDollarNoCents(totalCommission + bonus)}</p>
+      <p>{item.itemStatus}</p>
+      <p>{formatDollarNoCents(quantity * price)}</p>
       <p className="delete-placeholder"></p>
     </div>
   );

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router";
 import { useSelector } from "react-redux";
 import ProfilePic from "../components/UI/ProfilePic";
@@ -10,6 +10,7 @@ import OrderFooter from "../components/Orders/OrderFooter";
 import Loader from "../components/UI/Loader";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import { FaTrashCan } from "react-icons/fa6";
+import { capitalize } from "../helpers";
 
 const OrderPage = () => {
   const { orderId } = useParams();
@@ -24,10 +25,13 @@ const OrderPage = () => {
   });
   const [orderItems, setOrderItems] = useState([{}]);
   const [clientList, setClientList] = useState([{}]);
+  const [currentClient, setCurrentClient] = useState({});
   const [productList, setProductList] = useState([{}]);
   const [unauthorized, setUnauthorized] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [notFound, setNotFound] = useState(false);
+  const dropdownRef = useRef<HTMLInputElement>(null);
 
   const fetchData = async () => {
     try {
@@ -41,7 +45,7 @@ const OrderPage = () => {
               if (res.data.orderItems && res.data.orderItems.length > 0) {
                 setOrderItems(res.data.orderItems);
               }
-              console.log(res.data);
+              setCurrentClient(res.data.client ?? {});
             }
           }),
         );
@@ -75,7 +79,30 @@ const OrderPage = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [orderId]);
+
+  //   Handles blur
+  useEffect(() => {
+    const handleClickOutside = (event: any) => {
+      // Don't close if clicking on the project-picker-button or its children
+      const isButtonClick = event.target.closest(".order-settings-button");
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target) &&
+        !isButtonClick
+      ) {
+        setShowSettings(false);
+      }
+    };
+
+    if (showSettings) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showSettings]);
 
   const handleQuantityChange = (itemId: number, quantity: number) => {
     setOrderItems((prev) =>
@@ -103,7 +130,7 @@ const OrderPage = () => {
   const updateOrder = async (fieldName: string, value: any) => {
     if (Number(orderId) === 0) {
       try {
-        await axios.post("/api/newOrder", { fieldName: value }).then((res) => {
+        await axios.post("/api/newOrder", { clientId: value }).then((res) => {
           if (res.status === 200) {
             navigate(`/order/${res.data.orderId}`);
           }
@@ -125,6 +152,18 @@ const OrderPage = () => {
       }
   };
 
+  const deleteOrder = async () => {
+    try {
+      await axios.post("/api/deleteOrder", { orderId }).then((res) => {
+        if (res.status === 200) {
+          navigate("/orders");
+        }
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return isLoading ? (
     <Loader />
   ) : unauthorized ? (
@@ -135,13 +174,19 @@ const OrderPage = () => {
     <div className="order-page-wrapper">
       {Number(orderId) === 0 ? (
         <div className="new-sheet-wrapper">
-          <ProfilePic src={user.profilePic} />
-          <h2>New Order</h2>
+          <div className="order-profile-wrapper">
+            <ProfilePic src={user.profilePic} />
+            <h2>Order #{orderId}</h2>
+          </div>
           <ClientPicker
             setClientList={setClientList}
             clientList={clientList}
             newClient={newClient}
             setNewClient={setNewClient}
+            currentClient={currentClient}
+            setCurrentClient={setCurrentClient}
+            updateOrder={updateOrder}
+            orderId={Number(orderId)}
           />
           <button
             onClick={() => updateOrder("clientId", newClient.clientId)}
@@ -149,11 +194,21 @@ const OrderPage = () => {
           >
             Create New Order
           </button>
+          <button
+            onClick={() => navigate("/orders")}
+            className="cancel-order-button"
+          >
+            Cancel
+          </button>
         </div>
       ) : notFound ? (
         <>
           <div className="page-header-wrapper">
-            <h2>Order #{orderId}</h2>
+            <div className="order-profile-wrapper">
+              <ProfilePic src={user.profilePic} />
+              <h2>Order #{orderId}</h2>
+              <p>{capitalize(orderData.orderStatus)}</p>
+            </div>
           </div>
           <div className="order-page-body order-not-found">
             <FaMagnifyingGlass className="not-found-icon" />
@@ -167,7 +222,39 @@ const OrderPage = () => {
       ) : (
         <>
           <div className="page-header-wrapper">
-            <h2>Order #{orderId}</h2>
+            <div className="order-profile-wrapper">
+              <ProfilePic src={user.profilePic} />
+              <h2>Order #{orderId}</h2>
+            </div>
+            <ClientPicker
+              clientList={clientList}
+              setClientList={setClientList}
+              newClient={newClient}
+              setNewClient={setNewClient}
+              currentClient={currentClient}
+              setCurrentClient={setCurrentClient}
+              updateOrder={updateOrder}
+              orderId={Number(orderId)}
+            />
+            <p>{capitalize(orderData.orderStatus)}</p>
+            <div className="order-settings-wrapper">
+              <button
+                className="order-settings-button"
+                onClick={() => setShowSettings(!showSettings)}
+              >
+                ...
+              </button>
+              {showSettings && (
+                <div
+                  className="order-settings-dropdown dropdown"
+                  ref={dropdownRef}
+                >
+                  <div onClick={() => deleteOrder()} className="dropdown-item">
+                    Delete Order
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
           <div className="order-page-body">
             <div className="order-items-list">
@@ -176,25 +263,26 @@ const OrderPage = () => {
                 <p>Product</p>
                 <p>Quantity</p>
                 <p>Price</p>
-                <p>Cost</p>
-                <p>Contribution</p>
-                <p>Commission</p>
-                <p>Bonus</p>
+                <p>Status</p>
                 <p>Total</p>
                 <FaTrashCan className={"trash-can-icon"} />
               </div>
               <div className="order-items-list-wrapper">
-                {orderItems?.map((item, index) => (
-                  <OrderItem
-                    item={item}
-                    index={index}
-                    setOrderItems={setOrderItems}
-                    products={productList}
-                    onQuantityChange={handleQuantityChange}
-                    onPriceChange={handlePriceChange}
-                    orderStatus={orderData.orderStatus}
-                  />
-                ))}
+                {orderItems?.length > 0 &&
+                  orderItems?.map(
+                    (item: any, index) =>
+                      item.itemId && (
+                        <OrderItem
+                          item={item}
+                          index={index}
+                          setOrderItems={setOrderItems}
+                          products={productList}
+                          onQuantityChange={handleQuantityChange}
+                          onPriceChange={handlePriceChange}
+                          orderStatus={orderData.orderStatus}
+                        />
+                      ),
+                  )}
                 {orderData?.orderStatus === "in progress" && (
                   <div
                     className="sheet-item new-item-row"

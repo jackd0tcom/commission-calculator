@@ -154,30 +154,9 @@ export default {
         include: [
           {
             model: OrderItem,
-            as: "item",
           },
         ],
       });
-
-      // const itemsWithProducts = await Promise.all(
-      //   items.map(async (item) => {
-      //     const itemData = item.toJSON();
-      //     const product = await Product.findOne({
-      //       where: { productId: item.productId },
-      //       include: [
-      //         {
-      //           model: UserProductCommission,
-      //           where: { userId: sheet?.userId },
-      //           required: false,
-      //         },
-      //       ],
-      //     });
-      //     return {
-      //       ...itemData,
-      //       product,
-      //     };
-      //   }),
-      // );
 
       const sheetWithOrders = {
         ...sheet?.dataValues,
