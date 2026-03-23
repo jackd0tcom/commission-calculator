@@ -2,20 +2,21 @@ import { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router";
 import axios from "axios";
-import SheetItem from "../components/CommissionSheet/SheetItem";
 import CommissionSheetFooter from "./CommissionSheetFooter";
+import SheetOrderItem from "../components/CommissionSheet/SheetOrderItem";
 import StatusPicker from "../components/CommissionSheet/StatusPicker";
 import { useNavigate } from "react-router";
-import { formatDateWithDay } from "../helpers";
-import { FaTrashCan } from "react-icons/fa6";
+import { formatDateWithDay, formatDateNoTime } from "../helpers";
 import ProfilePic from "../components/UI/ProfilePic";
+import Loader from "../components/UI/Loader";
+import { TiDelete } from "react-icons/ti";
 
 const CommissionSheet = () => {
   const { sheetId } = useParams();
   const navigate = useNavigate();
   const user = useSelector((state: any) => state.user);
-  const [clientList, setClientList] = useState([{}]);
   const [productList, setProductList] = useState([{}]);
+  const [orderList, setOrderList] = useState([{}]);
   const [unauthorized, setUnauthorized] = useState(false);
   const titleRef = useRef<HTMLInputElement>(null);
   const descriptionRef = useRef<HTMLTextAreaElement>(null);
@@ -32,6 +33,7 @@ const CommissionSheet = () => {
   const [sheetItems, setSheetItems] = useState([{}]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [selectedOrderList, setSelectedOrderList] = useState([{}]);
 
   const fetchData = async () => {
     try {
@@ -57,8 +59,17 @@ const CommissionSheet = () => {
       }
 
       promises.push(
-        axios.get("/api/getClients").then((res) => {
-          if (res.status === 200) setClientList(res.data);
+        axios.get("/api/getOrders").then((res) => {
+          if (res.status === 200) {
+            const availableOrders = res.data.filter(
+              (order: any) => !order.sheetId,
+            );
+            setOrderList(availableOrders);
+            const selectedOrders = res.data.filter(
+              (order: any) => order.sheetId === Number(sheetId),
+            );
+            setSelectedOrderList(selectedOrders);
+          }
         }),
       );
 
@@ -88,29 +99,6 @@ const CommissionSheet = () => {
     }
     fetchData();
   }, [user?.userId, sheetId]);
-
-  const handleQuantityChange = (itemId: number, quantity: number) => {
-    setSheetItems((prev) =>
-      prev.map((it: any) => (it.itemId === itemId ? { ...it, quantity } : it)),
-    );
-  };
-
-  const handlePriceChange = (itemId: number, price: number) => {
-    setSheetItems((prev) =>
-      prev.map((it: any) => (it.itemId === itemId ? { ...it, price } : it)),
-    );
-  };
-
-  const handleAddItem = async () => {
-    try {
-      await axios.post("/api/newSheetItem", { sheetId }).then((res) => {
-        console.log(res.data);
-        setSheetItems((prev) => [...prev, res.data]);
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   const handleTitleChange = (e: any) => {
     setSheetData({ ...sheetData, sheetTitle: e.target.value });
@@ -152,6 +140,57 @@ const CommissionSheet = () => {
           navigate(`/commission-sheets`);
         }
       });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleAddOrder = async (order: any) => {
+    try {
+      if (selectedOrderList.includes(order)) {
+        const trimmedList = selectedOrderList.filter(
+          (listOrder: any) => order.orderId !== listOrder.orderId,
+        );
+        setSelectedOrderList(trimmedList);
+        return;
+      }
+      await axios
+        .post("/api/updateOrder", {
+          orderId: order.orderId,
+          fieldName: "sheetId",
+          value: sheetId,
+        })
+        .then((res) => {
+          if (res.status === 200) {
+            const trimmedList = orderList.filter(
+              (listOrder: any) => order.orderId !== listOrder.orderId,
+            );
+            setOrderList(trimmedList);
+            setSelectedOrderList([...selectedOrderList, order]);
+          }
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleRemoveOrder = async (order: any) => {
+    try {
+      await axios
+        .post("/api/updateOrder", {
+          orderId: order.orderId,
+          fieldName: "sheetId",
+          value: null,
+        })
+        .then((res) => {
+          if (res.status === 200) {
+            const trimmedList = selectedOrderList.filter(
+              (listOrder: any) => order.orderId !== listOrder.orderId,
+            );
+            setOrderList([order, ...orderList]);
+            setSelectedOrderList(trimmedList);
+          }
+        });
     } catch (error) {
       console.log(error);
     }
@@ -216,58 +255,81 @@ const CommissionSheet = () => {
               />
             </div>
           </div>
-          <div className="sheet-items-list">
-            <div className="sheet-item sheet-items-list-head">
-              <p>#</p>
-              <p>Client</p>
-              <p>Product</p>
-              <p>Quantity</p>
-              <p>Price</p>
-              <p>Cost</p>
-              <p>Contribution</p>
-              <p>Commission</p>
-              <p>Bonus</p>
-              <p>Total</p>
-              <FaTrashCan className={"trash-can-icon"} />
-            </div>
-            {isLoading ? (
-              <p>Loading...</p>
-            ) : unauthorized ? (
-              <div className="unauthorized">
-                <p>You do not have permission to see this sheet!</p>
+          <div className="sheet-page-body">
+            <div className="sheet-order-list">
+              <div className="sheet-order-item  sheet-order-head">
+                <p>Order #</p>
+                <p>Client</p>
+                <p>Date</p>
               </div>
-            ) : (
-              <>
-                <div className="sheet-list-container">
-                  {sheetItems?.map((item, idx) => {
-                    return (
-                      <SheetItem
-                        index={idx}
-                        item={item}
-                        clientList={clientList}
-                        setClientList={setClientList}
-                        productList={productList}
-                        onQuantityChange={handleQuantityChange}
-                        onPriceChange={handlePriceChange}
-                        setSheetItems={setSheetItems}
-                        isDraft={sheetData.sheetStatus === "draft"}
-                        isPaid={sheetData.sheetStatus === "paid"}
-                      />
-                    );
-                  })}
-                  {sheetData?.sheetStatus === "draft" && (
-                    <div
-                      className="sheet-item new-item-row"
-                      onClick={() => handleAddItem()}
-                    >
-                      <p>+</p>
-                      <p>Add Product</p>
-                    </div>
-                  )}
+              {isLoading ? (
+                <Loader />
+              ) : (
+                orderList?.length > 0 &&
+                orderList?.map((order: any) => (
+                  <div
+                    className="sheet-order-item"
+                    onClick={() => handleAddOrder(order)}
+                  >
+                    <p>{order?.orderId}</p>
+                    <p>{order?.client?.clientName ?? ""}</p>
+                    <p>{formatDateNoTime(order?.createdAt) ?? ""}</p>
+                  </div>
+                ))
+              )}
+            </div>
+            <div className="sheet-items-list">
+              <div className="sheet-item sheet-items-list-head">
+                <p>Product</p>
+                <p>Quantity</p>
+                <p>Price</p>
+                <p>Cost</p>
+                <p>Contribution</p>
+                <p>Commission</p>
+                <p>Bonus</p>
+                <p>Total</p>
+              </div>
+              {isLoading ? (
+                <p>Loading...</p>
+              ) : unauthorized ? (
+                <div className="unauthorized">
+                  <p>You do not have permission to see this sheet!</p>
                 </div>
-                {!isLoading && <CommissionSheetFooter items={sheetItems} />}
-              </>
-            )}
+              ) : (
+                <>
+                  <div className="sheet-list-container">
+                    {selectedOrderList?.length > 0 &&
+                      selectedOrderList?.map((order: any) => {
+                        return (
+                          <div className="sheet-list-order-wrapper">
+                            <div className="sheet-list-order">
+                              <p>Order #{order.orderId}</p>
+                              <p>{order.client?.clientName}</p>
+                              <TiDelete
+                                className="sheet-item-delete"
+                                onClick={() => handleRemoveOrder(order)}
+                              />
+                            </div>
+                            {order?.order_items?.length > 0 &&
+                              order.order_items.map((item: any) => (
+                                <SheetOrderItem
+                                  item={item}
+                                  productList={productList}
+                                />
+                              ))}
+                          </div>
+                        );
+                      })}
+                  </div>
+                  {!isLoading && (
+                    <CommissionSheetFooter
+                      items={selectedOrderList}
+                      products={productList}
+                    />
+                  )}
+                </>
+              )}
+            </div>
           </div>
           <div className="commission-sheet-bottom-wrapper">
             <textarea

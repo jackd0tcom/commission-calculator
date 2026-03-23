@@ -61,6 +61,49 @@ export default {
       res.status(500).send("Internal server error");
     }
   },
+  getAvailableOrders: async (req: Request, res: Response) => {
+    try {
+      console.log("getAvailableOrders");
+
+      if (!req.session.user) {
+        res.status(401).send("user not logged in / no session set up");
+        return;
+      }
+
+      const { userId } = req.session.user;
+
+      const orderInclude: object[] = [
+        {
+          model: User,
+          as: "user",
+          attributes: ["profilePic", "firstName", "lastName"],
+        },
+        {
+          model: OrderItem,
+          required: false,
+        },
+        {
+          model: Client,
+          as: "client",
+        },
+      ];
+
+      const orders = await Order.findAll({
+        where: { userId, sheetId: null },
+        order: [["updatedAt", "DESC"]],
+        include: orderInclude,
+      });
+
+      if (orders) {
+        res.send(orders);
+      } else {
+        res.status(400).send("No orders found");
+      }
+    } catch (error) {
+      console.error("Error getting orders:", error);
+      res.status(500).send("Internal server error");
+    }
+  },
   newOrder: async (req: Request, res: Response) => {
     try {
       console.log("newOrder");
@@ -103,7 +146,15 @@ export default {
 
       const { orderId } = req.params;
 
-      const order = await Order.findOne({ where: { orderId } });
+      const order = await Order.findOne({
+        where: { orderId },
+        include: [
+          {
+            model: Client,
+            as: "client",
+          },
+        ],
+      });
 
       if (!order) {
         res.status(404).send("Order not found");
@@ -174,30 +225,6 @@ export default {
         res.status(400).send("No order found");
         return;
       }
-
-      // if (value === "paid") {
-      //   const items = await CommissionItem.findAll({ where: { sheetId } });
-      //   await Promise.all(
-      //     items.map(async (item) => {
-      //       if (!item.productId) return;
-      //       const product = await Product.findOne({
-      //         where: { productId: item.productId },
-      //       });
-      //       const client = await Client.findOne({
-      //         where: { clientId: item.clientId },
-      //       });
-      //       await item.update({
-      //         productNameSnapshot: product?.productName,
-      //         defaultPriceSnapshot: product?.defaultPrice,
-      //         commissionRateSnapshot: product?.commissionRate,
-      //         spiffSnapshot: product?.spiff ?? 0,
-      //         costSnapshot: product?.cost,
-      //         clientNameSnapshot: client?.clientName,
-      //         priceSnapshot: item.price ?? product?.defaultPrice,
-      //       });
-      //     }),
-      //   );
-      // }
 
       await order?.update({ [fieldName]: value });
 

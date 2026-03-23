@@ -140,6 +140,11 @@ OrderItem.init(
       allowNull: true,
       references: { model: "products", key: "productId" },
     },
+    itemStatus: {
+      type: DataTypes.ENUM("in progress", "delivered"),
+      allowNull: false,
+      defaultValue: "in progress",
+    },
     price: { type: DataTypes.DECIMAL(10, 2), allowNull: true },
     productNameSnapshot: { type: DataTypes.STRING, allowNull: true },
     defaultPriceSnapshot: { type: DataTypes.DECIMAL(10, 2), allowNull: true },

@@ -26,6 +26,7 @@ const {
   deleteOrderItem,
   updateOrder,
   deleteOrder,
+  getAvailableOrders,
 } = orderCtrl;
 const {
   getCommissionSheets,
@@ -101,6 +102,7 @@ app.post(`/api/deleteSheet`, deleteSheet);
 
 // Order endpoints
 app.get("/api/getOrders", getOrders);
+app.get("/api/getAvailableOrders", getAvailableOrders);
 app.get(`/api/getOrder/:orderId`, getOrder);
 app.post(`/api/updateOrderItem`, updateOrderItem);
 app.post(`/api/newOrder`, newOrder);
