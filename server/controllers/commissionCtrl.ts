@@ -72,27 +72,22 @@ export default {
 
       const { status } = req.body;
 
+      const sheetInclude: object[] = [
+        {
+          model: User,
+          as: "user",
+          attributes: ["profilePic", "firstName", "lastName"],
+        },
+        {
+          model: Order,
+          required: false,
+        },
+      ];
+
       const sheets = await CommissionSheet.findAll({
         where: { sheetStatus: status },
-        include: [
-          {
-            model: User,
-            as: "user",
-            attributes: ["profilePic", "firstName", "lastName"],
-          },
-          {
-            model: Order,
-            required: false,
-            include: [
-              {
-                model: Product,
-                attributes: ["cost", "defaultPrice", "commissionRate"],
-                required: false,
-              },
-            ],
-          },
-        ],
-        order: [["createdAt", "DESC"]],
+        order: [["updatedAt", "DESC"]],
+        include: sheetInclude,
       });
 
       if (sheets) {

@@ -48,7 +48,7 @@ const {
   deleteClient,
   newClient,
   addNewClient,
-  // getClientSheets,
+  getClientOrders,
 } = clientCtrl;
 
 configDotenv();
@@ -120,7 +120,7 @@ app.post("/api/updateClient", updateClient);
 app.post("/api/deleteClient", deleteClient);
 app.post("/api/newClient", newClient);
 app.post("/api/addNewClient", addNewClient);
-// app.get("/api/getClientSheets/:clientId", getClientSheets);
+app.get("/api/getClientOrders/:clientId", getClientOrders);
 
 // auth endpoints
 // app.post("/api/register", register);
@@ -138,7 +138,8 @@ console.log("Database synced");
 
 ViteExpress.listen(app, PORT, () => {
   console.log(
-    `live on ${PORT} ${process.env.NODE_ENV === "production" ? "production" : "development"
+    `live on ${PORT} ${
+      process.env.NODE_ENV === "production" ? "production" : "development"
     }`,
   );
   startMonthlyCommissionSheetCron();

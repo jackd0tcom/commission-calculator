@@ -10,7 +10,6 @@ import OrderFooter from "../components/Orders/OrderFooter";
 import Loader from "../components/UI/Loader";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import { FaTrashCan } from "react-icons/fa6";
-import { capitalize } from "../helpers";
 
 const OrderPage = () => {
   const { orderId } = useParams();
