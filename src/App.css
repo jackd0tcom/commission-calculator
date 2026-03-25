@@ -101,10 +101,12 @@ p {
 .draft {
   background-color: var(--border);
 }
+.in,
 .approved {
   background-color: var(--teal);
   color: white;
 }
+.delivered,
 .paid {
   background-color: var(--green);
   color: white;

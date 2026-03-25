@@ -2,13 +2,13 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import ClientItem from "../components/Clients/ClientItem";
 import { FaTrashCan, FaMagnifyingGlass } from "react-icons/fa6";
-import ClientsSheetItem from "../components/Clients/ClientsSheetItem";
+import ClientsOrderItem from "../components/Clients/ClientsOrderItem";
 import { useSelector } from "react-redux";
 
 const Clients = () => {
   const [clientList, setClientList] = useState([{}]);
   const [isLoading, setIsLoading] = useState(true);
-  const [sheetList, setSheetList] = useState([{}]);
+  const [orderList, setOrderList] = useState([]);
   const [currentClient, setCurrentClient] = useState(0);
   const userId = useSelector((state: any) => state.user.userId);
 
@@ -35,7 +35,7 @@ const Clients = () => {
     try {
       await axios.get(`/api/getClientOrders/${clientId}`).then((res) => {
         if (res.status === 200) {
-          setSheetList(res.data);
+          setOrderList(res.data);
         }
       });
     } catch (error) {
@@ -120,12 +120,12 @@ const Clients = () => {
             <p>Status</p>
             <p>Date Created</p>
           </div>
-          {sheetList?.length > 1 ? (
-            sheetList?.map((sheet) => <ClientsSheetItem sheet={sheet} />)
+          {orderList?.length > 0 ? (
+            orderList?.map((order: any) => <ClientsOrderItem order={order} />)
           ) : (
             <div className="no-sheets-available">
               <FaMagnifyingGlass className="magnifying" />
-              <p>No sheets found for selected client</p>
+              <p>No orders found for selected client</p>
             </div>
           )}
         </div>

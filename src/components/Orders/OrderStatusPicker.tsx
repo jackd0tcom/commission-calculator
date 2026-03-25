@@ -1,4 +1,3 @@
-import { current } from "@reduxjs/toolkit";
 import { capitalize } from "../../helpers";
 
 interface props {
