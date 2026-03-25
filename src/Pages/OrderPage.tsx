@@ -81,6 +81,11 @@ const OrderPage = () => {
     fetchData();
   }, [orderId]);
 
+  const orderStatus = () =>
+    orderItems.some((item: any) => item.itemStatus === "in progress")
+      ? "In Progress"
+      : "Delivered";
+
   //   Handles blur
   useEffect(() => {
     const handleClickOutside = (event: any) => {
@@ -207,7 +212,6 @@ const OrderPage = () => {
             <div className="order-profile-wrapper">
               <ProfilePic src={user.profilePic} />
               <h2>Order #{orderId}</h2>
-              <p>{capitalize(orderData.orderStatus)}</p>
             </div>
           </div>
           <div className="order-page-body order-not-found">
@@ -236,7 +240,18 @@ const OrderPage = () => {
               updateOrder={updateOrder}
               orderId={Number(orderId)}
             />
-            <p>{capitalize(orderData.orderStatus)}</p>
+            <p className="order-status-p">
+              Order Status:{" "}
+              <span
+                className={
+                  orderStatus() === "In Progress"
+                    ? "order-status in-progress"
+                    : "order-status delivered"
+                }
+              >
+                {orderStatus()}
+              </span>
+            </p>
             <div className="order-settings-wrapper">
               <button
                 className="order-settings-button"

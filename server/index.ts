@@ -7,6 +7,7 @@ import commissionCtrl from "./controllers/commissionCtrl";
 import userCtrl from "./controllers/userCtrl";
 import clientCtrl from "./controllers/clientCtrl";
 import orderCtrl from "./controllers/orderCtrl.js";
+import { startMonthlyCommissionSheetCron } from "./monthlySheetCron.js";
 import { db } from "./model.js";
 
 const {
@@ -26,7 +27,8 @@ const {
   deleteOrderItem,
   updateOrder,
   deleteOrder,
-  getAvailableOrders,
+  getSheetOrderItems,
+  updateOrderStatus,
 } = orderCtrl;
 const {
   getCommissionSheets,
@@ -102,9 +104,10 @@ app.post(`/api/deleteSheet`, deleteSheet);
 
 // Order endpoints
 app.get("/api/getOrders", getOrders);
-app.get("/api/getAvailableOrders", getAvailableOrders);
+app.get("/api/getSheetOrderItems:sheetId", getSheetOrderItems);
 app.get(`/api/getOrder/:orderId`, getOrder);
 app.post(`/api/updateOrderItem`, updateOrderItem);
+app.post(`/api/updateOrderStatus`, updateOrderStatus);
 app.post(`/api/newOrder`, newOrder);
 app.post("/api/updateOrder", updateOrder);
 app.post(`/api/newOrderItem`, newOrderItem);
@@ -135,8 +138,8 @@ console.log("Database synced");
 
 ViteExpress.listen(app, PORT, () => {
   console.log(
-    `live on ${PORT} ${
-      process.env.NODE_ENV === "production" ? "production" : "development"
+    `live on ${PORT} ${process.env.NODE_ENV === "production" ? "production" : "development"
     }`,
   );
+  startMonthlyCommissionSheetCron();
 });

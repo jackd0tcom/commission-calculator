@@ -19,14 +19,6 @@ const Nav = () => {
         <div className="nav-links-wrapper">
           <div className="nav-link-container">
             <NavLink
-              to="/commission-sheets"
-              className={({ isActive }) =>
-                isActive ? "active-nav nav-button" : "inactive-nav nav-button"
-              }
-            >
-              <FaCalculator /> Commission Sheets
-            </NavLink>
-            <NavLink
               to="/orders"
               className={({ isActive }) =>
                 isActive ? "active-nav nav-button" : "inactive-nav nav-button"
@@ -34,6 +26,14 @@ const Nav = () => {
             >
               <FaBoxOpen />
               Orders
+            </NavLink>
+            <NavLink
+              to="/commission-sheets"
+              className={({ isActive }) =>
+                isActive ? "active-nav nav-button" : "inactive-nav nav-button"
+              }
+            >
+              <FaCalculator /> Commission Sheets
             </NavLink>
             <NavLink
               to="/products"

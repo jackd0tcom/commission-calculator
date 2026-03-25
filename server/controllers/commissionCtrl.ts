@@ -1,4 +1,11 @@
-import { CommissionSheet, Product, Order, OrderItem, User } from "../model";
+import {
+  CommissionSheet,
+  Product,
+  Order,
+  OrderItem,
+  User,
+  Client,
+} from "../model";
 import { Request, Response } from "express";
 
 export default {
@@ -150,10 +157,16 @@ export default {
       }
 
       const orders = await Order.findAll({
-        where: { sheetId },
         include: [
           {
             model: OrderItem,
+            where: { sheetId },
+            required: true,
+          },
+          {
+            model: Client,
+            as: "client",
+            required: true,
           },
         ],
       });

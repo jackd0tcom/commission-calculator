@@ -7,6 +7,7 @@ import {
   Client,
 } from "../model";
 import { Request, Response } from "express";
+import { formatMonthlySheetTitle } from "../commissionSheets.ts";
 
 export default {
   getOrders: async (req: Request, res: Response) => {
@@ -61,9 +62,9 @@ export default {
       res.status(500).send("Internal server error");
     }
   },
-  getAvailableOrders: async (req: Request, res: Response) => {
+  getSheetOrderItems: async (req: Request, res: Response) => {
     try {
-      console.log("getAvailableOrders");
+      console.log("getSheetOrderItems");
 
       if (!req.session.user) {
         res.status(401).send("user not logged in / no session set up");
@@ -72,6 +73,8 @@ export default {
 
       const { userId } = req.session.user;
 
+      const { sheetId } = req.params;
+
       const orderInclude: object[] = [
         {
           model: User,
@@ -79,25 +82,32 @@ export default {
           attributes: ["profilePic", "firstName", "lastName"],
         },
         {
-          model: OrderItem,
-          required: false,
+          model: Order,
         },
         {
           model: Client,
           as: "client",
         },
+        {
+          model: Product,
+        },
       ];
 
-      const orders = await Order.findAll({
-        where: { userId, sheetId: null },
+      const items = await OrderItem.findAll({
+        where: { sheetId },
         order: [["updatedAt", "DESC"]],
         include: orderInclude,
       });
 
-      if (orders) {
-        res.send(orders);
+      if (!items) {
+        res.send(404).send("No items found");
+        return;
+      }
+
+      if (items) {
+        res.send(items);
       } else {
-        res.status(400).send("No orders found");
+        res.status(400).send("No order items found");
       }
     } catch (error) {
       console.error("Error getting orders:", error);
@@ -269,6 +279,49 @@ export default {
 
       if (orderItem) {
         res.send(payload);
+      } else {
+        res.status(400).send("No item found");
+      }
+    } catch (error) {
+      console.error("Error getting sheets:", error);
+      res.status(500).send("Internal server error");
+    }
+  },
+  updateOrderStatus: async (req: Request, res: Response) => {
+    try {
+      console.log("updateOrderStatus");
+
+      if (!req.session.user) {
+        res.status(401).send("user not logged in / no session set up");
+        return;
+      }
+
+      const { itemId, status } = req.body;
+
+      const orderItem = await OrderItem.findOne({ where: { itemId } });
+
+      if (!orderItem) {
+        res.status(400).send("No order item found");
+        return;
+      }
+
+      if (status === "delivered") {
+        const currentSheet = await CommissionSheet.findOne({
+          where: { userId: req.session.user.userId, sheetTitle: formatMonthlySheetTitle(new Date(), process.env.COMMISSION_SHEET_TIMEZONE) },
+        });
+        await orderItem?.update({
+          itemStatus: status,
+          sheetId: currentSheet?.sheetId ?? null,
+        });
+      } else {
+        await orderItem?.update({
+          itemStatus: status,
+          sheetId: null,
+        });
+      }
+
+      if (orderItem) {
+        res.send(orderItem);
       } else {
         res.status(400).send("No item found");
       }

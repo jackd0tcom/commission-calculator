@@ -5,7 +5,7 @@ const db = await connectToDb(
   process.env.DATABASE_URL || "postgresql:///commission-db",
 );
 
-export class User extends Model {}
+export class User extends Model { }
 User.init(
   {
     userId: {
@@ -53,7 +53,7 @@ User.init(
   { sequelize: db, modelName: "user", tableName: "users", timestamps: true },
 );
 
-export class CommissionSheet extends Model {}
+export class CommissionSheet extends Model { }
 CommissionSheet.init(
   {
     sheetId: {
@@ -85,7 +85,7 @@ CommissionSheet.init(
   },
 );
 
-export class Order extends Model {}
+export class Order extends Model { }
 Order.init(
   {
     orderId: {
@@ -96,11 +96,6 @@ Order.init(
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
-    },
-    sheetId: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-      references: { model: "commission_sheets", key: "sheet_id" },
     },
     clientId: {
       type: DataTypes.INTEGER,
@@ -121,7 +116,7 @@ Order.init(
   },
 );
 
-export class OrderItem extends Model {}
+export class OrderItem extends Model { }
 OrderItem.init(
   {
     itemId: {
@@ -145,6 +140,11 @@ OrderItem.init(
       allowNull: false,
       defaultValue: "in progress",
     },
+    sheetId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: { model: "commission_sheets", key: "sheet_id" },
+    },
     price: { type: DataTypes.DECIMAL(10, 2), allowNull: true },
     productNameSnapshot: { type: DataTypes.STRING, allowNull: true },
     defaultPriceSnapshot: { type: DataTypes.DECIMAL(10, 2), allowNull: true },
@@ -161,7 +161,7 @@ OrderItem.init(
   },
 );
 
-export class Product extends Model {}
+export class Product extends Model { }
 Product.init(
   {
     productId: {
@@ -200,7 +200,7 @@ Product.init(
   },
 );
 
-export class UserProductCommission extends Model {}
+export class UserProductCommission extends Model { }
 UserProductCommission.init(
   {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
@@ -228,7 +228,7 @@ UserProductCommission.init(
   },
 );
 
-export class Client extends Model {}
+export class Client extends Model { }
 Client.init(
   {
     clientId: {

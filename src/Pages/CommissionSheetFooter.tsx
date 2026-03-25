@@ -82,7 +82,6 @@ const CommissionSheetFooter = ({ items, products }: props) => {
         <p>Commission</p>
         <p>Bonus</p>
         <p>Total</p>
-        <p className="delete-placeholder"></p>
       </div>
       <div className="sheet-item">
         <p></p>
@@ -93,7 +92,6 @@ const CommissionSheetFooter = ({ items, products }: props) => {
         <p>{formatDollarNoCents(commission)}</p>
         <p>{formatDollarNoCents(bonus)}</p>
         <p>{formatDollarNoCents(grandTotal)}</p>
-        <p className="delete-placeholder"></p>
       </div>
     </div>
   );

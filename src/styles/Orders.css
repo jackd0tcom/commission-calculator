@@ -3,8 +3,31 @@
   display: flex;
   flex-direction: column;
 }
-.orders-list-wrapper {
+.order-page-wrapper .page-header-wrapper {
+  align-items: center;
+}
+.order-page-body {
+  height: 100%;
   padding: 15px;
+  overflow: hidden;
+  background-color: var(--hover);
+}
+.orders-page-body {
+  height: 100%;
+  overflow: hidden;
+  padding: 15px;
+  background-color: var(--hover);
+}
+.orders-lists {
+  background-color: white;
+  border: 1px solid var(--border);
+  height: 100%;
+}
+.orders-list-wrapper h3 {
+  padding-left: 10px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 10px;
+  margin-bottom: 0px;
 }
 .order-settings-wrapper {
   position: relative;
@@ -17,12 +40,6 @@
   gap: 10px;
   align-items: center;
 }
-.order-page-body {
-  height: 100%;
-  padding: 15px;
-  overflow: hidden;
-  background-color: var(--hover);
-}
 .order-items-list {
   border: 1px solid var(--border);
   height: 100%;
@@ -33,6 +50,9 @@
 }
 .order-items-list-head {
   font-weight: 500;
+}
+.orders-list-head:hover {
+  background-color: white;
 }
 .order-items-list-item {
   display: grid;
@@ -58,6 +78,26 @@
   background-color: var(--hover);
   cursor: pointer;
 }
+.order-status-p {
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.order-status {
+  padding: 3px 8px;
+  border-radius: 5px;
+}
+.in-progress {
+  background-color: var(--blue);
+  font-weight: 500;
+  color: white;
+}
+.delivered {
+  background-color: var(--green);
+  font-weight: 500;
+  color: white;
+}
 .order-items-list-wrapper {
   height: calc(100% - 135px);
   display: flex;
@@ -71,7 +111,27 @@
   border-top: 1px solid var(--border);
   bottom: 0;
 }
-
+.product-picker-button {
+  width: auto;
+  max-width: 200px;
+}
+.order-status-button {
+  border: none;
+  border-radius: 5px;
+  color: white;
+}
+.in-progress-button {
+  background-color: var(--blue);
+}
+.in-progress-button:hover {
+  background-color: var(--dark-blue);
+}
+.delivered-button {
+  background-color: var(--green);
+}
+.delivered-button:hover {
+  background-color: var(--dark-green);
+}
 .order-status-badge {
   padding: 5px 12px;
   border-radius: 5px;
