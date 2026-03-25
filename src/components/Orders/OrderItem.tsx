@@ -27,14 +27,10 @@ const OrderItem = ({
   const [currentProduct, setCurrentProduct] = useState(
     item?.product ? item?.product : null,
   );
-  const [quantity, setQuantity] = useState(item.quantity ? item.quantity : 0);
+  const [quantity, setQuantity] = useState(item.quantity ?? 0);
   const [status, setStatus] = useState(item.itemStatus ?? "");
   const [price, setPrice] = useState(
-    item.price
-      ? item.price
-      : currentProduct?.defaultPrice
-        ? currentProduct.defaultPrice
-        : 0,
+    item.priceSnapshot ?? item.price ?? item.product.defaultPrice ?? 0,
   );
 
   const handleProductChange = async (newProduct: any) => {
@@ -98,13 +94,19 @@ const OrderItem = ({
     const newStatus = status === "in progress" ? "delivered" : "in progress";
     try {
       await axios
-        .post("/api/updateOrderItem", {
+        .post("/api/updateOrderStatus", {
           itemId: item.itemId,
-          fieldName: "itemStatus",
-          value: newStatus,
+          status: newStatus,
         })
         .then((res) => {
           if (res.status === 200) {
+            setOrderItems((prev: any) =>
+              prev.map((it: any) =>
+                it.itemId === item.itemId
+                  ? { ...it, itemStatus: newStatus }
+                  : it,
+              ),
+            );
             setStatus(newStatus);
           }
         });

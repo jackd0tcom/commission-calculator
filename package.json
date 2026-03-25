@@ -12,7 +12,8 @@
     "initdb": "dropdb --if-exists commissions-db && createdb commissions-db && npx tsx server/seed.ts",
     "seedClients": "npx tsx server/seedClients.ts",
     "seed": "npx tsx server/seed.ts",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "ensure-monthly-sheets": "npx tsx server/ensureMonthlySheets.ts"
   },
   "dependencies": {
     "@auth0/auth0-react": "^2.13.0",
@@ -24,6 +25,7 @@
     "dotenv": "^17.2.4",
     "express": "^5.2.1",
     "express-session": "^1.19.0",
+    "node-cron": "^4.2.1",
     "pg": "^8.18.0",
     "pg-hstore": "^2.3.4",
     "react": "^19.2.0",
@@ -41,6 +43,7 @@
     "@eslint/js": "^9.39.1",
     "@types/express": "^5.0.6",
     "@types/node": "^24.10.12",
+    "@types/node-cron": "^3.0.11",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.1",

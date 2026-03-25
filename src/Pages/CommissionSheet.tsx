@@ -6,10 +6,8 @@ import CommissionSheetFooter from "./CommissionSheetFooter";
 import SheetOrderItem from "../components/CommissionSheet/SheetOrderItem";
 import StatusPicker from "../components/CommissionSheet/StatusPicker";
 import { useNavigate } from "react-router";
-import { formatDateWithDay, formatDateNoTime } from "../helpers";
-import ProfilePic from "../components/UI/ProfilePic";
+import { formatDateWithDay } from "../helpers";
 import Loader from "../components/UI/Loader";
-import { TiDelete } from "react-icons/ti";
 
 const CommissionSheet = () => {
   const { sheetId } = useParams();
@@ -18,7 +16,6 @@ const CommissionSheet = () => {
   const [productList, setProductList] = useState([{}]);
   const [orderList, setOrderList] = useState([{}]);
   const [unauthorized, setUnauthorized] = useState(false);
-  const titleRef = useRef<HTMLInputElement>(null);
   const descriptionRef = useRef<HTMLTextAreaElement>(null);
   const creatingSheetRef = useRef<boolean>(false);
   const [sheetData, setSheetData] = useState({
@@ -30,10 +27,8 @@ const CommissionSheet = () => {
     createdAt: null,
     updatedAt: null,
   });
-  const [sheetItems, setSheetItems] = useState([{}]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [selectedOrderList, setSelectedOrderList] = useState([{}]);
 
   const fetchData = async () => {
     try {
@@ -52,26 +47,11 @@ const CommissionSheet = () => {
                 createdAt: res.data.createdAt,
                 updatedAt: res.data.updatedAt,
               }));
-              setSheetItems(res.data.items);
+              setOrderList(res.data.orders);
             }
           }),
         );
       }
-
-      promises.push(
-        axios.get("/api/getOrders").then((res) => {
-          if (res.status === 200) {
-            const availableOrders = res.data.filter(
-              (order: any) => !order.sheetId,
-            );
-            setOrderList(availableOrders);
-            const selectedOrders = res.data.filter(
-              (order: any) => order.sheetId === Number(sheetId),
-            );
-            setSelectedOrderList(selectedOrders);
-          }
-        }),
-      );
 
       promises.push(
         axios.get(`/api/getProducts/${sheetData.userId}`).then((res) => {
@@ -99,10 +79,6 @@ const CommissionSheet = () => {
     }
     fetchData();
   }, [user?.userId, sheetId]);
-
-  const handleTitleChange = (e: any) => {
-    setSheetData({ ...sheetData, sheetTitle: e.target.value });
-  };
 
   const updateSheet = async (fieldName: string, value: string) => {
     if (Number(sheetId) === 0) {
@@ -145,233 +121,114 @@ const CommissionSheet = () => {
     }
   };
 
-  const handleAddOrder = async (order: any) => {
-    try {
-      if (selectedOrderList.includes(order)) {
-        const trimmedList = selectedOrderList.filter(
-          (listOrder: any) => order.orderId !== listOrder.orderId,
-        );
-        setSelectedOrderList(trimmedList);
-        return;
-      }
-      await axios
-        .post("/api/updateOrder", {
-          orderId: order.orderId,
-          fieldName: "sheetId",
-          value: sheetId,
-        })
-        .then((res) => {
-          if (res.status === 200) {
-            const trimmedList = orderList.filter(
-              (listOrder: any) => order.orderId !== listOrder.orderId,
-            );
-            setOrderList(trimmedList);
-            setSelectedOrderList([...selectedOrderList, order]);
-          }
-        });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleRemoveOrder = async (order: any) => {
-    try {
-      await axios
-        .post("/api/updateOrder", {
-          orderId: order.orderId,
-          fieldName: "sheetId",
-          value: null,
-        })
-        .then((res) => {
-          if (res.status === 200) {
-            const trimmedList = selectedOrderList.filter(
-              (listOrder: any) => order.orderId !== listOrder.orderId,
-            );
-            setOrderList([order, ...orderList]);
-            setSelectedOrderList(trimmedList);
-          }
-        });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   return (
     <div className="commission-sheet-page-wrapper">
-      {Number(sheetId) === 0 ? (
-        <div className="new-sheet-wrapper">
-          <ProfilePic src={user.profilePic} />
-          <input
-            placeholder="Give your new sheet a title"
-            ref={titleRef}
-            className="new-sheet-input title-input"
-            type="text"
-            value={sheetData.sheetTitle}
-            onChange={(e) => handleTitleChange(e)}
+      <>
+        <div className="page-header-wrapper">
+          <h2>{sheetData.sheetTitle}</h2>
+          <div className="sheet-header-container">
+            <p className="sheet-date">
+              {formatDateWithDay(sheetData?.createdAt)}
+            </p>
+            <StatusPicker
+              status={sheetData.sheetStatus}
+              sheetData={sheetData}
+              setSheetData={setSheetData}
+              sheetId={Number(sheetId)}
+              isAdmin={user.isAdmin}
+            />
+          </div>
+        </div>
+        <div className="sheet-page-body">
+          <div className="sheet-items-list">
+            <div className="sheet-item sheet-items-list-head">
+              <p>Product</p>
+              <p>Quantity</p>
+              <p>Price</p>
+              <p>Cost</p>
+              <p>Contribution</p>
+              <p>Commission</p>
+              <p>Bonus</p>
+              <p>Total</p>
+            </div>
+            {isLoading ? (
+              <Loader />
+            ) : unauthorized ? (
+              <div className="unauthorized">
+                <p>You do not have permission to see this sheet!</p>
+              </div>
+            ) : (
+              <>
+                <div className="sheet-list-container">
+                  {orderList?.length > 0 &&
+                    orderList?.map((order: any) => {
+                      return (
+                        <div className="sheet-list-order-wrapper">
+                          <div className="sheet-list-order">
+                            <p>Order #{order.orderId}</p>
+                            <p>{order.client?.clientName}</p>
+                          </div>
+                          {order?.order_items?.length > 0 &&
+                            order.order_items.map((item: any) => (
+                              <SheetOrderItem
+                                item={item}
+                                productList={productList}
+                              />
+                            ))}
+                        </div>
+                      );
+                    })}
+                </div>
+                {!isLoading && (
+                  <CommissionSheetFooter
+                    items={orderList}
+                    products={productList}
+                  />
+                )}
+              </>
+            )}
+          </div>
+        </div>
+        <div className="commission-sheet-bottom-wrapper">
+          <textarea
+            className="commission-sheet-notes"
+            placeholder="Add a note"
+            ref={descriptionRef}
+            name="notes"
+            id="notes"
+            disabled={sheetData?.sheetStatus !== "draft"}
+            onChange={(e) =>
+              setSheetData({ ...sheetData, sheetDescription: e.target.value })
+            }
+            onBlur={() =>
+              updateSheet("sheetDescription", sheetData.sheetDescription)
+            }
             onKeyDown={(e) => {
               if (e.key === "Enter") {
-                updateSheet("sheetTitle", sheetData.sheetTitle);
+                updateSheet("sheetDescription", sheetData.sheetDescription);
+                descriptionRef.current?.blur();
               }
             }}
-          />
-          <button
-            onClick={() => updateSheet("sheetTitle", sheetData.sheetTitle)}
-            className="create-sheet-button"
-          >
-            Create New Sheet
-          </button>
-        </div>
-      ) : (
-        <>
-          <div className="page-header-wrapper">
-            {sheetData.sheetStatus === "draft" ? (
-              <input
-                placeholder="Sheet title"
-                ref={titleRef}
-                className="title-input"
-                type="text"
-                value={sheetData.sheetTitle}
-                onChange={(e) => handleTitleChange(e)}
-                onBlur={() => updateSheet("sheetTitle", sheetData.sheetTitle)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    titleRef.current?.blur();
-                  }
-                }}
-              />
+            value={sheetData.sheetDescription}
+          ></textarea>
+          <div className="delete-sheet">
+            {!isDeleting ? (
+              <button
+                className="delete-sheet-button"
+                onClick={() => setIsDeleting(true)}
+              >
+                Delete Sheet
+              </button>
             ) : (
-              <h2>{sheetData.sheetTitle}</h2>
+              <div className="delete-sheet-buttons">
+                <p>Are you sure you want to delete this sheet?</p>
+                <button onClick={() => handleDeleteSheet()}>Delete</button>
+                <button onClick={() => setIsDeleting(false)}>Cancel</button>
+              </div>
             )}
-            <div className="sheet-header-container">
-              <p className="sheet-date">
-                {formatDateWithDay(sheetData?.createdAt)}
-              </p>
-              <StatusPicker
-                status={sheetData.sheetStatus}
-                sheetData={sheetData}
-                setSheetData={setSheetData}
-                sheetId={Number(sheetId)}
-                isAdmin={user.isAdmin}
-              />
-            </div>
           </div>
-          <div className="sheet-page-body">
-            <div className="sheet-order-list">
-              <div className="sheet-order-item  sheet-order-head">
-                <p>Order #</p>
-                <p>Client</p>
-                <p>Date</p>
-              </div>
-              {isLoading ? (
-                <Loader />
-              ) : (
-                orderList?.length > 0 &&
-                orderList?.map((order: any) => (
-                  <div
-                    className="sheet-order-item"
-                    onClick={() => handleAddOrder(order)}
-                  >
-                    <p>{order?.orderId}</p>
-                    <p>{order?.client?.clientName ?? ""}</p>
-                    <p>{formatDateNoTime(order?.createdAt) ?? ""}</p>
-                  </div>
-                ))
-              )}
-            </div>
-            <div className="sheet-items-list">
-              <div className="sheet-item sheet-items-list-head">
-                <p>Product</p>
-                <p>Quantity</p>
-                <p>Price</p>
-                <p>Cost</p>
-                <p>Contribution</p>
-                <p>Commission</p>
-                <p>Bonus</p>
-                <p>Total</p>
-              </div>
-              {isLoading ? (
-                <p>Loading...</p>
-              ) : unauthorized ? (
-                <div className="unauthorized">
-                  <p>You do not have permission to see this sheet!</p>
-                </div>
-              ) : (
-                <>
-                  <div className="sheet-list-container">
-                    {selectedOrderList?.length > 0 &&
-                      selectedOrderList?.map((order: any) => {
-                        return (
-                          <div className="sheet-list-order-wrapper">
-                            <div className="sheet-list-order">
-                              <p>Order #{order.orderId}</p>
-                              <p>{order.client?.clientName}</p>
-                              <TiDelete
-                                className="sheet-item-delete"
-                                onClick={() => handleRemoveOrder(order)}
-                              />
-                            </div>
-                            {order?.order_items?.length > 0 &&
-                              order.order_items.map((item: any) => (
-                                <SheetOrderItem
-                                  item={item}
-                                  productList={productList}
-                                />
-                              ))}
-                          </div>
-                        );
-                      })}
-                  </div>
-                  {!isLoading && (
-                    <CommissionSheetFooter
-                      items={selectedOrderList}
-                      products={productList}
-                    />
-                  )}
-                </>
-              )}
-            </div>
-          </div>
-          <div className="commission-sheet-bottom-wrapper">
-            <textarea
-              className="commission-sheet-notes"
-              placeholder="Add a note"
-              ref={descriptionRef}
-              name="notes"
-              id="notes"
-              disabled={sheetData?.sheetStatus !== "draft"}
-              onChange={(e) =>
-                setSheetData({ ...sheetData, sheetDescription: e.target.value })
-              }
-              onBlur={() =>
-                updateSheet("sheetDescription", sheetData.sheetDescription)
-              }
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  updateSheet("sheetDescription", sheetData.sheetDescription);
-                  descriptionRef.current?.blur();
-                }
-              }}
-              value={sheetData.sheetDescription}
-            ></textarea>
-            <div className="delete-sheet">
-              {!isDeleting ? (
-                <button
-                  className="delete-sheet-button"
-                  onClick={() => setIsDeleting(true)}
-                >
-                  Delete Sheet
-                </button>
-              ) : (
-                <div className="delete-sheet-buttons">
-                  <p>Are you sure you want to delete this sheet?</p>
-                  <button onClick={() => handleDeleteSheet()}>Delete</button>
-                  <button onClick={() => setIsDeleting(false)}>Cancel</button>
-                </div>
-              )}
-            </div>
-          </div>
-        </>
-      )}
+        </div>
+      </>
     </div>
   );
 };

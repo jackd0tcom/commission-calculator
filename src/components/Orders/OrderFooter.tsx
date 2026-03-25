@@ -6,10 +6,12 @@ interface props {
 
 const OrderFooter = ({ items }: props) => {
   const filteredItems = items.filter((item: any) => item.product);
-  const grandTotal: number = filteredItems.reduce(
-    (acc: number, item: any) => acc + item.quantity * item.price,
-    0,
-  );
+  const grandTotal: number = filteredItems.reduce((acc: number, item: any) => {
+    const quantity = item.quantity ?? 0;
+    const price =
+      item.priceSnapshot ?? item.price ?? item.product.defaultPrice ?? 0;
+    return acc + quantity * price;
+  }, 0);
 
   return (
     <div className="order-sheet-footer">

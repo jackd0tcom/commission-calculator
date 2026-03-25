@@ -177,91 +177,22 @@ async function seed() {
       sheetDescription: "Year-end",
       sheetStatus: "approved",
     },
-    {
-      userId: 1,
-      sheetTitle: "March 2025 Commissions",
-      sheetDescription: "Q1 close",
-      sheetStatus: "submitted",
-    },
-    {
-      userId: 1,
-      sheetTitle: "April 2025 Draft",
-      sheetDescription: null,
-      sheetStatus: "draft",
-    },
-    {
-      userId: 1,
-      sheetTitle: "November 2024 Commissions",
-      sheetDescription: null,
-      sheetStatus: "approved",
-    },
-    {
-      userId: 1,
-      sheetTitle: "May 2025 Commissions",
-      sheetDescription: "Q2 kickoff",
-      sheetStatus: "submitted",
-    },
-    {
-      userId: 1,
-      sheetTitle: "June 2025 Draft",
-      sheetDescription: "In progress",
-      sheetStatus: "draft",
-    },
-    {
-      userId: 1,
-      sheetTitle: "October 2024 Commissions",
-      sheetDescription: null,
-      sheetStatus: "approved",
-    },
-    {
-      userId: 1,
-      sheetTitle: "Q2 2025 Summary",
-      sheetDescription: "Quarterly review",
-      sheetStatus: "submitted",
-    },
-    {
-      userId: 1,
-      sheetTitle: "July 2025 Draft",
-      sheetDescription: null,
-      sheetStatus: "draft",
-    },
-    {
-      userId: 1,
-      sheetTitle: "September 2024 Commissions",
-      sheetDescription: null,
-      sheetStatus: "approved",
-    },
-    {
-      userId: 1,
-      sheetTitle: "October 2028 Commissions",
-      sheetDescription: null,
-      sheetStatus: "approved",
-    },
-    {
-      userId: 1,
-      sheetTitle: "September 2030 Commissions",
-      sheetDescription: null,
-      sheetStatus: "approved",
-    },
   ]);
 
   // Create some example orders for userId 1
   const orders = await Order.bulkCreate([
     {
       userId: 1,
-      sheetId: sheets[0].sheetId, // January 2025 Commissions
       clientId: clients[0].clientId, // Acme Corp
       orderStatus: "in progress",
     },
     {
       userId: 1,
-      sheetId: sheets[0].sheetId,
       clientId: clients[1].clientId, // Globex Industries
       orderStatus: "in progress",
     },
     {
       userId: 1,
-      sheetId: sheets[2].sheetId, // December 2024 Commissions
       clientId: clients[2].clientId, // Initech
       orderStatus: "delivered",
     },
@@ -272,24 +203,32 @@ async function seed() {
     {
       orderId: orders[0].orderId,
       productId: products[0].productId, // Editorial Links
+      itemStatus: "delivered",
+      sheetId: 1,
       quantity: 2,
       price: 600,
     },
     {
       orderId: orders[0].orderId,
       productId: products[3].productId, // News Links
+      itemStatus: "delivered",
+      sheetId: 1,
       quantity: 5,
       price: 900,
     },
     {
       orderId: orders[1].orderId,
       productId: products[1].productId, // Expert Links
+      itemStatus: "delivered",
+      sheetId: 1,
       quantity: 1,
       price: 5000,
     },
     {
       orderId: orders[2].orderId,
       productId: products[8].productId, // Linkable Content
+      itemStatus: "delivered",
+      sheetId: 1,
       quantity: 3,
       price: 700,
       productNameSnapshot: products[8].productName,
