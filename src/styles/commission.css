@@ -76,3 +76,7 @@
   background-color: var(--dark-green);
   color: white;
 }
+.new-sheet-button:disabled {
+  background-color: lightgrey;
+  cursor: default;
+}

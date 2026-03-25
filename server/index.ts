@@ -34,9 +34,7 @@ const {
   getCommissionSheets,
   getPendingSheets,
   getSheet,
-  // updateSheetItem,
-  // newSheetItem,
-  // deleteSheetItem,
+  checkMonthlySheet,
   updateSheet,
   newSheet,
   deleteSheet,
@@ -94,6 +92,7 @@ app.post("/api/newProduct", newProduct);
 // Commission endpoints
 app.get("/api/getCommissionSheets", getCommissionSheets);
 app.get(`/api/getSheet/:sheetId`, getSheet);
+app.get(`/api/checkMonthlySheet`, checkMonthlySheet);
 app.post("/api/getPendingSheets", getPendingSheets);
 // app.post(`/api/updateSheetItem`, updateSheetItem);
 app.post(`/api/newSheet`, newSheet);
