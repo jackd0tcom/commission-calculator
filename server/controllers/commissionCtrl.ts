@@ -7,6 +7,7 @@ import {
   Client,
 } from "../model";
 import { Request, Response } from "express";
+import { formatMonthlySheetTitle } from "../commissionSheets";
 
 export default {
   getCommissionSheets: async (req: Request, res: Response) => {
@@ -109,7 +110,7 @@ export default {
         return;
       }
 
-      const { sheetTitle } = req.body;
+      const sheetTitle = formatMonthlySheetTitle();
 
       const sheet = await CommissionSheet.create({
         sheetTitle,
@@ -364,6 +365,33 @@ export default {
       await sheet.destroy();
 
       res.status(200).send("Sheet deleted successfully");
+    } catch (error) {
+      console.error("Error getting sheets:", error);
+      res.status(500).send("Internal server error");
+    }
+  },
+  checkMonthlySheet: async (req: Request, res: Response) => {
+    try {
+      console.log("checkMonthlySheet");
+
+      if (!req.session.user) {
+        res.status(404).send("no user logged in");
+        console.log("user not logged in / no session set up");
+        return;
+      }
+
+      const sheetTitle = formatMonthlySheetTitle();
+
+      const sheet = await CommissionSheet.findOne({
+        where: { sheetTitle, userId: req.session.user.userId },
+      });
+
+      if (!sheet) {
+        res.status(200).send("No sheet found");
+        return;
+      }
+
+      res.status(200).send(sheet);
     } catch (error) {
       console.error("Error getting sheets:", error);
       res.status(500).send("Internal server error");
