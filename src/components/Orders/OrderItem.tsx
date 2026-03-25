@@ -29,9 +29,7 @@ const OrderItem = ({
   );
   const [quantity, setQuantity] = useState(item.quantity ?? 0);
   const [status, setStatus] = useState(item.itemStatus ?? "");
-  const [price, setPrice] = useState(
-    item.priceSnapshot ?? item.price ?? currentProduct.defaultPrice ?? 0,
-  );
+  const [price, setPrice] = useState(item.priceSnapshot ?? item.price ?? 0);
 
   const handleProductChange = async (newProduct: any) => {
     setCurrentProduct(newProduct);
