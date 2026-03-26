@@ -91,7 +91,7 @@ const OrderItem = ({
   };
 
   const handleUpdateStatus = async (status: string) => {
-    const newStatus = status === "in progress" ? "delivered" : "in progress";
+    const newStatus = status === "draft" ? "submitted" : "draft";
     const newItem = { ...item, itemStatus: newStatus };
     try {
       await axios
@@ -105,6 +105,7 @@ const OrderItem = ({
                 it.itemId === item.itemId ? res.data : it,
               ),
             );
+            setDeliveries([]);
             setStatus(newStatus);
           }
         });
@@ -113,7 +114,7 @@ const OrderItem = ({
     }
   };
 
-  return status === "in progress" ? (
+  return status === "draft" ? (
     <div className="order-items-list-item">
       <p className="sheet-item-number">{index + 1}</p>
       <ProductPicker
@@ -175,6 +176,12 @@ const OrderItem = ({
       <OrderStatusPicker
         currentStatus={status}
         handleUpdateStatus={handleUpdateStatus}
+      />
+      <OrderDeliveryPicker
+        deliveries={deliveries}
+        setDeliveries={setDeliveries}
+        quantity={quantity}
+        item={item}
       />
       <p>{formatDollarNoCents(quantity * price)}</p>
       <p className="delete-placeholder"></p>

@@ -17,6 +17,9 @@ const OrderDeliveryPicker = ({
   const [deliveryCount, setDeliveryCount] = useState(deliveries?.length ?? 0);
 
   const handleAdd = async () => {
+    if (deliveryCount >= quantity) {
+      return;
+    }
     try {
       await axios
         .post("/api/newDelivery", { itemId: item.itemId })
@@ -59,13 +62,21 @@ const OrderDeliveryPicker = ({
 
   return (
     <div className="delivery-picker-wrapper">
-      <button onClick={() => handleSubtract()} disabled={deliveries.length < 1}>
+      <button
+        onClick={() => handleSubtract()}
+        disabled={deliveries.length < 1 && item.itemStatus === "draft"}
+      >
         -
       </button>
       <p>
         {deliveryCount} / {quantity}
       </p>
-      <button onClick={() => handleAdd()}>+</button>
+      <button
+        onClick={() => handleAdd()}
+        disabled={item.itemStatus === "draft"}
+      >
+        +
+      </button>
     </div>
   );
 };

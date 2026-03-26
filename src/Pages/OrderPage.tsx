@@ -73,18 +73,21 @@ const OrderPage = () => {
     fetchData();
   }, [orderId]);
 
-  const inProgress = orderItems?.some(
-    (item: any) => item.itemStatus === "in progress",
-  );
-  const delivered = orderItems?.some(
-    (item: any) => item.itemStatus === "delivered",
-  );
+  const totalQuantity = orderItems.reduce((acc: number, item: any) => {
+    const quantity = item.quantity ?? 0;
+    return acc + quantity;
+  }, 0);
+
+  const totalDeliveries = orderItems.reduce((acc: number, item: any) => {
+    return acc + item.deliveries?.length;
+  }, 0);
+
   const orderStatus =
-    inProgress && delivered
-      ? "Partial"
-      : delivered
-        ? "Delivered"
-        : "In Progress";
+    totalDeliveries === 0
+      ? "In Progress"
+      : totalDeliveries > totalQuantity
+        ? "Partial"
+        : "Delivered";
 
   //   Handles blur
   useEffect(() => {

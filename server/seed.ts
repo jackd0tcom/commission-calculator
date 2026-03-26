@@ -203,7 +203,7 @@ async function seed() {
     {
       orderId: orders[0].orderId,
       productId: products[0].productId, // Editorial Links
-      itemStatus: "delivered",
+      itemStatus: "submitted",
       sheetId: 1,
       quantity: 2,
       price: 600,
@@ -211,7 +211,7 @@ async function seed() {
     {
       orderId: orders[0].orderId,
       productId: products[3].productId, // News Links
-      itemStatus: "delivered",
+      itemStatus: "submitted",
       sheetId: 1,
       quantity: 5,
       price: 900,
@@ -219,7 +219,7 @@ async function seed() {
     {
       orderId: orders[1].orderId,
       productId: products[1].productId, // Expert Links
-      itemStatus: "delivered",
+      itemStatus: "submitted",
       sheetId: 1,
       quantity: 1,
       price: 5000,
@@ -227,7 +227,7 @@ async function seed() {
     {
       orderId: orders[2].orderId,
       productId: products[8].productId, // Linkable Content
-      itemStatus: "delivered",
+      itemStatus: "submitted",
       sheetId: 1,
       quantity: 3,
       price: 700,

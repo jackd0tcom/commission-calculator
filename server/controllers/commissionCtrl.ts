@@ -5,6 +5,7 @@ import {
   OrderItem,
   User,
   Client,
+  Delivery,
 } from "../model";
 import { Request, Response } from "express";
 import { formatMonthlySheetTitle } from "../commissionSheets";
@@ -158,6 +159,12 @@ export default {
             model: OrderItem,
             where: { sheetId },
             required: true,
+            include: [
+              {
+                model: Delivery,
+                required: true,
+              },
+            ],
           },
           {
             model: Client,
