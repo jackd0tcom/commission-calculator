@@ -7,7 +7,7 @@ interface props {
 const OrderStatusBadge = ({ status }: props) => {
   return (
     <div
-      className={`order-status-badge ${status === "in progress" ? "in-progress-badge" : "delivered-badge"}`}
+      className={`order-status-badge ${status === "in progress" ? "in-progress-badge" : status === "partial" ? "partial-badge" : "delivered-badge"}`}
     >
       {capitalize(status)}
     </div>
