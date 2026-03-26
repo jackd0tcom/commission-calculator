@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router";
 import axios from "axios";
-import CommissionSheetFooter from "./CommissionSheetFooter";
+import CommissionSheetFooter from "../components/CommissionSheet/CommissionSheetFooter";
 import SheetOrderItem from "../components/CommissionSheet/SheetOrderItem";
 import StatusPicker from "../components/CommissionSheet/StatusPicker";
 import { useNavigate } from "react-router";

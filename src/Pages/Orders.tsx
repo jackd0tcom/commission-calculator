@@ -33,17 +33,26 @@ const Orders = () => {
   let deliveredOrders: any = [];
 
   orders.forEach((order: any) => {
-    const inProgress = order.order_items?.some(
-      (item: any) => item.itemStatus === "in progress",
+    const totalQuantity = order.order_items?.reduce(
+      (acc: number, item: any) => {
+        const quantity = item.quantity ?? 0;
+        return acc + quantity;
+      },
+      0,
     );
-    const delivered = order.order_items?.some(
-      (item: any) => item.itemStatus === "delivered",
+
+    const totalDeliveries = order.order_items?.reduce(
+      (acc: number, item: any) => {
+        return acc + item.deliveries?.length;
+      },
+      0,
     );
-    inProgress && delivered
-      ? partialOrders.push(order)
-      : inProgress && !delivered
-        ? progressOrders.push(order)
-        : deliveredOrders.push(order);
+
+    totalQuantity > 0 && totalDeliveries === 0
+      ? progressOrders.push(order)
+      : totalDeliveries >= totalQuantity
+        ? deliveredOrders.push(order)
+        : partialOrders.push(order);
   });
 
   return (
@@ -82,6 +91,12 @@ const Orders = () => {
                 <div className="orders-list">
                   {progressOrders?.length > 0 ? (
                     progressOrders.map((order: any) => {
+                      const totalDeliveries = order.order_items?.reduce(
+                        (acc: number, item: any) => {
+                          return acc + item.deliveries?.length;
+                        },
+                        0,
+                      );
                       return (
                         <div
                           className="orders-list-item"
@@ -92,7 +107,9 @@ const Orders = () => {
                           <p>Order #{order.orderId}</p>
                           <p>{order.client?.clientName}</p>
                           <OrderStatusBadge status={"in progress"} />
-                          <p>{order.order_items.length}</p>
+                          <p>
+                            {totalDeliveries} / {order.order_items.length}
+                          </p>
                           <p>{formatDateNoTime(order.createdAt)}</p>
                         </div>
                       );
@@ -110,6 +127,12 @@ const Orders = () => {
                 <div className="orders-list">
                   {partialOrders?.length > 0 ? (
                     partialOrders.map((order: any) => {
+                      const totalDeliveries = order.order_items?.reduce(
+                        (acc: number, item: any) => {
+                          return acc + item.deliveries?.length;
+                        },
+                        0,
+                      );
                       return (
                         <div
                           className="orders-list-item"
@@ -120,7 +143,9 @@ const Orders = () => {
                           <p>Order #{order.orderId}</p>
                           <p>{order.client?.clientName}</p>
                           <OrderStatusBadge status={"partial"} />
-                          <p>{order.order_items.length}</p>
+                          <p>
+                            {totalDeliveries} / {order.order_items.length}
+                          </p>
                           <p>{formatDateNoTime(order.createdAt)}</p>
                         </div>
                       );
@@ -138,6 +163,12 @@ const Orders = () => {
                 <div className="orders-list">
                   {deliveredOrders?.length > 0 ? (
                     deliveredOrders.map((order: any) => {
+                      const totalDeliveries = order.order_items?.reduce(
+                        (acc: number, item: any) => {
+                          return acc + item.deliveries?.length;
+                        },
+                        0,
+                      );
                       return (
                         <div
                           className="orders-list-item"
@@ -148,7 +179,9 @@ const Orders = () => {
                           <p>Order #{order.orderId}</p>
                           <p>{order.client?.clientName}</p>
                           <OrderStatusBadge status={"delivered"} />
-                          <p>{order.order_items.length}</p>
+                          <p>
+                            {totalDeliveries} / {order.order_items.length}
+                          </p>
                           <p>{formatDateNoTime(order.createdAt)}</p>
                         </div>
                       );
