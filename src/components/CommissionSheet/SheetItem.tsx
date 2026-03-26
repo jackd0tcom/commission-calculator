@@ -37,7 +37,7 @@ const SheetItem = ({
     ? (currentProduct?.user_product_commissions[0].commissionRate ?? 0)
     : null;
 
-  const [quantity, setQuantity] = useState(item.quantity ? item.quantity : 0);
+  const [quantity, setQuantity] = useState(item.deliveries?.length ?? 0);
   const [price, setPrice] = useState(
     item.price
       ? item.price

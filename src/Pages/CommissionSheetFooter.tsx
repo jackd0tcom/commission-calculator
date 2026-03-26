@@ -11,6 +11,7 @@ const CommissionSheetFooter = ({ items, products }: props) => {
   //   (acc: number, item: any) => acc + item.quantity,
   //   0,
   // );
+
   const price: number = filteredItems.reduce((acc: number, item: any) => {
     const product = products.find(
       (product: any) => product.productId === item.productId,
@@ -20,7 +21,7 @@ const CommissionSheetFooter = ({ items, products }: props) => {
       item.defaultPriceSnapshot ??
       item.price ??
       product.defaultPrice;
-    return acc + itemPrice * item.quantity;
+    return acc + itemPrice * item.deliveries?.length;
   }, 0);
   const cost: number = filteredItems.reduce((acc: number, item: any) => {
     const product = products.find(
@@ -28,7 +29,7 @@ const CommissionSheetFooter = ({ items, products }: props) => {
     );
 
     const cost = item.costSnapshot ?? product?.cost;
-    return acc + cost * item.quantity;
+    return acc + cost * item.deliveries?.length;
   }, 0);
   const contribution: number = filteredItems.reduce(
     (acc: number, item: any) => {
@@ -36,29 +37,31 @@ const CommissionSheetFooter = ({ items, products }: props) => {
         (product: any) => product.productId === item.productId,
       );
       const totalPrice =
-        item.quantity *
+        item.deliveries?.length *
         (item.priceSnapshot ??
           item.defaultPriceSnapshot ??
           item.price ??
           product.defaultPrice);
-      const totalCost = item.quantity * (item.costSnapshot ?? product?.cost);
+      const totalCost =
+        item.deliveries?.length * (item.costSnapshot ?? product?.cost);
       return acc + totalPrice - totalCost;
     },
     0,
   );
   const commission: number = filteredItems.reduce((acc: number, item: any) => {
     // const price = item?.price ? item.price : item.product?.defaultPrice;
-    // const itemContribution = (price - item.product.cost) * item.quantity;
+    // const itemContribution = (price - item.product.cost) * item.deliveries?.length;
     const product = products.find(
       (product: any) => product.productId === item.productId,
     );
     const totalPrice =
-      item.quantity *
+      item.deliveries?.length *
       (item.priceSnapshot ??
         item.defaultPriceSnapshot ??
         item.price ??
         product.defaultPrice);
-    const totalCost = item.quantity * (item.costSnapshot ?? product?.cost);
+    const totalCost =
+      item.deliveries?.length * (item.costSnapshot ?? product?.cost);
     const rate = item.commissionRateSnapshot ?? product.commissionRate;
     const contribution = totalPrice - totalCost;
     return acc + contribution * rate;
@@ -67,7 +70,9 @@ const CommissionSheetFooter = ({ items, products }: props) => {
     const product = products.find(
       (product: any) => product.productId === item.productId,
     );
-    return acc + (item.spiffSnapshot ?? product.spiff) * item.quantity;
+    return (
+      acc + (item.spiffSnapshot ?? product.spiff) * item.deliveries?.length
+    );
   }, 0);
   const grandTotal: number = commission + bonus;
 

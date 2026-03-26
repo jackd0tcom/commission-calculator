@@ -303,15 +303,13 @@ const OrderPage = () => {
                         />
                       ),
                   )}
-                {orderStatus !== "Delivered" && (
-                  <div
-                    className="sheet-item new-item-row"
-                    onClick={() => handleAddItem()}
-                  >
-                    <p>+</p>
-                    <p>Add Product</p>
-                  </div>
-                )}
+                <div
+                  className="sheet-item new-item-row"
+                  onClick={() => handleAddItem()}
+                >
+                  <p>+</p>
+                  <p>Add Product</p>
+                </div>
               </div>
               <OrderFooter items={orderItems} />
             </div>
