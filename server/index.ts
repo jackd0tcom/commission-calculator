@@ -7,6 +7,7 @@ import commissionCtrl from "./controllers/commissionCtrl";
 import userCtrl from "./controllers/userCtrl";
 import clientCtrl from "./controllers/clientCtrl";
 import orderCtrl from "./controllers/orderCtrl.js";
+import deliveryCtrl from "./controllers/deliveryCtrl.js";
 import { startMonthlyCommissionSheetCron } from "./monthlySheetCron.js";
 import { db } from "./model.js";
 
@@ -48,6 +49,8 @@ const {
   addNewClient,
   getClientOrders,
 } = clientCtrl;
+
+const { newDelivery, deleteDelivery } = deliveryCtrl;
 
 configDotenv();
 
@@ -120,6 +123,10 @@ app.post("/api/deleteClient", deleteClient);
 app.post("/api/newClient", newClient);
 app.post("/api/addNewClient", addNewClient);
 app.get("/api/getClientOrders/:clientId", getClientOrders);
+
+// Delivery endpoints
+app.post("/api/newDelivery", newDelivery);
+app.post("/api/deleteDelivery", deleteDelivery);
 
 // auth endpoints
 // app.post("/api/register", register);

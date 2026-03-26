@@ -5,7 +5,7 @@ const db = await connectToDb(
   process.env.DATABASE_URL || "postgresql:///commission-db",
 );
 
-export class User extends Model { }
+export class User extends Model {}
 User.init(
   {
     userId: {
@@ -53,7 +53,7 @@ User.init(
   { sequelize: db, modelName: "user", tableName: "users", timestamps: true },
 );
 
-export class CommissionSheet extends Model { }
+export class CommissionSheet extends Model {}
 CommissionSheet.init(
   {
     sheetId: {
@@ -85,7 +85,7 @@ CommissionSheet.init(
   },
 );
 
-export class Order extends Model { }
+export class Order extends Model {}
 Order.init(
   {
     orderId: {
@@ -116,7 +116,7 @@ Order.init(
   },
 );
 
-export class OrderItem extends Model { }
+export class OrderItem extends Model {}
 OrderItem.init(
   {
     itemId: {
@@ -161,7 +161,34 @@ OrderItem.init(
   },
 );
 
-export class Product extends Model { }
+export class Delivery extends Model {}
+Delivery.init(
+  {
+    deliveryId: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    itemId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: { model: "order_items", key: "itemId" },
+    },
+    deliveredQuantity: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 1,
+    },
+  },
+  {
+    sequelize: db,
+    modelName: "delivery",
+    tableName: "deliveries",
+    timestamps: true,
+  },
+);
+
+export class Product extends Model {}
 Product.init(
   {
     productId: {
@@ -200,7 +227,7 @@ Product.init(
   },
 );
 
-export class UserProductCommission extends Model { }
+export class UserProductCommission extends Model {}
 UserProductCommission.init(
   {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
@@ -228,7 +255,7 @@ UserProductCommission.init(
   },
 );
 
-export class Client extends Model { }
+export class Client extends Model {}
 Client.init(
   {
     clientId: {
@@ -270,6 +297,12 @@ Client.hasMany(Order, {
 
 Product.hasMany(OrderItem, { foreignKey: "product_id" });
 OrderItem.belongsTo(Product, { foreignKey: "product_id" });
+
+OrderItem.hasMany(Delivery, { foreignKey: "item_id" });
+Delivery.belongsTo(Product, { foreignKey: "item_id" });
+
+CommissionSheet.hasMany(Delivery, { foreignKey: "sheetId" });
+Delivery.belongsTo(CommissionSheet, { foreignKey: "sheetId" });
 
 User.hasMany(CommissionSheet, { foreignKey: "userId" });
 CommissionSheet.belongsTo(User, { foreignKey: "userId" });

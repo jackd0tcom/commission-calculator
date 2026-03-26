@@ -1,6 +1,7 @@
 import { useState } from "react";
 import ProductPicker from "../CommissionSheet/ProductPicker";
 import OrderStatusPicker from "./OrderStatusPicker";
+import OrderDeliveryPicker from "./OrderDeliveryPicker";
 import axios from "axios";
 import { formatDollarNoCents } from "../../helpers";
 import { TiDelete } from "react-icons/ti";
@@ -30,6 +31,7 @@ const OrderItem = ({
   const [price, setPrice] = useState(
     item.priceSnapshot ?? item.price ?? item.product?.defaultPrice ?? 0,
   );
+  const [deliveries, setDeliveries] = useState(item.deliveries ?? []);
 
   const handleProductChange = async (newProduct: any) => {
     setCurrentProduct(newProduct);
@@ -98,12 +100,9 @@ const OrderItem = ({
         })
         .then((res) => {
           if (res.status === 200) {
-            console.log(res.data);
             setOrderItems((prev: any) =>
               prev.map((it: any) =>
-                it.itemId === item.itemId
-                  ? { ...it, itemStatus: newStatus }
-                  : it,
+                it.itemId === item.itemId ? res.data : it,
               ),
             );
             setStatus(newStatus);
@@ -154,6 +153,12 @@ const OrderItem = ({
       <OrderStatusPicker
         currentStatus={status}
         handleUpdateStatus={handleUpdateStatus}
+      />
+      <OrderDeliveryPicker
+        deliveries={deliveries}
+        setDeliveries={setDeliveries}
+        quantity={quantity}
+        item={item}
       />
       <p>{formatDollarNoCents(quantity * price)}</p>
       <TiDelete
