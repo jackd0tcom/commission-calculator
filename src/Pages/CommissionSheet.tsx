@@ -38,6 +38,7 @@ const CommissionSheet = () => {
         promises.push(
           axios.get(`/api/getSheet/${sheetId}`).then((res) => {
             if (res.status === 200) {
+              console.log(res.data);
               setSheetData((prev) => ({
                 ...prev,
                 sheetTitle: res.data.sheetTitle,
