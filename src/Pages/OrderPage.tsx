@@ -79,15 +79,15 @@ const OrderPage = () => {
   }, 0);
 
   const totalDeliveries = orderItems.reduce((acc: number, item: any) => {
-    return acc + item.deliveries?.length;
+    return acc + (item.deliveries?.length ?? 0);
   }, 0);
 
   const orderStatus =
-    totalDeliveries === 0
+    totalQuantity > 0 && totalDeliveries === 0
       ? "In Progress"
-      : totalDeliveries > totalQuantity
-        ? "Partial"
-        : "Delivered";
+      : totalDeliveries >= totalQuantity
+        ? "Delivered"
+        : "Partial";
 
   //   Handles blur
   useEffect(() => {

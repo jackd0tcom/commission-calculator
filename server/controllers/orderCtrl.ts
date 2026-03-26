@@ -32,6 +32,12 @@ export default {
         {
           model: OrderItem,
           required: false,
+          include: [
+            {
+              model: Delivery,
+              required: false,
+            },
+          ],
         },
         {
           model: Client,
