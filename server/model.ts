@@ -136,9 +136,9 @@ OrderItem.init(
       references: { model: "products", key: "productId" },
     },
     itemStatus: {
-      type: DataTypes.ENUM("in progress", "delivered"),
+      type: DataTypes.ENUM("draft", "submitted"),
       allowNull: false,
-      defaultValue: "in progress",
+      defaultValue: "draft",
     },
     sheetId: {
       type: DataTypes.INTEGER,

@@ -299,7 +299,7 @@ export default {
         return;
       }
 
-      if (item.itemStatus === "delivered") {
+      if (item.itemStatus === "submitted") {
         const currentSheet = await CommissionSheet.findOne({
           where: {
             userId: req.session.user.userId,
@@ -327,6 +327,11 @@ export default {
         await orderItem?.update({
           itemStatus: item.itemStatus,
           sheetId: null,
+        });
+        await Delivery.destroy({
+          where: {
+            itemId: item.itemId,
+          },
         });
       }
 
