@@ -69,6 +69,7 @@ const Orders = () => {
                 <div className="orders-list">
                   <div className="orders-list-item orders-list-head">
                     <p>User</p>
+                    <p>Order #</p>
                     <p>Client</p>
                     <p>Status</p>
                     <p># Items</p>
@@ -88,6 +89,7 @@ const Orders = () => {
                           onClick={() => navigate(`/order/${order.orderId}`)}
                         >
                           <ProfilePic src={order.user?.profilePic} />
+                          <p>Order #{order.orderId}</p>
                           <p>{order.client?.clientName}</p>
                           <OrderStatusBadge status={"in progress"} />
                           <p>{order.order_items.length}</p>
@@ -96,12 +98,15 @@ const Orders = () => {
                       );
                     })
                   ) : (
-                    <></>
+                    <div className="orders-list-item">
+                      <p></p>
+                      <p>No orders</p>
+                    </div>
                   )}
                 </div>
               </div>
               <div className="orders-list-wrapper">
-                <h3>Partial Orders</h3>
+                <h3>Partially Delivered Orders</h3>
                 <div className="orders-list">
                   {partialOrders?.length > 0 ? (
                     partialOrders.map((order: any) => {
@@ -112,6 +117,7 @@ const Orders = () => {
                           onClick={() => navigate(`/order/${order.orderId}`)}
                         >
                           <ProfilePic src={order.user.profilePic} />
+                          <p>Order #{order.orderId}</p>
                           <p>{order.client?.clientName}</p>
                           <OrderStatusBadge status={"partial"} />
                           <p>{order.order_items.length}</p>
@@ -120,7 +126,10 @@ const Orders = () => {
                       );
                     })
                   ) : (
-                    <></>
+                    <div className="orders-list-item">
+                      <p></p>
+                      <p>No orders</p>
+                    </div>
                   )}
                 </div>
               </div>
@@ -136,6 +145,7 @@ const Orders = () => {
                           onClick={() => navigate(`/order/${order.orderId}`)}
                         >
                           <ProfilePic src={order.user.profilePic} />
+                          <p>Order #{order.orderId}</p>
                           <p>{order.client?.clientName}</p>
                           <OrderStatusBadge status={"delivered"} />
                           <p>{order.order_items.length}</p>
@@ -144,7 +154,10 @@ const Orders = () => {
                       );
                     })
                   ) : (
-                    <></>
+                    <div className="orders-list-item">
+                      <p></p>
+                      <p>No orders</p>
+                    </div>
                   )}
                 </div>
               </div>

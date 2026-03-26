@@ -16,12 +16,6 @@ const OrderPage = () => {
   const user = useSelector((state: any) => state.user);
   const navigate = useNavigate();
   const [newClient, setNewClient] = useState({ clientId: 0 });
-  const [orderData, setOrderData] = useState({
-    orderId: orderId,
-    sheetId: null,
-    clientId: null,
-    orderStatus: "in progress",
-  });
   const [orderItems, setOrderItems] = useState([{}]);
   const [clientList, setClientList] = useState([{}]);
   const [currentClient, setCurrentClient] = useState({});
@@ -40,7 +34,6 @@ const OrderPage = () => {
         promises.push(
           axios.get(`/api/getOrder/${orderId}`).then((res) => {
             if (res.status === 200) {
-              setOrderData(res.data);
               if (res.data.orderItems && res.data.orderItems.length > 0) {
                 setOrderItems(res.data.orderItems);
               }
@@ -89,9 +82,9 @@ const OrderPage = () => {
   const orderStatus =
     inProgress && delivered
       ? "Partial"
-      : inProgress && !delivered
-        ? "In Progress"
-        : "Delivered";
+      : delivered
+        ? "Delivered"
+        : "In Progress";
 
   //   Handles blur
   useEffect(() => {
@@ -288,6 +281,7 @@ const OrderPage = () => {
                 <p>Quantity</p>
                 <p>Price</p>
                 <p>Status</p>
+                <p>Deliveries</p>
                 <p>Total</p>
                 <FaTrashCan className={"trash-can-icon"} />
               </div>
@@ -306,7 +300,7 @@ const OrderPage = () => {
                         />
                       ),
                   )}
-                {orderStatus === "In Progress" && (
+                {orderStatus !== "Delivered" && (
                   <div
                     className="sheet-item new-item-row"
                     onClick={() => handleAddItem()}

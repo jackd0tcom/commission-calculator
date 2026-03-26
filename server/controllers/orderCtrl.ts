@@ -6,7 +6,8 @@ import {
   User,
   Client,
   UserProductCommission,
-} from "../model";
+  Delivery,
+} from "../model.ts";
 import { Request, Response } from "express";
 import { formatMonthlySheetTitle } from "../commissionSheets.ts";
 
@@ -186,6 +187,10 @@ export default {
             model: Product,
             required: false,
             include: [{ model: UserProductCommission, required: false }],
+          },
+          {
+            model: Delivery,
+            required: false,
           },
         ],
       });
