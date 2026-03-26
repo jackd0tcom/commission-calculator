@@ -88,6 +88,11 @@
   padding: 3px 8px;
   border-radius: 5px;
 }
+.partial {
+  background-color: var(--yellow);
+  color: black;
+  font-weight: 500;
+}
 .in-progress {
   background-color: var(--blue);
   font-weight: 500;
@@ -142,6 +147,10 @@
 }
 .in-progress-badge {
   background-color: var(--blue);
+}
+.partial-badge {
+  background-color: var(--yellow);
+  color: black;
 }
 
 /* Client Picker */

@@ -12,7 +12,6 @@ interface props {
   products: any;
   onQuantityChange: any;
   onPriceChange: any;
-  orderStatus: string;
 }
 
 const OrderItem = ({
@@ -22,14 +21,15 @@ const OrderItem = ({
   products,
   onQuantityChange,
   onPriceChange,
-  orderStatus,
 }: props) => {
   const [currentProduct, setCurrentProduct] = useState(
     item?.product ? item?.product : null,
   );
   const [quantity, setQuantity] = useState(item.quantity ?? 0);
   const [status, setStatus] = useState(item.itemStatus ?? "");
-  const [price, setPrice] = useState(item.priceSnapshot ?? item.price ?? 0);
+  const [price, setPrice] = useState(
+    item.priceSnapshot ?? item.price ?? item.product?.defaultPrice ?? 0,
+  );
 
   const handleProductChange = async (newProduct: any) => {
     setCurrentProduct(newProduct);
@@ -90,14 +90,15 @@ const OrderItem = ({
 
   const handleUpdateStatus = async (status: string) => {
     const newStatus = status === "in progress" ? "delivered" : "in progress";
+    const newItem = { ...item, itemStatus: newStatus };
     try {
       await axios
         .post("/api/updateOrderStatus", {
-          itemId: item.itemId,
-          status: newStatus,
+          item: newItem,
         })
         .then((res) => {
           if (res.status === 200) {
+            console.log(res.data);
             setOrderItems((prev: any) =>
               prev.map((it: any) =>
                 it.itemId === item.itemId
@@ -113,7 +114,7 @@ const OrderItem = ({
     }
   };
 
-  return orderStatus === "in progress" ? (
+  return status === "in progress" ? (
     <div className="order-items-list-item">
       <p className="sheet-item-number">{index + 1}</p>
       <ProductPicker
@@ -166,7 +167,10 @@ const OrderItem = ({
       <p>{item.productNameSnapshot}</p>
       <p>{quantity}</p>
       <p>${item.priceSnapshot}</p>
-      <p>{item.itemStatus}</p>
+      <OrderStatusPicker
+        currentStatus={status}
+        handleUpdateStatus={handleUpdateStatus}
+      />
       <p>{formatDollarNoCents(quantity * price)}</p>
       <p className="delete-placeholder"></p>
     </div>

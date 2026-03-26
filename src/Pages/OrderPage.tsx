@@ -80,10 +80,18 @@ const OrderPage = () => {
     fetchData();
   }, [orderId]);
 
-  const orderStatus = () =>
-    orderItems.some((item: any) => item.itemStatus === "in progress")
-      ? "In Progress"
-      : "Delivered";
+  const inProgress = orderItems?.some(
+    (item: any) => item.itemStatus === "in progress",
+  );
+  const delivered = orderItems?.some(
+    (item: any) => item.itemStatus === "delivered",
+  );
+  const orderStatus =
+    inProgress && delivered
+      ? "Partial"
+      : inProgress && !delivered
+        ? "In Progress"
+        : "Delivered";
 
   //   Handles blur
   useEffect(() => {
@@ -243,12 +251,14 @@ const OrderPage = () => {
               Order Status:{" "}
               <span
                 className={
-                  orderStatus() === "In Progress"
+                  orderStatus === "In Progress"
                     ? "order-status in-progress"
-                    : "order-status delivered"
+                    : orderStatus === "Partial"
+                      ? "order-status partial"
+                      : "order-status delivered"
                 }
               >
-                {orderStatus()}
+                {orderStatus}
               </span>
             </p>
             <div className="order-settings-wrapper">
@@ -293,11 +303,10 @@ const OrderPage = () => {
                           products={productList}
                           onQuantityChange={handleQuantityChange}
                           onPriceChange={handlePriceChange}
-                          orderStatus={orderData.orderStatus}
                         />
                       ),
                   )}
-                {orderData?.orderStatus === "in progress" && (
+                {orderStatus === "In Progress" && (
                   <div
                     className="sheet-item new-item-row"
                     onClick={() => handleAddItem()}

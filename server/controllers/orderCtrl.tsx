@@ -5,6 +5,7 @@ import {
   OrderItem,
   User,
   Client,
+  UserProductCommission,
 } from "../model";
 import { Request, Response } from "express";
 import { formatMonthlySheetTitle } from "../commissionSheets.ts";
@@ -180,28 +181,14 @@ export default {
 
       const orderItems = await OrderItem.findAll({
         where: { orderId },
-        include: [{ model: Product, required: false }],
+        include: [
+          {
+            model: Product,
+            required: false,
+            include: [{ model: UserProductCommission, required: false }],
+          },
+        ],
       });
-
-      // const itemsWithProducts = await Promise.all(
-      //   items.map(async (item) => {
-      //     const itemData = item.toJSON();
-      //     const product = await Product.findOne({
-      //       where: { productId: item.productId },
-      //       include: [
-      //         {
-      //           model: UserProductCommission,
-      //           where: { userId: sheet?.userId },
-      //           required: false,
-      //         },
-      //       ],
-      //     });
-      //     return {
-      //       ...itemData,
-      //       product,
-      //     };
-      //   }),
-      // );
 
       const orderWithItems = {
         ...order?.dataValues,
@@ -296,32 +283,61 @@ export default {
         return;
       }
 
-      const { itemId, status } = req.body;
+      const { item } = req.body;
 
-      const orderItem = await OrderItem.findOne({ where: { itemId } });
+      const orderItem = await OrderItem.findOne({
+        where: { itemId: item.itemId },
+      });
 
       if (!orderItem) {
         res.status(400).send("No order item found");
         return;
       }
 
-      if (status === "delivered") {
+      if (item.itemStatus === "delivered") {
         const currentSheet = await CommissionSheet.findOne({
-          where: { userId: req.session.user.userId, sheetTitle: formatMonthlySheetTitle(new Date(), process.env.COMMISSION_SHEET_TIMEZONE) },
+          where: {
+            userId: req.session.user.userId,
+            sheetTitle: formatMonthlySheetTitle(
+              new Date(),
+              process.env.COMMISSION_SHEET_TIMEZONE,
+            ),
+          },
         });
         await orderItem?.update({
-          itemStatus: status,
+          itemStatus: item.itemStatus,
           sheetId: currentSheet?.sheetId ?? null,
+          productNameSnapshot: item.product?.productName ?? null,
+          priceSnapshot: item.price ?? item.product?.defaultPrice ?? null,
+          defaultPriceSnapshot: item.product?.defaultPrice ?? null,
+          commissionRateSnapshot:
+            item.product?.user_product_commissions?.length > 0
+              ? (item.commissionRateSnapshot ??
+                item.product?.user_product_commissions[0].commissionRate)
+              : (item.commissionRateSnapshot ?? item.product?.commissionRate),
+          spiffSnapshot: item.product?.spiff ?? null,
+          costSnapshot: item.product?.cost,
         });
       } else {
         await orderItem?.update({
-          itemStatus: status,
+          itemStatus: item.itemStatus,
           sheetId: null,
         });
       }
 
-      if (orderItem) {
-        res.send(orderItem);
+      const product = await Product.findOne({
+        where: { productId: item.product.productId },
+        include: [{ model: UserProductCommission, required: false }],
+      });
+
+      const itemData = orderItem.toJSON();
+      const payload = {
+        ...itemData,
+        product: product,
+      };
+
+      if (payload) {
+        res.send(payload);
       } else {
         res.status(400).send("No item found");
       }
