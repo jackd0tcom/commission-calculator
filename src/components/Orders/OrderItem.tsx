@@ -13,6 +13,7 @@ interface props {
   products: any;
   onQuantityChange: any;
   onPriceChange: any;
+  onDeliveriesChange?: (itemId: number, deliveries: any[]) => void;
 }
 
 const OrderItem = ({
@@ -22,6 +23,7 @@ const OrderItem = ({
   products,
   onQuantityChange,
   onPriceChange,
+  onDeliveriesChange,
 }: props) => {
   const [currentProduct, setCurrentProduct] = useState(
     item?.product ? item?.product : null,
@@ -105,8 +107,11 @@ const OrderItem = ({
                 it.itemId === item.itemId ? res.data : it,
               ),
             );
-            setDeliveries([]);
             setStatus(newStatus);
+            if (newStatus === "draft") {
+              setDeliveries([]);
+              onDeliveriesChange?.(item.itemId, []);
+            }
           }
         });
     } catch (error) {
@@ -160,6 +165,9 @@ const OrderItem = ({
         setDeliveries={setDeliveries}
         quantity={quantity}
         item={item}
+        onDeliveriesChange={(next) =>
+          onDeliveriesChange?.(item.itemId, next)
+        }
       />
       <p>{formatDollarNoCents(quantity * price)}</p>
       <TiDelete
@@ -182,6 +190,9 @@ const OrderItem = ({
         setDeliveries={setDeliveries}
         quantity={quantity}
         item={item}
+        onDeliveriesChange={(next) =>
+          onDeliveriesChange?.(item.itemId, next)
+        }
       />
       <p>{formatDollarNoCents(quantity * price)}</p>
       <p className="delete-placeholder"></p>

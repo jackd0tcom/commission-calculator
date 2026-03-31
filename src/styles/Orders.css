@@ -40,6 +40,12 @@
   gap: 10px;
   align-items: center;
 }
+.order-client-wrapper {
+  display: flex;
+  gap: 10px;
+  font-size: 0.9rem;
+  align-items: center;
+}
 .order-items-list {
   border: 1px solid var(--border);
   height: 100%;

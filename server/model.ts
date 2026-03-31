@@ -255,6 +255,46 @@ UserProductCommission.init(
   },
 );
 
+export class Link extends Model {}
+Link.init(
+  {
+    linkId: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    linkName: { type: DataTypes.STRING, allowNull: true },
+    url: { type: DataTypes.STRING, allowNull: true },
+    cost: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: false,
+      defaultValue: 10,
+    },
+    defaultPrice: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: false,
+      defaultValue: 10,
+    },
+    commissionRate: {
+      type: DataTypes.DECIMAL(5, 4),
+      allowNull: false,
+      defaultValue: 0.5,
+    },
+    spiff: { type: DataTypes.DECIMAL(10, 2), allowNull: true },
+    isArchived: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
+  },
+  {
+    sequelize: db,
+    modelName: "link",
+    tableName: "links",
+    timestamps: true,
+  },
+);
+
 export class Client extends Model {}
 Client.init(
   {
