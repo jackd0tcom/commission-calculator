@@ -7,6 +7,7 @@ import {
   CommissionSheet,
   Order,
   OrderItem,
+  Link,
 } from "./model.js";
 
 configDotenv();
@@ -158,6 +159,30 @@ async function seed() {
     },
   ]);
 
+  const links = await Link.bulkCreate([
+    {
+      productName: "Editorial Links",
+      url: "editorialLinks.com",
+      cost: 250,
+      defaultPrice: 600,
+      commissionRate: 0.05,
+    },
+    {
+      productName: "Expert Links",
+      url: "editorialLinks.com",
+      cost: 1400,
+      defaultPrice: 5000,
+      commissionRate: 0.05,
+    },
+    {
+      productName: "DPR",
+      url: "editorialLinks.com",
+      cost: 6700,
+      defaultPrice: 15000,
+      commissionRate: 0.05,
+    },
+  ]);
+
   const sheets = await CommissionSheet.bulkCreate([
     {
       userId: 1,
@@ -241,7 +266,7 @@ async function seed() {
   ]);
 
   console.log(
-    `Seeded 1 user, ${clients.length} clients, ${products.length} products, ${sheets.length} commission sheets, ${orders.length} orders, 4 order items`,
+    `Seeded 1 user, ${clients.length} clients, ${products.length} products, ${sheets.length} commission sheets, ${orders.length} orders, 4 order items and ${links.length} Links`,
   );
   process.exit(0);
 }

@@ -1,4 +1,3 @@
-import { useState } from "react";
 import axios from "axios";
 
 interface props {
@@ -6,6 +5,7 @@ interface props {
   setDeliveries: any;
   quantity: number;
   item: any;
+  onDeliveriesChange?: (deliveries: any[]) => void;
 }
 
 const OrderDeliveryPicker = ({
@@ -13,8 +13,9 @@ const OrderDeliveryPicker = ({
   setDeliveries,
   quantity,
   item,
+  onDeliveriesChange,
 }: props) => {
-  const [deliveryCount, setDeliveryCount] = useState(deliveries?.length ?? 0);
+  const deliveryCount = deliveries?.length ?? 0;
 
   const handleAdd = async () => {
     if (deliveryCount >= quantity) {
@@ -25,8 +26,9 @@ const OrderDeliveryPicker = ({
         .post("/api/newDelivery", { itemId: item.itemId })
         .then((res) => {
           if (res.status === 200) {
-            setDeliveryCount((prev: any) => (prev += 1));
-            setDeliveries([...deliveries, res.data]);
+            const next = [...deliveries, res.data];
+            setDeliveries(next);
+            onDeliveriesChange?.(next);
           }
         });
     } catch (error) {
@@ -46,13 +48,12 @@ const OrderDeliveryPicker = ({
         .post("/api/deleteDelivery", { delivery: mostRecentDelivery })
         .then((res) => {
           if (res.status === 200) {
-            setDeliveryCount((prev: any) => (prev -= 1));
-            setDeliveries((prev: any) =>
-              prev.filter(
-                (delivery: any) =>
-                  delivery.deliveryId !== mostRecentDelivery.deliveryId,
-              ),
+            const next = deliveries.filter(
+              (delivery: any) =>
+                delivery.deliveryId !== mostRecentDelivery.deliveryId,
             );
+            setDeliveries(next);
+            onDeliveriesChange?.(next);
           }
         });
     } catch (error) {

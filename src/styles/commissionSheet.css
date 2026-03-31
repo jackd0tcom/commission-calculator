@@ -250,7 +250,7 @@ h2 {
 }
 .commission-sheet-notes {
   border: 1px solid var(--border);
-  width: 80%;
+  width: 100%;
   resize: none;
   padding: 10px;
 }

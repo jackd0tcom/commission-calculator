@@ -3,6 +3,7 @@ import axios from "axios";
 import ProductItem from "../components/Products/ProductItem";
 import { useSelector } from "react-redux";
 import { FaTrashCan } from "react-icons/fa6";
+import Loader from "../components/UI/Loader";
 
 const Products = () => {
   const [productList, setProductList] = useState([{}]);
@@ -76,7 +77,7 @@ const Products = () => {
       </div>
       <div className="products-list-wrapper">
         {isLoading ? (
-          <>Loading...</>
+          <Loader />
         ) : (
           <>
             <div className="product-list-item product-list-head">

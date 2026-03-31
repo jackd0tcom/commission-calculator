@@ -48,7 +48,7 @@ const Orders = () => {
       0,
     );
 
-    totalQuantity > 0 && totalDeliveries === 0
+    totalQuantity >= 0 && totalDeliveries === 0
       ? progressOrders.push(order)
       : totalDeliveries >= totalQuantity
         ? deliveredOrders.push(order)
@@ -97,6 +97,12 @@ const Orders = () => {
                         },
                         0,
                       );
+                      const quantity = order.order_items?.reduce(
+                        (acc: any, order: any) => {
+                          return acc + order.quantity;
+                        },
+                        0,
+                      );
                       return (
                         <div
                           className="orders-list-item"
@@ -108,7 +114,7 @@ const Orders = () => {
                           <p>{order.client?.clientName}</p>
                           <OrderStatusBadge status={"in progress"} />
                           <p>
-                            {totalDeliveries} / {order.order_items.length}
+                            {totalDeliveries} / {quantity}
                           </p>
                           <p>{formatDateNoTime(order.createdAt)}</p>
                         </div>
@@ -133,6 +139,12 @@ const Orders = () => {
                         },
                         0,
                       );
+                      const quantity = order.order_items?.reduce(
+                        (acc: any, order: any) => {
+                          return acc + order.quantity;
+                        },
+                        0,
+                      );
                       return (
                         <div
                           className="orders-list-item"
@@ -144,7 +156,7 @@ const Orders = () => {
                           <p>{order.client?.clientName}</p>
                           <OrderStatusBadge status={"partial"} />
                           <p>
-                            {totalDeliveries} / {order.order_items.length}
+                            {totalDeliveries} / {quantity}
                           </p>
                           <p>{formatDateNoTime(order.createdAt)}</p>
                         </div>
@@ -169,6 +181,12 @@ const Orders = () => {
                         },
                         0,
                       );
+                      const quantity = order.order_items?.reduce(
+                        (acc: any, order: any) => {
+                          return acc + order.quantity;
+                        },
+                        0,
+                      );
                       return (
                         <div
                           className="orders-list-item"
@@ -180,7 +198,7 @@ const Orders = () => {
                           <p>{order.client?.clientName}</p>
                           <OrderStatusBadge status={"delivered"} />
                           <p>
-                            {totalDeliveries} / {order.order_items.length}
+                            {totalDeliveries} / {quantity}
                           </p>
                           <p>{formatDateNoTime(order.createdAt)}</p>
                         </div>

@@ -8,6 +8,7 @@ import userCtrl from "./controllers/userCtrl";
 import clientCtrl from "./controllers/clientCtrl";
 import orderCtrl from "./controllers/orderCtrl.js";
 import deliveryCtrl from "./controllers/deliveryCtrl.js";
+import linkCtrl from "./controllers/linkCtrl.js";
 import { startMonthlyCommissionSheetCron } from "./monthlySheetCron.js";
 import { db } from "./model.js";
 
@@ -19,6 +20,8 @@ const {
   getAdminProducts,
   updateUserCommissionRate,
 } = productCtrl;
+
+const { getLinks, updateLink, deleteLink, newLink } = linkCtrl;
 const {
   getOrders,
   newOrder,
@@ -91,6 +94,12 @@ app.post("/api/updateProduct", updateProduct);
 app.post("/api/updateUserCommissionRate", updateUserCommissionRate);
 app.post("/api/deleteProduct", deleteProduct);
 app.post("/api/newProduct", newProduct);
+
+// Link endpoints
+app.get("/api/getLinks", getLinks);
+app.post("/api/updateLink", updateLink);
+app.post("/api/deleteLink", deleteLink);
+app.post("/api/newLink", newLink);
 
 // Commission endpoints
 app.get("/api/getCommissionSheets", getCommissionSheets);

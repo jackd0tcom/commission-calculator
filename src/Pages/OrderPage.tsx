@@ -18,7 +18,7 @@ const OrderPage = () => {
   const [newClient, setNewClient] = useState({ clientId: 0 });
   const [orderItems, setOrderItems] = useState([{}]);
   const [clientList, setClientList] = useState([{}]);
-  const [currentClient, setCurrentClient] = useState({});
+  const [currentClient, setCurrentClient] = useState({ clientName: null });
   const [productList, setProductList] = useState([{}]);
   const [unauthorized, setUnauthorized] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
@@ -83,7 +83,7 @@ const OrderPage = () => {
   }, 0);
 
   const orderStatus =
-    totalQuantity > 0 && totalDeliveries === 0
+    totalQuantity >= 0 && totalDeliveries === 0
       ? "In Progress"
       : totalDeliveries >= totalQuantity
         ? "Delivered"
@@ -121,6 +121,14 @@ const OrderPage = () => {
   const handlePriceChange = (itemId: number, price: number) => {
     setOrderItems((prev) =>
       prev.map((it: any) => (it.itemId === itemId ? { ...it, price } : it)),
+    );
+  };
+
+  const handleDeliveriesChange = (itemId: number, deliveries: any[]) => {
+    setOrderItems((prev) =>
+      prev.map((it: any) =>
+        it.itemId === itemId ? { ...it, deliveries } : it,
+      ),
     );
   };
 
@@ -184,7 +192,7 @@ const OrderPage = () => {
         <div className="new-sheet-wrapper">
           <div className="order-profile-wrapper">
             <ProfilePic src={user.profilePic} />
-            <h2>Order #{orderId}</h2>
+            <h2>New Order</h2>
           </div>
           <ClientPicker
             setClientList={setClientList}
@@ -233,16 +241,23 @@ const OrderPage = () => {
               <ProfilePic src={user.profilePic} />
               <h2>Order #{orderId}</h2>
             </div>
-            <ClientPicker
-              clientList={clientList}
-              setClientList={setClientList}
-              newClient={newClient}
-              setNewClient={setNewClient}
-              currentClient={currentClient}
-              setCurrentClient={setCurrentClient}
-              updateOrder={updateOrder}
-              orderId={Number(orderId)}
-            />
+            <div className="order-client-wrapper">
+              Client:
+              {orderStatus !== "In Progress" ? (
+                <p>{currentClient?.clientName}</p>
+              ) : (
+                <ClientPicker
+                  setClientList={setClientList}
+                  clientList={clientList}
+                  newClient={newClient}
+                  setNewClient={setNewClient}
+                  currentClient={currentClient}
+                  setCurrentClient={setCurrentClient}
+                  updateOrder={updateOrder}
+                  orderId={Number(orderId)}
+                />
+              )}
+            </div>
             <p className="order-status-p">
               Order Status:{" "}
               <span
@@ -300,6 +315,7 @@ const OrderPage = () => {
                           products={productList}
                           onQuantityChange={handleQuantityChange}
                           onPriceChange={handlePriceChange}
+                          onDeliveriesChange={handleDeliveriesChange}
                         />
                       ),
                   )}
