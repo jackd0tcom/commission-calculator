@@ -41,7 +41,7 @@ const Links = () => {
 
   const handleDeleteLink = async (linkId: number) => {
     try {
-      await axios.post("/api/deleteProduct", { linkId }).then((res) => {
+      await axios.post("/api/deleteLink", { linkId }).then((res) => {
         if (res.status === 200) {
           setLinkList((prev) =>
             prev.filter(
