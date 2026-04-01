@@ -8,6 +8,7 @@
 @import "./styles/Admin.css";
 @import "./styles/Profile.css";
 @import "./styles/Orders.css";
+@import "./styles/Links.css";
 
 #root {
   --black: #222222;
