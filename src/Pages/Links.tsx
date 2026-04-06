@@ -13,7 +13,6 @@ const Links = () => {
     try {
       await axios.get("/api/getLinks").then((res) => {
         if (res.status === 200) {
-          console.log(res.data);
           setLinkList(res.data);
           setIsLoading(false);
         }

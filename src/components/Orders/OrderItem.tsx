@@ -1,5 +1,5 @@
 import { useState } from "react";
-import ProductPicker from "../CommissionSheet/ProductPicker";
+import ProductPicker from "./ProductPicker";
 import OrderStatusPicker from "./OrderStatusPicker";
 import OrderDeliveryPicker from "./OrderDeliveryPicker";
 import axios from "axios";
@@ -11,6 +11,7 @@ interface props {
   index: number;
   setOrderItems: any;
   products: any;
+  linkList: any;
   onQuantityChange: any;
   onPriceChange: any;
   onDeliveriesChange?: (itemId: number, deliveries: any[]) => void;
@@ -23,6 +24,7 @@ const OrderItem = ({
   products,
   onQuantityChange,
   onPriceChange,
+  linkList,
   onDeliveriesChange,
 }: props) => {
   const [currentProduct, setCurrentProduct] = useState(
@@ -127,6 +129,7 @@ const OrderItem = ({
         products={products}
         currentProduct={currentProduct}
         handleProductChange={handleProductChange}
+        linkList={linkList}
       />
       <input
         className="quantity-input"
@@ -165,9 +168,7 @@ const OrderItem = ({
         setDeliveries={setDeliveries}
         quantity={quantity}
         item={item}
-        onDeliveriesChange={(next) =>
-          onDeliveriesChange?.(item.itemId, next)
-        }
+        onDeliveriesChange={(next) => onDeliveriesChange?.(item.itemId, next)}
       />
       <p>{formatDollarNoCents(quantity * price)}</p>
       <TiDelete
@@ -190,9 +191,7 @@ const OrderItem = ({
         setDeliveries={setDeliveries}
         quantity={quantity}
         item={item}
-        onDeliveriesChange={(next) =>
-          onDeliveriesChange?.(item.itemId, next)
-        }
+        onDeliveriesChange={(next) => onDeliveriesChange?.(item.itemId, next)}
       />
       <p>{formatDollarNoCents(quantity * price)}</p>
       <p className="delete-placeholder"></p>

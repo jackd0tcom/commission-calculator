@@ -20,6 +20,7 @@ const OrderPage = () => {
   const [clientList, setClientList] = useState([{}]);
   const [currentClient, setCurrentClient] = useState({ clientName: null });
   const [productList, setProductList] = useState([{}]);
+  const [linkList, setLinkList] = useState([{}]);
   const [unauthorized, setUnauthorized] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -44,7 +45,10 @@ const OrderPage = () => {
 
         promises.push(
           axios.get(`/api/getProducts/${user?.userId}`).then((res) => {
-            if (res.status === 200) setProductList(res.data);
+            if (res.status === 200) {
+              setProductList(res.data.products);
+              setLinkList(res.data.links);
+            }
           }),
         );
       }
@@ -313,6 +317,7 @@ const OrderPage = () => {
                           index={index}
                           setOrderItems={setOrderItems}
                           products={productList}
+                          linkList={linkList}
                           onQuantityChange={handleQuantityChange}
                           onPriceChange={handlePriceChange}
                           onDeliveriesChange={handleDeliveriesChange}

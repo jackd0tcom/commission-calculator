@@ -166,7 +166,31 @@
 .delivery-picker-wrapper button {
   padding: 4px 8px;
 }
-
+/* Product Picker */
+.product-picker-dropdown {
+  display: flex;
+  width: 450px;
+  overflow-y: hidden !important;
+  top: 110% !important;
+}
+.product-picker-category {
+  border-right: 1px solid var(--border);
+  width: 30%;
+  display: flex;
+  flex-direction: column;
+}
+.product-picker-items {
+  width: 100%;
+  overflow-y: scroll;
+  scrollbar-width: thin;
+}
+.product-picker-category-item {
+  /* width: 100%; */
+  min-width: unset !important;
+}
+.active-category {
+  background-color: var(--hover);
+}
 /* Client Picker */
 .client-picker-wrapper {
   position: relative;
