@@ -153,7 +153,7 @@ console.log("Database synced");
 
 ViteExpress.listen(app, PORT, () => {
   console.log(
-    `live on ${PORT} ${
+    `live on http://localhost:${PORT} ${
       process.env.NODE_ENV === "production" ? "production" : "development"
     }`,
   );

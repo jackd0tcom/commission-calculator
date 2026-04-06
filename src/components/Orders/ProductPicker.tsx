@@ -6,6 +6,7 @@ interface props {
   products: any;
   currentProduct: any;
   handleProductChange: any;
+  linkList: any;
 }
 
 const ProductPicker = ({
@@ -13,18 +14,40 @@ const ProductPicker = ({
   products,
   currentProduct,
   handleProductChange,
+  linkList,
 }: props) => {
   const [selectedProductId, setSelectedProductId] = useState(
     currentProduct?.productId,
   );
   const [showDropDown, setShowDropdown] = useState(false);
   const dropdownRef = useRef<HTMLInputElement>(null);
+  const [showLinks, setShowLinks] = useState(false);
 
   const selectedProduct = products.find(
     (c: any) => c.productId === selectedProductId,
   );
 
   const updateProduct = async (id: number) => {
+    try {
+      await axios
+        .post("/api/updateOrderItem", {
+          itemId: item.itemId,
+          fieldName: "productId",
+          value: id,
+        })
+        .then((res) => {
+          if (res.status === 200) {
+            handleProductChange(res.data.newProduct);
+            setSelectedProductId(id);
+            setShowDropdown(false);
+          }
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const updateLink = async (id: number) => {
     try {
       await axios
         .post("/api/updateOrderItem", {
@@ -79,15 +102,49 @@ const ProductPicker = ({
       </button>
       {showDropDown && (
         <div className="dropdown product-picker-dropdown" ref={dropdownRef}>
-          {products.map((product: any) => (
+          <div className="product-picker-category">
             <div
-              className="dropdown-item product-picker-item"
-              key={product.productId}
-              onClick={() => updateProduct(product.productId)}
+              className={
+                !showLinks
+                  ? "dropdown-item product-picker-category-item active-category"
+                  : "dropdown-item product-picker-category-item"
+              }
+              onClick={() => setShowLinks(false)}
             >
-              {product.productName}
+              Products
             </div>
-          ))}
+            <div
+              className={
+                showLinks
+                  ? "dropdown-item product-picker-category-item active-category"
+                  : "dropdown-item product-picker-category-item"
+              }
+              onClick={() => setShowLinks(true)}
+            >
+              Links
+            </div>
+          </div>
+          <div className="product-picker-items">
+            {!showLinks
+              ? products.map((product: any) => (
+                  <div
+                    className="dropdown-item product-picker-item"
+                    key={product.productId}
+                    onClick={() => updateProduct(product.productId)}
+                  >
+                    {product.productName}
+                  </div>
+                ))
+              : linkList.map((link: any) => (
+                  <div
+                    className="dropdown-item product-picker-item"
+                    key={link.linkId}
+                    onClick={() => updateProduct(link.linkId)}
+                  >
+                    {link.url ?? "No url provided"}
+                  </div>
+                ))}
+          </div>
         </div>
       )}
     </div>

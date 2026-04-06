@@ -1,4 +1,4 @@
-import { Product, UserProductCommission, User } from "../model";
+import { Product, UserProductCommission, User, Link } from "../model";
 import { Request, Response } from "express";
 import { Order } from "sequelize";
 
@@ -26,8 +26,15 @@ export default {
         order: [["productId", "DESC"]],
       });
 
-      if (products) {
-        res.send(products);
+      const links = await Link.findAll();
+
+      const payload = {
+        products,
+        links,
+      };
+
+      if (payload) {
+        res.send(payload);
       } else {
         res.status(400).send("No products found");
       }
