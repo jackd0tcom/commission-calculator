@@ -5,6 +5,7 @@ import { configDotenv } from "dotenv";
 import productCtrl from "./controllers/productCtrl";
 import commissionCtrl from "./controllers/commissionCtrl";
 import userCtrl from "./controllers/userCtrl";
+import vendorCtrl from "./controllers/vendorCtrl.js";
 import clientCtrl from "./controllers/clientCtrl";
 import orderCtrl from "./controllers/orderCtrl.js";
 import deliveryCtrl from "./controllers/deliveryCtrl.js";
@@ -20,6 +21,8 @@ const {
   getAdminProducts,
   updateUserCommissionRate,
 } = productCtrl;
+
+const { getVendors } = vendorCtrl;
 
 const { getLinks, updateLink, deleteLink, newLink } = linkCtrl;
 const {
@@ -100,6 +103,9 @@ app.get("/api/getLinks", getLinks);
 app.post("/api/updateLink", updateLink);
 app.post("/api/deleteLink", deleteLink);
 app.post("/api/newLink", newLink);
+
+// Vendor endpoints
+app.get("/api/getVendors", getVendors);
 
 // Commission endpoints
 app.get("/api/getCommissionSheets", getCommissionSheets);

@@ -62,7 +62,7 @@
 }
 .order-items-list-item {
   display: grid;
-  grid-template-columns: 0.2fr 1.5fr 1fr 1.2fr 1.5fr 1.5fr 1fr 0.1fr;
+  grid-template-columns: 0.2fr 1.5fr 1fr 1fr 1.2fr 1.5fr 1.5fr 1fr 0.1fr;
   align-items: center;
   gap: 10px;
   padding: 6px 12px;
@@ -191,6 +191,12 @@
 .active-category {
   background-color: var(--hover);
 }
+
+/* Vendor picker */
+.vendor-picker-wrapper {
+  position: relative;
+}
+
 /* Client Picker */
 .client-picker-wrapper {
   position: relative;

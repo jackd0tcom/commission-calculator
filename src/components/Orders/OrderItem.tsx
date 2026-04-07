@@ -4,6 +4,7 @@ import OrderStatusPicker from "./OrderStatusPicker";
 import OrderDeliveryPicker from "./OrderDeliveryPicker";
 import axios from "axios";
 import { formatDollarNoCents } from "../../helpers";
+import VendorPicker from "./VendorPicker";
 import { TiDelete } from "react-icons/ti";
 
 interface props {
@@ -15,6 +16,7 @@ interface props {
   onQuantityChange: any;
   onPriceChange: any;
   onDeliveriesChange?: (itemId: number, deliveries: any[]) => void;
+  vendorList: any;
 }
 
 const OrderItem = ({
@@ -25,11 +27,13 @@ const OrderItem = ({
   onQuantityChange,
   onPriceChange,
   linkList,
+  vendorList,
   onDeliveriesChange,
 }: props) => {
   const [currentProduct, setCurrentProduct] = useState(
     item?.product ? item?.product : null,
   );
+  const [currentVendor, setCurrentVendor] = useState(item.vendorId ?? null);
   const [quantity, setQuantity] = useState(item.quantity ?? 0);
   const [status, setStatus] = useState(item.itemStatus ?? "");
   const [price, setPrice] = useState(
@@ -131,6 +135,12 @@ const OrderItem = ({
         handleProductChange={handleProductChange}
         linkList={linkList}
       />
+      <VendorPicker
+        item={item}
+        vendorList={vendorList}
+        currentVendor={currentVendor}
+        setCurrentVendor={setCurrentVendor}
+      />
       <input
         className="quantity-input"
         type="number"
@@ -159,10 +169,6 @@ const OrderItem = ({
           onBlur={() => persistPriceChange(price)}
         />
       </div>
-      <OrderStatusPicker
-        currentStatus={status}
-        handleUpdateStatus={handleUpdateStatus}
-      />
       <OrderDeliveryPicker
         deliveries={deliveries}
         setDeliveries={setDeliveries}
@@ -171,6 +177,10 @@ const OrderItem = ({
         onDeliveriesChange={(next) => onDeliveriesChange?.(item.itemId, next)}
       />
       <p>{formatDollarNoCents(quantity * price)}</p>
+      <OrderStatusPicker
+        currentStatus={status}
+        handleUpdateStatus={handleUpdateStatus}
+      />
       <TiDelete
         className="sheet-item-delete"
         onClick={() => handleDeleteItem()}

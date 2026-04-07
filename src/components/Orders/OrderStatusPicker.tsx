@@ -4,7 +4,7 @@ interface props {
 }
 
 const OrderStatusPicker = ({ currentStatus, handleUpdateStatus }: props) => {
-  const statusText = currentStatus === "draft" ? "Submit" : "Submitted";
+  const statusText = currentStatus === "draft" ? "Stage" : "Staged";
   return (
     <div className="order-status-picker">
       <button

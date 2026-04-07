@@ -63,21 +63,21 @@ const OrderDeliveryPicker = ({
 
   return (
     <div className="delivery-picker-wrapper">
-      <button
+      {/* <button
         onClick={() => handleSubtract()}
         disabled={deliveries.length < 1 && item.itemStatus === "draft"}
       >
         -
-      </button>
+      </button> */}
       <p>
         {deliveryCount} / {quantity}
       </p>
-      <button
+      {/* <button
         onClick={() => handleAdd()}
         disabled={item.itemStatus === "draft"}
       >
         +
-      </button>
+      </button> */}
     </div>
   );
 };

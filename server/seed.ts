@@ -202,6 +202,10 @@ async function seed() {
 
   const vendors = await Vendor.bulkCreate([
     {
+      vendorName: "Interior",
+      googleSheetId: null,
+    },
+    {
       vendorName: "Next Net",
       googleSheetId: "1BxSeEdSeEd-demo-sheet-primary",
     },
@@ -213,7 +217,7 @@ async function seed() {
 
   await VendorField.bulkCreate([
     {
-      vendorId: 1,
+      vendorId: 2,
       label: "P1P Team",
       fieldType: "string",
       required: true,
@@ -222,7 +226,7 @@ async function seed() {
       googleSheetId: "B",
     },
     {
-      vendorId: 1,
+      vendorId: 2,
       label: "Client ID",
       fieldType: "number",
       required: true,
@@ -231,7 +235,7 @@ async function seed() {
       googleSheetId: "C",
     },
     {
-      vendorId: 1,
+      vendorId: 2,
       label: "Client",
       fieldType: "string",
       required: true,
@@ -240,7 +244,7 @@ async function seed() {
       googleSheetId: "D",
     },
     {
-      vendorId: 1,
+      vendorId: 2,
       label: "Target Pages",
       fieldType: "string",
       required: false,
@@ -249,7 +253,7 @@ async function seed() {
       googleSheetId: "F",
     },
     {
-      vendorId: 1,
+      vendorId: 2,
       label: "Target Page Chosen",
       fieldType: "string",
       required: false,
@@ -258,7 +262,7 @@ async function seed() {
       googleSheetId: "G",
     },
     {
-      vendorId: 1,
+      vendorId: 2,
       label: "P1P Suggested Anchor Text",
       fieldType: "string",
       required: false,
@@ -267,7 +271,7 @@ async function seed() {
       googleSheetId: "H",
     },
     {
-      vendorId: 2,
+      vendorId: 3,
       label: "Campaign code",
       fieldType: "string",
       required: false,
