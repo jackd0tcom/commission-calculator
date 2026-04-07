@@ -18,6 +18,7 @@ const OrderPage = () => {
   const [newClient, setNewClient] = useState({ clientId: 0 });
   const [orderItems, setOrderItems] = useState([{}]);
   const [clientList, setClientList] = useState([{}]);
+  const [vendorList, setVendorList] = useState([{}]);
   const [currentClient, setCurrentClient] = useState({ clientName: null });
   const [productList, setProductList] = useState([{}]);
   const [linkList, setLinkList] = useState([{}]);
@@ -56,6 +57,13 @@ const OrderPage = () => {
       promises.push(
         axios.get("/api/getClients").then((res) => {
           if (res.status === 200) setClientList(res.data);
+        }),
+      );
+
+      promises.push(
+        axios.get("/api/getVendors").then((res) => {
+          console.log(res.data);
+          if (res.status === 200) setVendorList(res.data);
         }),
       );
 
@@ -300,11 +308,12 @@ const OrderPage = () => {
               <div className="order-items-list-item order-items-list-head">
                 <p>#</p>
                 <p>Product</p>
+                <p>Vendor</p>
                 <p>Quantity</p>
-                <p>Price</p>
-                <p>Status</p>
+                <p>Unit Price</p>
                 <p>Deliveries</p>
                 <p>Total</p>
+                <p>Status</p>
                 <FaTrashCan className={"trash-can-icon"} />
               </div>
               <div className="order-items-list-wrapper">
@@ -321,6 +330,7 @@ const OrderPage = () => {
                           onQuantityChange={handleQuantityChange}
                           onPriceChange={handlePriceChange}
                           onDeliveriesChange={handleDeliveriesChange}
+                          vendorList={vendorList}
                         />
                       ),
                   )}
