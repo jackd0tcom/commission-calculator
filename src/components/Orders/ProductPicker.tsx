@@ -33,6 +33,7 @@ const ProductPicker = ({
         .post("/api/updateOrderItem", {
           itemId: item.itemId,
           fieldName: "productId",
+          productType: "product",
           value: id,
         })
         .then((res) => {
@@ -53,6 +54,7 @@ const ProductPicker = ({
         .post("/api/updateOrderItem", {
           itemId: item.itemId,
           fieldName: "productId",
+          productType: "link",
           value: id,
         })
         .then((res) => {
