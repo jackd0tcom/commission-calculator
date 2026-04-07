@@ -5,7 +5,7 @@ const db = await connectToDb(
   process.env.DATABASE_URL || "postgresql:///commission-db",
 );
 
-export class User extends Model {}
+export class User extends Model { }
 User.init(
   {
     userId: {
@@ -53,7 +53,7 @@ User.init(
   { sequelize: db, modelName: "user", tableName: "users", timestamps: true },
 );
 
-export class CommissionSheet extends Model {}
+export class CommissionSheet extends Model { }
 CommissionSheet.init(
   {
     sheetId: {
@@ -85,7 +85,78 @@ CommissionSheet.init(
   },
 );
 
-export class Order extends Model {}
+export class Vendor extends Model { }
+Vendor.init(
+  {
+    vendorId: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    vendorName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    googleSheetId: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+  },
+  {
+    sequelize: db,
+    modelName: "vendor",
+    tableName: "vendors",
+    timestamps: true,
+  },
+);
+
+export class VendorField extends Model { }
+VendorField.init(
+  {
+    vendorFieldId: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    vendorId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: { model: "vendors" },
+    },
+    label: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    fieldType: {
+      type: DataTypes.ENUM("string", "number", "boolean", "date", "enum"),
+      allowNull: false,
+    },
+    required: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+    },
+    sortIndex: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    defaultValue: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    googleSheetId: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+  },
+  {
+    sequelize: db,
+    modelName: "vendor_field",
+    tableName: "vendor_fields",
+    timestamps: true,
+  },
+);
+
+export class Order extends Model { }
 Order.init(
   {
     orderId: {
@@ -100,12 +171,17 @@ Order.init(
     clientId: {
       type: DataTypes.INTEGER,
       allowNull: true,
-      references: { model: "clients", key: "client_id" },
+      references: { model: "clients" },
     },
     orderStatus: {
       type: DataTypes.ENUM("in progress", "delivered"),
       allowNull: false,
       defaultValue: "in progress",
+    },
+    salesPerson: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: { model: "users" },
     },
   },
   {
@@ -116,7 +192,7 @@ Order.init(
   },
 );
 
-export class OrderItem extends Model {}
+export class OrderItem extends Model { }
 OrderItem.init(
   {
     itemId: {
@@ -127,22 +203,85 @@ OrderItem.init(
     orderId: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: { model: "orders", key: "orderId" },
+      references: { model: "orders" },
     },
-    quantity: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 1 },
     productId: {
       type: DataTypes.INTEGER,
       allowNull: true,
-      references: { model: "products", key: "productId" },
+      references: { model: "products" },
     },
     productType: {
       type: DataTypes.ENUM("product", "link"),
       allowNull: false,
     },
     itemStatus: {
-      type: DataTypes.ENUM("draft", "submitted"),
+      type: DataTypes.ENUM(
+        "draft",
+        "ordered",
+        "in progress",
+        "cancelled",
+        "support needed",
+        "complete",
+      ),
       allowNull: false,
       defaultValue: "draft",
+    },
+    vendorId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: { model: "vendors" },
+    },
+    vendorPayload: {
+      type: DataTypes.JSONB,
+      allowNull: true,
+    },
+    notes: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    anchorText: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    linkingFrom: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    linkingTo: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    deliveredAnchorText: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    dateReported: {
+      type: DataTypes.DATEONLY,
+      allowNull: true,
+    },
+    da: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    dr: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    tf: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    cf: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    traffic: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    managerApproved: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
     },
     sheetId: {
       type: DataTypes.INTEGER,
@@ -165,7 +304,7 @@ OrderItem.init(
   },
 );
 
-export class Delivery extends Model {}
+export class Delivery extends Model { }
 Delivery.init(
   {
     deliveryId: {
@@ -176,7 +315,12 @@ Delivery.init(
     itemId: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: { model: "order_items", key: "itemId" },
+      references: { model: "order_items" },
+    },
+    sheetId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: { model: "commission_sheets", key: "sheet_id" },
     },
     deliveredQuantity: {
       type: DataTypes.INTEGER,
@@ -192,7 +336,7 @@ Delivery.init(
   },
 );
 
-export class Product extends Model {}
+export class Product extends Model { }
 Product.init(
   {
     productId: {
@@ -231,19 +375,19 @@ Product.init(
   },
 );
 
-export class UserProductCommission extends Model {}
+export class UserProductCommission extends Model { }
 UserProductCommission.init(
   {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: { model: "users", key: "user_id" },
+      references: { model: "users" },
     },
     productId: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: { model: "products", key: "productId" },
+      references: { model: "products" },
     },
     commissionRate: {
       type: DataTypes.DECIMAL(5, 4),
@@ -259,7 +403,7 @@ UserProductCommission.init(
   },
 );
 
-export class Link extends Model {}
+export class Link extends Model { }
 Link.init(
   {
     linkId: {
@@ -299,7 +443,7 @@ Link.init(
   },
 );
 
-export class Client extends Model {}
+export class Client extends Model { }
 Client.init(
   {
     clientId: {
@@ -311,7 +455,7 @@ Client.init(
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: { model: "users", key: "user_id" },
+      references: { model: "users" },
     },
     isArchived: {
       type: DataTypes.BOOLEAN,
@@ -327,23 +471,26 @@ Client.init(
   },
 );
 
-CommissionSheet.hasMany(Order, { foreignKey: "sheet_id" });
-Order.belongsTo(CommissionSheet, { foreignKey: "sheet_id" });
+CommissionSheet.hasMany(Order, { foreignKey: "sheetId" });
+Order.belongsTo(CommissionSheet, { foreignKey: "sheetId" });
 
-Order.hasMany(OrderItem, { foreignKey: "order_id" });
-OrderItem.belongsTo(Order, { foreignKey: "order_id" });
+Order.hasMany(OrderItem, { foreignKey: "orderId" });
+OrderItem.belongsTo(Order, { foreignKey: "orderId" });
 
-Order.belongsTo(Client, { foreignKey: "client_id", as: "client" });
-Client.hasMany(Order, {
-  foreignKey: "client_id",
-  as: "orderItems",
-});
+Order.belongsTo(Client, { foreignKey: "clientId", as: "client" });
+Client.hasMany(Order, { foreignKey: "clientId", as: "orders" });
 
-Product.hasMany(OrderItem, { foreignKey: "product_id" });
-OrderItem.belongsTo(Product, { foreignKey: "product_id" });
+Product.hasMany(OrderItem, { foreignKey: "productId" });
+OrderItem.belongsTo(Product, { foreignKey: "productId" });
 
-OrderItem.hasMany(Delivery, { foreignKey: "item_id" });
-Delivery.belongsTo(Product, { foreignKey: "item_id" });
+Vendor.hasMany(VendorField, { foreignKey: "vendorId" });
+VendorField.belongsTo(Vendor, { foreignKey: "vendorId" });
+
+Vendor.hasMany(OrderItem, { foreignKey: "vendorId" });
+OrderItem.belongsTo(Vendor, { foreignKey: "vendorId" });
+
+OrderItem.hasMany(Delivery, { foreignKey: "itemId" });
+Delivery.belongsTo(OrderItem, { foreignKey: "itemId" });
 
 CommissionSheet.hasMany(Delivery, { foreignKey: "sheetId" });
 Delivery.belongsTo(CommissionSheet, { foreignKey: "sheetId" });
@@ -351,8 +498,20 @@ Delivery.belongsTo(CommissionSheet, { foreignKey: "sheetId" });
 User.hasMany(CommissionSheet, { foreignKey: "userId" });
 CommissionSheet.belongsTo(User, { foreignKey: "userId" });
 
-User.hasMany(Order, { foreignKey: "userId" });
-Order.belongsTo(User, { foreignKey: "userId" });
+User.hasMany(Client, { foreignKey: "userId" });
+Client.belongsTo(User, { foreignKey: "userId" });
+
+User.hasMany(Order, { foreignKey: "userId", as: "orders" });
+Order.belongsTo(User, { foreignKey: "userId", as: "user" });
+
+User.hasMany(Order, {
+  foreignKey: "salesPerson",
+  as: "salesPersonOrders",
+});
+Order.belongsTo(User, {
+  foreignKey: "salesPerson",
+  as: "salesPersonUser",
+});
 
 User.belongsToMany(Product, {
   through: UserProductCommission,
@@ -362,7 +521,9 @@ Product.belongsToMany(User, {
   through: UserProductCommission,
   foreignKey: "productId",
 });
-Product.hasMany(UserProductCommission, { foreignKey: "product_id" });
-UserProductCommission.belongsTo(Product, { foreignKey: "product_id" });
+Product.hasMany(UserProductCommission, { foreignKey: "productId" });
+UserProductCommission.belongsTo(Product, { foreignKey: "productId" });
+User.hasMany(UserProductCommission, { foreignKey: "userId" });
+UserProductCommission.belongsTo(User, { foreignKey: "userId" });
 
 export { db };

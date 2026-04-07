@@ -8,9 +8,26 @@ import {
   Order,
   OrderItem,
   Link,
+  Vendor,
+  VendorField,
+  Delivery,
 } from "./model.js";
 
 configDotenv();
+
+type VendorRow = { vendorId: number };
+type SheetRow = { sheetId: number };
+type ClientRow = { clientId: number };
+type OrderRow = { orderId: number };
+type ProductRow = {
+  productId: number;
+  productName: string | null;
+  defaultPrice: number;
+  commissionRate: number;
+  spiff: number | null;
+  cost: number;
+};
+type OrderItemRow = { itemId: number };
 
 async function seed() {
   await db.sync({ force: true });
@@ -161,25 +178,102 @@ async function seed() {
 
   const links = await Link.bulkCreate([
     {
-      productName: "Editorial Links",
-      url: "editorialLinks.com",
+      linkName: "Editorial Links",
+      url: "https://editorial-links.example",
       cost: 250,
       defaultPrice: 600,
       commissionRate: 0.05,
     },
     {
-      productName: "Expert Links",
-      url: "editorialLinks.com",
+      linkName: "Expert Links",
+      url: "https://expert-links.example",
       cost: 1400,
       defaultPrice: 5000,
       commissionRate: 0.05,
     },
     {
-      productName: "DPR",
-      url: "editorialLinks.com",
+      linkName: "DPR",
+      url: "https://dpr.example",
       cost: 6700,
       defaultPrice: 15000,
       commissionRate: 0.05,
+    },
+  ]);
+
+  const vendors = await Vendor.bulkCreate([
+    {
+      vendorName: "Next Net",
+      googleSheetId: "1BxSeEdSeEd-demo-sheet-primary",
+    },
+    {
+      vendorName: "Vissoula",
+      googleSheetId: null,
+    },
+  ]);
+
+  await VendorField.bulkCreate([
+    {
+      vendorId: 1,
+      label: "P1P Team",
+      fieldType: "string",
+      required: true,
+      sortIndex: 1,
+      defaultValue: null,
+      googleSheetId: "B",
+    },
+    {
+      vendorId: 1,
+      label: "Client ID",
+      fieldType: "number",
+      required: true,
+      sortIndex: 2,
+      defaultValue: null,
+      googleSheetId: "C",
+    },
+    {
+      vendorId: 1,
+      label: "Client",
+      fieldType: "string",
+      required: true,
+      sortIndex: 3,
+      defaultValue: null,
+      googleSheetId: "D",
+    },
+    {
+      vendorId: 1,
+      label: "Target Pages",
+      fieldType: "string",
+      required: false,
+      sortIndex: 5,
+      defaultValue: null,
+      googleSheetId: "F",
+    },
+    {
+      vendorId: 1,
+      label: "Target Page Chosen",
+      fieldType: "string",
+      required: false,
+      sortIndex: 6,
+      defaultValue: null,
+      googleSheetId: "G",
+    },
+    {
+      vendorId: 1,
+      label: "P1P Suggested Anchor Text",
+      fieldType: "string",
+      required: false,
+      sortIndex: 7,
+      defaultValue: null,
+      googleSheetId: "H",
+    },
+    {
+      vendorId: 2,
+      label: "Campaign code",
+      fieldType: "string",
+      required: false,
+      sortIndex: 0,
+      defaultValue: null,
+      googleSheetId: "C",
     },
   ]);
 
@@ -204,73 +298,143 @@ async function seed() {
     },
   ]);
 
-  // Create some example orders for userId 1
-  const orders = await Order.bulkCreate([
+  const firstSheetId = (sheets[0]!.toJSON() as SheetRow).sheetId;
+
+  const c = clients.map((row) => row.toJSON() as ClientRow);
+
+  const ordersRaw = await Order.bulkCreate([
     {
       userId: 1,
-      clientId: clients[0].clientId, // Acme Corp
+      clientId: c[0]!.clientId,
       orderStatus: "in progress",
+      salesPerson: 1,
     },
     {
       userId: 1,
-      clientId: clients[1].clientId, // Globex Industries
+      clientId: c[1]!.clientId,
       orderStatus: "in progress",
+      salesPerson: 1,
     },
     {
       userId: 1,
-      clientId: clients[2].clientId, // Initech
+      clientId: c[2]!.clientId,
       orderStatus: "delivered",
+      salesPerson: 1,
     },
   ]);
 
-  // Create order items tied to those orders and products
-  await OrderItem.bulkCreate([
+  const orders = ordersRaw.map((row) => row.toJSON() as OrderRow);
+
+  const p = products.map((row) => row.toJSON() as ProductRow);
+
+  const orderItemsRaw = await OrderItem.bulkCreate([
     {
-      orderId: orders[0].orderId,
-      productId: products[0].productId, // Editorial Links
+      orderId: orders[0]!.orderId,
+      productId: p[0]!.productId,
       productType: "product",
-      itemStatus: "submitted",
-      sheetId: 1,
-      quantity: 2,
+      itemStatus: "complete",
+      vendorId: vendors[0]!.vendorId,
+      vendorPayload: { poNumber: "PO-ACM-1001", rushOrder: false },
+      sheetId: firstSheetId,
       price: 600,
+      anchorText: "best project management tools",
+      linkingFrom: "https://acme.example/resources",
+      linkingTo: "https://publisher.example/acme-story",
+      deliveredAnchorText: "best project management tools",
+      dateReported: "2025-01-15",
+      da: 52,
+      dr: 48,
+      tf: 18,
+      cf: 28,
+      traffic: 12000,
+      managerApproved: true,
     },
     {
-      orderId: orders[0].orderId,
-      productId: products[3].productId, // News Links
+      orderId: orders[0]!.orderId,
+      productId: p[3]!.productId,
       productType: "product",
-      itemStatus: "submitted",
-      sheetId: 1,
-      quantity: 5,
+      itemStatus: "complete",
+      vendorId: vendors[0]!.vendorId,
+      vendorPayload: { poNumber: "PO-ACM-1002", rushOrder: true },
+      sheetId: firstSheetId,
       price: 900,
     },
     {
-      orderId: orders[1].orderId,
-      productId: products[1].productId, // Expert Links
+      orderId: orders[1]!.orderId,
+      productId: p[1]!.productId,
       productType: "product",
-      itemStatus: "submitted",
-      sheetId: 1,
-      quantity: 1,
+      itemStatus: "complete",
+      vendorId: vendors[1]!.vendorId,
+      vendorPayload: { campaignCode: "GLOBEX-Q1" },
+      sheetId: firstSheetId,
       price: 5000,
     },
     {
-      orderId: orders[2].orderId,
-      productId: products[8].productId, // Linkable Content
+      orderId: orders[2]!.orderId,
+      productId: p[8]!.productId,
       productType: "product",
-      itemStatus: "submitted",
-      sheetId: 1,
-      quantity: 3,
+      itemStatus: "complete",
+      vendorId: vendors[1]!.vendorId,
+      vendorPayload: { campaignCode: "INITECH-LC" },
+      sheetId: firstSheetId,
       price: 700,
-      productNameSnapshot: products[8].productName,
-      defaultPriceSnapshot: products[8].defaultPrice,
-      commissionRateSnapshot: products[8].commissionRate,
-      spiffSnapshot: products[8].spiff,
-      costSnapshot: products[8].cost,
+      productNameSnapshot: p[8]!.productName,
+      defaultPriceSnapshot: p[8]!.defaultPrice,
+      commissionRateSnapshot: p[8]!.commissionRate,
+      spiffSnapshot: p[8]!.spiff,
+      costSnapshot: p[8]!.cost,
       priceSnapshot: 700,
+    },
+    {
+      orderId: orders[0]!.orderId,
+      productId: p[4]!.productId,
+      productType: "product",
+      itemStatus: "draft",
+      vendorId: null,
+      vendorPayload: null,
+      sheetId: null,
+      price: p[4]!.defaultPrice,
     },
   ]);
 
+  const orderItems = orderItemsRaw.map((row) => row.toJSON() as OrderItemRow);
+
+  const deliveries: Array<{
+    itemId: number;
+    sheetId: number;
+    deliveredQuantity: number;
+  }> = [];
+  const addDeliveries = (itemId: number, count: number, sheetId: number) => {
+    for (let i = 0; i < count; i += 1) {
+      deliveries.push({
+        itemId,
+        sheetId,
+        deliveredQuantity: 1,
+      });
+    }
+  };
+
+  addDeliveries(orderItems[0]!.itemId, 2, firstSheetId);
+  addDeliveries(orderItems[1]!.itemId, 5, firstSheetId);
+  addDeliveries(orderItems[2]!.itemId, 1, firstSheetId);
+  addDeliveries(orderItems[3]!.itemId, 3, firstSheetId);
+
+  await Delivery.bulkCreate(deliveries);
+
   console.log(
-    `Seeded 1 user, ${clients.length} clients, ${products.length} products, ${sheets.length} commission sheets, ${orders.length} orders, 4 order items and ${links.length} Links`,
+    [
+      "Seed complete:",
+      "1 user",
+      `${clients.length} clients`,
+      `${products.length} products`,
+      `${links.length} links`,
+      `${vendors.length} vendors`,
+      "3 vendor field defs",
+      `${sheets.length} commission sheets`,
+      `${orders.length} orders`,
+      `${orderItems.length} order items`,
+      `${deliveries.length} deliveries`,
+    ].join(", "),
   );
   process.exit(0);
 }
