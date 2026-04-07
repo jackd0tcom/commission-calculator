@@ -135,6 +135,10 @@ OrderItem.init(
       allowNull: true,
       references: { model: "products", key: "productId" },
     },
+    productType: {
+      type: DataTypes.ENUM("product", "link"),
+      allowNull: false,
+    },
     itemStatus: {
       type: DataTypes.ENUM("draft", "submitted"),
       allowNull: false,

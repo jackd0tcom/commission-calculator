@@ -379,7 +379,7 @@ export default {
         res.status(400).send("No order found");
         return;
       }
-      const item = await OrderItem.create({ orderId });
+      const item = await OrderItem.create({ orderId, productType: "product" });
 
       if (!item) {
         res.status(400).send("Error creating item");
