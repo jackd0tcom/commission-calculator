@@ -9,6 +9,7 @@ import { FaUserTie } from "react-icons/fa";
 import { FaMoneyCheckDollar } from "react-icons/fa6";
 import { FaBoxOpen } from "react-icons/fa6";
 import { FaLink } from "react-icons/fa";
+import { FaStore } from "react-icons/fa";
 
 const Nav = () => {
   const user = useSelector((state: any) => state.user);
@@ -62,6 +63,15 @@ const Nav = () => {
             >
               <BsFillPersonBadgeFill />
               Clients
+            </NavLink>
+            <NavLink
+              to="/vendors"
+              className={({ isActive }) =>
+                isActive ? "active-nav nav-button" : "inactive-nav nav-button"
+              }
+            >
+              <FaStore />
+              Vendors
             </NavLink>
             {user.isAdmin && (
               <>

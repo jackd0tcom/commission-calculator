@@ -1,8 +1,8 @@
 .nav-wrapper {
-  width: 18%;
+  min-width: 220px;
+  max-width: 220px;
   padding: 30px 15px;
   background-color: var(--black);
-  max-width: 220px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;

@@ -35,6 +35,7 @@ const OrderPage = () => {
       if (Number(orderId) !== 0) {
         promises.push(
           axios.get(`/api/getOrder/${orderId}`).then((res) => {
+            console.log(res.data);
             if (res.status === 200) {
               if (res.data.orderItems && res.data.orderItems.length > 0) {
                 setOrderItems(res.data.orderItems);
@@ -306,15 +307,16 @@ const OrderPage = () => {
           <div className="order-page-body">
             <div className="order-items-list">
               <div className="order-items-list-item order-items-list-head">
-                <p>#</p>
-                <p>Product</p>
-                <p>Vendor</p>
-                <p>Quantity</p>
-                <p>Unit Price</p>
-                <p>Deliveries</p>
-                <p>Total</p>
+                <p>ID</p>
+                <p>Date</p>
+                <p className="picker-heading">Product</p>
+                <p className="picker-heading">Vendor</p>
+                <p className="input-heading">Notes / Restrictions</p>
+                <p className="input-heading">Target URL</p>
+                <p className="input-heading">Anchor Text</p>
+                <p>Price</p>
                 <p>Status</p>
-                <FaTrashCan className={"trash-can-icon"} />
+                {/* <p>Linking From</p> */}
               </div>
               <div className="order-items-list-wrapper">
                 {orderItems?.length > 0 &&

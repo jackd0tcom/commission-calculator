@@ -3,8 +3,10 @@ import ProductPicker from "./ProductPicker";
 import OrderStatusPicker from "./OrderStatusPicker";
 import OrderDeliveryPicker from "./OrderDeliveryPicker";
 import axios from "axios";
-import { formatDollarNoCents } from "../../helpers";
+import { formatDollarNoCents, formatDateNoTime } from "../../helpers";
 import VendorPicker from "./VendorPicker";
+import VendorRow from "./VendorRow";
+import { FaAngleUp } from "react-icons/fa6";
 import { TiDelete } from "react-icons/ti";
 
 interface props {
@@ -34,12 +36,17 @@ const OrderItem = ({
     item?.product ? item?.product : null,
   );
   const [currentVendor, setCurrentVendor] = useState(item.vendorId ?? null);
+  const [hovering, setHovering] = useState(false);
   const [quantity, setQuantity] = useState(item.quantity ?? 0);
+  const [notes, setNotes] = useState(item.notes ?? "");
+  const [targetUrl, setTargetUrl] = useState(item.targetUrl ?? "");
+  const [anchorText, setAnchorText] = useState(item.anchorText ?? "");
   const [status, setStatus] = useState(item.itemStatus ?? "");
   const [price, setPrice] = useState(
     item.priceSnapshot ?? item.price ?? item.product?.defaultPrice ?? 0,
   );
   const [deliveries, setDeliveries] = useState(item.deliveries ?? []);
+  const [showVendorRows, setShowVendorRows] = useState(false);
 
   const handleProductChange = async (newProduct: any) => {
     setCurrentProduct(newProduct);
@@ -125,66 +132,97 @@ const OrderItem = ({
     }
   };
 
-  return status === "draft" ? (
-    <div className="order-items-list-item">
-      <p className="sheet-item-number">{index + 1}</p>
-      <ProductPicker
-        item={item}
-        products={products}
-        currentProduct={currentProduct}
-        handleProductChange={handleProductChange}
-        linkList={linkList}
-      />
-      <VendorPicker
-        item={item}
-        vendorList={vendorList}
-        currentVendor={currentVendor}
-        setCurrentVendor={setCurrentVendor}
-      />
-      <input
-        className="quantity-input"
-        type="number"
-        value={quantity}
-        onChange={(e) => {
-          const val = Number(e.target.value);
-          if (val < 0) {
-            return;
-          }
-          setQuantity(val);
-          onQuantityChange?.(item.itemId, val);
-        }}
-        onBlur={() => persistQuantityChange(quantity)}
-      />
-      <div className="price-input-wrapper">
-        <span>$</span>
+  const currentVendorName = vendorList.find(
+    (vendor: any) => vendor.vendorId === currentVendor,
+  )?.vendorName;
+
+  return status !== "ordered" ? (
+    <div className="order-items-list-item-wrapper">
+      <div
+        className="order-items-list-item"
+        onMouseEnter={() => setHovering(true)}
+        onMouseLeave={() => setHovering(false)}
+      >
+        {!hovering ? (
+          <p className="sheet-item-number">{index + 1}</p>
+        ) : currentVendorName && currentVendorName !== "Interior" ? (
+          <FaAngleUp
+            onClick={() => setShowVendorRows(!showVendorRows)}
+            className={
+              showVendorRows
+                ? "order-item-carat carat-toggled"
+                : "order-item-carat"
+            }
+          />
+        ) : (
+          <p className="sheet-item-number">{index + 1}</p>
+        )}
+        <p className="sheet-item-number">{formatDateNoTime(item.createdAt)}</p>
+        <ProductPicker
+          item={item}
+          products={products}
+          currentProduct={currentProduct}
+          handleProductChange={handleProductChange}
+          linkList={linkList}
+        />
+        <VendorPicker
+          item={item}
+          vendorList={vendorList}
+          currentVendor={currentVendor}
+          setCurrentVendor={setCurrentVendor}
+        />
         <input
-          className="price-input"
-          type="number"
-          value={`${price}`}
+          className="order-input"
+          type="text"
+          value={notes}
           onChange={(e) => {
-            const val = Number(e.target.value);
-            setPrice(val);
-            onPriceChange?.(item.itemId, val);
+            setNotes(e.target.value);
           }}
-          onBlur={() => persistPriceChange(price)}
+          // TODO
+          // onBlur={() => persistQuantityChange(quantity)}
+        />
+        <input
+          className="order-input"
+          type="text"
+          value={targetUrl}
+          onChange={(e) => {
+            setTargetUrl(e.target.value);
+          }}
+          // TODO
+          // onBlur={() => persistQuantityChange(quantity)}
+        />
+        <input
+          className="order-input"
+          type="text"
+          value={anchorText}
+          onChange={(e) => {
+            setAnchorText(e.target.value);
+          }}
+          // TODO
+          // onBlur={() => persistQuantityChange(quantity)}
+        />
+        <div className="price-input-wrapper">
+          <span>$</span>
+          <input
+            className="price-input"
+            type="number"
+            value={`${price}`}
+            onChange={(e) => {
+              const val = Number(e.target.value);
+              setPrice(val);
+              onPriceChange?.(item.itemId, val);
+            }}
+            onBlur={() => persistPriceChange(price)}
+          />
+        </div>
+        <OrderStatusPicker
+          currentStatus={status}
+          handleUpdateStatus={handleUpdateStatus}
         />
       </div>
-      <OrderDeliveryPicker
-        deliveries={deliveries}
-        setDeliveries={setDeliveries}
-        quantity={quantity}
-        item={item}
-        onDeliveriesChange={(next) => onDeliveriesChange?.(item.itemId, next)}
-      />
-      <p>{formatDollarNoCents(quantity * price)}</p>
-      <OrderStatusPicker
-        currentStatus={status}
-        handleUpdateStatus={handleUpdateStatus}
-      />
-      <TiDelete
-        className="sheet-item-delete"
-        onClick={() => handleDeleteItem()}
-      />
+      {showVendorRows && (
+        <VendorRow vendorList={vendorList} currentVendor={currentVendor} />
+      )}
     </div>
   ) : (
     <div className="order-items-list-item">

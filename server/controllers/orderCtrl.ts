@@ -186,7 +186,7 @@ export default {
         }
       }
 
-      const orderItems = await OrderItem.findAll({
+      const orderItemRows = await OrderItem.findAll({
         where: { orderId },
         include: [
           {
@@ -201,9 +201,36 @@ export default {
         ],
       });
 
+      const plainItems = orderItemRows.map((row) => row.get({ plain: true }));
+
+      const byGroup = new Map<string, typeof plainItems>();
+      for (const item of plainItems) {
+        const key =
+          item.groupId == null ? "__ungrouped__" : String(item.groupId);
+        const bucket = byGroup.get(key);
+        if (bucket) bucket.push(item);
+        else byGroup.set(key, [item]);
+      }
+
+      const sortedGroupKeys = [...byGroup.keys()].sort((a, b) => {
+        if (a === "__ungrouped__") return 1;
+        if (b === "__ungrouped__") return -1;
+        return Number(a) - Number(b);
+      });
+
+      const orderItemGroups = sortedGroupKeys.map((key) => ({
+        groupId: key === "__ungrouped__" ? null : Number(key),
+        items: (byGroup.get(key) ?? []).sort(
+          (x, y) => (x.itemId as number) - (y.itemId as number),
+        ),
+      }));
+
+      const orderItems = orderItemGroups.flatMap((g) => g.items);
+
       const orderWithItems = {
         ...order?.dataValues,
         orderItems,
+        orderItemGroups,
       };
 
       if (orderWithItems) {
