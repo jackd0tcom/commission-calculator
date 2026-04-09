@@ -65,7 +65,7 @@
   display: grid;
   grid-template-columns:
     minmax(40px, auto)
-    minmax(50px, auto) 1fr 1fr 1.5fr 1fr 1fr 1fr 1fr;
+    minmax(50px, auto) 1fr 1fr 1fr 1.5fr 1fr 1fr 1fr 0.25fr;
   align-items: center;
   gap: 10px;
   padding: 6px 12px;
@@ -115,8 +115,11 @@
   border-bottom: 1px solid var(--border);
   padding: 6px 12px;
   width: 100%;
+  white-space: nowrap;
 }
-
+.order-item-settings {
+  position: relative;
+}
 /* Order page */
 .orders-list-item {
   display: grid;
@@ -144,6 +147,41 @@
 .order-status {
   padding: 3px 8px;
   border-radius: 5px;
+}
+.staged-button {
+  background-color: var(--purple);
+}
+.staged-button:hover {
+  background-color: var(--purple);
+}
+.ordered-button {
+  background-color: var(--dark-blue);
+}
+.ordered-button:hover {
+  background-color: var(--dark-blue);
+}
+.cancelled-button {
+  background-color: var(--red);
+}
+.cancelled-button:hover {
+  background-color: var(--red);
+}
+.support-needed-button {
+  background-color: var(--yellow);
+}
+.support-needed-button:hover {
+  background-color: var(--yellow);
+}
+.complete-button {
+  background-color: var(--green);
+}
+.complete-button:hover {
+  background-color: var(--green);
+}
+.in-progress {
+  background-color: var(--blue);
+  font-weight: 500;
+  color: white;
 }
 .partial {
   background-color: var(--yellow);

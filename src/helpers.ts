@@ -107,3 +107,22 @@ export const skewerCase = (str: string) => {
     .replace(/[\s_]+/g, "-")
     .toLowerCase();
 };
+
+export const camelCase = (str: string) => {
+  const words = str
+    .replace(/([a-z])([A-Z])/g, "$1 $2")
+    .replace(/[-_]+/g, " ")
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
+
+  if (words.length === 0) return "";
+
+  return words
+    .map((word, i) => {
+      const lower = word.toLowerCase();
+      if (i === 0) return lower;
+      return lower.charAt(0).toUpperCase() + lower.slice(1);
+    })
+    .join("");
+};

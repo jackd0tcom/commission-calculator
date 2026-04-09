@@ -7,6 +7,7 @@ import {
   Client,
   UserProductCommission,
   Delivery,
+  Vendor,
 } from "../model.ts";
 import { Request, Response } from "express";
 import { formatMonthlySheetTitle } from "../commissionSheets.ts";
@@ -406,7 +407,16 @@ export default {
         res.status(400).send("No order found");
         return;
       }
-      const item = await OrderItem.create({ orderId, productType: "product" });
+
+      const interiorVendor = await Vendor.findOne({
+        where: { vendorName: "Interior" },
+      });
+
+      const item = await OrderItem.create({
+        orderId,
+        productType: "product",
+        vendorId: interiorVendor?.vendorId ?? null,
+      });
 
       if (!item) {
         res.status(400).send("Error creating item");
