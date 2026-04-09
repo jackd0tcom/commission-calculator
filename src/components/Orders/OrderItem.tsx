@@ -1,13 +1,12 @@
 import { useState } from "react";
 import ProductPicker from "./ProductPicker";
 import OrderStatusPicker from "./OrderStatusPicker";
-import OrderDeliveryPicker from "./OrderDeliveryPicker";
 import axios from "axios";
-import { formatDollarNoCents, formatDateNoTime } from "../../helpers";
+import { formatDateNoTime } from "../../helpers";
 import VendorPicker from "./VendorPicker";
 import VendorRow from "./VendorRow";
+import OrderItemSettings from "./OrderItemSettings";
 import { FaAngleUp } from "react-icons/fa6";
-import { TiDelete } from "react-icons/ti";
 
 interface props {
   item: any;
@@ -19,6 +18,7 @@ interface props {
   onPriceChange: any;
   onDeliveriesChange?: (itemId: number, deliveries: any[]) => void;
   vendorList: any;
+  handleOrderItemUpdate: any;
 }
 
 const OrderItem = ({
@@ -26,18 +26,16 @@ const OrderItem = ({
   index,
   setOrderItems,
   products,
-  onQuantityChange,
   onPriceChange,
   linkList,
   vendorList,
-  onDeliveriesChange,
+  handleOrderItemUpdate,
 }: props) => {
   const [currentProduct, setCurrentProduct] = useState(
     item?.product ? item?.product : null,
   );
   const [currentVendor, setCurrentVendor] = useState(item.vendorId ?? null);
   const [hovering, setHovering] = useState(false);
-  const [quantity, setQuantity] = useState(item.quantity ?? 0);
   const [notes, setNotes] = useState(item.notes ?? "");
   const [targetUrl, setTargetUrl] = useState(item.targetUrl ?? "");
   const [anchorText, setAnchorText] = useState(item.anchorText ?? "");
@@ -45,8 +43,8 @@ const OrderItem = ({
   const [price, setPrice] = useState(
     item.priceSnapshot ?? item.price ?? item.product?.defaultPrice ?? 0,
   );
-  const [deliveries, setDeliveries] = useState(item.deliveries ?? []);
   const [showVendorRows, setShowVendorRows] = useState(false);
+  const [vendorPayload, setVendorPayload] = useState(item.vendorPayload ?? {});
 
   const handleProductChange = async (newProduct: any) => {
     setCurrentProduct(newProduct);
@@ -60,30 +58,28 @@ const OrderItem = ({
     );
   };
 
-  const persistQuantityChange = async (newQuantity: number) => {
+  const persistOrderUpdate = async (fieldName: string, value: any) => {
     try {
       const res = await axios.post("/api/updateOrderItem", {
         itemId: item.itemId,
-        fieldName: "quantity",
-        value: newQuantity,
+        fieldName,
+        value,
       });
       if (res.status === 200) {
-        setQuantity(newQuantity);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const persistPriceChange = async (newPrice: number) => {
-    try {
-      const res = await axios.post("/api/updateOrderItem", {
-        itemId: item.itemId,
-        fieldName: "price",
-        value: newPrice,
-      });
-      if (res.status === 200) {
-        setPrice(newPrice);
+        switch (fieldName) {
+          case "price":
+            setPrice(value);
+            break;
+          case "notes":
+            setNotes(value);
+            break;
+          case "targetUrl":
+            setTargetUrl(value);
+            break;
+          case "anchorText":
+            setAnchorText(value);
+            break;
+        }
       }
     } catch (error) {
       console.log(error);
@@ -106,8 +102,7 @@ const OrderItem = ({
   };
 
   const handleUpdateStatus = async (status: string) => {
-    const newStatus = status === "draft" ? "submitted" : "draft";
-    const newItem = { ...item, itemStatus: newStatus };
+    const newItem = { ...item, itemStatus: status };
     try {
       await axios
         .post("/api/updateOrderStatus", {
@@ -120,11 +115,7 @@ const OrderItem = ({
                 it.itemId === item.itemId ? res.data : it,
               ),
             );
-            setStatus(newStatus);
-            if (newStatus === "draft") {
-              setDeliveries([]);
-              onDeliveriesChange?.(item.itemId, []);
-            }
+            setStatus(status);
           }
         });
     } catch (error) {
@@ -136,7 +127,7 @@ const OrderItem = ({
     (vendor: any) => vendor.vendorId === currentVendor,
   )?.vendorName;
 
-  return status !== "ordered" ? (
+  return status === "staged" ? (
     <div className="order-items-list-item-wrapper">
       <div
         className="order-items-list-item"
@@ -171,36 +162,6 @@ const OrderItem = ({
           currentVendor={currentVendor}
           setCurrentVendor={setCurrentVendor}
         />
-        <input
-          className="order-input"
-          type="text"
-          value={notes}
-          onChange={(e) => {
-            setNotes(e.target.value);
-          }}
-          // TODO
-          // onBlur={() => persistQuantityChange(quantity)}
-        />
-        <input
-          className="order-input"
-          type="text"
-          value={targetUrl}
-          onChange={(e) => {
-            setTargetUrl(e.target.value);
-          }}
-          // TODO
-          // onBlur={() => persistQuantityChange(quantity)}
-        />
-        <input
-          className="order-input"
-          type="text"
-          value={anchorText}
-          onChange={(e) => {
-            setAnchorText(e.target.value);
-          }}
-          // TODO
-          // onBlur={() => persistQuantityChange(quantity)}
-        />
         <div className="price-input-wrapper">
           <span>$</span>
           <input
@@ -212,37 +173,96 @@ const OrderItem = ({
               setPrice(val);
               onPriceChange?.(item.itemId, val);
             }}
-            onBlur={() => persistPriceChange(price)}
+            onBlur={() => persistOrderUpdate("price", price)}
           />
         </div>
+        <input
+          className="order-input"
+          type="text"
+          value={notes}
+          onChange={(e) => {
+            setNotes(e.target.value);
+            handleOrderItemUpdate?.("notes", item.itemId, e.target.value);
+          }}
+          onBlur={() => persistOrderUpdate("notes", notes)}
+        />
+        <input
+          className="order-input"
+          type="text"
+          value={targetUrl}
+          onChange={(e) => {
+            setTargetUrl(e.target.value);
+            handleOrderItemUpdate?.("targetUrl", item.itemId, e.target.value);
+          }}
+          onBlur={() => persistOrderUpdate("targetUrl", targetUrl)}
+        />
+        <input
+          className="order-input"
+          type="text"
+          value={anchorText}
+          onChange={(e) => {
+            setAnchorText(e.target.value);
+            handleOrderItemUpdate?.("anchorText", item.itemId, e.target.value);
+          }}
+          onBlur={() => persistOrderUpdate("anchorText", anchorText)}
+        />
         <OrderStatusPicker
           currentStatus={status}
           handleUpdateStatus={handleUpdateStatus}
         />
+        <OrderItemSettings item={item} handleDeleteItem={handleDeleteItem} />
       </div>
       {showVendorRows && (
-        <VendorRow vendorList={vendorList} currentVendor={currentVendor} />
+        <VendorRow
+          item={item}
+          status={status}
+          vendorList={vendorList}
+          currentVendor={currentVendor}
+          vendorPayload={vendorPayload}
+          setVendorPayload={setVendorPayload}
+        />
       )}
     </div>
   ) : (
-    <div className="order-items-list-item">
-      <p className="sheet-item-number">{index + 1}</p>
-      <p>{item.productNameSnapshot}</p>
-      <p>{quantity}</p>
-      <p>${item.priceSnapshot}</p>
-      <OrderStatusPicker
-        currentStatus={status}
-        handleUpdateStatus={handleUpdateStatus}
-      />
-      <OrderDeliveryPicker
-        deliveries={deliveries}
-        setDeliveries={setDeliveries}
-        quantity={quantity}
-        item={item}
-        onDeliveriesChange={(next) => onDeliveriesChange?.(item.itemId, next)}
-      />
-      <p>{formatDollarNoCents(quantity * price)}</p>
-      <p className="delete-placeholder"></p>
+    <div className="order-items-list-item-wrapper">
+      <div className="order-items-list-item">
+        {!hovering ? (
+          <p className="sheet-item-number">{index + 1}</p>
+        ) : currentVendorName && currentVendorName !== "Interior" ? (
+          <FaAngleUp
+            onClick={() => setShowVendorRows(!showVendorRows)}
+            className={
+              showVendorRows
+                ? "order-item-carat carat-toggled"
+                : "order-item-carat"
+            }
+          />
+        ) : (
+          <p className="sheet-item-number">{index + 1}</p>
+        )}
+        <p className="sheet-item-number">{formatDateNoTime(item.createdAt)}</p>
+        <p>{item.productNameSnapshot ?? item.product.productName}</p>
+        <p>{currentVendorName}</p>
+        <p>${item.priceSnapshot ?? item.product.defaultPrice}</p>
+        <p>{item.notes}</p>
+        <p>{item.targetUrl}</p>
+        <p>{item.anchorText}</p>
+        <OrderStatusPicker
+          currentStatus={status}
+          handleUpdateStatus={handleUpdateStatus}
+        />
+        <OrderItemSettings item={item} handleDeleteItem={handleDeleteItem} />
+      </div>
+      {showVendorRows && (
+        <VendorRow
+          item={item}
+          status={status}
+          vendorList={vendorList}
+          currentVendor={currentVendor}
+          vendorPayload={vendorPayload}
+          setVendorPayload={setVendorPayload}
+        />
+      )}
     </div>
   );
 };

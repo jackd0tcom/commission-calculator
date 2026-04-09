@@ -216,7 +216,6 @@ OrderItem.init(
     },
     itemStatus: {
       type: DataTypes.ENUM(
-        "draft",
         "staged",
         "ordered",
         "in progress",
@@ -225,7 +224,7 @@ OrderItem.init(
         "complete",
       ),
       allowNull: false,
-      defaultValue: "draft",
+      defaultValue: "staged",
     },
     vendorId: {
       type: DataTypes.INTEGER,

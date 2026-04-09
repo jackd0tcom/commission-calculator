@@ -35,7 +35,6 @@ const OrderPage = () => {
       if (Number(orderId) !== 0) {
         promises.push(
           axios.get(`/api/getOrder/${orderId}`).then((res) => {
-            console.log(res.data);
             if (res.status === 200) {
               if (res.data.orderItems && res.data.orderItems.length > 0) {
                 setOrderItems(res.data.orderItems);
@@ -63,7 +62,6 @@ const OrderPage = () => {
 
       promises.push(
         axios.get("/api/getVendors").then((res) => {
-          console.log(res.data);
           if (res.status === 200) setVendorList(res.data);
         }),
       );
@@ -141,6 +139,18 @@ const OrderPage = () => {
     setOrderItems((prev) =>
       prev.map((it: any) =>
         it.itemId === itemId ? { ...it, deliveries } : it,
+      ),
+    );
+  };
+
+  const handleOrderItemUpdate = (
+    fieldName: string,
+    itemId: number,
+    value: any,
+  ) => {
+    setOrderItems((prev) =>
+      prev.map((it: any) =>
+        it.itemId === itemId ? { ...it, fieldName: value } : it,
       ),
     );
   };
@@ -311,10 +321,10 @@ const OrderPage = () => {
                 <p>Date</p>
                 <p className="picker-heading">Product</p>
                 <p className="picker-heading">Vendor</p>
+                <p>Price</p>
                 <p className="input-heading">Notes / Restrictions</p>
                 <p className="input-heading">Target URL</p>
                 <p className="input-heading">Anchor Text</p>
-                <p>Price</p>
                 <p>Status</p>
                 {/* <p>Linking From</p> */}
               </div>
@@ -324,6 +334,7 @@ const OrderPage = () => {
                     (item: any, index) =>
                       item.itemId && (
                         <OrderItem
+                          key={`order-item-${item.itemId}`}
                           item={item}
                           index={index}
                           setOrderItems={setOrderItems}
@@ -333,6 +344,7 @@ const OrderPage = () => {
                           onPriceChange={handlePriceChange}
                           onDeliveriesChange={handleDeliveriesChange}
                           vendorList={vendorList}
+                          handleOrderItemUpdate={handleOrderItemUpdate}
                         />
                       ),
                   )}

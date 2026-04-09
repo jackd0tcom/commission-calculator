@@ -30,7 +30,7 @@ const VendorPicker = ({
   useEffect(() => {
     const handleClickOutside = (event: any) => {
       // Don't close if clicking on the project-picker-button or its children
-      const isButtonClick = event.target.closest(".user-picker-button");
+      const isButtonClick = event.target.closest(".vendor-picker-button");
       if (
         dropdownRef.current &&
         !dropdownRef.current.contains(event.target) &&
@@ -72,7 +72,7 @@ const VendorPicker = ({
   return (
     <div className="vendor-picker-wrapper">
       <button
-        className={`product-picker-button ${skewerCase(currentVendorObject?.vendorName ?? "")}`}
+        className={`vendor-picker-button ${skewerCase(currentVendorObject?.vendorName ?? "")}`}
         onClick={() => {
           setShowDropdown(!showDropdown);
         }}

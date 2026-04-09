@@ -73,7 +73,7 @@ const ProductPicker = ({
   useEffect(() => {
     const handleClickOutside = (event: any) => {
       // Don't close if clicking on the project-picker-button or its children
-      const isButtonClick = event.target.closest(".user-picker-button");
+      const isButtonClick = event.target.closest(".product-picker-button");
       if (
         dropdownRef.current &&
         !dropdownRef.current.contains(event.target) &&
