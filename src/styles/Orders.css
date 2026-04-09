@@ -50,9 +50,10 @@
   border: 1px solid var(--border);
   height: 100%;
   position: relative;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
+  width: 100%;
+  overflow-x: scroll;
 }
 .order-items-list-head {
   font-weight: 500;
@@ -62,14 +63,61 @@
 }
 .order-items-list-item {
   display: grid;
-  grid-template-columns: 0.2fr 1.5fr 1fr 1fr 1.2fr 1.5fr 1.5fr 1fr 0.1fr;
+  grid-template-columns:
+    minmax(40px, auto)
+    minmax(50px, auto) 1fr 1fr 1.5fr 1fr 1fr 1fr 1fr;
   align-items: center;
   gap: 10px;
   padding: 6px 12px;
   border-bottom: 1px solid var(--border);
   font-size: 0.9rem;
   background-color: white;
+  width: 100%;
+  white-space: nowrap;
 }
+.order-input {
+  /* max-width: 120px; */
+  padding: 5px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+}
+.order-input,
+.input-heading {
+  min-width: 100px;
+}
+.order-item-carat {
+  padding: 6px 8px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.order-item-carat:hover {
+  background-color: var(--hover);
+}
+.carat-toggled {
+  transform: rotate(180deg);
+  transition: 100ms;
+}
+.picker-heading {
+  /* min-width: 150px; */
+}
+.vendor-row {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--border);
+}
+.vendor-row-head,
+.vendor-row-inputs {
+  display: grid;
+  gap: 10px;
+  font-size: 0.9rem;
+  background-color: white;
+  border-bottom: 1px solid var(--border);
+  padding: 6px 12px;
+  width: 100%;
+}
+
+/* Order page */
 .orders-list-item {
   display: grid;
   grid-template-columns: 0.3fr 1fr 1fr 0.75fr 0.5fr 0.5fr;
@@ -83,6 +131,9 @@
 .orders-list-item:hover {
   background-color: var(--hover);
   cursor: pointer;
+}
+.order-status-picker {
+  position: relative;
 }
 .order-status-p {
   font-size: 0.9rem;
@@ -113,7 +164,6 @@
   height: calc(100% - 135px);
   display: flex;
   flex-direction: column;
-  overflow-y: scroll;
   scrollbar-width: thin;
 }
 .order-sheet-footer {
@@ -124,12 +174,15 @@
 }
 .product-picker-button {
   width: auto;
-  max-width: 200px;
+  max-width: 120px;
 }
 .order-status-button {
   border: none;
   border-radius: 5px;
   color: white;
+}
+.draft-button {
+  background-color: grey;
 }
 .in-progress-button {
   background-color: var(--blue);
@@ -157,6 +210,14 @@
 .partial-badge {
   background-color: var(--yellow);
   color: black;
+}
+.next-net {
+  background-color: var(--purple);
+  color: white;
+}
+.next-net:hover {
+  background-color: var(--purple);
+  color: white;
 }
 .delivery-picker-wrapper {
   display: flex;

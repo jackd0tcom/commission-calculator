@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import axios from "axios";
+import { skewerCase } from "../../helpers";
+import { current } from "@reduxjs/toolkit";
 
 interface props {
   item: any;
@@ -70,7 +72,7 @@ const VendorPicker = ({
   return (
     <div className="vendor-picker-wrapper">
       <button
-        className="product-picker-button"
+        className={`product-picker-button ${skewerCase(currentVendorObject?.vendorName ?? "")}`}
         onClick={() => {
           setShowDropdown(!showDropdown);
         }}
