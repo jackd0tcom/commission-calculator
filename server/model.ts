@@ -205,6 +205,9 @@ OrderItem.init(
       allowNull: false,
       references: { model: "orders" },
     },
+    orderIndex: {
+      type: DataTypes.FLOAT,
+    },
     productId: {
       type: DataTypes.INTEGER,
       allowNull: true,

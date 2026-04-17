@@ -37,7 +37,12 @@ const OrderPage = () => {
           axios.get(`/api/getOrder/${orderId}`).then((res) => {
             if (res.status === 200) {
               if (res.data.orderItems && res.data.orderItems.length > 0) {
-                setOrderItems(res.data.orderItems);
+                const orderItems = res.data.orderItems;
+                setOrderItems(
+                  orderItems.sort(
+                    (a: any, b: any) => a.orderIndex - b.orderIndex,
+                  ),
+                );
               }
               setCurrentClient(res.data.client ?? {});
             }

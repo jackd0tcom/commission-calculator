@@ -36,6 +36,7 @@ const {
   deleteOrder,
   getSheetOrderItems,
   updateOrderStatus,
+  duplicateOrderItem,
 } = orderCtrl;
 const {
   getCommissionSheets,
@@ -129,6 +130,7 @@ app.post(`/api/newOrder`, newOrder);
 app.post("/api/updateOrder", updateOrder);
 app.post(`/api/newOrderItem`, newOrderItem);
 app.post(`/api/deleteOrderItem`, deleteOrderItem);
+app.post(`/api/duplicateOrderItem`, duplicateOrderItem);
 app.post(`/api/deleteOrder`, deleteOrder);
 
 // Client endpoints

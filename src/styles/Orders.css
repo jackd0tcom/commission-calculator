@@ -120,6 +120,17 @@
 .order-item-settings {
   position: relative;
 }
+.order-item-settings-dropdown {
+  right: 0;
+}
+.order-item-settings-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.order-item-icons {
+  fill: #525252;
+}
 /* Order page */
 .orders-list-item {
   display: grid;
