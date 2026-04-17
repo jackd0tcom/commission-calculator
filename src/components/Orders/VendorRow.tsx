@@ -1,5 +1,6 @@
 import VendorRowInput from "./VendorRowInput";
 import axios from "axios";
+import { camelCase } from "../../helpers";
 
 interface props {
   item: any;
@@ -61,7 +62,7 @@ const VendorRow = ({
           >
             {vendorData.vendor_fields.map((field: any) =>
               status !== "staged" ? (
-                <p></p>
+                <p>{vendorPayload?.[camelCase(field.label)] ?? ""}</p>
               ) : (
                 <VendorRowInput
                   vendorPayload={vendorPayload}

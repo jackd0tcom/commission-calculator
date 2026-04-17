@@ -31,9 +31,7 @@ const OrderItem = ({
   vendorList,
   handleOrderItemUpdate,
 }: props) => {
-  const [currentProduct, setCurrentProduct] = useState(
-    item?.product ? item?.product : null,
-  );
+  const [currentProduct, setCurrentProduct] = useState(item?.product ?? null);
   const [currentVendor, setCurrentVendor] = useState(item.vendorId ?? null);
   const [hovering, setHovering] = useState(false);
   const [notes, setNotes] = useState(item.notes ?? "");
@@ -81,21 +79,6 @@ const OrderItem = ({
             break;
         }
       }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  const handleDeleteItem = async () => {
-    try {
-      await axios
-        .post("/api/deleteOrderItem", { itemId: item.itemId })
-        .then((res) => {
-          if (res.status === 200) {
-            setOrderItems((prev: any) =>
-              prev.filter((sheetItem: any) => sheetItem.itemId !== item.itemId),
-            );
-          }
-        });
     } catch (error) {
       console.log(error);
     }
@@ -210,7 +193,7 @@ const OrderItem = ({
           currentStatus={status}
           handleUpdateStatus={handleUpdateStatus}
         />
-        <OrderItemSettings item={item} handleDeleteItem={handleDeleteItem} />
+        <OrderItemSettings item={item} setOrderItems={setOrderItems} />
       </div>
       {showVendorRows && (
         <VendorRow
@@ -225,7 +208,11 @@ const OrderItem = ({
     </div>
   ) : (
     <div className="order-items-list-item-wrapper">
-      <div className="order-items-list-item">
+      <div
+        className="order-items-list-item"
+        onMouseEnter={() => setHovering(true)}
+        onMouseLeave={() => setHovering(false)}
+      >
         {!hovering ? (
           <p className="sheet-item-number">{index + 1}</p>
         ) : currentVendorName && currentVendorName !== "Interior" ? (
@@ -251,7 +238,7 @@ const OrderItem = ({
           currentStatus={status}
           handleUpdateStatus={handleUpdateStatus}
         />
-        <OrderItemSettings item={item} handleDeleteItem={handleDeleteItem} />
+        <OrderItemSettings item={item} setOrderItems={setOrderItems} />
       </div>
       {showVendorRows && (
         <VendorRow

@@ -412,10 +412,15 @@ export default {
         where: { vendorName: "Interior" },
       });
 
+      const orderItemsCount = await OrderItem.count({
+        where: { orderId: order.orderId },
+      });
+
       const item = await OrderItem.create({
         orderId,
         productType: "product",
         vendorId: interiorVendor?.vendorId ?? null,
+        orderIndex: orderItemsCount + 1,
       });
 
       if (!item) {
@@ -454,6 +459,54 @@ export default {
       await item.destroy();
 
       res.status(200).send("Item deleted successfully");
+    } catch (error) {
+      console.error("Error getting sheets:", error);
+      res.status(500).send("Internal server error");
+    }
+  },
+  duplicateOrderItem: async (req: Request, res: Response) => {
+    try {
+      console.log("duplicateOrderItem");
+
+      if (!req.session.user) {
+        res.status(401).send("user not logged in / no session set up");
+        return;
+      }
+
+      const { itemId } = req.body;
+
+      const item = await OrderItem.findOne({ where: { itemId } });
+
+      if (!item) {
+        res.status(400).send("No item found");
+        return;
+      }
+
+      const itemCopy = item.toJSON();
+
+      delete itemCopy.itemId;
+      delete itemCopy.createdAt;
+      delete itemCopy.updatedAt;
+      itemCopy.itemStatus = "staged";
+      itemCopy.orderIndex = Number(item.orderIndex + 0.01);
+
+      console.log(itemCopy);
+
+      const newItem = await OrderItem.create(itemCopy);
+
+      let payload = { ...newItem.toJSON() };
+
+      if (newItem.productId) {
+        const currentProduct = await Product.findOne({
+          where: { productId: newItem.productId },
+        });
+        payload = {
+          ...payload,
+          product: currentProduct,
+        };
+      }
+
+      res.status(200).send(payload);
     } catch (error) {
       console.error("Error getting sheets:", error);
       res.status(500).send("Internal server error");
