@@ -1,5 +1,5 @@
 import { configDotenv } from "dotenv";
-import { db, Product } from "./model.js";
+import { db, Product, Vendor, VendorField, Client } from "./model.js";
 
 configDotenv();
 
@@ -104,6 +104,92 @@ const SEED_PRODUCTS = [
   },
   { productName: "AIO", cost: 1000, defaultPrice: 9000, commissionRate: 0.05 },
 ];
+
+const vendors = await Vendor.bulkCreate([
+  {
+    vendorName: "Interior",
+    googleSheetId: null,
+  },
+  {
+    vendorName: "Next Net",
+    googleSheetId: "1BxSeEdSeEd-demo-sheet-primary",
+  },
+  {
+    vendorName: "Vissoula",
+    googleSheetId: null,
+  },
+]);
+
+await VendorField.bulkCreate([
+  {
+    vendorId: 2,
+    label: "P1P Team",
+    fieldType: "string",
+    required: true,
+    sortIndex: 1,
+    defaultValue: null,
+    googleSheetId: "B",
+  },
+  {
+    vendorId: 2,
+    label: "Client ID",
+    fieldType: "number",
+    required: true,
+    sortIndex: 2,
+    defaultValue: null,
+    googleSheetId: "C",
+  },
+  {
+    vendorId: 2,
+    label: "Client",
+    fieldType: "string",
+    required: true,
+    sortIndex: 3,
+    defaultValue: null,
+    googleSheetId: "D",
+  },
+  {
+    vendorId: 2,
+    label: "Target Pages",
+    fieldType: "string",
+    required: false,
+    sortIndex: 5,
+    defaultValue: null,
+    googleSheetId: "F",
+  },
+  {
+    vendorId: 2,
+    label: "Target Page Chosen",
+    fieldType: "string",
+    required: false,
+    sortIndex: 6,
+    defaultValue: null,
+    googleSheetId: "G",
+  },
+  {
+    vendorId: 2,
+    label: "P1P Suggested Anchor Text",
+    fieldType: "string",
+    required: false,
+    sortIndex: 7,
+    defaultValue: null,
+    googleSheetId: "H",
+  },
+  {
+    vendorId: 3,
+    label: "Campaign code",
+    fieldType: "string",
+    required: false,
+    sortIndex: 0,
+    defaultValue: null,
+    googleSheetId: "C",
+  },
+]);
+
+const clients = await Client.bulkCreate([
+  { clientName: "Acme Corp", userId: 1, isArchived: false },
+  { clientName: "Globex Industries", userId: 1, isArchived: false },
+]);
 
 async function seed() {
   await db.sync({ alter: true, force: true });
