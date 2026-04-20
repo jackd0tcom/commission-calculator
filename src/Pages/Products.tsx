@@ -16,6 +16,7 @@ const Products = () => {
       if (!user.isAdmin) {
         await axios.get(`/api/getProducts/${user.userId}`).then((res) => {
           if (res.status === 200) {
+            console.log(res.data);
             setProductList(res.data);
             setIsLoading(false);
           }
@@ -89,20 +90,21 @@ const Products = () => {
               <p>Spiff</p>
               <FaTrashCan className={"trash-can-icon"} />
             </div>
-            {productList?.map((product, index) => {
-              return (
-                <ProductItem
-                  users={users}
-                  key={(product as { productId?: number }).productId ?? index}
-                  product={product}
-                  index={index}
-                  handleDeleteItem={handleDeleteItem}
-                  isAdmin={user.isAdmin}
-                  productList={productList}
-                  setProductList={setProductList}
-                />
-              );
-            })}
+            {productList.length > 0 &&
+              productList?.map((product, index) => {
+                return (
+                  <ProductItem
+                    users={users}
+                    key={(product as { productId?: number }).productId ?? index}
+                    product={product}
+                    index={index}
+                    handleDeleteItem={handleDeleteItem}
+                    isAdmin={user.isAdmin}
+                    productList={productList}
+                    setProductList={setProductList}
+                  />
+                );
+              })}
           </>
         )}
         {user?.isAdmin && (
