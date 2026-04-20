@@ -48,26 +48,26 @@ const ProductPicker = ({
     }
   };
 
-  const updateLink = async (id: number) => {
-    try {
-      await axios
-        .post("/api/updateOrderItem", {
-          itemId: item.itemId,
-          fieldName: "productId",
-          productType: "link",
-          value: id,
-        })
-        .then((res) => {
-          if (res.status === 200) {
-            handleProductChange(res.data.newProduct);
-            setSelectedProductId(id);
-            setShowDropdown(false);
-          }
-        });
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const updateLink = async (id: number) => {
+  //   try {
+  //     await axios
+  //       .post("/api/updateOrderItem", {
+  //         itemId: item.itemId,
+  //         fieldName: "productId",
+  //         productType: "link",
+  //         value: id,
+  //       })
+  //       .then((res) => {
+  //         if (res.status === 200) {
+  //           handleProductChange(res.data.newProduct);
+  //           setSelectedProductId(id);
+  //           setShowDropdown(false);
+  //         }
+  //       });
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   //   Handles blur
   useEffect(() => {

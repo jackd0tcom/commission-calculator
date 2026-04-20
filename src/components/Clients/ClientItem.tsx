@@ -4,7 +4,6 @@ import axios from "axios";
 import { formatDateNoTime } from "../../helpers";
 import { TiDelete } from "react-icons/ti";
 import UserSelector from "../UI/UserSelector";
-import { User } from "@auth0/auth0-react";
 
 interface props {
   client: any;
