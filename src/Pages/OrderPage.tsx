@@ -10,7 +10,6 @@ import OrderFooter from "../components/Orders/OrderFooter";
 import Loader from "../components/UI/Loader";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import UserSelector from "../components/UI/UserSelector";
-import { User } from "@auth0/auth0-react";
 
 const OrderPage = () => {
   const { orderId } = useParams();
@@ -164,6 +163,7 @@ const OrderPage = () => {
     itemId: number,
     value: any,
   ) => {
+    console.log(fieldName);
     setOrderItems((prev) =>
       prev.map((it: any) =>
         it.itemId === itemId ? { ...it, fieldName: value } : it,

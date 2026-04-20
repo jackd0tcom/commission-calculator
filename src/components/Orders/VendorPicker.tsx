@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import { skewerCase } from "../../helpers";
-import { current } from "@reduxjs/toolkit";
 
 interface props {
   item: any;
