@@ -192,7 +192,7 @@ const clients = await Client.bulkCreate([
 ]);
 
 async function seed() {
-  await db.sync({ alter: true, force: true });
+  await db.sync({ alter: true });
 
   console.log(
     `Prod seed done: ${products.length} new product(s) added, ${clients.length} clients, and ${vendors.length} vendors`,
