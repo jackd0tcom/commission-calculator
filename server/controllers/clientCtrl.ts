@@ -13,10 +13,9 @@ export default {
         return;
       }
 
-      const { userId } = req.session.user;
-
       const clients = await Client.findAll({
-        where: { userId, isArchived: false },
+        where: { isArchived: false },
+        order: [["clientName", "ASC"]],
       });
 
       if (clients) {

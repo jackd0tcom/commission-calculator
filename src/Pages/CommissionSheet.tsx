@@ -37,7 +37,6 @@ const CommissionSheet = () => {
         promises.push(
           axios.get(`/api/getSheet/${sheetId}`).then((res) => {
             if (res.status === 200) {
-              console.log(res.data);
               setSheetData((prev) => ({
                 ...prev,
                 sheetTitle: res.data.sheetTitle,
@@ -55,7 +54,7 @@ const CommissionSheet = () => {
 
       promises.push(
         axios.get(`/api/getProducts/${sheetData.userId}`).then((res) => {
-          if (res.status === 200) setProductList(res.data);
+          if (res.status === 200) setProductList(res.data.products);
         }),
       );
 
