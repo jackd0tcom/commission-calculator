@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 
 const Clients = () => {
   const [clientList, setClientList] = useState([{}]);
+  const [users, setUsers] = useState([{}]);
   const [isLoading, setIsLoading] = useState(true);
   const [orderList, setOrderList] = useState([]);
   const [currentClient, setCurrentClient] = useState(0);
@@ -19,6 +20,9 @@ const Clients = () => {
           setClientList(res.data);
           setIsLoading(false);
         }
+      });
+      await axios.get("/api/getUsers").then((res) => {
+        setUsers(res.data);
       });
     } catch (error) {
       console.log(error);
@@ -86,7 +90,7 @@ const Clients = () => {
       <div className="clients-page-container">
         <div className="clients-list-wrapper">
           <div className="clients-list-item clients-list-head">
-            <p>#</p>
+            <p>User</p>
             <p>Name</p>
             <p>Date Created</p>
             <FaTrashCan className={"trash-can-icon"} />
@@ -97,6 +101,7 @@ const Clients = () => {
             <div className="clients-list-container">
               {clientList?.map((client, index) => (
                 <ClientItem
+                  users={users}
                   client={client}
                   index={index}
                   handleDeleteClient={handleDeleteClient}

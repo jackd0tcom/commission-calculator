@@ -139,12 +139,25 @@ p {
   background-color: var(--hover);
 }
 .profile-image {
-  height: 25px;
-  width: auto;
+  height: 28px;
+  width: 28px;
   border-radius: 50%;
 }
 .profile-pic-wrapper {
   display: flex;
+  align-items: center;
+}
+
+.user-picker-button {
+  cursor: pointer;
+}
+
+.user-selector-wrapper {
+  position: relative;
+}
+.user-selector-item {
+  display: flex;
+  gap: 15px;
   align-items: center;
 }
 

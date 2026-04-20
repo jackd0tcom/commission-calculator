@@ -333,19 +333,9 @@ export default {
         return;
       }
 
-      if (item.itemStatus === "submitted") {
-        const currentSheet = await CommissionSheet.findOne({
-          where: {
-            userId: req.session.user.userId,
-            sheetTitle: formatMonthlySheetTitle(
-              new Date(),
-              process.env.COMMISSION_SHEET_TIMEZONE,
-            ),
-          },
-        });
+      if (item.itemStatus === "ordered") {
         await orderItem?.update({
           itemStatus: item.itemStatus,
-          sheetId: currentSheet?.sheetId ?? null,
           productNameSnapshot: item.product?.productName ?? null,
           priceSnapshot: item.price ?? item.product?.defaultPrice ?? null,
           defaultPriceSnapshot: item.product?.defaultPrice ?? null,
@@ -356,6 +346,51 @@ export default {
               : (item.commissionRateSnapshot ?? item.product?.commissionRate),
           spiffSnapshot: item.product?.spiff ?? null,
           costSnapshot: item.product?.cost,
+        });
+        await Delivery.destroy({
+          where: {
+            itemId: item.itemId,
+          },
+        });
+      } else if (item.itemStatus === "complete") {
+        if (item.productNameSnapshot) {
+          await orderItem?.update({
+            itemStatus: item.itemStatus,
+            productNameSnapshot: item.product?.productName ?? null,
+            priceSnapshot: item.price ?? item.product?.defaultPrice ?? null,
+            defaultPriceSnapshot: item.product?.defaultPrice ?? null,
+            commissionRateSnapshot:
+              item.product?.user_product_commissions?.length > 0
+                ? (item.commissionRateSnapshot ??
+                  item.product?.user_product_commissions[0].commissionRate)
+                : (item.commissionRateSnapshot ?? item.product?.commissionRate),
+            spiffSnapshot: item.product?.spiff ?? null,
+            costSnapshot: item.product?.cost,
+          });
+        }
+
+        const order = await Order.findOne({ where: { orderId: item.orderId } });
+
+        const client = await Client.findOne({
+          where: { clientId: order?.clientId },
+        });
+
+        const currentSheet = await CommissionSheet.findOne({
+          where: {
+            userId: client?.userId,
+            sheetTitle: formatMonthlySheetTitle(
+              new Date(),
+              process.env.COMMISSION_SHEET_TIMEZONE,
+            ),
+          },
+        });
+        await orderItem.update({
+          sheetId: currentSheet?.sheetId,
+        });
+        await Delivery.create({
+          itemId: item.itemId,
+          sheetId: currentSheet?.sheetId ?? null,
+          deliveredQuantity: 1,
         });
       } else {
         await orderItem?.update({

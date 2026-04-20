@@ -3,9 +3,12 @@ import { useRef } from "react";
 import axios from "axios";
 import { formatDateNoTime } from "../../helpers";
 import { TiDelete } from "react-icons/ti";
+import UserSelector from "../UI/UserSelector";
+import { User } from "@auth0/auth0-react";
 
 interface props {
   client: any;
+  users: any;
   index: number;
   handleDeleteClient: any;
   handleSelectClient: any;
@@ -14,7 +17,7 @@ interface props {
 
 const ClientItem = ({
   client,
-  index,
+  users,
   handleDeleteClient,
   handleSelectClient,
   currentClient,
@@ -22,8 +25,9 @@ const ClientItem = ({
   const [name, setName] = useState(client?.clientName ? client.clientName : "");
   const nameRef = useRef<HTMLDivElement>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState(client?.userId ?? null);
 
-  const updateClient = async (fieldName: string, value: string) => {
+  const updateClient = async (fieldName: string, value: any) => {
     try {
       await axios
         .post("/api/updateClient", {
@@ -39,6 +43,11 @@ const ClientItem = ({
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const handleSelectUser = (userId: number) => {
+    updateClient("userId", userId);
+    setCurrentUserId(userId);
   };
 
   return isDeleting ? (
@@ -71,7 +80,11 @@ const ClientItem = ({
       }
       onClick={() => handleSelectClient(client.clientId)}
     >
-      <p>{index + 1}</p>
+      <UserSelector
+        users={users}
+        currentUserId={currentUserId}
+        handleSelectUser={handleSelectUser}
+      />
       <input
         type="text"
         className="client-list-name"
