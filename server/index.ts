@@ -155,7 +155,7 @@ app.post("/api/sync-auth0-user", syncAuth0User);
 app.post("/api/updateAdmin", updateAdmin);
 app.get("/api/getUsers", getUsers);
 
-await db.sync({ alter: true });
+await db.sync({ alter: true, force: true });
 
 console.log("Database synced");
 
