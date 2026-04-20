@@ -134,9 +134,12 @@ export default {
 
       const { clientId } = req.body;
 
+      const client = await Client.findOne({ where: { clientId } });
+
       const order = await Order.create({
         userId: req.session.user.userId,
         clientId,
+        salesPerson: client?.userId,
       });
 
       if (!order) {
@@ -333,6 +336,17 @@ export default {
         return;
       }
 
+      if (item.itemStatus === "in progress") {
+        await orderItem?.update({
+          itemStatus: item.itemStatus,
+        });
+        await Delivery.destroy({
+          where: {
+            itemId: item.itemId,
+          },
+        });
+      }
+
       if (item.itemStatus === "ordered") {
         await orderItem?.update({
           itemStatus: item.itemStatus,
@@ -353,9 +367,8 @@ export default {
           },
         });
       } else if (item.itemStatus === "complete") {
-        if (item.productNameSnapshot) {
+        if (!item.productNameSnapshot) {
           await orderItem?.update({
-            itemStatus: item.itemStatus,
             productNameSnapshot: item.product?.productName ?? null,
             priceSnapshot: item.price ?? item.product?.defaultPrice ?? null,
             defaultPriceSnapshot: item.product?.defaultPrice ?? null,
@@ -371,13 +384,9 @@ export default {
 
         const order = await Order.findOne({ where: { orderId: item.orderId } });
 
-        const client = await Client.findOne({
-          where: { clientId: order?.clientId },
-        });
-
         const currentSheet = await CommissionSheet.findOne({
           where: {
-            userId: client?.userId,
+            userId: order?.salesPerson,
             sheetTitle: formatMonthlySheetTitle(
               new Date(),
               process.env.COMMISSION_SHEET_TIMEZONE,
@@ -386,6 +395,7 @@ export default {
         });
         await orderItem.update({
           sheetId: currentSheet?.sheetId,
+          itemStatus: item.itemStatus,
         });
         await Delivery.create({
           itemId: item.itemId,
