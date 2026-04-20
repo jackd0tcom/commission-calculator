@@ -3,7 +3,7 @@ import { db, Product, Vendor, VendorField, Client } from "./model.js";
 
 configDotenv();
 
-const SEED_PRODUCTS = [
+const products = await Product.bulkCreate([
   {
     productName: "Editorial Links",
     cost: 250,
@@ -103,7 +103,7 @@ const SEED_PRODUCTS = [
     commissionRate: 0.05,
   },
   { productName: "AIO", cost: 1000, defaultPrice: 9000, commissionRate: 0.05 },
-];
+]);
 
 const vendors = await Vendor.bulkCreate([
   {
@@ -194,21 +194,8 @@ const clients = await Client.bulkCreate([
 async function seed() {
   await db.sync({ alter: true, force: true });
 
-  let created = 0;
-  for (const row of SEED_PRODUCTS) {
-    const [, wasCreated] = await Product.findOrCreate({
-      where: { productName: row.productName },
-      defaults: {
-        cost: row.cost,
-        defaultPrice: row.defaultPrice,
-        commissionRate: row.commissionRate,
-      },
-    });
-    if (wasCreated) created++;
-  }
-
   console.log(
-    `Prod seed done: ${created} new product(s) added (existing left unchanged)`,
+    `Prod seed done: ${products.length} new product(s) added, ${clients.length} clients, and ${vendors.length} vendors`,
   );
   process.exit(0);
 }
