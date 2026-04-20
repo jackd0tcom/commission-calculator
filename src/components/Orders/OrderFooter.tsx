@@ -7,24 +7,13 @@ interface props {
 const OrderFooter = ({ items }: props) => {
   const filteredItems = items.filter((item: any) => item.product);
   const grandTotal: number = filteredItems.reduce((acc: number, item: any) => {
-    const quantity = item.quantity ?? 0;
     const price =
       item.priceSnapshot ?? item.price ?? item.product.defaultPrice ?? 0;
-    return acc + quantity * price;
+    return acc + Number(price);
   }, 0);
-  const totalQuantity: number = filteredItems.reduce(
-    (acc: number, item: any) => {
-      const quantity = item.quantity ?? 0;
-      return acc + quantity;
-    },
-    0,
-  );
-  const totalDeliveries: number = filteredItems.reduce(
-    (acc: number, item: any) => {
-      return acc + item.deliveries?.length;
-    },
-    0,
-  );
+  const totalDeliveries = filteredItems.filter((item: any) => {
+    item.itemStatus === "complete";
+  });
 
   return (
     <div className="order-sheet-footer">
@@ -44,7 +33,7 @@ const OrderFooter = ({ items }: props) => {
         <p></p>
         <p></p>
         <p>
-          {totalDeliveries} / {totalQuantity}
+          {totalDeliveries.length} / {filteredItems.length}
         </p>
         <p>{formatDollarNoCents(grandTotal)}</p>
       </div>

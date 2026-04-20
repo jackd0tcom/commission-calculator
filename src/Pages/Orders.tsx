@@ -33,26 +33,19 @@ const Orders = () => {
   let deliveredOrders: any = [];
 
   orders.forEach((order: any) => {
-    const totalQuantity = order.order_items?.reduce(
-      (acc: number, item: any) => {
-        const quantity = item.quantity ?? 0;
-        return acc + quantity;
-      },
-      0,
-    );
-
-    const totalDeliveries = order.order_items?.reduce(
-      (acc: number, item: any) => {
-        return acc + item.deliveries?.length;
-      },
-      0,
-    );
-
-    totalQuantity >= 0 && totalDeliveries === 0
-      ? progressOrders.push(order)
-      : totalDeliveries >= totalQuantity
-        ? deliveredOrders.push(order)
-        : partialOrders.push(order);
+    if (order.order_items?.length > 0) {
+      const undeliveredItems = order.order_items.filter(
+        (item: any) => item.itemStatus !== "complete",
+      );
+      if (undeliveredItems.length > 0) {
+        const deliveredItems = order.order_items.filter(
+          (item: any) => item.itemStatus === "complete",
+        );
+        if (deliveredItems.length > 0) {
+          partialOrders.push(order);
+        } else progressOrders.push(order);
+      } else deliveredOrders.push(order);
+    } else progressOrders.push(order);
   });
 
   return (
@@ -91,17 +84,8 @@ const Orders = () => {
                 <div className="orders-list">
                   {progressOrders?.length > 0 ? (
                     progressOrders.map((order: any) => {
-                      const totalDeliveries = order.order_items?.reduce(
-                        (acc: number, item: any) => {
-                          return acc + item.deliveries?.length;
-                        },
-                        0,
-                      );
-                      const quantity = order.order_items?.reduce(
-                        (acc: any, order: any) => {
-                          return acc + order.quantity;
-                        },
-                        0,
+                      const deliveredItems = order.order_items.filter(
+                        (item: any) => item.itemStatus === "complete",
                       );
                       return (
                         <div
@@ -114,7 +98,7 @@ const Orders = () => {
                           <p>{order.client?.clientName}</p>
                           <OrderStatusBadge status={"in progress"} />
                           <p>
-                            {totalDeliveries} / {quantity}
+                            {deliveredItems.length} / {order.order_items.length}
                           </p>
                           <p>{formatDateNoTime(order.createdAt)}</p>
                         </div>
@@ -133,17 +117,8 @@ const Orders = () => {
                 <div className="orders-list">
                   {partialOrders?.length > 0 ? (
                     partialOrders.map((order: any) => {
-                      const totalDeliveries = order.order_items?.reduce(
-                        (acc: number, item: any) => {
-                          return acc + item.deliveries?.length;
-                        },
-                        0,
-                      );
-                      const quantity = order.order_items?.reduce(
-                        (acc: any, order: any) => {
-                          return acc + order.quantity;
-                        },
-                        0,
+                      const deliveredItems = order.order_items.filter(
+                        (item: any) => item.itemStatus === "complete",
                       );
                       return (
                         <div
@@ -156,7 +131,7 @@ const Orders = () => {
                           <p>{order.client?.clientName}</p>
                           <OrderStatusBadge status={"partial"} />
                           <p>
-                            {totalDeliveries} / {quantity}
+                            {deliveredItems.length} / {order.order_items.length}
                           </p>
                           <p>{formatDateNoTime(order.createdAt)}</p>
                         </div>
@@ -175,17 +150,8 @@ const Orders = () => {
                 <div className="orders-list">
                   {deliveredOrders?.length > 0 ? (
                     deliveredOrders.map((order: any) => {
-                      const totalDeliveries = order.order_items?.reduce(
-                        (acc: number, item: any) => {
-                          return acc + item.deliveries?.length;
-                        },
-                        0,
-                      );
-                      const quantity = order.order_items?.reduce(
-                        (acc: any, order: any) => {
-                          return acc + order.quantity;
-                        },
-                        0,
+                      const deliveredItems = order.order_items.filter(
+                        (item: any) => item.itemStatus === "complete",
                       );
                       return (
                         <div
@@ -198,7 +164,7 @@ const Orders = () => {
                           <p>{order.client?.clientName}</p>
                           <OrderStatusBadge status={"delivered"} />
                           <p>
-                            {totalDeliveries} / {quantity}
+                            {deliveredItems.length} / {order.order_items.length}
                           </p>
                           <p>{formatDateNoTime(order.createdAt)}</p>
                         </div>

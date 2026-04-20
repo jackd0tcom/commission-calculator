@@ -9,7 +9,8 @@ import OrderItem from "../components/Orders/OrderItem";
 import OrderFooter from "../components/Orders/OrderFooter";
 import Loader from "../components/UI/Loader";
 import { FaMagnifyingGlass } from "react-icons/fa6";
-import { FaTrashCan } from "react-icons/fa6";
+import UserSelector from "../components/UI/UserSelector";
+import { User } from "@auth0/auth0-react";
 
 const OrderPage = () => {
   const { orderId } = useParams();
@@ -26,6 +27,8 @@ const OrderPage = () => {
   const [showSettings, setShowSettings] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [notFound, setNotFound] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState(1);
+  const [users, setUsers] = useState([{}]);
   const dropdownRef = useRef<HTMLInputElement>(null);
 
   const fetchData = async () => {
@@ -44,6 +47,8 @@ const OrderPage = () => {
                   ),
                 );
               }
+              setCurrentUserId(res.data.salesPerson ?? 1);
+              console.log(res.data);
               setCurrentClient(res.data.client ?? {});
             }
           }),
@@ -68,6 +73,12 @@ const OrderPage = () => {
       promises.push(
         axios.get("/api/getVendors").then((res) => {
           if (res.status === 200) setVendorList(res.data);
+        }),
+      );
+
+      promises.push(
+        axios.get("/api/getUsers").then((res) => {
+          if (res.status === 200) setUsers(res.data);
         }),
       );
 
@@ -208,6 +219,15 @@ const OrderPage = () => {
     }
   };
 
+  const handleUserSelect = (userId: number) => {
+    try {
+      updateOrder("salesPerson", userId);
+      setCurrentUserId(userId);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return isLoading ? (
     <Loader />
   ) : unauthorized ? (
@@ -268,6 +288,14 @@ const OrderPage = () => {
             <div className="order-profile-wrapper">
               <ProfilePic src={user.profilePic} />
               <h2>Order #{orderId}</h2>
+            </div>
+            <div className="order-sales-wrapper">
+              <p>Sales Person:</p>
+              <UserSelector
+                users={users}
+                currentUserId={currentUserId}
+                handleSelectUser={handleUserSelect}
+              />
             </div>
             <div className="order-client-wrapper">
               Client:
