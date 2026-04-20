@@ -17,7 +17,7 @@ const Products = () => {
         await axios.get(`/api/getProducts/${user.userId}`).then((res) => {
           if (res.status === 200) {
             console.log(res.data);
-            setProductList(res.data);
+            setProductList(res.data.products);
             setIsLoading(false);
           }
         });
