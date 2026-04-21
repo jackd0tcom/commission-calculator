@@ -253,6 +253,7 @@ const OrderItem = ({
           status={status}
           vendorList={vendorList}
           currentVendor={currentVendor}
+          currentProduct={currentProduct}
           vendorPayload={vendorPayload}
           setVendorPayload={setVendorPayload}
         />

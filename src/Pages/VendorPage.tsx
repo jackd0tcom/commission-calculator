@@ -5,7 +5,7 @@ import Loader from "../components/UI/Loader";
 
 const VendorPage = () => {
   const { vendorId } = useParams();
-  const [vendorData, setVendorData] = useState({});
+  const [vendorData, setVendorData] = useState({ vendorName: "" });
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchVendor = async () => {
