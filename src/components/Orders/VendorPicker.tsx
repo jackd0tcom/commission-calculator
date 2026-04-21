@@ -7,6 +7,7 @@ interface props {
   vendorList: any;
   currentVendor: number;
   setCurrentVendor: any;
+  currentProduct: any;
 }
 
 const VendorPicker = ({
@@ -14,12 +15,21 @@ const VendorPicker = ({
   vendorList,
   currentVendor,
   setCurrentVendor,
+  currentProduct,
 }: props) => {
-  const [selectedVendorId, setSelectedVendorId] = useState(
-    currentVendor ?? null,
-  );
+  let selectedVendorId = currentVendor ?? null;
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef<HTMLInputElement>(null);
+
+  const availableVendors = vendorList.filter(
+    (vendor: any) =>
+      vendor.vendorName === "Interior" ||
+      (vendor.vendor_products?.length > 0 &&
+        vendor.vendor_products.some(
+          (product: any) =>
+            product.vendorProductId === currentProduct.productId,
+        )),
+  );
 
   const currentVendorObject = vendorList.find(
     (vendor: any) => vendor.vendorId === selectedVendorId,
@@ -59,7 +69,7 @@ const VendorPicker = ({
         .then((res) => {
           if (res.status === 200) {
             setCurrentVendor(id);
-            setSelectedVendorId(id);
+            selectedVendorId = id;
             setShowDropdown(false);
           }
         });
@@ -80,7 +90,7 @@ const VendorPicker = ({
       </button>
       {showDropdown && (
         <div className="dropdown vendor-picker-dropdown" ref={dropdownRef}>
-          {vendorList.map((vendor: any) => (
+          {availableVendors.map((vendor: any) => (
             <div
               className="dropdown-item vendor-picker-item"
               onClick={() => updateVendor(vendor.vendorId)}

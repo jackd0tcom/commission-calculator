@@ -9,6 +9,7 @@
 @import "./styles/Profile.css";
 @import "./styles/Orders.css";
 @import "./styles/Links.css";
+@import "./styles/Vendors.css";
 
 #root {
   --black: #222222;

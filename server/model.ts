@@ -110,10 +110,10 @@ Vendor.init(
   },
 );
 
-export class VendorField extends Model {}
-VendorField.init(
+export class VendorProduct extends Model {}
+VendorProduct.init(
   {
-    vendorFieldId: {
+    vendorProductId: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
@@ -122,6 +122,33 @@ VendorField.init(
       type: DataTypes.INTEGER,
       allowNull: false,
       references: { model: "vendors" },
+    },
+    productId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: { model: "products", key: "product_id" },
+    },
+  },
+  {
+    sequelize: db,
+    modelName: "vendor_product",
+    tableName: "vendors_products",
+    timestamps: true,
+  },
+);
+
+export class VendorField extends Model {}
+VendorField.init(
+  {
+    vendorFieldId: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    vendorProductId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: { model: "vendors_products", key: "vendor_product_id" },
     },
     label: {
       type: DataTypes.STRING,
@@ -490,8 +517,14 @@ Client.hasMany(Order, { foreignKey: "clientId", as: "orders" });
 Product.hasMany(OrderItem, { foreignKey: "productId" });
 OrderItem.belongsTo(Product, { foreignKey: "productId" });
 
-Vendor.hasMany(VendorField, { foreignKey: "vendorId" });
-VendorField.belongsTo(Vendor, { foreignKey: "vendorId" });
+Vendor.hasMany(VendorProduct, { foreignKey: "vendorId" });
+VendorProduct.belongsTo(Vendor, { foreignKey: "vendorId" });
+
+VendorProduct.hasMany(VendorField, { foreignKey: "vendorProductId" });
+VendorField.belongsTo(VendorProduct, { foreignKey: "vendorProductId" });
+
+Product.hasMany(VendorProduct, { foreignKey: "productId" });
+VendorProduct.belongsTo(Product, { foreignKey: "productId" });
 
 Vendor.hasMany(OrderItem, { foreignKey: "vendorId" });
 OrderItem.belongsTo(Vendor, { foreignKey: "vendorId" });

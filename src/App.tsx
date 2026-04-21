@@ -20,6 +20,7 @@ import Orders from "./Pages/Orders.tsx";
 import OrderPage from "./Pages/OrderPage.tsx";
 import Links from "./Pages/Links.tsx";
 import Vendors from "./Pages/Vendors.tsx";
+import VendorPage from "./Pages/VendorPage.tsx";
 
 function App() {
   const { isAuthenticated, isLoading, error } = useAuth0();
@@ -81,6 +82,7 @@ function App() {
               <Route path="/products" element={<Products />}></Route>
               <Route path="/links" element={<Links />}></Route>
               <Route path="/vendors" element={<Vendors />}></Route>
+              <Route path="/vendor/:vendorId" element={<VendorPage />}></Route>
               <Route path="/clients" element={<Clients />}></Route>
               <Route
                 path="/submitted-sheets"

@@ -9,6 +9,7 @@ import {
   OrderItem,
   Link,
   Vendor,
+  VendorProduct,
   VendorField,
   Delivery,
 } from "./model.js";
@@ -247,9 +248,28 @@ async function seed() {
     },
   ]);
 
-  await VendorField.bulkCreate([
+  await VendorProduct.bulkCreate([
     {
       vendorId: 2,
+      productId: 1,
+    },
+    {
+      vendorId: 2,
+      productId: 16,
+    },
+    {
+      vendorId: 3,
+      productId: 3,
+    },
+    {
+      vendorId: 3,
+      productId: 1,
+    },
+  ]);
+
+  await VendorField.bulkCreate([
+    {
+      vendorProductId: 2,
       label: "P1P Team",
       fieldType: "string",
       required: true,
@@ -258,7 +278,7 @@ async function seed() {
       googleSheetId: "B",
     },
     {
-      vendorId: 2,
+      vendorProductId: 2,
       label: "Client ID",
       fieldType: "number",
       required: true,
@@ -267,7 +287,7 @@ async function seed() {
       googleSheetId: "C",
     },
     {
-      vendorId: 2,
+      vendorProductId: 2,
       label: "Client",
       fieldType: "string",
       required: true,
@@ -276,7 +296,7 @@ async function seed() {
       googleSheetId: "D",
     },
     {
-      vendorId: 2,
+      vendorProductId: 2,
       label: "Target Pages",
       fieldType: "string",
       required: false,
@@ -285,7 +305,7 @@ async function seed() {
       googleSheetId: "F",
     },
     {
-      vendorId: 2,
+      vendorProductId: 2,
       label: "Target Page Chosen",
       fieldType: "string",
       required: false,
@@ -294,7 +314,7 @@ async function seed() {
       googleSheetId: "G",
     },
     {
-      vendorId: 2,
+      vendorProductId: 2,
       label: "P1P Suggested Anchor Text",
       fieldType: "string",
       required: false,
@@ -303,7 +323,7 @@ async function seed() {
       googleSheetId: "H",
     },
     {
-      vendorId: 3,
+      vendorProductId: 3,
       label: "Campaign code",
       fieldType: "string",
       required: false,

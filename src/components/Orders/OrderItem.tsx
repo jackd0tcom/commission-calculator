@@ -45,8 +45,13 @@ const OrderItem = ({
   const [vendorPayload, setVendorPayload] = useState(item.vendorPayload ?? {});
 
   const handleProductChange = async (newProduct: any) => {
+    const interiorVendor = vendorList.find(
+      (vendor: any) => vendor.vendorName === "Interior",
+    );
     setCurrentProduct(newProduct);
     setPrice(newProduct.defaultPrice);
+    setShowVendorRows(false);
+    setCurrentVendor(interiorVendor.vendorId ?? 1);
     setOrderItems((prev: any) =>
       prev.map((it: any) =>
         it.itemId === item.itemId
@@ -140,6 +145,7 @@ const OrderItem = ({
           linkList={linkList}
         />
         <VendorPicker
+          currentProduct={currentProduct}
           item={item}
           vendorList={vendorList}
           currentVendor={currentVendor}
@@ -203,6 +209,7 @@ const OrderItem = ({
           currentVendor={currentVendor}
           vendorPayload={vendorPayload}
           setVendorPayload={setVendorPayload}
+          currentProduct={currentProduct}
         />
       )}
     </div>
