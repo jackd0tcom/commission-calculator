@@ -9,6 +9,7 @@ interface props {
   status: string;
   vendorPayload: any;
   setVendorPayload: any;
+  currentProduct: any;
 }
 
 const VendorRow = ({
@@ -18,9 +19,14 @@ const VendorRow = ({
   status,
   vendorPayload,
   setVendorPayload,
+  currentProduct,
 }: props) => {
   const vendorData = vendorList.find(
     (vendor: any) => vendor.vendorId === currentVendor,
+  );
+
+  const vendorProductData = vendorData.vendor_products?.find(
+    (product: any) => product.vendorProductId === currentProduct.productId,
   );
 
   const orderUpdate = async (fieldName: string, value: any) => {
@@ -42,25 +48,25 @@ const VendorRow = ({
 
   return (
     <div className="vendor-row">
-      {vendorData?.vendor_fields ? (
+      {vendorProductData?.vendor_fields ? (
         <>
           <div
             className="vendor-row-head"
             style={{
-              gridTemplateColumns: `repeat(${vendorData.vendor_fields.length}, 1fr)`,
+              gridTemplateColumns: `repeat(${vendorProductData.vendor_fields.length}, 1fr)`,
             }}
           >
-            {vendorData.vendor_fields.map((field: any) => (
+            {vendorProductData.vendor_fields.map((field: any) => (
               <p>{field.label}</p>
             ))}
           </div>
           <div
             className="vendor-row-inputs"
             style={{
-              gridTemplateColumns: `repeat(${vendorData.vendor_fields.length}, 1fr)`,
+              gridTemplateColumns: `repeat(${vendorProductData.vendor_fields.length}, 1fr)`,
             }}
           >
-            {vendorData.vendor_fields.map((field: any) =>
+            {vendorProductData.vendor_fields.map((field: any) =>
               status !== "staged" ? (
                 <p>{vendorPayload?.[camelCase(field.label)] ?? ""}</p>
               ) : (

@@ -36,7 +36,7 @@ const Clients = () => {
   }, [userId]);
 
   const handleSelectClient = (clientId: number) => {
-    const client = clientList.find((cl: any) => cl.clientId === clientId);
+    const client: any = clientList.find((cl: any) => cl.clientId === clientId);
     setCurrentClient(clientId);
     setOrderList(client?.orders ?? []);
   };

@@ -22,7 +22,7 @@ const {
   updateUserCommissionRate,
 } = productCtrl;
 
-const { getVendors } = vendorCtrl;
+const { getVendors, getVendor } = vendorCtrl;
 
 const { getLinks, updateLink, deleteLink, newLink } = linkCtrl;
 const {
@@ -107,6 +107,7 @@ app.post("/api/newLink", newLink);
 
 // Vendor endpoints
 app.get("/api/getVendors", getVendors);
+app.get("/api/getVendor/:vendorId", getVendor);
 
 // Commission endpoints
 app.get("/api/getCommissionSheets", getCommissionSheets);

@@ -15,7 +15,7 @@ const ClientItemSettings = ({
 }: props) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const dropdownRef = useRef(null);
+  const dropdownRef = useRef<HTMLInputElement>(null);
 
   //   Handles blur
   useEffect(() => {
