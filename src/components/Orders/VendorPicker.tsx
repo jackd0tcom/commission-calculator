@@ -27,7 +27,7 @@ const VendorPicker = ({
       (vendor.vendor_products?.length > 0 &&
         vendor.vendor_products.some(
           (product: any) =>
-            product.vendorProductId === currentProduct.productId,
+            product?.vendorProductId === currentProduct?.productId,
         )),
   );
 
