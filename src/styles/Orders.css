@@ -256,6 +256,7 @@
   padding: 5px 12px;
   border-radius: 5px;
   color: white;
+  font-size: 0.9rem;
 }
 .delivered-badge {
   background-color: var(--green);

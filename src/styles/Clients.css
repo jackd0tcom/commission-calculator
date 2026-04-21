@@ -22,7 +22,7 @@
 
 .clients-list-item {
   display: grid;
-  grid-template-columns: 0.1fr 2fr 1fr 0.2fr;
+  grid-template-columns: 0.5fr 2fr 1fr 1fr 0.5fr;
   align-items: center;
   gap: 10px;
   padding: 5px 15px;
@@ -58,6 +58,15 @@
 .new-client-row {
   cursor: pointer;
   transition: 100ms;
+}
+.client-item-settings {
+  position: relative;
+}
+.client-settings-dropdown {
+  right: 0;
+}
+.client-settings-item {
+  min-width: 150px !important;
 }
 .clients-sheet-wrapper {
   margin: 15px 15px 15px 0;

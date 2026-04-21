@@ -2,8 +2,8 @@ import { useState } from "react";
 import { useRef } from "react";
 import axios from "axios";
 import { formatDateNoTime } from "../../helpers";
-import { TiDelete } from "react-icons/ti";
 import UserSelector from "../UI/UserSelector";
+import ClientItemSettings from "./ClientItemSettings";
 
 interface props {
   client: any;
@@ -23,7 +23,7 @@ const ClientItem = ({
 }: props) => {
   const [name, setName] = useState(client?.clientName ? client.clientName : "");
   const nameRef = useRef<HTMLDivElement>(null);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [isEditing, setIsEditing] = useState(client.newClient ? true : false);
   const [currentUserId, setCurrentUserId] = useState(client?.userId ?? null);
 
   const updateClient = async (fieldName: string, value: any) => {
@@ -49,28 +49,7 @@ const ClientItem = ({
     setCurrentUserId(userId);
   };
 
-  return isDeleting ? (
-    <div className="product-delete-modal">
-      <p>Are you sure you want to delete {name}?</p>
-      <div>
-        <button
-          className="delete-product"
-          onClick={() => {
-            handleDeleteClient(client.clientId);
-            setIsDeleting(false);
-          }}
-        >
-          Delete
-        </button>
-        <button
-          className="cancel-delete-product"
-          onClick={() => setIsDeleting(false)}
-        >
-          Cancel
-        </button>
-      </div>
-    </div>
-  ) : (
+  return (
     <div
       className={
         currentClient === client.clientId
@@ -84,30 +63,38 @@ const ClientItem = ({
         currentUserId={currentUserId}
         handleSelectUser={handleSelectUser}
       />
-      <input
-        type="text"
-        className="client-list-name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        onBlur={() => {
-          if (name !== client?.clientName) {
-            updateClient("clientName", name);
-          }
-        }}
-        onKeyDown={(e) => {
-          if (name === client?.clientName) {
-            return;
-          }
-          if (e.key === "Enter") {
-            updateClient("clientName", name);
-            nameRef.current?.blur();
-          }
-        }}
-      />
+      {isEditing ? (
+        <input
+          type="text"
+          className="client-list-name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          onBlur={() => {
+            if (name !== client?.clientName) {
+              updateClient("clientName", name);
+            }
+          }}
+          onKeyDown={(e) => {
+            if (name === client?.clientName) {
+              return;
+            }
+            if (e.key === "Enter") {
+              updateClient("clientName", name);
+              nameRef.current?.blur();
+            }
+          }}
+        />
+      ) : (
+        <p>{name}</p>
+      )}
+
       <p>{formatDateNoTime(client?.createdAt)}</p>
-      <TiDelete
-        className="sheet-item-delete"
-        onClick={() => setIsDeleting(true)}
+      <p>{client.orders?.length ?? 0}</p>
+      <ClientItemSettings
+        client={client}
+        handleDeleteClient={handleDeleteClient}
+        isEditing={isEditing}
+        setIsEditing={setIsEditing}
       />
     </div>
   );

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import ClientItem from "../components/Clients/ClientItem";
-import { FaTrashCan, FaMagnifyingGlass } from "react-icons/fa6";
+import { FaMagnifyingGlass } from "react-icons/fa6";
 import ClientsOrderItem from "../components/Clients/ClientsOrderItem";
 import { useSelector } from "react-redux";
 
@@ -35,28 +35,19 @@ const Clients = () => {
     }
   }, [userId]);
 
-  const getSheets = async (clientId: number) => {
-    try {
-      await axios.get(`/api/getClientOrders/${clientId}`).then((res) => {
-        if (res.status === 200) {
-          setOrderList(res.data);
-        }
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const handleSelectClient = (clientId: number) => {
+    const client = clientList.find((cl: any) => cl.clientId === clientId);
     setCurrentClient(clientId);
-    getSheets(clientId);
+    setOrderList(client?.orders ?? []);
   };
 
   const handleAddClient = async () => {
     try {
       await axios.post("/api/newClient").then((res) => {
         if (res.status === 200) {
-          setClientList([...clientList, res.data]);
+          const newClient = res.data;
+          res.data.newClient = true;
+          setClientList([...clientList, newClient]);
         }
       });
     } catch (error) {
@@ -93,7 +84,8 @@ const Clients = () => {
             <p>User</p>
             <p>Name</p>
             <p>Date Created</p>
-            <FaTrashCan className={"trash-can-icon"} />
+            <p>Orders</p>
+            <p></p>
           </div>
           {isLoading ? (
             <>Loading...</>
