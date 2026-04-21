@@ -21,11 +21,13 @@ import OrderPage from "./Pages/OrderPage.tsx";
 import Links from "./Pages/Links.tsx";
 import Vendors from "./Pages/Vendors.tsx";
 import VendorPage from "./Pages/VendorPage.tsx";
+import QuoteGenerator from "./Pages/QuoteGenerator.tsx";
 
 function App() {
   const { isAuthenticated, isLoading, error } = useAuth0();
   const [userSynced, setUserSynced] = useState(false);
   const user = useSelector((state: any) => state.user);
+  const [showNav, setShowNav] = useState(true);
 
   if (isLoading) {
   }
@@ -48,7 +50,11 @@ function App() {
   return (
     <div className="app-container">
       <Auth0Sync onSyncComplete={handleSyncComplete} />
-      {isAuthenticated && <Nav />}
+      {isAuthenticated && showNav ? (
+        <Nav setShowNav={setShowNav} showNav={showNav} />
+      ) : (
+        <div className="hidden-nav-wrapper"></div>
+      )}
       {isLoading || (isAuthenticated && !userSynced) ? (
         <div className="app-container">
           <Loader />
@@ -84,6 +90,7 @@ function App() {
               <Route path="/vendors" element={<Vendors />}></Route>
               <Route path="/vendor/:vendorId" element={<VendorPage />}></Route>
               <Route path="/clients" element={<Clients />}></Route>
+              <Route path="/quote" element={<QuoteGenerator />}></Route>
               <Route
                 path="/submitted-sheets"
                 element={
