@@ -400,6 +400,26 @@ Product.init(
       allowNull: false,
       defaultValue: false,
     },
+    linkEstimate: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      defaultValue: 1,
+    },
+    details: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    productType: {
+      type: DataTypes.ENUM(
+        "link building services",
+        "ultra premium services",
+        "ai search optimization",
+        "content services",
+        "technical services",
+      ),
+      defaultValue: "link building",
+      allowNull: true,
+    },
   },
   {
     sequelize: db,

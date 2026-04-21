@@ -1,11 +1,35 @@
 .nav-wrapper {
-  min-width: 220px;
-  max-width: 220px;
+  width: 220px;
   padding: 30px 15px;
   background-color: var(--black);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  transition: 200ms;
+  position: relative;
+}
+.hidden-nav {
+  transition: width 200ms;
+  -webkit-transition: width 1s ease-in-out;
+  -moz-transition: width 1s ease-in-out;
+  -o-transition: width 1s ease-in-out;
+  width: 0px;
+}
+.hide-nav-toggle-wrapper {
+  position: absolute;
+  right: 20px;
+}
+.hide-nav-toggle {
+  height: 15px;
+  width: 15px;
+  border-radius: 3px;
+  border: 2px solid white;
+  cursor: pointer;
+}
+.hide-nav-toggle-inner {
+  height: 15px;
+  width: 4px;
+  border-right: 2px solid white;
 }
 .nav-container {
   display: flex;

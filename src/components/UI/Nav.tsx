@@ -10,12 +10,26 @@ import { FaMoneyCheckDollar } from "react-icons/fa6";
 import { FaBoxOpen } from "react-icons/fa6";
 import { FaLink } from "react-icons/fa";
 import { FaStore } from "react-icons/fa";
+import { FaMoneyBillWave } from "react-icons/fa";
 
-const Nav = () => {
+import HideNavToggle from "./HideNavToggle";
+
+interface props {
+  setShowNav: any;
+  showNav: any;
+}
+
+const Nav = ({ setShowNav, showNav }: props) => {
   const user = useSelector((state: any) => state.user);
 
   return (
-    <div className="nav-wrapper">
+    <div className={showNav ? "nav-wrapper" : "nav-wrapper hidden-nav"}>
+      <div
+        className="hide-nav-toggle-wrapper"
+        onClick={() => setShowNav(false)}
+      >
+        <HideNavToggle borderColor={"white"} />
+      </div>
       <div className="nav-container">
         <img src="/p1p-logo-white.png" alt="p1p-logo" className="nav-logo" />
         <div className="nav-links-wrapper">
@@ -44,7 +58,7 @@ const Nav = () => {
                 isActive ? "active-nav nav-button" : "inactive-nav nav-button"
               }
             >
-              <FaCalculator /> Commission Sheets
+              <FaMoneyBillWave /> Commission Sheets
             </NavLink>
             <NavLink
               to="/products"
@@ -73,47 +87,50 @@ const Nav = () => {
               <FaStore />
               Vendors
             </NavLink>
-            {user.isAdmin && (
-              <>
-                <NavLink
-                  to="/submitted-sheets"
-                  className={({ isActive }) =>
-                    isActive
-                      ? "active-nav nav-button"
-                      : "inactive-nav nav-button"
-                  }
-                >
-                  <FaListCheck />
-                  Submitted Sheets
-                </NavLink>
-                <NavLink
-                  to="/approved-sheets"
-                  className={({ isActive }) =>
-                    isActive
-                      ? "active-nav nav-button"
-                      : "inactive-nav nav-button"
-                  }
-                >
-                  <FaMoneyCheckDollar />
-                  Approved Sheets
-                </NavLink>
-              </>
-            )}
+            <NavLink
+              to="/quote"
+              className={({ isActive }) =>
+                isActive ? "active-nav nav-button" : "inactive-nav nav-button"
+              }
+            >
+              <FaCalculator />
+              Quote Calculator
+            </NavLink>
           </div>
         </div>
       </div>
       <div className="nav-links-wrapper no-bottom-border">
         <div className="nav-link-container">
           {user.isAdmin && (
-            <NavLink
-              to="/admin"
-              className={({ isActive }) =>
-                isActive ? "active-nav nav-button" : "inactive-nav nav-button"
-              }
-            >
-              <FaUserTie />
-              Admin
-            </NavLink>
+            <>
+              <NavLink
+                to="/submitted-sheets"
+                className={({ isActive }) =>
+                  isActive ? "active-nav nav-button" : "inactive-nav nav-button"
+                }
+              >
+                <FaListCheck />
+                Submitted Sheets
+              </NavLink>
+              <NavLink
+                to="/approved-sheets"
+                className={({ isActive }) =>
+                  isActive ? "active-nav nav-button" : "inactive-nav nav-button"
+                }
+              >
+                <FaMoneyCheckDollar />
+                Approved Sheets
+              </NavLink>
+              <NavLink
+                to="/admin"
+                className={({ isActive }) =>
+                  isActive ? "active-nav nav-button" : "inactive-nav nav-button"
+                }
+              >
+                <FaUserTie />
+                Admin
+              </NavLink>
+            </>
           )}
           <NavLink
             to="/profile"
