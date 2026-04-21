@@ -21,6 +21,15 @@ const Nav = () => {
         <div className="nav-links-wrapper">
           <div className="nav-link-container">
             <NavLink
+              to="/clients"
+              className={({ isActive }) =>
+                isActive ? "active-nav nav-button" : "inactive-nav nav-button"
+              }
+            >
+              <BsFillPersonBadgeFill />
+              Clients
+            </NavLink>
+            <NavLink
               to="/orders"
               className={({ isActive }) =>
                 isActive ? "active-nav nav-button" : "inactive-nav nav-button"
@@ -54,15 +63,6 @@ const Nav = () => {
             >
               <FaLink />
               Links
-            </NavLink>
-            <NavLink
-              to="/clients"
-              className={({ isActive }) =>
-                isActive ? "active-nav nav-button" : "inactive-nav nav-button"
-              }
-            >
-              <BsFillPersonBadgeFill />
-              Clients
             </NavLink>
             <NavLink
               to="/vendors"

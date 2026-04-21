@@ -1,4 +1,5 @@
 import { capitalize } from "../../helpers";
+import { skewerCase } from "../../helpers";
 
 interface status {
   status: string;
@@ -7,8 +8,8 @@ interface status {
 const StatusBadge = ({ status }: status) => {
   return (
     <div className="status-badge-wrapper">
-      <div className={`status-badge ${status}`}>
-        <p>{capitalize(status)}</p>
+      <div className={`order-status-badge ${skewerCase(status)}-badge`}>
+        {capitalize(status)}
       </div>
     </div>
   );

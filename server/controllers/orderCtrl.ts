@@ -347,6 +347,8 @@ export default {
         });
       }
 
+      const order = await Order.findOne({ where: { orderId: item.orderId } });
+
       if (item.itemStatus === "ordered") {
         await orderItem?.update({
           itemStatus: item.itemStatus,
@@ -382,8 +384,6 @@ export default {
           });
         }
 
-        const order = await Order.findOne({ where: { orderId: item.orderId } });
-
         const currentSheet = await CommissionSheet.findOne({
           where: {
             userId: order?.salesPerson,
@@ -413,6 +413,32 @@ export default {
           },
         });
       }
+
+      // updates order status based on orderItems
+
+      const orderItems = await OrderItem.findAll({
+        where: { orderId: item.orderId },
+      });
+
+      let newOrderStatus;
+
+      const undeliveredItems = orderItems.filter(
+        (item: any) => item.itemStatus !== "complete",
+      );
+      if (undeliveredItems.length > 0) {
+        const deliveredItems = orderItems.filter(
+          (item: any) => item.itemStatus === "complete",
+        );
+        if (deliveredItems.length > 0) {
+          newOrderStatus = "partial";
+        } else newOrderStatus = "in progress";
+      } else newOrderStatus = "delivered";
+
+      await order?.update({
+        orderStatus: newOrderStatus,
+      });
+
+      // get and send products
 
       const product = await Product.findOne({
         where: { productId: item.product.productId },

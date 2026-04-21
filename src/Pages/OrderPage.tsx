@@ -10,6 +10,7 @@ import OrderFooter from "../components/Orders/OrderFooter";
 import Loader from "../components/UI/Loader";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import UserSelector from "../components/UI/UserSelector";
+import { capitalize } from "../helpers";
 
 const OrderPage = () => {
   const { orderId } = useParams();
@@ -28,6 +29,7 @@ const OrderPage = () => {
   const [notFound, setNotFound] = useState(false);
   const [currentUserId, setCurrentUserId] = useState(1);
   const [users, setUsers] = useState([{}]);
+  const [orderStatus, setOrderStatus] = useState("");
   const dropdownRef = useRef<HTMLInputElement>(null);
 
   const fetchData = async () => {
@@ -46,8 +48,8 @@ const OrderPage = () => {
                   ),
                 );
               }
+              setOrderStatus(res.data.orderStatus);
               setCurrentUserId(res.data.salesPerson ?? 1);
-              console.log(res.data);
               setCurrentClient(res.data.client ?? {});
             }
           }),
@@ -98,22 +100,6 @@ const OrderPage = () => {
   useEffect(() => {
     fetchData();
   }, [orderId]);
-
-  const totalQuantity = orderItems.reduce((acc: number, item: any) => {
-    const quantity = item.quantity ?? 0;
-    return acc + quantity;
-  }, 0);
-
-  const totalDeliveries = orderItems.reduce((acc: number, item: any) => {
-    return acc + (item.deliveries?.length ?? 0);
-  }, 0);
-
-  const orderStatus =
-    totalQuantity >= 0 && totalDeliveries === 0
-      ? "In Progress"
-      : totalDeliveries >= totalQuantity
-        ? "Delivered"
-        : "Partial";
 
   //   Handles blur
   useEffect(() => {
@@ -289,6 +275,10 @@ const OrderPage = () => {
               <ProfilePic src={user.profilePic} />
               <h2>Order #{orderId}</h2>
             </div>
+            <div className="order-client-wrapper">
+              Client:
+              <p>{currentClient?.clientName}</p>
+            </div>
             <div className="order-sales-wrapper">
               <p>Sales Person:</p>
               <UserSelector
@@ -297,35 +287,18 @@ const OrderPage = () => {
                 handleSelectUser={handleUserSelect}
               />
             </div>
-            <div className="order-client-wrapper">
-              Client:
-              {orderStatus !== "In Progress" ? (
-                <p>{currentClient?.clientName}</p>
-              ) : (
-                <ClientPicker
-                  setClientList={setClientList}
-                  clientList={clientList}
-                  newClient={newClient}
-                  setNewClient={setNewClient}
-                  currentClient={currentClient}
-                  setCurrentClient={setCurrentClient}
-                  updateOrder={updateOrder}
-                  orderId={Number(orderId)}
-                />
-              )}
-            </div>
             <p className="order-status-p">
               Order Status:{" "}
               <span
                 className={
-                  orderStatus === "In Progress"
-                    ? "order-status in-progress"
-                    : orderStatus === "Partial"
-                      ? "order-status partial"
-                      : "order-status delivered"
+                  orderStatus === "in progress"
+                    ? "order-status-badge in-progress-badge"
+                    : orderStatus === "partial"
+                      ? "order-status-badge partial-badge"
+                      : "order-status-badge delivered-badge"
                 }
               >
-                {orderStatus}
+                {capitalize(orderStatus)}
               </span>
             </p>
             <div className="order-settings-wrapper">
