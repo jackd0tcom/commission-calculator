@@ -1,4 +1,4 @@
-import { configDotenv } from "dotenv";
+import "dotenv/config";
 import {
   db,
   Product,
@@ -8,9 +8,7 @@ import {
   Client,
 } from "./model.js";
 
-configDotenv();
-
-const products = await Product.bulkCreate([
+const productSeedData = [
   {
     productName: "Editorial Links",
     cost: 250,
@@ -174,9 +172,9 @@ const products = await Product.bulkCreate([
     commissionRate: 0.05,
     productType: "technical services",
   },
-]);
+];
 
-const vendors = await Vendor.bulkCreate([
+const vendorSeedData = [
   {
     vendorName: "Interior",
     googleSheetId: null,
@@ -189,9 +187,9 @@ const vendors = await Vendor.bulkCreate([
     vendorName: "Vissoula",
     googleSheetId: null,
   },
-]);
+];
 
-await VendorProduct.bulkCreate([
+const vendorProductSeedData = [
   {
     vendorId: 2,
     productId: 1,
@@ -208,9 +206,9 @@ await VendorProduct.bulkCreate([
     vendorId: 3,
     productId: 1,
   },
-]);
+];
 
-await VendorField.bulkCreate([
+const vendorFieldSeedData = [
   {
     vendorProductId: 2,
     label: "P1P Team",
@@ -274,15 +272,21 @@ await VendorField.bulkCreate([
     defaultValue: null,
     googleSheetId: "C",
   },
-]);
+];
 
-const clients = await Client.bulkCreate([
+const clientSeedData = [
   { clientName: "Acme Corp", userId: 1, isArchived: false },
   { clientName: "Globex Industries", userId: 1, isArchived: false },
-]);
+];
 
 async function seed() {
-  await db.sync({ alter: true, force: true });
+  await db.sync({ force: true });
+
+  const products = await Product.bulkCreate(productSeedData);
+  const vendors = await Vendor.bulkCreate(vendorSeedData);
+  await VendorProduct.bulkCreate(vendorProductSeedData);
+  await VendorField.bulkCreate(vendorFieldSeedData);
+  const clients = await Client.bulkCreate(clientSeedData);
 
   console.log(
     `Prod seed done: ${products.length} new product(s) added, ${clients.length} clients, and ${vendors.length} vendors`,
