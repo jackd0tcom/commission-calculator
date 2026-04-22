@@ -22,8 +22,8 @@ export default function QuoteView({
   showQuote,
   formatDollar,
   cart,
-}: props): JSX.Element {
-  const detailsRef = useRef(null);
+}: props) {
+  const detailsRef = useRef<HTMLInputElement>(null);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [jobTitle, setJobTitle] = useState("");
@@ -38,7 +38,7 @@ export default function QuoteView({
 
   // // Handles blur
   useEffect(() => {
-    const handleClickOutside = (event) => {
+    const handleClickOutside = (event: any) => {
       if (detailsRef.current && !detailsRef.current.contains(event.target)) {
         setShowQuote(false);
       }
@@ -149,7 +149,7 @@ export default function QuoteView({
               cart.map((item: any) => {
                 return (
                   <div className="quote-cart-item">
-                    <p>{item.itemName}</p>
+                    <p>{item.productName}</p>
                     <p>x {item.quantity}</p>
                     <p>{formatDollar.format(item.quantity * item.price)}</p>
                   </div>
