@@ -579,7 +579,7 @@ Product.hasMany(OrderItem, { foreignKey: "productId" });
 OrderItem.belongsTo(Product, { foreignKey: "productId" });
 
 Link.hasMany(OrderItem, { foreignKey: "linkId" });
-Link.belongsTo(Product, { foreignKey: "linkId" });
+OrderItem.belongsTo(Link, { foreignKey: "linkId" });
 
 Vendor.hasMany(VendorProduct, { foreignKey: "vendorId" });
 VendorProduct.belongsTo(Vendor, { foreignKey: "vendorId" });

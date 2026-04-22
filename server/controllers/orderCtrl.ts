@@ -298,6 +298,10 @@ export default {
             include: [{ model: UserProductCommission, required: false }],
           },
           {
+            model: Link,
+            required: false,
+          },
+          {
             model: Delivery,
             required: false,
           },
@@ -441,7 +445,7 @@ export default {
           where: { productId: id },
         });
       } else {
-        await orderItem?.update({ productType, productId: id, linkId: null });
+        await orderItem?.update({ productType, linkId: id, productId: null });
         newProduct = await Link.findOne({ where: { linkId: id } });
       }
       payload = { ...orderItem.toJSON(), newProduct };
@@ -489,28 +493,10 @@ export default {
 
       const order = await Order.findOne({ where: { orderId: item.orderId } });
 
-      if (item.itemStatus === "ordered") {
-        await orderItem?.update({
-          itemStatus: item.itemStatus,
-          productNameSnapshot: item.product?.productName ?? null,
-          priceSnapshot: item.price ?? item.product?.defaultPrice ?? null,
-          defaultPriceSnapshot: item.product?.defaultPrice ?? null,
-          commissionRateSnapshot:
-            item.product?.user_product_commissions?.length > 0
-              ? (item.commissionRateSnapshot ??
-                item.product?.user_product_commissions[0].commissionRate)
-              : (item.commissionRateSnapshot ?? item.product?.commissionRate),
-          spiffSnapshot: item.product?.spiff ?? null,
-          costSnapshot: item.product?.cost,
-        });
-        await Delivery.destroy({
-          where: {
-            itemId: item.itemId,
-          },
-        });
-      } else if (item.itemStatus === "complete") {
-        if (!item.productNameSnapshot) {
+      if (item.productType === "product") {
+        if (item.itemStatus === "ordered") {
           await orderItem?.update({
+            itemStatus: item.itemStatus,
             productNameSnapshot: item.product?.productName ?? null,
             priceSnapshot: item.price ?? item.product?.defaultPrice ?? null,
             defaultPriceSnapshot: item.product?.defaultPrice ?? null,
@@ -522,36 +508,97 @@ export default {
             spiffSnapshot: item.product?.spiff ?? null,
             costSnapshot: item.product?.cost,
           });
-        }
+          await Delivery.destroy({
+            where: {
+              itemId: item.itemId,
+            },
+          });
+        } else if (item.itemStatus === "complete") {
+          if (!item.productNameSnapshot) {
+            await orderItem?.update({
+              productNameSnapshot: item.product?.productName ?? null,
+              priceSnapshot: item.price ?? item.product?.defaultPrice ?? null,
+              defaultPriceSnapshot: item.product?.defaultPrice ?? null,
+              commissionRateSnapshot:
+                item.product?.user_product_commissions?.length > 0
+                  ? (item.commissionRateSnapshot ??
+                    item.product?.user_product_commissions[0].commissionRate)
+                  : (item.commissionRateSnapshot ??
+                    item.product?.commissionRate),
+              spiffSnapshot: item.product?.spiff ?? null,
+              costSnapshot: item.product?.cost,
+            });
+          }
 
-        const currentSheet = await CommissionSheet.findOne({
-          where: {
-            userId: order?.salesPerson,
-            sheetTitle: formatMonthlySheetTitle(
-              new Date(),
-              process.env.COMMISSION_SHEET_TIMEZONE,
-            ),
-          },
-        });
-        await orderItem.update({
-          sheetId: currentSheet?.sheetId,
-          itemStatus: item.itemStatus,
-        });
-        await Delivery.create({
-          itemId: item.itemId,
-          sheetId: currentSheet?.sheetId ?? null,
-          deliveredQuantity: 1,
-        });
-      } else {
-        await orderItem?.update({
-          itemStatus: item.itemStatus,
-          sheetId: null,
-        });
-        await Delivery.destroy({
-          where: {
+          const currentSheet = await CommissionSheet.findOne({
+            where: {
+              userId: order?.salesPerson,
+              sheetTitle: formatMonthlySheetTitle(
+                new Date(),
+                process.env.COMMISSION_SHEET_TIMEZONE,
+              ),
+            },
+          });
+          await orderItem.update({
+            sheetId: currentSheet?.sheetId,
+            itemStatus: item.itemStatus,
+          });
+          await Delivery.create({
             itemId: item.itemId,
-          },
-        });
+            sheetId: currentSheet?.sheetId ?? null,
+            deliveredQuantity: 1,
+          });
+        } else {
+          await orderItem?.update({
+            itemStatus: item.itemStatus,
+            sheetId: null,
+          });
+          await Delivery.destroy({
+            where: {
+              itemId: item.itemId,
+            },
+          });
+        }
+      } else {
+        if (item.itemStatus === "ordered") {
+          await orderItem?.update({
+            itemStatus: item.itemStatus,
+          });
+          await Delivery.destroy({
+            where: {
+              itemId: item.itemId,
+            },
+          });
+        } else if (item.itemStatus === "complete") {
+          const currentSheet = await CommissionSheet.findOne({
+            where: {
+              userId: order?.salesPerson,
+              sheetTitle: formatMonthlySheetTitle(
+                new Date(),
+                process.env.COMMISSION_SHEET_TIMEZONE,
+              ),
+            },
+          });
+          await orderItem.update({
+            sheetId: currentSheet?.sheetId,
+            itemStatus: item.itemStatus,
+          });
+          await Delivery.create({
+            itemId: item.itemId,
+            sheetId: currentSheet?.sheetId ?? null,
+            deliveredQuantity: 1,
+          });
+        } else {
+          await orderItem?.update({
+            itemStatus: item.itemStatus,
+            sheetId: null,
+          });
+          await Delivery.destroy({
+            where: {
+              itemId: item.itemId,
+            },
+          });
+        }
       }
 
       // updates order status based on orderItems
@@ -578,18 +625,29 @@ export default {
         orderStatus: newOrderStatus,
       });
 
+      const itemData = orderItem.toJSON();
+      let payload;
+
       // get and send products
 
-      const product = await Product.findOne({
-        where: { productId: item.product.productId },
-        include: [{ model: UserProductCommission, required: false }],
-      });
-
-      const itemData = orderItem.toJSON();
-      const payload = {
-        ...itemData,
-        product: product,
-      };
+      if (item.productType === "product") {
+        const product = await Product.findOne({
+          where: { productId: item.product.productId },
+          include: [{ model: UserProductCommission, required: false }],
+        });
+        payload = {
+          ...itemData,
+          product: product,
+        };
+      } else {
+        const link = await Link.findOne({
+          where: { linkId: item.linkId },
+        });
+        payload = {
+          ...itemData,
+          link: link,
+        };
+      }
 
       if (payload) {
         res.send(payload);
