@@ -6,6 +6,7 @@ import {
   VendorProduct,
   VendorField,
   Client,
+  Link,
 } from "./model.js";
 
 const productSeedData = [
@@ -279,6 +280,69 @@ const clientSeedData = [
   { clientName: "Globex Industries", userId: 1, isArchived: false },
 ];
 
+const linkSeedData = [
+  {
+    publication: "Hood Critic",
+    url: "https://editorial-links.example",
+    cost: 25,
+    defaultPrice: 75,
+    commissionRate: 0.05,
+    genre: "Music",
+    DA: 11,
+    DR: 25,
+    TAT: "1-3 Days",
+    region: "United States",
+    sponsored: "yes",
+    indexed: true,
+    doFollow: true,
+  },
+  {
+    publication: "Daily Scanner",
+    url: "https://editorial-links.example",
+    cost: 25,
+    defaultPrice: 75,
+    commissionRate: 0.05,
+    genre: "News",
+    DA: 67,
+    DR: 61,
+    TAT: "1 Day",
+    region: "United States",
+    sponsored: "no",
+    indexed: true,
+    doFollow: false,
+  },
+  {
+    publication: "LA Collide",
+    url: "https://editorial-links.example",
+    cost: 25,
+    defaultPrice: 75,
+    commissionRate: 0.05,
+    genre: "Entertainment",
+    DA: 11,
+    DR: 17,
+    TAT: "1-3 Days",
+    region: "California",
+    sponsored: "discrete",
+    indexed: true,
+    doFollow: false,
+  },
+  {
+    publication: "Medium",
+    url: "https://editorial-links.example",
+    cost: 25,
+    defaultPrice: 75,
+    commissionRate: 0.05,
+    genre: "News",
+    DA: 95,
+    DR: 94,
+    TAT: "1 Day",
+    region: "Global",
+    sponsored: "no",
+    indexed: false,
+    doFollow: false,
+  },
+];
+
 async function seed() {
   await db.sync({ force: true });
 
@@ -287,9 +351,10 @@ async function seed() {
   await VendorProduct.bulkCreate(vendorProductSeedData);
   await VendorField.bulkCreate(vendorFieldSeedData);
   const clients = await Client.bulkCreate(clientSeedData);
+  await Link.bulkCreate(linkSeedData);
 
   console.log(
-    `Prod seed done: ${products.length} new product(s) added, ${clients.length} clients, and ${vendors.length} vendors`,
+    `Prod seed done: ${products.length} new product(s) added, ${clients.length} clients, ${vendors.length} vendors,  ${linkSeedData.length} links`,
   );
   process.exit(0);
 }

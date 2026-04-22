@@ -4,6 +4,7 @@ import {
   Order,
   OrderItem,
   User,
+  Link,
   Client,
   UserProductCommission,
   Delivery,
@@ -348,6 +349,47 @@ export default {
         });
         payload = { ...orderItem.toJSON(), newProduct };
       } else payload = orderItem.toJSON();
+
+      if (orderItem) {
+        res.send(payload);
+      } else {
+        res.status(400).send("No item found");
+      }
+    } catch (error) {
+      console.error("Error getting sheets:", error);
+      res.status(500).send("Internal server error");
+    }
+  },
+  updateOrderItemProduct: async (req: Request, res: Response) => {
+    try {
+      console.log("updateOrderItem");
+
+      if (!req.session.user) {
+        res.status(401).send("user not logged in / no session set up");
+        return;
+      }
+
+      const { itemId, productType, id } = req.body;
+      let newProduct;
+      let payload;
+
+      const orderItem = await OrderItem.findOne({ where: { itemId } });
+
+      if (!orderItem) {
+        res.status(400).send("No order item found");
+        return;
+      }
+
+      if (productType === "product") {
+        await orderItem?.update({ productType, productId: id, linkId: null });
+        newProduct = await Product.findOne({
+          where: { productId: id },
+        });
+      } else {
+        await orderItem?.update({ productType, productId: id, linkId: null });
+        newProduct = await Link.findOne({ where: { linkId: id } });
+      }
+      payload = { ...orderItem.toJSON(), newProduct };
 
       if (orderItem) {
         res.send(payload);

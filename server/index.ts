@@ -38,6 +38,7 @@ const {
   getSheetOrderItems,
   updateOrderStatus,
   duplicateOrderItem,
+  updateOrderItemProduct,
 } = orderCtrl;
 const {
   getCommissionSheets,
@@ -127,6 +128,7 @@ app.get("/api/getOrders", getOrders);
 app.get("/api/getSheetOrderItems:sheetId", getSheetOrderItems);
 app.get(`/api/getOrder/:orderId`, getOrder);
 app.post(`/api/updateOrderItem`, updateOrderItem);
+app.post(`/api/updateOrderItemProduct`, updateOrderItemProduct);
 app.post(`/api/updateOrderStatus`, updateOrderStatus);
 app.post(`/api/newOrder`, newOrder);
 app.post(`/api/newCalculatorOrder`, newCalculatorOrder);

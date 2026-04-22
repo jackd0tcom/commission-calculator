@@ -32,6 +32,9 @@ const OrderItem = ({
   handleOrderItemUpdate,
 }: props) => {
   const [currentProduct, setCurrentProduct] = useState(item?.product ?? null);
+  const [currentProductType, setCurrentProductType] = useState(
+    item?.productType ?? null,
+  );
   const [currentVendor, setCurrentVendor] = useState(item.vendorId ?? null);
   const [hovering, setHovering] = useState(false);
   const [notes, setNotes] = useState(item.notes ?? "");
@@ -44,11 +47,12 @@ const OrderItem = ({
   const [showVendorRows, setShowVendorRows] = useState(false);
   const [vendorPayload, setVendorPayload] = useState(item.vendorPayload ?? {});
 
-  const handleProductChange = async (newProduct: any) => {
+  const handleProductChange = async (newProduct: any, productType: string) => {
     const interiorVendor = vendorList.find(
       (vendor: any) => vendor.vendorName === "Interior",
     );
     setCurrentProduct(newProduct);
+    setCurrentProductType(productType);
     setPrice(newProduct.defaultPrice);
     setShowVendorRows(false);
     setCurrentVendor(interiorVendor.vendorId ?? 1);
@@ -139,6 +143,7 @@ const OrderItem = ({
         <p className="sheet-item-number">{formatDateNoTime(item.createdAt)}</p>
         <ProductPicker
           item={item}
+          currentProductType={currentProductType}
           products={products}
           currentProduct={currentProduct}
           handleProductChange={handleProductChange}
