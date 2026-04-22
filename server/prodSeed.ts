@@ -280,11 +280,10 @@ const vendorFieldSeedData = [
 const userSeedData = [
   {
     auth0Id: "seed|demo-user-1",
-    email: "jack@fishbones.digital",
-    firstName: "Jack",
-    lastName: "B",
-    profilePic:
-      "https://lh3.googleusercontent.com/a-/ALV-UjVE3JERQ4KBvqT-ivZQKFsT1Vh5Ye6VCAsZT7D0Pyv9F1Se_OsRNiV1Y1qbyVJGhz8fvH1z1yP8_-uk1THKi0xjPtLAb_TAUnJKt0lsQ1ku_jU1MGfV9LcnkHObwYSroP_WumEmOosoVg5E0OH_T-nu1b0PfdP66bYKci-ra0FlQV0pSXJ1sLMQwk-O2LGVBl5OU-pJCHId4tzHFNQbYTtt6w5LG8dNYvnOGFcbCtLz1GnUGXwzb_SH3XiL8QUvX4tgSIV4paHQUyrlO6JJTpmR7UoNwH0gdHpV22jV6zne0eB3RdCNsR4nOsMeUcEezYvcse9SAF4vQmoqV4D2XyT9bMt2zNxrvTubQBtQUK6TFmWWO7ARdx1N5W5Jv8896pdBy3xowM2Dqw8aGvM6Xyu1UrNomnT0VMQbGGg2yUpgwQZINIb9rif8czxoCuCLLD_W6dtBPiWxtGScjoBZIhjcAS_dNCNZHe0vC_dHK3nCm_mq4liV_lEGFSZNYK9d-JOZ3VvVBMzpmvGW20LwBVmiuRa9DakrqiMv1bEMVT8FzYkWPe0ojLt86y9TNGT6qfnn7T1nmuXatP9q3a8BEYUaDAb2FU0WSMtC2xPoDWavc4Q_6om9LBWGhoCVbk8r735dlaHURepMYoSgOhfAAdegVrX-mU1wctAWa7T590W23bq4pOpmRqgq0DD8iVe27FFEZPDeXsWfk4nu1i8DDF0PdvguId0xEJ5eEIaD8M_z9V2PiIFPUPYQcVdQUyEDVmrWYKYMVBDxkfmIJJ87WYedMpbL2NISCAdqnXXp_2k0dQY2S6EWr8P_Gkj0l0iRayBv044r-j38vpMF9lokZm7gHZuLjv9tztNtN79X_TgfgiXjAL4rxZWrhgoRnjYiBEXg8OnXoILlnQx16jE-J3xlFxI_BDFhffwnOCloS9mg09oa3wyv4eMBvmO8mG0TOKmVtjAD91CrCDRyEVAYTq51v19_IeuD8spJOe9cUZmwBc8tBQyQ1TVC2KRB2q0jFXJ7ordLtkKOmruS0cgaqvXAnTTUu2LCG5GgYUtjyjCP2jdfD1U1hGwJ=s96-c",
+    email: "robo@robo.com",
+    firstName: "Robo",
+    lastName: "",
+    profilePic: "",
     isAdmin: true,
     isAllowed: true,
   },

@@ -5,6 +5,7 @@
 }
 .clients-list-container {
   overflow-y: scroll;
+  height: 100%;
 }
 .clients-list-wrapper {
   margin: 15px;
