@@ -108,7 +108,7 @@ const Links = () => {
                     />
                   );
                 })}
-              {user?.isAdmin && (
+              {/* {user?.isAdmin && (
                 <div
                   onClick={() => handleAddLink()}
                   className="product-list-item add-product-wrapper"
@@ -116,7 +116,7 @@ const Links = () => {
                   <p>+</p>
                   <p>Add Link</p>
                 </div>
-              )}
+              )} */}
             </div>
           </div>
         </div>

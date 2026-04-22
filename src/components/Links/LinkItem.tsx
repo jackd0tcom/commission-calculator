@@ -23,7 +23,6 @@ const LinkItem = ({
   linkList,
   setLinkList,
   setCart,
-  cart,
 }: props) => {
   const [name, setName] = useState(link?.linkName ?? "Add a name");
   const [cost, setCost] = useState(link?.cost ?? "");
@@ -242,7 +241,7 @@ const LinkItem = ({
     <div className="links-list-item">
       <div>{link.publication}</div>
       <div>{link.genre}</div>
-      <div>${cost}</div>
+      <div>${link.defaultPrice}</div>
       <div>{link.DA}</div>
       <div>{link.DR}</div>
       <div>{link.TAT}</div>
@@ -250,9 +249,9 @@ const LinkItem = ({
       <div>{capitalize(link.sponsored)}</div>
       <div>{link.indexed ? "Yes" : "No"}</div>
       <div>{link.doFollow ? "Yes" : "No"}</div>
-      <div>
+      <div className="link-example-wrapper">
         <a href={url}>
-          <FaLink />
+          <FaLink className="link-example" />
         </a>
       </div>
       <div>

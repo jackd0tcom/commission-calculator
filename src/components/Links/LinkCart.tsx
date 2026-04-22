@@ -26,7 +26,7 @@ const LinkCart = ({ showCart, setShowCart, cart, setCart }: props) => {
 
   return !showCart ? (
     <div className="link-cart-icon-wrapper" onClick={() => setShowCart(true)}>
-      <FaShoppingCart />
+      <FaShoppingCart className="cart-icon" />
       <div className="cart-count">{Number(totalItems)}</div>
     </div>
   ) : (
@@ -46,9 +46,10 @@ const LinkCart = ({ showCart, setShowCart, cart, setCart }: props) => {
                 return (
                   <div className="link-cart-item">
                     <div className="link-cart-details">
-                      <p>{link.publication}</p>
-                      <p>{formatDollarNoCents(link.defaultPrice)}</p>
+                      <p className="link-cart-title">{link.publication}</p>
+                      <p>{formatDollarNoCents(link.defaultPrice)}.00</p>
                       <p
+                        className="remove-link"
                         onClick={() =>
                           setCart((prev: any) => {
                             return prev.filter(
@@ -62,6 +63,7 @@ const LinkCart = ({ showCart, setShowCart, cart, setCart }: props) => {
                     </div>
                     <input
                       type="number"
+                      className="link-cart-input"
                       value={link.quantity}
                       onChange={(e) => {
                         setCart((prev: any) => {
