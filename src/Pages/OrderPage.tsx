@@ -13,14 +13,18 @@ import UserSelector from "../components/UI/UserSelector";
 import { capitalize } from "../helpers";
 
 const OrderPage = () => {
-  const { orderId } = useParams();
+  const { orderId, calculatorOrder } = useParams();
   const user = useSelector((state: any) => state.user);
   const navigate = useNavigate();
   const [newClient, setNewClient] = useState({ clientId: 0 });
   const [orderItems, setOrderItems] = useState([{}]);
   const [clientList, setClientList] = useState([{}]);
   const [vendorList, setVendorList] = useState([{}]);
-  const [currentClient, setCurrentClient] = useState({ clientName: null });
+  const [currentClient, setCurrentClient] = useState({
+    clientName: null,
+    clientId: null,
+    userId: null,
+  });
   const [productList, setProductList] = useState([{}]);
   const [linkList, setLinkList] = useState([{}]);
   const [unauthorized, setUnauthorized] = useState(false);
@@ -31,6 +35,7 @@ const OrderPage = () => {
   const [users, setUsers] = useState([{}]);
   const [orderStatus, setOrderStatus] = useState("");
   const dropdownRef = useRef<HTMLInputElement>(null);
+  const isCalculatorOrder = calculatorOrder === "true";
 
   const fetchData = async () => {
     try {
@@ -173,7 +178,7 @@ const OrderPage = () => {
       try {
         await axios.post("/api/newOrder", { clientId: value }).then((res) => {
           if (res.status === 200) {
-            navigate(`/order/${res.data.orderId}`);
+            navigate(`/order/${res.data.orderId}/false`);
           }
         });
       } catch (error) {
@@ -222,11 +227,11 @@ const OrderPage = () => {
     </div>
   ) : (
     <div className="order-page-wrapper">
-      {Number(orderId) === 0 ? (
+      {Number(orderId) === 0 || isCalculatorOrder ? (
         <div className="new-sheet-wrapper">
           <div className="order-profile-wrapper">
             <ProfilePic src={user.profilePic} />
-            <h2>New Order</h2>
+            <h2>{isCalculatorOrder ? `Order #${orderId}` : "New Order"}</h2>
           </div>
           <ClientPicker
             setClientList={setClientList}
@@ -239,17 +244,25 @@ const OrderPage = () => {
             orderId={Number(orderId)}
           />
           <button
-            onClick={() => updateOrder("clientId", newClient.clientId)}
+            onClick={() => {
+              if (isCalculatorOrder) {
+                updateOrder("clientId", currentClient?.clientId);
+                updateOrder("salesPerson", currentClient?.userId);
+                navigate(`/order/${orderId}/false`);
+              } else updateOrder("clientId", newClient.clientId);
+            }}
             className="create-sheet-button"
           >
-            Create New Order
+            {isCalculatorOrder ? "Add Order To Client" : "Create New Order"}
           </button>
-          <button
-            onClick={() => navigate("/orders")}
-            className="cancel-order-button"
-          >
-            Cancel
-          </button>
+          {!isCalculatorOrder && (
+            <button
+              onClick={() => navigate("/orders")}
+              className="cancel-order-button"
+            >
+              Cancel
+            </button>
+          )}
         </div>
       ) : notFound ? (
         <>

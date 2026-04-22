@@ -12,7 +12,7 @@ const ClientsOrderItem = ({ order }: props) => {
   return (
     <div
       className="clients-sheet-item"
-      onClick={() => navigate(`/order/${order?.orderId}`)}
+      onClick={() => navigate(`/order/${order?.orderId}/false`)}
     >
       <p>Order #{order?.orderId}</p>
       <StatusBadge status={order?.orderStatus} />

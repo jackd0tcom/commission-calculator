@@ -1,4 +1,6 @@
 import { useRef, useEffect, useState } from "react";
+import { useNavigate } from "react-router";
+import axios from "axios";
 
 // Helper defined outside component to avoid recreation on every render
 const getHubSpotCookie = () => {
@@ -31,6 +33,7 @@ export default function QuoteView({
   const [website, setWebsite] = useState("");
   const [message, setMessage] = useState("");
   const [status, setStatus] = useState("");
+  const navigate = useNavigate();
 
   // HubSpot Configuration
   const HUBSPOT_PORTAL_ID = "452923";
@@ -127,6 +130,16 @@ export default function QuoteView({
       }
     } catch (error) {
       setStatus("error");
+      console.log(error);
+    }
+  };
+
+  const handleNewOrder = async () => {
+    try {
+      await axios.post("/api/newCalculatorOrder", { cart }).then((res) => {
+        navigate(`/order/${res.data.orderId}/true`);
+      });
+    } catch (error) {
       console.log(error);
     }
   };
@@ -239,7 +252,15 @@ export default function QuoteView({
                 value={message}
                 placeholder="MESSAGE"
               />
-              <button className="quote-form-button">SUBMIT</button>
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNewOrder();
+                }}
+                className="quote-form-button"
+              >
+                SUBMIT
+              </button>
             </form>
           )}
         </div>

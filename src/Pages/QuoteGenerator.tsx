@@ -1,11 +1,17 @@
 import { useState, useEffect } from "react";
 import DetailsView from "../components/Quote/DetailsView";
 import QuoteView from "../components/Quote/QuoteView";
-import axios, { all } from "axios";
+import axios from "axios";
 import QuoteRows from "../components/Quote/QuoteRows";
 import Loaders from "../components/UI/Loader";
+import HideNavToggle from "../components/UI/HideNavToggle";
 
-export default function QuoteGenerator() {
+interface props {
+  setShowNav: any;
+  showNav: any;
+}
+
+export default function QuoteGenerator({ showNav, setShowNav }: props) {
   const [linkServices, setLinkServices] = useState([{}]);
   const [AIServices, setAIServices] = useState([{}]);
   const [ContentServices, setContentServices] = useState([{}]);
@@ -203,6 +209,14 @@ export default function QuoteGenerator() {
 
   return (
     <div className="quote-generator-page-wrapper">
+      <div
+        className={
+          showNav ? "quote-gen-hide-toggle hidden" : "quote-gen-hide-toggle"
+        }
+        onClick={() => setShowNav(true)}
+      >
+        <HideNavToggle borderColor="white" />
+      </div>
       <div className="quote-generator-header">
         <div className="quote-generator-inner">
           <img
@@ -236,7 +250,6 @@ export default function QuoteGenerator() {
             data={details}
             setShowDetails={setShowDetails}
             showDetails={showDetails}
-            isLeadGen={false}
           />
         )}
         <div className="quote-generator-table-wrapper">
@@ -272,55 +285,48 @@ export default function QuoteGenerator() {
                 updatePrice={updatePrice}
                 updateQuantity={updateQuantity}
               />
-              <div className="quote-generator-sidebar">
-                <div className="quote-generator-foot">
-                  <div className="foot-row">
-                    <p>Total</p>
-                    <p>{formatDollar.format(grandTotal)}</p>
-                  </div>
-                  <div className="foot-row">
-                    <p>Estimated Links</p>
-                    <p>{estimatedLinks}</p>
-                  </div>
-                  <div className="foot-row">
-                    <p>Cost Per Link</p>
-                    <p>
-                      {!costPerLink ? "$0" : formatDollar.format(costPerLink)}
-                    </p>
-                  </div>
-                  <div className="foot-row">
-                    <p className="monthly-term">Monthly Term</p>
-                    <input
-                      className="calculator-input monthly-input"
-                      type="number"
-                      name="monthly-term"
-                      value={monthlyTerm}
-                      onChange={(e) =>
-                        updateQuantity(
-                          "month",
-                          0,
-                          Number(e.target.value),
-                          false,
-                        )
-                      }
-                    />
-                  </div>
-                  <div className="foot-row">
-                    <p className="monthly">Monthly Cost</p>
-                    <p className="monthly">
-                      {formatDollar.format(grandTotal / monthlyTerm)}
-                    </p>
-                  </div>
-                </div>
-                <button
-                  onClick={() => setShowQuote(true)}
-                  className="quote-generator-submit"
-                >
-                  Submit My Quote
-                </button>
-              </div>
             </>
           )}
+        </div>
+        <div className="quote-generator-sidebar">
+          <div className="quote-generator-foot">
+            <div className="foot-row">
+              <p>Total</p>
+              <p>{formatDollar.format(grandTotal)}</p>
+            </div>
+            <div className="foot-row">
+              <p>Estimated Links</p>
+              <p>{estimatedLinks}</p>
+            </div>
+            <div className="foot-row">
+              <p>Cost Per Link</p>
+              <p>{!costPerLink ? "$0" : formatDollar.format(costPerLink)}</p>
+            </div>
+            <div className="foot-row">
+              <p className="monthly-term">Monthly Term</p>
+              <input
+                className="calculator-input monthly-input"
+                type="number"
+                name="monthly-term"
+                value={monthlyTerm}
+                onChange={(e) =>
+                  updateQuantity("month", 0, Number(e.target.value), false)
+                }
+              />
+            </div>
+            <div className="foot-row">
+              <p className="monthly">Monthly Cost</p>
+              <p className="monthly">
+                {formatDollar.format(grandTotal / monthlyTerm)}
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => setShowQuote(true)}
+            className="quote-generator-submit"
+          >
+            Submit My Quote
+          </button>
         </div>
       </div>
     </div>
