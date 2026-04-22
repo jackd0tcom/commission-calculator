@@ -19,7 +19,9 @@ const ProductPicker = ({
   linkList,
 }: props) => {
   const [selectedProductId, setSelectedProductId] = useState(
-    currentProduct?.productId,
+    item.productType === "product"
+      ? currentProduct?.productId
+      : currentProduct?.linkId,
   );
   const [showDropDown, setShowDropdown] = useState(false);
   const dropdownRef = useRef<HTMLInputElement>(null);
