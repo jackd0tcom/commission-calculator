@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { FaShoppingCart } from "react-icons/fa";
 import { formatDollarNoCents } from "../../helpers";
