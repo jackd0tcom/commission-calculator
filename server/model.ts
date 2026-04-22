@@ -240,6 +240,11 @@ OrderItem.init(
       allowNull: true,
       references: { model: "products" },
     },
+    linkId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: { model: "links" },
+    },
     productType: {
       type: DataTypes.ENUM("product", "link"),
       defaultValue: "product",
@@ -465,7 +470,7 @@ Link.init(
       primaryKey: true,
       autoIncrement: true,
     },
-    linkName: { type: DataTypes.STRING, allowNull: true },
+    publication: { type: DataTypes.STRING, allowNull: true },
     url: { type: DataTypes.STRING, allowNull: true },
     cost: {
       type: DataTypes.DECIMAL(10, 2),
@@ -481,6 +486,42 @@ Link.init(
       type: DataTypes.DECIMAL(5, 4),
       allowNull: false,
       defaultValue: 0.5,
+    },
+    genre: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    DR: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    DA: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    TAT: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    region: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    sponsored: {
+      type: DataTypes.ENUM("yes", "no", "discrete"),
+      allowNull: true,
+    },
+    indexed: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
+    },
+    doFollow: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
+    },
+    example: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     spiff: { type: DataTypes.DECIMAL(10, 2), allowNull: true },
     isArchived: {
@@ -536,6 +577,9 @@ Client.hasMany(Order, { foreignKey: "clientId", as: "orders" });
 
 Product.hasMany(OrderItem, { foreignKey: "productId" });
 OrderItem.belongsTo(Product, { foreignKey: "productId" });
+
+Link.hasMany(OrderItem, { foreignKey: "linkId" });
+Link.belongsTo(Product, { foreignKey: "linkId" });
 
 Vendor.hasMany(VendorProduct, { foreignKey: "vendorId" });
 VendorProduct.belongsTo(Vendor, { foreignKey: "vendorId" });

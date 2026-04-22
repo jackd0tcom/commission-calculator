@@ -6,6 +6,7 @@ interface props {
   products: any;
   currentProduct: any;
   handleProductChange: any;
+  currentProductType: any;
   linkList: any;
 }
 
@@ -13,6 +14,7 @@ const ProductPicker = ({
   item,
   products,
   currentProduct,
+  currentProductType,
   handleProductChange,
   linkList,
 }: props) => {
@@ -23,22 +25,30 @@ const ProductPicker = ({
   const dropdownRef = useRef<HTMLInputElement>(null);
   const [showLinks, setShowLinks] = useState(false);
 
-  const selectedProduct = products.find(
-    (c: any) => c.productId === selectedProductId,
-  );
+  let selectedProduct;
+  let currentName;
 
-  const updateProduct = async (id: number) => {
+  if (currentProductType === "product") {
+    selectedProduct = products.find(
+      (c: any) => c.productId === selectedProductId,
+    );
+    currentName = selectedProduct.productName;
+  } else {
+    selectedProduct = linkList.find((c: any) => c.linkId === selectedProductId);
+    currentName = selectedProduct.publication;
+  }
+
+  const updateProduct = async (id: number, productType: string) => {
     try {
       await axios
-        .post("/api/updateOrderItem", {
+        .post("/api/updateOrderItemProduct", {
           itemId: item.itemId,
-          fieldName: "productId",
-          productType: "product",
-          value: id,
+          productType,
+          id,
         })
         .then((res) => {
           if (res.status === 200) {
-            handleProductChange(res.data.newProduct);
+            handleProductChange(res.data.newProduct, productType);
             setSelectedProductId(id);
             setShowDropdown(false);
           }
@@ -98,9 +108,7 @@ const ProductPicker = ({
         className="product-picker-button"
         onClick={() => setShowDropdown(!showDropDown)}
       >
-        {selectedProduct?.productName
-          ? selectedProduct.productName
-          : "Add a product"}
+        {currentName ?? "Add a product"}
       </button>
       {showDropDown && (
         <div className="dropdown product-picker-dropdown" ref={dropdownRef}>
@@ -132,7 +140,7 @@ const ProductPicker = ({
                   <div
                     className="dropdown-item product-picker-item"
                     key={product.productId}
-                    onClick={() => updateProduct(product.productId)}
+                    onClick={() => updateProduct(product.productId, "product")}
                   >
                     {product.productName}
                   </div>
@@ -141,9 +149,9 @@ const ProductPicker = ({
                   <div
                     className="dropdown-item product-picker-item"
                     key={link.linkId}
-                    onClick={() => updateProduct(link.linkId)}
+                    onClick={() => updateProduct(link.linkId, "link")}
                   >
-                    {link.url ?? "No url provided"}
+                    {link.publication ?? "No url provided"}
                   </div>
                 ))}
           </div>
