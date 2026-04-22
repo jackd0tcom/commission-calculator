@@ -1,6 +1,8 @@
 import { useState } from "react";
 import axios from "axios";
 import { TiDelete } from "react-icons/ti";
+import { FaLink } from "react-icons/fa6";
+import { capitalize } from "../../helpers";
 
 interface props {
   link: any;
@@ -9,6 +11,8 @@ interface props {
   handleDeleteLink: any;
   linkList: any;
   setLinkList: any;
+  setCart: any;
+  cart: any;
 }
 
 const LinkItem = ({
@@ -18,6 +22,8 @@ const LinkItem = ({
   handleDeleteLink,
   linkList,
   setLinkList,
+  setCart,
+  cart,
 }: props) => {
   const [name, setName] = useState(link?.linkName ?? "Add a name");
   const [cost, setCost] = useState(link?.cost ?? "");
@@ -234,13 +240,41 @@ const LinkItem = ({
     </div>
   ) : (
     <div className="links-list-item">
-      <p>{index + 1}</p>
-      <p>{name}</p>
-      <a href={url}>{url}</a>
-      <p>{cost}</p>
-      <p>{defaultPrice}</p>
-      <p>{commissionRate}</p>
-      <p>{spiff}</p>
+      <div>{link.publication}</div>
+      <div>{link.genre}</div>
+      <div>${cost}</div>
+      <div>{link.DA}</div>
+      <div>{link.DR}</div>
+      <div>{link.TAT}</div>
+      <div>{link.region}</div>
+      <div>{capitalize(link.sponsored)}</div>
+      <div>{link.indexed ? "Yes" : "No"}</div>
+      <div>{link.doFollow ? "Yes" : "No"}</div>
+      <div>
+        <a href={url}>
+          <FaLink />
+        </a>
+      </div>
+      <div>
+        <button
+          onClick={() => {
+            setCart((prev: any) => {
+              const hit = prev.some((item: any) => item.linkId === link.linkId);
+              if (!hit) {
+                return [...prev, { ...link, quantity: 1 }];
+              }
+              return prev.map((item: any) =>
+                item.linkId === link.linkId
+                  ? { ...item, quantity: item.quantity + 1 }
+                  : item,
+              );
+            });
+          }}
+          className="link-add-to-cart"
+        >
+          Add to Cart
+        </button>
+      </div>
     </div>
   );
 };

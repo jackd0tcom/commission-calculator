@@ -3,10 +3,13 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import Loader from "../components/UI/Loader";
 import LinkItem from "../components/Links/LinkItem";
+import LinkCart from "../components/Links/LinkCart";
 
 const Links = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [linkList, setLinkList] = useState([{}]);
+  const [cart, setCart] = useState([]);
+  const [showCart, setShowCart] = useState(false);
   const user = useSelector((state: any) => state.user);
 
   const fetchLinks = async () => {
@@ -59,6 +62,12 @@ const Links = () => {
     <div className="links-page-wrapper">
       <div className="page-header-wrapper">
         <h2>Links</h2>
+        <LinkCart
+          cart={cart}
+          setCart={setCart}
+          showCart={showCart}
+          setShowCart={setShowCart}
+        />
       </div>
       {isLoading ? (
         <Loader />
@@ -66,27 +75,39 @@ const Links = () => {
         <div className="links-page-body">
           <div className="links-list-wrapper">
             <div className="links-list-item links-list-head">
-              <p>#</p>
-              <p>Name</p>
-              <p>URL</p>
-              <p>Cost</p>
-              <p>Price</p>
-              <p>Commission Rate</p>
-              <p>Spiff</p>
+              <div>Publication</div>
+              <div>Genres</div>
+              <div>Price</div>
+              <div>DA</div>
+              <div>DR</div>
+              <div>TAT</div>
+              <div>Region</div>
+              <div>Sponsored</div>
+              <div>Indexed</div>
+              <div>Do Follow</div>
+              <div>Example</div>
+              <div>Cart</div>
             </div>
             <div className="links-list">
               {linkList?.length > 0 &&
-                linkList?.map((link: any, index: number) => (
-                  <LinkItem
-                    link={link}
-                    index={index}
-                    isAdmin={user.isAdmin}
-                    key={(link as { linkId?: number }).linkId ?? index}
-                    handleDeleteLink={handleDeleteLink}
-                    linkList={linkList}
-                    setLinkList={setLinkList}
-                  />
-                ))}
+                linkList?.map((link: any, index: number) => {
+                  if (!link.publication) {
+                    return;
+                  }
+                  return (
+                    <LinkItem
+                      cart={cart}
+                      setCart={setCart}
+                      link={link}
+                      index={index}
+                      isAdmin={false}
+                      key={(link as { linkId?: number }).linkId ?? index}
+                      handleDeleteLink={handleDeleteLink}
+                      linkList={linkList}
+                      setLinkList={setLinkList}
+                    />
+                  );
+                })}
               {user?.isAdmin && (
                 <div
                   onClick={() => handleAddLink()}
