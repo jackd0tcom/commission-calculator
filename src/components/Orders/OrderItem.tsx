@@ -31,7 +31,9 @@ const OrderItem = ({
   vendorList,
   handleOrderItemUpdate,
 }: props) => {
-  const [currentProduct, setCurrentProduct] = useState(item?.product ?? null);
+  const [currentProduct, setCurrentProduct] = useState(
+    item.linkId ? { linkId: item.linkId } : (item?.product ?? null),
+  );
   const [currentProductType, setCurrentProductType] = useState(
     item?.productType ?? null,
   );
