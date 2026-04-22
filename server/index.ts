@@ -158,7 +158,8 @@ app.post("/api/sync-auth0-user", syncAuth0User);
 app.post("/api/updateAdmin", updateAdmin);
 app.get("/api/getUsers", getUsers);
 
-await db.sync({ alter: true });
+const shouldAlterSchema = process.env.NODE_ENV !== "production";
+await db.sync(shouldAlterSchema ? { alter: true } : undefined);
 
 console.log("Database synced");
 
