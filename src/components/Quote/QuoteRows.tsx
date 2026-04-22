@@ -1,11 +1,11 @@
 import { formatDollar } from "../../helpers";
 import { useState } from "react";
+import { capitalize } from "../../helpers";
 
 interface props {
   serviceList: any;
   setDetails: any;
   setShowDetails: any;
-  serviceType: string;
   updatePrice: any;
   updateQuantity: any;
 }
@@ -14,7 +14,6 @@ const QuoteRows = ({
   serviceList,
   setDetails,
   setShowDetails,
-  serviceType,
   updatePrice,
   updateQuantity,
 }: props) => {
@@ -31,9 +30,9 @@ const QuoteRows = ({
     <div className="quote-generator-section">
       <div className="heading-toggle" onClick={() => setShowRows(!showRows)}>
         <h3 className="rows-container-heading link-building-services">
-          Link Building Services
+          {capitalize(serviceList[1].productType)}
         </h3>
-        {carat(setShowRows)}
+        {carat(showRows)}
       </div>
       <>
         <div
@@ -50,13 +49,16 @@ const QuoteRows = ({
             <p>Total</p>
           </div>
           {serviceList.map((row: any, index: number) => {
+            if (!row.commissionRate) {
+              return;
+            }
             return (
               <div className="service-row">
                 <p
                   className={
                     index < 1
                       ? "row-title"
-                      : serviceType >= 1
+                      : index >= 1
                         ? "row-title"
                         : "row-title greyed-out"
                   }
@@ -65,25 +67,27 @@ const QuoteRows = ({
                     setShowDetails(true);
                   }}
                 >
-                  {row.itemName}
+                  {row.productName}
                 </p>
                 <div className="lead-gen-quantity-wrapper">
                   <button
-                    disabled={index > 0 && serviceType < 1}
+                    disabled={index > 0 && index < 1}
                     className="quantity-button"
-                    onClick={() => updateQuantity("AIO", index, -1, true)}
+                    onClick={() =>
+                      updateQuantity(row.productType, index, -1, true)
+                    }
                   >
                     -
                   </button>
 
                   <input
-                    disabled={index > 0 && serviceType < 1}
+                    disabled={index > 0 && index < 1}
                     className="calculator-input"
                     type="number"
                     value={row.quantity >= 1 ? row.quantity : ""}
                     onChange={(e) =>
                       updateQuantity(
-                        "AIO",
+                        row.productType,
                         index,
                         Number(e.target.value),
                         false,
@@ -91,9 +95,11 @@ const QuoteRows = ({
                     }
                   />
                   <button
-                    disabled={index > 0 && serviceType < 1}
+                    disabled={index > 0 && index < 1}
                     className="quantity-button"
-                    onClick={() => updateQuantity("AIO", index, 1, true)}
+                    onClick={() =>
+                      updateQuantity(row.productType, index, 1, true)
+                    }
                   >
                     +
                   </button>
@@ -105,7 +111,11 @@ const QuoteRows = ({
                     type="number"
                     value={Number(row.price).toString()}
                     onChange={(e) => {
-                      updatePrice("AIO", index, Number(e.target.value));
+                      updatePrice(
+                        row.productType,
+                        index,
+                        Number(e.target.value),
+                      );
                     }}
                   />
                 </div>
@@ -113,16 +123,6 @@ const QuoteRows = ({
               </div>
             );
           })}
-          {/* <div 
-                className="heading-toggle premium-button"
-                onClick={() =>
-                  handleVisibilityToggle(showUltraPremium, setShowUltraPremium)
-                }
-              >
-                {carat(showUltraPremium)}
-                <h4 id="ultra-premium">Ultra Premium Links </h4>
-              </div>
-              */}
         </div>
       </>
     </div>

@@ -2,23 +2,62 @@ import { useState, useEffect } from "react";
 // import DetailsView from "../components/Quote/DetailsView";
 // import QuoteView from "../components/Quote/QuoteView";
 import axios from "axios";
+import QuoteRows from "../components/Quote/QuoteRows";
+import Loaders from "../components/UI/Loader";
 
 export default function QuoteGenerator() {
-  const [initialServices, setInitialServices] = useState([{}]);
-  const [initialAIOServices, setInitialAIOServices] = useState([{}]);
-  const [initialContentServices, setInitialContentServices] = useState([{}]);
-  const [initialTechnicalServices, setInitialTechnicalServices] = useState([
-    {},
-  ]);
-  const [showUltraPremium, setShowUltraPremium] = useState(false);
+  const [linkServices, setLinkServices] = useState([{}]);
+  const [AIOServices, setAIOServices] = useState([{}]);
+  const [ContentServices, setContentServices] = useState([{}]);
+  const [TechnicalServices, setTechnicalServices] = useState([{}]);
   const [monthlyTerm, setMonthlyTerm] = useState(3);
   const [showDetails, setShowDetails] = useState(false);
   const [showQuote, setShowQuote] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [details, setDetails] = useState({
     itemName: "Linkable Content",
     price: 700,
     details: "linkable content",
   });
+
+  const fetchProducts = async () => {
+    try {
+      await axios.get("/api/getAdminProducts").then((res) => {
+        let links = [{}];
+        let aio = [{}];
+        let content = [{}];
+        let technical = [{}];
+        res.data.products?.forEach((prod: any) => {
+          const newProd = { ...prod, quantity: 0, price: prod.defaultPrice };
+          switch (prod.productType) {
+            case "content services":
+              content.push(newProd);
+              break;
+            case "technical services":
+              technical.push(newProd);
+              break;
+            case "ai search optimization":
+              aio.push(newProd);
+              break;
+            default:
+              links.push(newProd);
+              break;
+          }
+        });
+        setLinkServices(links);
+        setAIOServices(aio);
+        setContentServices(content);
+        setTechnicalServices(technical);
+        setIsLoading(false);
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
 
   //   const cart = allRows.filter((row) => row.quantity > 0);
 
@@ -30,19 +69,117 @@ export default function QuoteGenerator() {
     maximumFractionDigits: 0,
   });
 
-  const fetchProducts = async () => {
-    try {
-      await axios.get("/api/getAdminProducts").then((res) => {
-        console.log(res.data.products);
+  const updateQuantity = (
+    type: string,
+    index: number,
+    value: number,
+    increment: boolean,
+  ) => {
+    if (!increment && value < 0) {
+      return;
+    }
+    if (type === "month") {
+      if (value < 1) {
+        return;
+      }
+      console.log(value);
+      setMonthlyTerm(value);
+    }
+    if (type === "link building services") {
+      if (increment) {
+        setLinkServices((prevRows) =>
+          prevRows.map((row: any, i) =>
+            i === index
+              ? { ...row, quantity: Math.max(0, row.quantity + value) }
+              : row,
+          ),
+        );
+        return;
+      }
+      setLinkServices((prevRows) => {
+        const newRows: any = [...prevRows];
+        newRows[index].quantity = value;
+        return newRows;
       });
-    } catch (error) {
-      console.log(error);
+    } else if (type === "ai search optimization") {
+      if (increment) {
+        setAIOServices((prevRows) =>
+          prevRows.map((row: any, i) =>
+            i === index
+              ? { ...row, quantity: Math.max(0, row.quantity + value) }
+              : row,
+          ),
+        );
+        return;
+      }
+      setAIOServices((prevRows) => {
+        const newRows: any = [...prevRows];
+        newRows[index].quantity = value;
+        return newRows;
+      });
+    } else if (type === "content services") {
+      if (increment) {
+        setContentServices((prevRows) =>
+          prevRows.map((row: any, i) =>
+            i === index
+              ? { ...row, quantity: Math.max(0, row.quantity + value) }
+              : row,
+          ),
+        );
+        return;
+      }
+      setContentServices((prevRows) => {
+        const newRows: any = [...prevRows];
+        newRows[index].quantity = value;
+        return newRows;
+      });
+    } else if (type === "technical services") {
+      if (increment) {
+        setTechnicalServices((prevRows) =>
+          prevRows.map((row: any, i) =>
+            i === index
+              ? { ...row, quantity: Math.max(0, row.quantity + value) }
+              : row,
+          ),
+        );
+        return;
+      }
+      setTechnicalServices((prevRows) => {
+        const newRows: any = [...prevRows];
+        newRows[index].quantity = value;
+        return newRows;
+      });
     }
   };
 
-  useEffect(() => {
-    fetchProducts();
-  }, []);
+  // Handles updating the math for rows except for ultra premium rows
+  const updatePrice = (type: string, index: number, value: number) => {
+    if (type === "link building services") {
+      setLinkServices((prevRows) => {
+        const newRows: any = [...prevRows];
+        newRows[index].price = Number(value);
+        return newRows;
+      });
+    } else if (type === "ai search optimization") {
+      setAIOServices((prevRows) => {
+        const newRows: any = [...prevRows];
+        newRows[index].price = value;
+        return newRows;
+      });
+    } else if (type === "content services") {
+      setContentServices((prevRows) => {
+        const newRows: any = [...prevRows];
+        newRows[index].price = value;
+        return newRows;
+      });
+    } else if (type === "technical services") {
+      setTechnicalServices((prevRows) => {
+        const newRows: any = [...prevRows];
+        newRows[index].price = value;
+        return newRows;
+      });
+    }
+  };
 
   return (
     <div className="quote-generator-page-wrapper">
@@ -83,7 +220,39 @@ export default function QuoteGenerator() {
           />
         )}
         <div className="quote-generator-table-wrapper">
-          {/* <div className="quote-generator-sidebar">
+          {isLoading ? (
+            <Loaders />
+          ) : (
+            <>
+              <QuoteRows
+                serviceList={linkServices}
+                setDetails={setDetails}
+                setShowDetails={setShowDetails}
+                updatePrice={updatePrice}
+                updateQuantity={updateQuantity}
+              />
+              <QuoteRows
+                serviceList={AIOServices}
+                setDetails={setDetails}
+                setShowDetails={setShowDetails}
+                updatePrice={updatePrice}
+                updateQuantity={updateQuantity}
+              />
+              <QuoteRows
+                serviceList={ContentServices}
+                setDetails={setDetails}
+                setShowDetails={setShowDetails}
+                updatePrice={updatePrice}
+                updateQuantity={updateQuantity}
+              />
+              <QuoteRows
+                serviceList={TechnicalServices}
+                setDetails={setDetails}
+                setShowDetails={setShowDetails}
+                updatePrice={updatePrice}
+                updateQuantity={updateQuantity}
+              />
+              {/* <div className="quote-generator-sidebar">
           <div className="quote-generator-foot">
             <div className="foot-row">
               <p>Total</p>
@@ -125,6 +294,8 @@ export default function QuoteGenerator() {
             </button>
           )} 
         </div>*/}
+            </>
+          )}
         </div>
       </div>
     </div>
