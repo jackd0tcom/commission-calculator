@@ -32,10 +32,10 @@ const ProductPicker = ({
     selectedProduct = products.find(
       (c: any) => c.productId === selectedProductId,
     );
-    currentName = selectedProduct.productName;
+    currentName = selectedProduct?.productName;
   } else {
     selectedProduct = linkList.find((c: any) => c.linkId === selectedProductId);
-    currentName = selectedProduct.publication;
+    currentName = selectedProduct?.publication;
   }
 
   const updateProduct = async (id: number, productType: string) => {
