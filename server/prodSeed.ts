@@ -1,5 +1,12 @@
 import { configDotenv } from "dotenv";
-import { db, Product, Vendor, VendorField, Client } from "./model.js";
+import {
+  db,
+  Product,
+  Vendor,
+  VendorProduct,
+  VendorField,
+  Client,
+} from "./model.js";
 
 configDotenv();
 
@@ -9,100 +16,164 @@ const products = await Product.bulkCreate([
     cost: 250,
     defaultPrice: 600,
     commissionRate: 0.05,
+    linkEstimate: 1,
+    productType: "link building services",
   },
   {
     productName: "Expert Links",
     cost: 1400,
     defaultPrice: 5000,
     commissionRate: 0.05,
+    linkEstimate: 1,
+    productType: "link building services",
   },
-  { productName: "DPR", cost: 6700, defaultPrice: 15000, commissionRate: 0.05 },
+  {
+    productName: "Digital PR",
+    cost: 6700,
+    defaultPrice: 15000,
+    commissionRate: 0.05,
+    linkEstimate: 1,
+    productType: "link building services",
+  },
   {
     productName: "News Links",
     cost: 500,
     defaultPrice: 900,
     commissionRate: 0.05,
+    linkEstimate: 1,
+    productType: "link building services",
   },
   {
-    productName: "Foundation",
+    productName: "Foundational Links",
     cost: 400,
     defaultPrice: 1200,
     commissionRate: 0.05,
+    linkEstimate: 1,
+    productType: "link building services",
   },
   {
-    productName: "Hourly LB",
+    productName: "Hourly Link Building",
     cost: 30,
     defaultPrice: 100,
     commissionRate: 0.05,
+    linkEstimate: 1,
+    productType: "link building services",
   },
   {
     productName: "News Syndications",
     cost: 75,
     defaultPrice: 125,
     commissionRate: 0.05,
+    linkEstimate: 1,
+
+    productType: "link building services",
   },
   {
     productName: "Media Blitz",
     cost: 2200,
     defaultPrice: 7500,
     commissionRate: 0.05,
+    linkEstimate: 1,
+    productType: "link building services",
   },
   {
-    productName: "Linkable Content",
+    productName: "3 Month Campaign",
     cost: 150,
-    defaultPrice: 700,
+    defaultPrice: 9000,
     commissionRate: 0.05,
+    productType: "ai search optimization",
   },
   {
-    productName: "Keyword Content",
+    productName: "AI Authoritative Content Creation",
     cost: 150,
-    defaultPrice: 700,
+    defaultPrice: 750,
     commissionRate: 0.05,
+    productType: "ai search optimization",
   },
   {
-    productName: "Content Roadmap",
+    productName: "Passage Level Content Refresh",
     cost: 150,
-    defaultPrice: 1500,
+    defaultPrice: 350,
     commissionRate: 0.05,
+    productType: "ai search optimization",
   },
   {
-    productName: "Strategic Revision",
-    cost: 1500,
-    defaultPrice: 800,
+    productName: "SEO Blog Content",
+    cost: 150,
+    defaultPrice: 500,
     commissionRate: 0.05,
+    productType: "content services",
   },
   {
-    productName: "Content Audit",
-    cost: 300,
-    defaultPrice: 1200,
+    productName: "SEO Strategic Revision",
+    cost: 150,
+    defaultPrice: 500,
     commissionRate: 0.05,
+    productType: "content services",
+  },
+  {
+    productName: "Content Audit and Roadmap",
+    cost: 150,
+    defaultPrice: 3800,
+    commissionRate: 0.05,
+    productType: "content services",
   },
   {
     productName: "Advanced Content",
-    cost: 300,
-    defaultPrice: 1200,
+    cost: 150,
+    defaultPrice: 1250,
     commissionRate: 0.05,
+    productType: "content services",
+  },
+  {
+    productName: "Wikipedia Feasibility Assessment",
+    cost: 150,
+    defaultPrice: 500,
+    commissionRate: 0.05,
+    productType: "content services",
+  },
+  {
+    productName: "Wikipedia Page Creation",
+    cost: 150,
+    defaultPrice: 5000,
+    commissionRate: 0.05,
+    productType: "content services",
   },
   {
     productName: "Website Audit",
     cost: 500,
-    defaultPrice: 2500,
+    defaultPrice: 3500,
     commissionRate: 0.05,
+    productType: "technical services",
   },
-  { productName: "Schema", cost: 60, defaultPrice: 300, commissionRate: 0.05 },
   {
-    productName: "On Page Optimization",
-    cost: 50,
-    defaultPrice: 150,
+    productName: "Schema Optimization",
+    cost: 60,
+    defaultPrice: 300,
     commissionRate: 0.05,
+    productType: "technical services",
+  },
+  {
+    productName: "Crawl Optimization",
+    cost: 50,
+    defaultPrice: 1500,
+    commissionRate: 0.05,
+    productType: "technical services",
+  },
+  {
+    productName: "On-Page Optimization",
+    cost: 300,
+    defaultPrice: 200,
+    commissionRate: 0.05,
+    productType: "technical services",
   },
   {
     productName: "Internal Link Optimization",
-    cost: 300,
+    cost: 1000,
     defaultPrice: 2000,
     commissionRate: 0.05,
+    productType: "technical services",
   },
-  { productName: "AIO", cost: 1000, defaultPrice: 9000, commissionRate: 0.05 },
 ]);
 
 const vendors = await Vendor.bulkCreate([
@@ -120,9 +191,28 @@ const vendors = await Vendor.bulkCreate([
   },
 ]);
 
-await VendorField.bulkCreate([
+await VendorProduct.bulkCreate([
   {
     vendorId: 2,
+    productId: 1,
+  },
+  {
+    vendorId: 2,
+    productId: 16,
+  },
+  {
+    vendorId: 3,
+    productId: 3,
+  },
+  {
+    vendorId: 3,
+    productId: 1,
+  },
+]);
+
+await VendorField.bulkCreate([
+  {
+    vendorProductId: 2,
     label: "P1P Team",
     fieldType: "string",
     required: true,
@@ -131,7 +221,7 @@ await VendorField.bulkCreate([
     googleSheetId: "B",
   },
   {
-    vendorId: 2,
+    vendorProductId: 2,
     label: "Client ID",
     fieldType: "number",
     required: true,
@@ -140,7 +230,7 @@ await VendorField.bulkCreate([
     googleSheetId: "C",
   },
   {
-    vendorId: 2,
+    vendorProductId: 2,
     label: "Client",
     fieldType: "string",
     required: true,
@@ -149,7 +239,7 @@ await VendorField.bulkCreate([
     googleSheetId: "D",
   },
   {
-    vendorId: 2,
+    vendorProductId: 2,
     label: "Target Pages",
     fieldType: "string",
     required: false,
@@ -158,7 +248,7 @@ await VendorField.bulkCreate([
     googleSheetId: "F",
   },
   {
-    vendorId: 2,
+    vendorProductId: 2,
     label: "Target Page Chosen",
     fieldType: "string",
     required: false,
@@ -167,7 +257,7 @@ await VendorField.bulkCreate([
     googleSheetId: "G",
   },
   {
-    vendorId: 2,
+    vendorProductId: 2,
     label: "P1P Suggested Anchor Text",
     fieldType: "string",
     required: false,
@@ -176,7 +266,7 @@ await VendorField.bulkCreate([
     googleSheetId: "H",
   },
   {
-    vendorId: 3,
+    vendorProductId: 3,
     label: "Campaign code",
     fieldType: "string",
     required: false,
