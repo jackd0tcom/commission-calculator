@@ -28,7 +28,7 @@ const CommissionSheetFooter = ({ items, products }: props) => {
       (product: any) => product.productId === item.productId,
     );
 
-    const cost = item.costSnapshot ?? product?.cost;
+    const cost = item.costSnapshot ?? product?.cost ?? item.link?.cost;
     return acc + cost * item.deliveries?.length;
   }, 0);
   const contribution: number = filteredItems.reduce(
@@ -43,7 +43,8 @@ const CommissionSheetFooter = ({ items, products }: props) => {
           item.price ??
           product.defaultPrice);
       const totalCost =
-        item.deliveries?.length * (item.costSnapshot ?? product?.cost);
+        item.deliveries?.length *
+        (item.costSnapshot ?? product?.cost ?? item.link?.cost);
       return acc + totalPrice - totalCost;
     },
     0,
@@ -61,8 +62,13 @@ const CommissionSheetFooter = ({ items, products }: props) => {
         item.price ??
         product.defaultPrice);
     const totalCost =
-      item.deliveries?.length * (item.costSnapshot ?? product?.cost);
-    const rate = item.commissionRateSnapshot ?? product.commissionRate;
+      item.deliveries?.length *
+      (item.costSnapshot ?? product?.cost ?? item.link?.cost);
+    const rate =
+      item.commissionRateSnapshot ??
+      product?.commissionRate ??
+      item.link?.commissionRate ??
+      0;
     const contribution = totalPrice - totalCost;
     return acc + contribution * rate;
   }, 0);
@@ -71,7 +77,8 @@ const CommissionSheetFooter = ({ items, products }: props) => {
       (product: any) => product.productId === item.productId,
     );
     return (
-      acc + (item.spiffSnapshot ?? product.spiff) * item.deliveries?.length
+      acc +
+      (item.spiffSnapshot ?? product?.spiff ?? 0) * item.deliveries?.length
     );
   }, 0);
   const grandTotal: number = commission + bonus;

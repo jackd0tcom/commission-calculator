@@ -1,6 +1,6 @@
 import {
   CommissionSheet,
-  Product,
+  Link,
   Order,
   OrderItem,
   User,
@@ -160,6 +160,10 @@ export default {
             where: { sheetId },
             required: true,
             include: [
+              {
+                model: Link,
+                required: false,
+              },
               {
                 model: Delivery,
                 required: true,

@@ -45,6 +45,7 @@ const OrderPage = () => {
         promises.push(
           axios.get(`/api/getOrder/${orderId}`).then((res) => {
             if (res.status === 200) {
+              console.log(res.data);
               if (res.data.orderItems && res.data.orderItems.length > 0) {
                 const orderItems = res.data.orderItems;
                 setOrderItems(

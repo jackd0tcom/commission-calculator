@@ -96,7 +96,12 @@ const OrderItem = ({
   };
 
   const handleUpdateStatus = async (status: string) => {
-    const newItem = { ...item, itemStatus: status };
+    const newItem = {
+      ...item,
+      itemStatus: status,
+      productType: currentProductType,
+    };
+    console.log(newItem);
     try {
       await axios
         .post("/api/updateOrderStatus", {
@@ -104,6 +109,7 @@ const OrderItem = ({
         })
         .then((res) => {
           if (res.status === 200) {
+            console.log(res.data);
             setOrderItems((prev: any) =>
               prev.map((it: any) =>
                 it.itemId === item.itemId ? res.data : it,
@@ -242,13 +248,23 @@ const OrderItem = ({
           <p className="sheet-item-number">{index + 1}</p>
         )}
         <p className="sheet-item-number">{formatDateNoTime(item.createdAt)}</p>
-        <p>{item.productNameSnapshot ?? item.product.productName}</p>
+        <p>
+          {currentProductType === "product"
+            ? (item.productNameSnapshot ?? item.product?.productName)
+            : (item.link?.publication ?? "")}
+        </p>
         <p>{currentVendorName}</p>
         <OrderStatusPicker
           currentStatus={status}
           handleUpdateStatus={handleUpdateStatus}
         />
-        <p>${item.priceSnapshot ?? item.product.defaultPrice}</p>
+        <p>
+          $
+          {item.priceSnapshot ??
+            item.product?.defaultPrice ??
+            item.defaultPrice ??
+            0}
+        </p>
         <p>{item.notes}</p>
         <p>{item.targetUrl}</p>
         <p>{item.anchorText}</p>

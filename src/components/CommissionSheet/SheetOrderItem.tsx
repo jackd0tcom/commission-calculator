@@ -16,17 +16,19 @@ const SheetOrderItem = ({ item, productList }: props) => {
     item.price ??
     product.defaultPrice;
   const quantity = item.deliveries?.length ?? 0;
-  const cost = item.costSnapshot ?? product?.cost;
+  const cost = item.costSnapshot ?? product?.cost ?? item.link?.cost;
   const totalPrice = quantity * price;
   const totalCost = quantity * cost;
   const contribution = totalPrice - totalCost;
   const commissionRate =
-    product.user_product_commissions.length > 0
+    product?.user_product_commissions?.length > 0
       ? (item.commissionRateSnapshot ??
         product.user_product_commissions[0].commissionRate)
-      : (item.commissionRateSnapshot ?? product.commissionRate);
+      : !item.link
+        ? (item.commissionRateSnapshot ?? product?.commissionRate)
+        : item.link?.commissionRate;
   const commission = contribution * commissionRate;
-  const spiff = item.spiffSnapshot ?? product.spiff;
+  const spiff = item.spiffSnapshot ?? product?.spiff ?? 0;
   const bonus = quantity * spiff;
   const total = commission + bonus;
 
