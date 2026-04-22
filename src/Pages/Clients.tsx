@@ -101,15 +101,15 @@ const Clients = () => {
                   currentClient={currentClient}
                 />
               ))}
+              <div
+                onClick={() => handleAddClient()}
+                className="clients-list-item new-client-row"
+              >
+                <p>+</p>
+                <p>Add Client</p>
+              </div>
             </div>
           )}
-          <div
-            onClick={() => handleAddClient()}
-            className="clients-list-item new-client-row"
-          >
-            <p>+</p>
-            <p>Add Client</p>
-          </div>
         </div>
         <div className="clients-sheet-wrapper">
           <div className="clients-sheet-head clients-sheet-item">
