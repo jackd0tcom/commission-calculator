@@ -4,14 +4,12 @@ interface props {
   data: any;
   setShowDetails: any;
   showDetails: any;
-  isLeadGen: boolean;
 }
 
 export default function DetailsView({
   data,
   setShowDetails,
   showDetails,
-  isLeadGen,
 }: props) {
   const detailsRef = useRef<HTMLInputElement>(null);
 

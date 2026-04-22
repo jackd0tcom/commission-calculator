@@ -60,7 +60,11 @@ function App() {
           <Loader />
         </div>
       ) : (
-        <div className="route-wrapper">
+        <div
+          className={
+            showNav ? "route-wrapper" : "route-wrapper full-width-wrapper"
+          }
+        >
           <div className="route-container">
             <Routes>
               <Route
@@ -79,7 +83,10 @@ function App() {
                 element={<Commissions />}
               ></Route>
               <Route path="/orders" element={<Orders />}></Route>
-              <Route path="/order/:orderId" element={<OrderPage />}></Route>
+              <Route
+                path="/order/:orderId/:calculatorOrder"
+                element={<OrderPage />}
+              ></Route>
               <Route path="/profile" element={<Profile />}></Route>
               <Route
                 path="/sheet/:sheetId"
@@ -90,7 +97,12 @@ function App() {
               <Route path="/vendors" element={<Vendors />}></Route>
               <Route path="/vendor/:vendorId" element={<VendorPage />}></Route>
               <Route path="/clients" element={<Clients />}></Route>
-              <Route path="/quote" element={<QuoteGenerator />}></Route>
+              <Route
+                path="/quote"
+                element={
+                  <QuoteGenerator showNav={showNav} setShowNav={setShowNav} />
+                }
+              ></Route>
               <Route
                 path="/submitted-sheets"
                 element={

@@ -5,7 +5,10 @@ interface props {
 const HideNavToggle = ({ borderColor }: props) => {
   return (
     <div className="hide-nav-toggle" style={{ borderColor: borderColor }}>
-      <div className="hide-nav-toggle-inner"></div>
+      <div
+        className="hide-nav-toggle-inner"
+        style={{ borderColor: borderColor }}
+      ></div>
     </div>
   );
 };

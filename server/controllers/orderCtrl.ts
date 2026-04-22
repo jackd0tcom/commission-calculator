@@ -157,6 +157,49 @@ export default {
       res.status(500).send("Internal server error");
     }
   },
+  newCalculatorOrder: async (req: Request, res: Response) => {
+    try {
+      console.log("newCalculatorOrder");
+
+      if (!req.session.user) {
+        res.status(401).send("user not logged in / no session set up");
+        return;
+      }
+
+      const { cart } = req.body;
+      const order = await Order.create({
+        userId: req.session.user.userId,
+      });
+      if (!order) {
+        res.status(400).send("No order found");
+        return;
+      }
+      const itemPromises = cart.flatMap((product: any, index: number) =>
+        Array.from({ length: product.quantity }, (_, i) =>
+          OrderItem.create({
+            orderId: order.orderId,
+            orderIndex: Number(`${index}.00${i}`),
+            productId: product.productId,
+            price: product.price,
+          }),
+        ),
+      );
+      const items = await Promise.all(itemPromises);
+      const orderData = order.toJSON();
+      const payload = {
+        ...orderData,
+        items,
+      };
+      if (order) {
+        res.status(200).send(payload);
+      } else {
+        res.status(400).send("No order found");
+      }
+    } catch (error) {
+      console.error("Error creating order:", error);
+      res.status(500).send("Internal server error");
+    }
+  },
   getOrder: async (req: Request, res: Response) => {
     try {
       console.log("getOrder");

@@ -54,7 +54,7 @@ const Orders = () => {
         <h2>Orders</h2>
         <button
           onClick={() => {
-            navigate("/order/0");
+            navigate("/order/0/false");
           }}
           className="new-sheet-button"
         >
@@ -91,7 +91,9 @@ const Orders = () => {
                         <div
                           className="orders-list-item"
                           key={`order-${order.orderId}`}
-                          onClick={() => navigate(`/order/${order.orderId}`)}
+                          onClick={() =>
+                            navigate(`/order/${order.orderId}/false`)
+                          }
                         >
                           <ProfilePic src={order.user?.profilePic} />
                           <p>Order #{order.orderId}</p>
@@ -124,7 +126,9 @@ const Orders = () => {
                         <div
                           className="orders-list-item"
                           key={`order-${order.orderId}`}
-                          onClick={() => navigate(`/order/${order.orderId}`)}
+                          onClick={() =>
+                            navigate(`/order/${order.orderId}/false`)
+                          }
                         >
                           <ProfilePic src={order.user.profilePic} />
                           <p>Order #{order.orderId}</p>
@@ -157,7 +161,9 @@ const Orders = () => {
                         <div
                           className="orders-list-item"
                           key={`order-${order.orderId}`}
-                          onClick={() => navigate(`/order/${order.orderId}`)}
+                          onClick={() =>
+                            navigate(`/order/${order.orderId}/false`)
+                          }
                         >
                           <ProfilePic src={order.user.profilePic} />
                           <p>Order #{order.orderId}</p>

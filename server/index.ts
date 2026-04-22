@@ -28,6 +28,7 @@ const { getLinks, updateLink, deleteLink, newLink } = linkCtrl;
 const {
   getOrders,
   newOrder,
+  newCalculatorOrder,
   getOrder,
   updateOrderItem,
   newOrderItem,
@@ -128,6 +129,7 @@ app.get(`/api/getOrder/:orderId`, getOrder);
 app.post(`/api/updateOrderItem`, updateOrderItem);
 app.post(`/api/updateOrderStatus`, updateOrderStatus);
 app.post(`/api/newOrder`, newOrder);
+app.post(`/api/newCalculatorOrder`, newCalculatorOrder);
 app.post("/api/updateOrder", updateOrder);
 app.post(`/api/newOrderItem`, newOrderItem);
 app.post(`/api/deleteOrderItem`, deleteOrderItem);
