@@ -417,7 +417,7 @@ Product.init(
         "content services",
         "technical services",
       ),
-      defaultValue: "link building",
+      defaultValue: "link building services",
       allowNull: true,
     },
   },
