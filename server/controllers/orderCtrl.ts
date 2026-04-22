@@ -205,6 +205,57 @@ export default {
       res.status(500).send("Internal server error");
     }
   },
+  newLinkPortalOrder: async (req: Request, res: Response) => {
+    try {
+      console.log("newLinkPortalOrder");
+
+      if (!req.session.user) {
+        res.status(401).send("user not logged in / no session set up");
+        return;
+      }
+
+      const { cart } = req.body;
+      const order = await Order.create({
+        userId: req.session.user.userId,
+        clientId: 1,
+        // TODO Make clientId dynamic based on client that is signed in
+        orderStatus: "submitted",
+      });
+      if (!order) {
+        res.status(400).send("No order found");
+        return;
+      }
+      const interiorVendor = await Vendor.findOne({
+        where: { vendorName: "Interior" },
+      });
+      const itemPromises = cart.flatMap((product: any, index: number) =>
+        Array.from({ length: product.quantity }, (_, i) =>
+          OrderItem.create({
+            orderId: order.orderId,
+            orderIndex: Number(`${index}.00${i}`),
+            linkId: product.linkId,
+            productType: "link",
+            price: product.defaultPrice,
+            vendorId: interiorVendor?.vendorId,
+          }),
+        ),
+      );
+      const items = await Promise.all(itemPromises);
+      const orderData = order.toJSON();
+      const payload = {
+        ...orderData,
+        items,
+      };
+      if (order) {
+        res.status(200).send(payload);
+      } else {
+        res.status(400).send("No order found");
+      }
+    } catch (error) {
+      console.error("Error creating order:", error);
+      res.status(500).send("Internal server error");
+    }
+  },
   getOrder: async (req: Request, res: Response) => {
     try {
       console.log("getOrder");

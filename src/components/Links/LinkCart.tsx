@@ -1,3 +1,5 @@
+import { useState, useEffect } from "react";
+import axios from "axios";
 import { FaShoppingCart } from "react-icons/fa";
 import { formatDollarNoCents } from "../../helpers";
 import { FaX } from "react-icons/fa6";
@@ -10,6 +12,7 @@ interface props {
 }
 
 const LinkCart = ({ showCart, setShowCart, cart, setCart }: props) => {
+  const [status, setStatus] = useState("ready");
   const total =
     cart?.length > 0
       ? cart.reduce((acc: any, item: any) => {
@@ -24,6 +27,20 @@ const LinkCart = ({ showCart, setShowCart, cart, setCart }: props) => {
         }, 0)
       : 0;
 
+  const handleSubmit = async () => {
+    setStatus("submitting");
+    try {
+      await axios.post("/api/newLinkPortalOrder", { cart }).then((res) => {
+        console.log(res.data);
+        setTimeout(() => {
+          setStatus("success");
+          setCart({});
+        }, 2000);
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return !showCart ? (
     <div className="link-cart-icon-wrapper" onClick={() => setShowCart(true)}>
       <FaShoppingCart className="cart-icon" />
@@ -95,7 +112,17 @@ const LinkCart = ({ showCart, setShowCart, cart, setCart }: props) => {
             <h4>Total</h4>
             <p>{formatDollarNoCents(total)}</p>
           </div>
-          <button className="submit-order">Submit Order</button>
+          {status !== "success" ? (
+            <button
+              disabled={cart.length < 1}
+              className="submit-order"
+              onClick={() => handleSubmit()}
+            >
+              {status === "ready" ? "Submit Order" : "Submitting..."}
+            </button>
+          ) : (
+            <p className="submission-success">Order Successfully Submitted</p>
+          )}
         </div>
       </div>
     </div>

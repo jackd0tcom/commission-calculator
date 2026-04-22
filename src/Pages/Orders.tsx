@@ -28,12 +28,17 @@ const Orders = () => {
     fetchOrders();
   }, []);
 
+  const submittedOrders: any = [];
   const progressOrders: any = [];
   const partialOrders: any = [];
   let deliveredOrders: any = [];
 
   orders.forEach((order: any) => {
     if (order.order_items?.length > 0) {
+      if (order.orderStatus === "submitted") {
+        submittedOrders.push(order);
+        return;
+      }
       const undeliveredItems = order.order_items.filter(
         (item: any) => item.itemStatus !== "complete",
       );
@@ -79,6 +84,44 @@ const Orders = () => {
                   </div>
                 </div>
               </div>
+              {submittedOrders.length > 0 && (
+                <div className="orders-list-wrapper">
+                  <h3>Submitted Orders</h3>
+                  <div className="orders-list">
+                    {submittedOrders?.length > 0 ? (
+                      submittedOrders.map((order: any) => {
+                        const deliveredItems = order.order_items.filter(
+                          (item: any) => item.itemStatus === "complete",
+                        );
+                        return (
+                          <div
+                            className="orders-list-item"
+                            key={`order-${order.orderId}`}
+                            onClick={() =>
+                              navigate(`/order/${order.orderId}/false`)
+                            }
+                          >
+                            <ProfilePic src={order.user?.profilePic} />
+                            <p>Order #{order.orderId}</p>
+                            <p>{order.client?.clientName}</p>
+                            <OrderStatusBadge status={"submitted"} />
+                            <p>
+                              {deliveredItems.length} /{" "}
+                              {order.order_items.length}
+                            </p>
+                            <p>{formatDateNoTime(order.createdAt)}</p>
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <div className="orders-list-item">
+                        <p></p>
+                        <p>No orders</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
               <div className="orders-list-wrapper">
                 <h3>Orders In Progress</h3>
                 <div className="orders-list">
