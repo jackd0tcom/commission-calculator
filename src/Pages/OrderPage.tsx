@@ -340,11 +340,11 @@ const OrderPage = () => {
                 <p>Date</p>
                 <p className="picker-heading">Product</p>
                 <p className="picker-heading">Vendor</p>
+                <p>Status</p>
                 <p>Price</p>
                 <p className="input-heading">Notes / Restrictions</p>
                 <p className="input-heading">Target URL</p>
                 <p className="input-heading">Anchor Text</p>
-                <p>Status</p>
                 {/* <p>Linking From</p> */}
               </div>
               <div className="order-items-list-wrapper">
@@ -375,8 +375,8 @@ const OrderPage = () => {
                   <p>Add Product</p>
                 </div>
               </div>
-              <OrderFooter items={orderItems} />
             </div>
+            <OrderFooter items={orderItems} />
           </div>
         </>
       )}

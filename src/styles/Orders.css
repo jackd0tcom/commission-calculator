@@ -8,8 +8,9 @@
 }
 .order-page-body {
   height: 100%;
-  padding: 15px;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
   background-color: var(--hover);
 }
 .orders-page-body {
@@ -61,6 +62,8 @@
   flex-direction: column;
   width: 100%;
   overflow-x: scroll;
+  overscroll-behavior: none;
+  margin: 15px;
 }
 .order-items-list-head {
   font-weight: 500;
@@ -71,9 +74,12 @@
 .order-items-list-item {
   display: grid;
   grid-template-columns:
-    minmax(40px, auto)
-    minmax(50px, auto) 1fr 1fr 1fr 1.5fr 1fr 1fr 1fr 0.25fr;
+    minmax(40px, 0.2fr)
+    minmax(50px, 0.5fr) minmax(200px, 1fr) minmax(100px, 1fr)
+    minmax(100px, 1fr) minmax(100px, 1fr) minmax(250px, 2fr) minmax(250px, 2fr)
+    minmax(250px, 2fr) minmax(50px, 0.5fr);
   align-items: center;
+  min-width: max-content;
   gap: 10px;
   padding: 6px 12px;
   border-bottom: 1px solid var(--border);
@@ -82,11 +88,14 @@
   width: 100%;
   white-space: nowrap;
 }
+.order-items-list-item-wrapper {
+  min-width: max-content;
+}
 .order-input {
-  /* max-width: 120px; */
-  padding: 5px;
+  padding: 8px 12px;
   border: 1px solid var(--border);
   border-radius: 5px;
+  overflow: scroll;
 }
 .order-input,
 .input-heading {
@@ -223,14 +232,11 @@
   scrollbar-width: thin;
 }
 .order-sheet-footer {
-  position: absolute;
-  width: 100%;
   border-top: 1px solid var(--border);
-  bottom: 0;
 }
 .product-picker-button {
   width: auto;
-  max-width: 120px;
+  max-width: 190px;
 }
 .order-status-button {
   border: none;
@@ -345,4 +351,6 @@
 
 .new-item-row {
   margin-bottom: 30px;
+  border-right: 1px solid var(--border);
+  width: 15%;
 }

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { useSelector } from "react-redux";
+// import { useSelector } from "react-redux";
 import Loader from "../components/UI/Loader";
 import LinkItem from "../components/Links/LinkItem";
 import LinkCart from "../components/Links/LinkCart";
@@ -10,7 +10,7 @@ const Links = () => {
   const [linkList, setLinkList] = useState([{}]);
   const [cart, setCart] = useState([]);
   const [showCart, setShowCart] = useState(false);
-  const user = useSelector((state: any) => state.user);
+  // const user = useSelector((state: any) => state.user);
 
   const fetchLinks = async () => {
     try {
@@ -29,17 +29,17 @@ const Links = () => {
     fetchLinks();
   }, []);
 
-  const handleAddLink = async () => {
-    try {
-      await axios.post("/api/newLink").then((res) => {
-        if (res.status === 200) {
-          setLinkList((prev) => [res.data, ...prev]);
-        }
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const handleAddLink = async () => {
+  //   try {
+  //     await axios.post("/api/newLink").then((res) => {
+  //       if (res.status === 200) {
+  //         setLinkList((prev) => [res.data, ...prev]);
+  //       }
+  //     });
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   const handleDeleteLink = async (linkId: number) => {
     try {

@@ -357,7 +357,7 @@ async function seed() {
 
   await VendorField.bulkCreate([
     {
-      vendorProductId: 2,
+      vendorProductId: 1,
       label: "P1P Team",
       fieldType: "string",
       required: true,
@@ -366,7 +366,7 @@ async function seed() {
       googleSheetId: "B",
     },
     {
-      vendorProductId: 2,
+      vendorProductId: 1,
       label: "Client ID",
       fieldType: "number",
       required: true,
@@ -375,7 +375,7 @@ async function seed() {
       googleSheetId: "C",
     },
     {
-      vendorProductId: 2,
+      vendorProductId: 1,
       label: "Client",
       fieldType: "string",
       required: true,
@@ -384,7 +384,7 @@ async function seed() {
       googleSheetId: "D",
     },
     {
-      vendorProductId: 2,
+      vendorProductId: 1,
       label: "Target Pages",
       fieldType: "string",
       required: false,
@@ -393,7 +393,7 @@ async function seed() {
       googleSheetId: "F",
     },
     {
-      vendorProductId: 2,
+      vendorProductId: 1,
       label: "Target Page Chosen",
       fieldType: "string",
       required: false,
@@ -402,7 +402,7 @@ async function seed() {
       googleSheetId: "G",
     },
     {
-      vendorProductId: 2,
+      vendorProductId: 1,
       label: "P1P Suggested Anchor Text",
       fieldType: "string",
       required: false,

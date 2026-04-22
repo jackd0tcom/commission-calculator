@@ -211,7 +211,7 @@ const vendorProductSeedData = [
 
 const vendorFieldSeedData = [
   {
-    vendorProductId: 2,
+    vendorProductId: 1,
     label: "P1P Team",
     fieldType: "string",
     required: true,
@@ -220,7 +220,7 @@ const vendorFieldSeedData = [
     googleSheetId: "B",
   },
   {
-    vendorProductId: 2,
+    vendorProductId: 1,
     label: "Client ID",
     fieldType: "number",
     required: true,
@@ -229,7 +229,7 @@ const vendorFieldSeedData = [
     googleSheetId: "C",
   },
   {
-    vendorProductId: 2,
+    vendorProductId: 1,
     label: "Client",
     fieldType: "string",
     required: true,
@@ -238,7 +238,7 @@ const vendorFieldSeedData = [
     googleSheetId: "D",
   },
   {
-    vendorProductId: 2,
+    vendorProductId: 1,
     label: "Target Pages",
     fieldType: "string",
     required: false,
@@ -247,7 +247,7 @@ const vendorFieldSeedData = [
     googleSheetId: "F",
   },
   {
-    vendorProductId: 2,
+    vendorProductId: 1,
     label: "Target Page Chosen",
     fieldType: "string",
     required: false,
@@ -256,7 +256,7 @@ const vendorFieldSeedData = [
     googleSheetId: "G",
   },
   {
-    vendorProductId: 2,
+    vendorProductId: 1,
     label: "P1P Suggested Anchor Text",
     fieldType: "string",
     required: false,
@@ -344,7 +344,7 @@ const linkSeedData = [
 ];
 
 async function seed() {
-  await db.sync({ force: true });
+  await db.sync({ alter: true, force: true });
 
   const products = await Product.bulkCreate(productSeedData);
   const vendors = await Vendor.bulkCreate(vendorSeedData);

@@ -125,7 +125,7 @@ h2 {
   padding: 10px;
 }
 .quantity-input,
-.price-input {
+.order-price-input {
   padding: 8px;
 }
 .quantity-input {
@@ -133,12 +133,12 @@ h2 {
   border: 1px solid var(--border);
   border-radius: 5px;
 }
-.price-input {
+.order-price-input {
   max-width: 75px;
   border: 1px solid var(--border);
   border-radius: 5px;
 }
-.price-input-wrapper {
+.order-price-input-wrapper {
   display: flex;
   align-items: center;
   gap: 3px;

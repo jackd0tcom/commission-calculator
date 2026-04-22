@@ -175,6 +175,9 @@ export default {
         res.status(400).send("No order found");
         return;
       }
+      const interiorVendor = await Vendor.findOne({
+        where: { vendorName: "Interior" },
+      });
       const itemPromises = cart.flatMap((product: any, index: number) =>
         Array.from({ length: product.quantity }, (_, i) =>
           OrderItem.create({
@@ -182,6 +185,7 @@ export default {
             orderIndex: Number(`${index}.00${i}`),
             productId: product.productId,
             price: product.price,
+            vendorId: interiorVendor?.vendorId,
           }),
         ),
       );

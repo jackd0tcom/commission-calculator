@@ -156,10 +156,14 @@ const OrderItem = ({
           currentVendor={currentVendor}
           setCurrentVendor={setCurrentVendor}
         />
-        <div className="price-input-wrapper">
+        <OrderStatusPicker
+          currentStatus={status}
+          handleUpdateStatus={handleUpdateStatus}
+        />
+        <div className="order-price-input-wrapper">
           <span>$</span>
           <input
-            className="price-input"
+            className="order-price-input"
             type="number"
             value={`${price}`}
             onChange={(e) => {
@@ -200,10 +204,6 @@ const OrderItem = ({
           }}
           onBlur={() => persistOrderUpdate("anchorText", anchorText)}
         />
-        <OrderStatusPicker
-          currentStatus={status}
-          handleUpdateStatus={handleUpdateStatus}
-        />
         <OrderItemSettings item={item} setOrderItems={setOrderItems} />
       </div>
       {showVendorRows && (
@@ -242,14 +242,14 @@ const OrderItem = ({
         <p className="sheet-item-number">{formatDateNoTime(item.createdAt)}</p>
         <p>{item.productNameSnapshot ?? item.product.productName}</p>
         <p>{currentVendorName}</p>
-        <p>${item.priceSnapshot ?? item.product.defaultPrice}</p>
-        <p>{item.notes}</p>
-        <p>{item.targetUrl}</p>
-        <p>{item.anchorText}</p>
         <OrderStatusPicker
           currentStatus={status}
           handleUpdateStatus={handleUpdateStatus}
         />
+        <p>${item.priceSnapshot ?? item.product.defaultPrice}</p>
+        <p>{item.notes}</p>
+        <p>{item.targetUrl}</p>
+        <p>{item.anchorText}</p>
         <OrderItemSettings item={item} setOrderItems={setOrderItems} />
       </div>
       {showVendorRows && (
