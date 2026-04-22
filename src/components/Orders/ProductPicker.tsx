@@ -145,15 +145,20 @@ const ProductPicker = ({
                     {product.productName}
                   </div>
                 ))
-              : linkList.map((link: any) => (
-                  <div
-                    className="dropdown-item product-picker-item"
-                    key={link.linkId}
-                    onClick={() => updateProduct(link.linkId, "link")}
-                  >
-                    {link.publication ?? "No url provided"}
-                  </div>
-                ))}
+              : linkList.map((link: any) => {
+                  if (!link.publication) {
+                    return;
+                  }
+                  return (
+                    <div
+                      className="dropdown-item product-picker-item"
+                      key={link.linkId}
+                      onClick={() => updateProduct(link.linkId, "link")}
+                    >
+                      {link.publication ?? "No url provided"}
+                    </div>
+                  );
+                })}
           </div>
         </div>
       )}
