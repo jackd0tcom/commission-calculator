@@ -39,6 +39,7 @@ const {
   updateOrderStatus,
   duplicateOrderItem,
   updateOrderItemProduct,
+  newLinkPortalOrder,
 } = orderCtrl;
 const {
   getCommissionSheets,
@@ -132,6 +133,7 @@ app.post(`/api/updateOrderItemProduct`, updateOrderItemProduct);
 app.post(`/api/updateOrderStatus`, updateOrderStatus);
 app.post(`/api/newOrder`, newOrder);
 app.post(`/api/newCalculatorOrder`, newCalculatorOrder);
+app.post(`/api/newLinkPortalOrder`, newLinkPortalOrder);
 app.post("/api/updateOrder", updateOrder);
 app.post(`/api/newOrderItem`, newOrderItem);
 app.post(`/api/deleteOrderItem`, deleteOrderItem);

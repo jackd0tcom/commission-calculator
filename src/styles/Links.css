@@ -217,3 +217,12 @@
   color: white;
   background-color: var(--black);
 }
+.submission-success {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--green);
+  color: white;
+  padding: 6px;
+  border-radius: 3px;
+}

@@ -264,6 +264,9 @@
   color: white;
   font-size: 0.9rem;
 }
+.submitted-badge {
+  background-color: var(--purple);
+}
 .delivered-badge {
   background-color: var(--green);
 }
