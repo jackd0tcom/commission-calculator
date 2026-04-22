@@ -1,18 +1,23 @@
-import { useRef, useEffect, useState } from "react";
-import DetailsForm from "./DetailsForm";
+import { useRef, useEffect } from "react";
+
+interface props {
+  data: any;
+  setShowDetails: any;
+  showDetails: any;
+  isLeadGen: boolean;
+}
 
 export default function DetailsView({
   data,
   setShowDetails,
   showDetails,
   isLeadGen,
-}): JSX.Element {
-  const detailsRef = useRef(null);
-  const [showForm, setShowForm] = useState(false);
+}: props) {
+  const detailsRef = useRef<HTMLInputElement>(null);
 
   // // Handles blur
   useEffect(() => {
-    const handleClickOutside = (event) => {
+    const handleClickOutside = (event: any) => {
       if (detailsRef.current && !detailsRef.current.contains(event.target)) {
         setShowDetails(false);
       }
@@ -31,33 +36,17 @@ export default function DetailsView({
     <div className="calculator-details-overlay">
       <div className="calculator-details-wrapper" ref={detailsRef}>
         <div className="calculator-details-head">
-          <h3>{data.itemName}</h3>
+          <h3>{data.productName}</h3>
           <p>${data.price}</p>
         </div>
         <div className="calculator-content-wrapper">
           <div className="calculator-details-container">
-            {!showForm ? (
-              <>
-                <div
-                  className="calculator-details"
-                  dangerouslySetInnerHTML={{ __html: data.details }}
-                ></div>
-                {isLeadGen && (
-                  <a
-                    style={{ marginTop: "1rem" }}
-                    href="#"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setShowForm(true);
-                    }}
-                  >
-                    Example
-                  </a>
-                )}
-              </>
-            ) : (
-              <DetailsForm data={data} />
-            )}
+            <>
+              <div
+                className="calculator-details"
+                dangerouslySetInnerHTML={{ __html: data.details }}
+              ></div>
+            </>
           </div>
         </div>
       </div>

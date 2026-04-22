@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
-// import DetailsView from "../components/Quote/DetailsView";
-// import QuoteView from "../components/Quote/QuoteView";
-import axios from "axios";
+import DetailsView from "../components/Quote/DetailsView";
+import QuoteView from "../components/Quote/QuoteView";
+import axios, { all } from "axios";
 import QuoteRows from "../components/Quote/QuoteRows";
 import Loaders from "../components/UI/Loader";
 
 export default function QuoteGenerator() {
   const [linkServices, setLinkServices] = useState([{}]);
-  const [AIOServices, setAIOServices] = useState([{}]);
+  const [AIServices, setAIServices] = useState([{}]);
   const [ContentServices, setContentServices] = useState([{}]);
   const [TechnicalServices, setTechnicalServices] = useState([{}]);
   const [monthlyTerm, setMonthlyTerm] = useState(3);
@@ -23,10 +23,10 @@ export default function QuoteGenerator() {
   const fetchProducts = async () => {
     try {
       await axios.get("/api/getAdminProducts").then((res) => {
-        let links = [{}];
-        let aio = [{}];
-        let content = [{}];
-        let technical = [{}];
+        let links: any = [];
+        let aio: any = [];
+        let content: any = [];
+        let technical: any = [];
         res.data.products?.forEach((prod: any) => {
           const newProd = { ...prod, quantity: 0, price: prod.defaultPrice };
           switch (prod.productType) {
@@ -45,7 +45,7 @@ export default function QuoteGenerator() {
           }
         });
         setLinkServices(links);
-        setAIOServices(aio);
+        setAIServices(aio);
         setContentServices(content);
         setTechnicalServices(technical);
         setIsLoading(false);
@@ -59,7 +59,27 @@ export default function QuoteGenerator() {
     fetchProducts();
   }, []);
 
-  //   const cart = allRows.filter((row) => row.quantity > 0);
+  const allRows = [
+    ...linkServices,
+    ...AIServices,
+    ...ContentServices,
+    ...TechnicalServices,
+  ];
+
+  const grandTotal: number = allRows.reduce(
+    (acc: number, row: any) => acc + row.price * row.quantity,
+    0,
+  );
+
+  const estimatedLinks: number = allRows.reduce(
+    (acc: number, row: any) => acc + row.quantity * row.linkEstimate,
+    0,
+  );
+
+  const costPerLink: number =
+    estimatedLinks > 0 ? grandTotal / estimatedLinks : 0;
+
+  const cart = allRows.filter((row: any) => row.quantity > 0);
 
   // Takes in number, returns it in dollar format without cents
   const formatDollar = new Intl.NumberFormat("en-US", {
@@ -103,7 +123,7 @@ export default function QuoteGenerator() {
       });
     } else if (type === "ai search optimization") {
       if (increment) {
-        setAIOServices((prevRows) =>
+        setAIServices((prevRows) =>
           prevRows.map((row: any, i) =>
             i === index
               ? { ...row, quantity: Math.max(0, row.quantity + value) }
@@ -112,7 +132,7 @@ export default function QuoteGenerator() {
         );
         return;
       }
-      setAIOServices((prevRows) => {
+      setAIServices((prevRows) => {
         const newRows: any = [...prevRows];
         newRows[index].quantity = value;
         return newRows;
@@ -161,7 +181,7 @@ export default function QuoteGenerator() {
         return newRows;
       });
     } else if (type === "ai search optimization") {
-      setAIOServices((prevRows) => {
+      setAIServices((prevRows) => {
         const newRows: any = [...prevRows];
         newRows[index].price = value;
         return newRows;
@@ -232,7 +252,7 @@ export default function QuoteGenerator() {
                 updateQuantity={updateQuantity}
               />
               <QuoteRows
-                serviceList={AIOServices}
+                serviceList={AIServices}
                 setDetails={setDetails}
                 setShowDetails={setShowDetails}
                 updatePrice={updatePrice}
@@ -252,48 +272,53 @@ export default function QuoteGenerator() {
                 updatePrice={updatePrice}
                 updateQuantity={updateQuantity}
               />
-              {/* <div className="quote-generator-sidebar">
-          <div className="quote-generator-foot">
-            <div className="foot-row">
-              <p>Total</p>
-              <p>{formatDollar.format(grandTotal)}</p>
-            </div>
-            <div className="foot-row">
-              <p>Estimated Links</p>
-              <p>{estimatedLinks}</p>
-            </div>
-            <div className="foot-row">
-              <p>Cost Per Link</p>
-              <p>{!costPerLink ? "$0" : formatDollar.format(costPerLink)}</p>
-            </div>
-            <div className="foot-row">
-              <p className="monthly-term">Monthly Term</p>
-              <input
-                className="calculator-input monthly-input"
-                type="number"
-                name="monthly-term"
-                value={monthlyTerm}
-                // onChange={(e) =>
-                //   updateQuantity("month", 0, Number(e.target.value))
-                // }
-              />
-            </div>
-            <div className="foot-row">
-              <p className="monthly">Monthly Cost</p>
-              <p className="monthly">
-                {formatDollar.format(grandTotal / monthlyTerm)}
-              </p>
-            </div>
-          </div>
-          {/* {showQuoteButton && (
-            <button
-              onClick={() => setShowQuote(true)}
-              className="quote-generator-submit"
-            >
-              Submit My Quote
-            </button>
-          )} 
-        </div>*/}
+              <div className="quote-generator-sidebar">
+                <div className="quote-generator-foot">
+                  <div className="foot-row">
+                    <p>Total</p>
+                    <p>{formatDollar.format(grandTotal)}</p>
+                  </div>
+                  <div className="foot-row">
+                    <p>Estimated Links</p>
+                    <p>{estimatedLinks}</p>
+                  </div>
+                  <div className="foot-row">
+                    <p>Cost Per Link</p>
+                    <p>
+                      {!costPerLink ? "$0" : formatDollar.format(costPerLink)}
+                    </p>
+                  </div>
+                  <div className="foot-row">
+                    <p className="monthly-term">Monthly Term</p>
+                    <input
+                      className="calculator-input monthly-input"
+                      type="number"
+                      name="monthly-term"
+                      value={monthlyTerm}
+                      onChange={(e) =>
+                        updateQuantity(
+                          "month",
+                          0,
+                          Number(e.target.value),
+                          false,
+                        )
+                      }
+                    />
+                  </div>
+                  <div className="foot-row">
+                    <p className="monthly">Monthly Cost</p>
+                    <p className="monthly">
+                      {formatDollar.format(grandTotal / monthlyTerm)}
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setShowQuote(true)}
+                  className="quote-generator-submit"
+                >
+                  Submit My Quote
+                </button>
+              </div>
             </>
           )}
         </div>
