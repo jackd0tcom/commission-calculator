@@ -16,6 +16,7 @@
   --black: #222222;
   --border: rgb(225, 225, 225);
   --grey: #777777;
+  --dark-grey: #5e5e5e;
   --green: #008a5d;
   --dark-green: #006745;
   --teal: #00bdae;
@@ -209,4 +210,28 @@ p {
 .login-subtext {
   font-size: 0.9rem;
   color: var(--grey);
+}
+.context-menu {
+  position: absolute;
+  padding-inline-start: 0;
+  border-radius: 10px;
+}
+.context-menu-item {
+  list-style-type: none;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.context-menu-item:hover {
+  background-color: var(--dark-grey);
+  font-weight: 500;
+  color: white;
+}
+.context-item-icons {
+  height: 12px;
+}
+.context-menu-heading {
+  padding: 10px 15px;
+  border-bottom: 1px solid var(--border);
+  margin: 0;
 }

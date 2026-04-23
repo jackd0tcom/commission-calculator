@@ -781,6 +781,66 @@ export default {
       res.status(500).send("Internal server error");
     }
   },
+  massDuplicateOrderItem: async (req: Request, res: Response) => {
+    try {
+      console.log("massDuplicateOrderItem");
+
+      if (!req.session.user) {
+        res.status(401).send("user not logged in / no session set up");
+        return;
+      }
+
+      const { itemId, quantity } = req.body;
+
+      const item = await OrderItem.findOne({ where: { itemId } });
+
+      if (!item) {
+        res.status(400).send("No item found");
+        return;
+      }
+
+      const itemCopy = item.toJSON();
+
+      delete itemCopy.itemId;
+      delete itemCopy.createdAt;
+      delete itemCopy.updatedAt;
+      itemCopy.itemStatus = "staged";
+      const quantityNumber = Number(quantity);
+
+      if (!quantityNumber || quantityNumber < 1) {
+        res.status(400).send("Quantity must be at least 1");
+        return;
+      }
+
+      const payload: any[] = [];
+
+      for (let index = 1; index <= quantityNumber; index++) {
+        const newItem = await OrderItem.create({
+          ...itemCopy,
+          orderIndex: Number(item.orderIndex + index * 0.01),
+        });
+
+        let newPayload = { ...newItem.toJSON() };
+
+        if (newItem.productId) {
+          const currentProduct = await Product.findOne({
+            where: { productId: newItem.productId },
+          });
+          newPayload = {
+            ...newPayload,
+            product: currentProduct,
+          };
+        }
+
+        payload.push(newPayload);
+      }
+
+      res.status(200).send(payload);
+    } catch (error) {
+      console.error("Error getting sheets:", error);
+      res.status(500).send("Internal server error");
+    }
+  },
   deleteOrder: async (req: Request, res: Response) => {
     try {
       console.log("deleteOrder");
