@@ -1,4 +1,4 @@
-import { formatDollarNoCents } from "../../helpers";
+import { formatDollar } from "../../helpers";
 
 interface props {
   items: any;
@@ -19,8 +19,10 @@ const CommissionSheetFooter = ({ items, products }: props) => {
     const itemPrice =
       item.priceSnapshot ??
       item.defaultPriceSnapshot ??
+      item.link?.defaultPrice ??
       item.price ??
-      product.defaultPrice;
+      product?.defaultPrice ??
+      0;
     return acc + itemPrice * item.deliveries?.length;
   }, 0);
   const cost: number = filteredItems.reduce((acc: number, item: any) => {
@@ -40,8 +42,10 @@ const CommissionSheetFooter = ({ items, products }: props) => {
         item.deliveries?.length *
         (item.priceSnapshot ??
           item.defaultPriceSnapshot ??
+          item.link?.defaultPrice ??
           item.price ??
-          product.defaultPrice);
+          product?.defaultPrice ??
+          0);
       const totalCost =
         item.deliveries?.length *
         (item.costSnapshot ?? product?.cost ?? item.link?.cost);
@@ -59,17 +63,25 @@ const CommissionSheetFooter = ({ items, products }: props) => {
       item.deliveries?.length *
       (item.priceSnapshot ??
         item.defaultPriceSnapshot ??
+        item.link?.defaultPrice ??
         item.price ??
-        product.defaultPrice);
+        product?.defaultPrice ??
+        0);
     const totalCost =
       item.deliveries?.length *
       (item.costSnapshot ?? product?.cost ?? item.link?.cost);
     const rate =
-      item.commissionRateSnapshot ??
-      product?.commissionRate ??
-      item.link?.commissionRate ??
-      0;
+      product?.user_product_commissions?.length > 0
+        ? (item.commissionRateSnapshot ??
+          product.user_product_commissions[0].commissionRate)
+        : !item.link
+          ? (item.commissionRateSnapshot ?? product?.commissionRate)
+          : item.link?.commissionRate;
+
     const contribution = totalPrice - totalCost;
+    if (contribution <= 0) {
+      return acc + 0;
+    }
     return acc + contribution * rate;
   }, 0);
   const bonus: number = filteredItems.reduce((acc: number, item: any) => {
@@ -98,12 +110,12 @@ const CommissionSheetFooter = ({ items, products }: props) => {
       <div className="sheet-item">
         <p></p>
         <p></p>
-        <p>{formatDollarNoCents(price)}</p>
-        <p>{formatDollarNoCents(cost)}</p>
-        <p>{formatDollarNoCents(contribution)}</p>
-        <p>{formatDollarNoCents(commission)}</p>
-        <p>{formatDollarNoCents(bonus)}</p>
-        <p>{formatDollarNoCents(grandTotal)}</p>
+        <p>{formatDollar(price)}</p>
+        <p>{formatDollar(cost)}</p>
+        <p>{formatDollar(contribution)}</p>
+        <p>{formatDollar(commission)}</p>
+        <p>{formatDollar(bonus)}</p>
+        <p>{formatDollar(grandTotal)}</p>
       </div>
     </div>
   );
