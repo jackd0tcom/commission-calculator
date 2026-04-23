@@ -360,13 +360,27 @@ const linkSeedData = [
 async function seed() {
   await db.sync({ force: true });
 
-  const products = await Product.bulkCreate(productSeedData);
-  const vendors = await Vendor.bulkCreate(vendorSeedData);
-  await VendorProduct.bulkCreate(vendorProductSeedData);
-  await VendorField.bulkCreate(vendorFieldSeedData);
-  await User.bulkCreate(userSeedData);
-  const clients = await Client.bulkCreate(clientSeedData);
-  await Link.bulkCreate(linkSeedData);
+  const products = await Product.bulkCreate(productSeedData, {
+    ignoreDuplicates: true,
+  });
+  const vendors = await Vendor.bulkCreate(vendorSeedData, {
+    ignoreDuplicates: true,
+  });
+  await VendorProduct.bulkCreate(vendorProductSeedData, {
+    ignoreDuplicates: true,
+  });
+  await VendorField.bulkCreate(vendorFieldSeedData, {
+    ignoreDuplicates: true,
+  });
+  await User.bulkCreate(userSeedData, {
+    ignoreDuplicates: true,
+  });
+  const clients = await Client.bulkCreate(clientSeedData, {
+    ignoreDuplicates: true,
+  });
+  await Link.bulkCreate(linkSeedData, {
+    ignoreDuplicates: true,
+  });
 
   console.log(
     `Prod seed done: ${products.length} product(s), ${userSeedData.length} user(s), ${clients.length} client(s), ${vendors.length} vendor(s), ${linkSeedData.length} link(s)`,
