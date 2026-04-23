@@ -75,8 +75,11 @@
   display: grid;
   grid-template-columns:
     minmax(40px, 0.2fr)
-    minmax(50px, 0.5fr) minmax(200px, 1fr) minmax(100px, 1fr)
-    minmax(100px, 1fr) minmax(100px, 1fr) minmax(250px, 2fr) minmax(250px, 2fr)
+    minmax(50px, 0.3fr) minmax(200px, 1fr) minmax(100px, 0.65fr)
+    minmax(75px, 0.75fr) minmax(100px, 0.5fr) minmax(250px, 2fr) minmax(
+      250px,
+      2fr
+    )
     minmax(250px, 2fr) minmax(50px, 0.5fr);
   align-items: center;
   min-width: max-content;
@@ -137,7 +140,7 @@
   position: relative;
 }
 .order-item-settings-dropdown {
-  right: 0;
+  right: 50%;
 }
 .order-item-settings-item {
   display: flex;
