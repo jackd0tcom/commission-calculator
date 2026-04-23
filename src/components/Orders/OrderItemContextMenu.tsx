@@ -4,6 +4,7 @@ import {
   FaTrashCan,
   FaBarcode,
   FaMagnifyingGlass,
+  FaHandPointer,
 } from "react-icons/fa6";
 import { useNavigate } from "react-router";
 import axios from "axios";
@@ -13,9 +14,16 @@ interface props {
   xPos: any;
   item: any;
   setOrderItems: any;
+  setBulkSelects: any;
 }
 
-const OrderItemContextMenu = ({ yPos, xPos, item, setOrderItems }: props) => {
+const OrderItemContextMenu = ({
+  yPos,
+  xPos,
+  item,
+  setOrderItems,
+  setBulkSelects,
+}: props) => {
   const [showMass, setShowMass] = useState(false);
   const [duplications, setDuplications] = useState(0);
   const navigate = useNavigate();
@@ -72,6 +80,10 @@ const OrderItemContextMenu = ({ yPos, xPos, item, setOrderItems }: props) => {
     }
   };
 
+  const handleSelect = () => {
+    setBulkSelects((prev: any) => [...prev, item]);
+  };
+
   return (
     <ul
       className="context-menu dropdown"
@@ -99,32 +111,44 @@ const OrderItemContextMenu = ({ yPos, xPos, item, setOrderItems }: props) => {
         </div>
       ) : (
         <>
-          <li
-            className="context-menu-item dropdown-item"
-            onClick={() => handleDuplicateItem()}
-          >
-            {" "}
-            <FaClone className="context-item-icons" />
-            Duplicate
-          </li>
-          <li
-            className="context-menu-item dropdown-item"
-            onClick={(e: any) => {
-              e.stopPropagation();
-              setShowMass(true);
-            }}
-          >
-            {" "}
-            <FaBarcode className="context-item-icons" />
-            Mass Duplicate
-          </li>
-          <li
-            className="context-menu-item dropdown-item"
-            onClick={() => handleDeleteItem()}
-          >
-            <FaTrashCan className="context-item-icons" />
-            Delete
-          </li>
+          {item.itemStatus !== "complete" && (
+            <>
+              <li
+                className="context-menu-item dropdown-item"
+                onClick={() => handleSelect()}
+              >
+                {" "}
+                <FaHandPointer className="context-item-icons" />
+                Select
+              </li>
+              <li
+                className="context-menu-item dropdown-item"
+                onClick={() => handleDuplicateItem()}
+              >
+                {" "}
+                <FaClone className="context-item-icons" />
+                Duplicate
+              </li>
+              <li
+                className="context-menu-item dropdown-item"
+                onClick={(e: any) => {
+                  e.stopPropagation();
+                  setShowMass(true);
+                }}
+              >
+                {" "}
+                <FaBarcode className="context-item-icons" />
+                Mass Duplicate
+              </li>
+              <li
+                className="context-menu-item dropdown-item"
+                onClick={() => handleDeleteItem()}
+              >
+                <FaTrashCan className="context-item-icons" />
+                Delete
+              </li>
+            </>
+          )}
           <li
             className="context-menu-item dropdown-item"
             onClick={() => navigate("/products")}

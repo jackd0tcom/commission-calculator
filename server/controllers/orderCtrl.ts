@@ -460,6 +460,189 @@ export default {
       res.status(500).send("Internal server error");
     }
   },
+  bulkUpdateOrderStatus: async (req: Request, res: Response) => {
+    try {
+      console.log("bulkUpdateOrderStatus");
+
+      if (!req.session.user) {
+        res.status(401).send("user not logged in / no session set up");
+        return;
+      }
+
+      const { itemStatus, items } = req.body;
+
+      if (!Array.isArray(items) || items.length === 0) {
+        res.status(400).send("No items provided");
+        return;
+      }
+
+      const order = await Order.findOne({
+        where: { orderId: items[0].orderId },
+      });
+
+      if (!order) {
+        res.status(400).send("No order found");
+        return;
+      }
+
+      const getProductSnapshots = (item: any) => ({
+        productNameSnapshot: item.product?.productName ?? null,
+        priceSnapshot: item.price ?? item.product?.defaultPrice ?? null,
+        defaultPriceSnapshot: item.product?.defaultPrice ?? null,
+        commissionRateSnapshot:
+          item.product?.user_product_commissions?.length > 0
+            ? (item.commissionRateSnapshot ??
+              item.product?.user_product_commissions[0].commissionRate)
+            : (item.commissionRateSnapshot ?? item.product?.commissionRate),
+        spiffSnapshot: item.product?.spiff ?? null,
+        costSnapshot: item.product?.cost,
+      });
+
+      const destroyDelivery = async (itemId: number) => {
+        await Delivery.destroy({
+          where: { itemId },
+        });
+      };
+
+      const getCurrentSheet = async () => {
+        return CommissionSheet.findOne({
+          where: {
+            userId: order?.salesPerson,
+            sheetTitle: formatMonthlySheetTitle(
+              new Date(),
+              process.env.COMMISSION_SHEET_TIMEZONE,
+            ),
+          },
+        });
+      };
+
+      const payloads = await Promise.all(
+        items.map(async (item: any) => {
+          const orderItem = await OrderItem.findOne({
+            where: { itemId: item.itemId },
+          });
+
+          if (!orderItem) {
+            throw new Error(`No order item found for itemId ${item.itemId}`);
+          }
+
+          const isProduct = item.productType === "product";
+
+          switch (itemStatus) {
+            case "ordered": {
+              const updatePatch: Record<string, any> = { itemStatus };
+
+              if (isProduct) {
+                Object.assign(updatePatch, getProductSnapshots(item));
+              }
+
+              await orderItem.update(updatePatch);
+              await destroyDelivery(item.itemId);
+              break;
+            }
+
+            case "complete": {
+              // Keep parity with single-item endpoint behavior
+              if (isProduct && !item.productNameSnapshot) {
+                await orderItem.update(getProductSnapshots(item));
+              }
+
+              const currentSheet = await getCurrentSheet();
+
+              await orderItem.update({
+                sheetId: currentSheet?.sheetId,
+                itemStatus,
+              });
+
+              await Delivery.findOrCreate({
+                where: { itemId: item.itemId },
+                defaults: {
+                  sheetId: currentSheet?.sheetId ?? null,
+                  deliveredQuantity: 1,
+                },
+              });
+
+              break;
+            }
+
+            case "in progress": {
+              await orderItem.update({
+                itemStatus,
+                sheetId: null,
+              });
+              await destroyDelivery(item.itemId);
+              break;
+            }
+
+            default: {
+              await orderItem.update({
+                itemStatus,
+                sheetId: null,
+              });
+              await destroyDelivery(item.itemId);
+              break;
+            }
+          }
+
+          const itemData = orderItem.toJSON();
+
+          if (isProduct) {
+            const product = await Product.findOne({
+              where: { productId: item.product.productId },
+              include: [{ model: UserProductCommission, required: false }],
+            });
+
+            return {
+              ...itemData,
+              product,
+            };
+          }
+
+          const link = await Link.findOne({
+            where: { linkId: item.linkId },
+          });
+
+          return {
+            ...itemData,
+            link,
+          };
+        }),
+      );
+
+      // Recompute parent order status once after all updates
+      const orderItems = await OrderItem.findAll({
+        where: { orderId: order.orderId },
+      });
+
+      const completeCount = orderItems.filter(
+        (oi: any) => oi.itemStatus === "complete",
+      ).length;
+
+      let newOrderStatus: "in progress" | "partial" | "delivered";
+      if (completeCount === 0) {
+        newOrderStatus = "in progress";
+      } else if (completeCount < orderItems.length) {
+        newOrderStatus = "partial";
+      } else {
+        newOrderStatus = "delivered";
+      }
+
+      await order.update({
+        orderStatus: newOrderStatus,
+      });
+
+      res.send(payloads);
+    } catch (error: any) {
+      console.error("Error getting sheets:", error);
+
+      if (error?.message?.includes("No order item found for itemId")) {
+        res.status(400).send(error.message);
+        return;
+      }
+
+      res.status(500).send("Internal server error");
+    }
+  },
   updateOrderStatus: async (req: Request, res: Response) => {
     try {
       console.log("updateOrderStatus");
@@ -470,6 +653,8 @@ export default {
       }
 
       const { item } = req.body;
+      const itemStatus = item.itemStatus;
+      const isProduct = item.productType === "product";
 
       const orderItem = await OrderItem.findOne({
         where: { itemId: item.itemId },
@@ -480,172 +665,140 @@ export default {
         return;
       }
 
-      if (item.itemStatus === "in progress") {
-        await orderItem?.update({
-          itemStatus: item.itemStatus,
-        });
-        await Delivery.destroy({
-          where: {
-            itemId: item.itemId,
-          },
-        });
-      }
-
       const order = await Order.findOne({ where: { orderId: item.orderId } });
 
-      if (item.productType === "product") {
-        if (item.itemStatus === "ordered") {
-          await orderItem?.update({
-            itemStatus: item.itemStatus,
-            productNameSnapshot: item.product?.productName ?? null,
-            priceSnapshot: item.price ?? item.product?.defaultPrice ?? null,
-            defaultPriceSnapshot: item.product?.defaultPrice ?? null,
-            commissionRateSnapshot:
-              item.product?.user_product_commissions?.length > 0
-                ? (item.commissionRateSnapshot ??
-                  item.product?.user_product_commissions[0].commissionRate)
-                : (item.commissionRateSnapshot ?? item.product?.commissionRate),
-            spiffSnapshot: item.product?.spiff ?? null,
-            costSnapshot: item.product?.cost,
-          });
-          await Delivery.destroy({
-            where: {
-              itemId: item.itemId,
-            },
-          });
-        } else if (item.itemStatus === "complete") {
-          if (!item.productNameSnapshot) {
-            await orderItem?.update({
-              productNameSnapshot: item.product?.productName ?? null,
-              priceSnapshot: item.price ?? item.product?.defaultPrice ?? null,
-              defaultPriceSnapshot: item.product?.defaultPrice ?? null,
-              commissionRateSnapshot:
-                item.product?.user_product_commissions?.length > 0
-                  ? (item.commissionRateSnapshot ??
-                    item.product?.user_product_commissions[0].commissionRate)
-                  : (item.commissionRateSnapshot ??
-                    item.product?.commissionRate),
-              spiffSnapshot: item.product?.spiff ?? null,
-              costSnapshot: item.product?.cost,
-            });
+      const getProductSnapshots = () => ({
+        productNameSnapshot: item.product?.productName ?? null,
+        priceSnapshot: item.price ?? item.product?.defaultPrice ?? null,
+        defaultPriceSnapshot: item.product?.defaultPrice ?? null,
+        commissionRateSnapshot:
+          item.product?.user_product_commissions?.length > 0
+            ? (item.commissionRateSnapshot ??
+              item.product?.user_product_commissions[0].commissionRate)
+            : (item.commissionRateSnapshot ?? item.product?.commissionRate),
+        spiffSnapshot: item.product?.spiff ?? null,
+        costSnapshot: item.product?.cost,
+      });
+
+      const destroyDelivery = async () => {
+        await Delivery.destroy({
+          where: { itemId: item.itemId },
+        });
+      };
+
+      const getCurrentSheet = async () => {
+        return CommissionSheet.findOne({
+          where: {
+            userId: order?.salesPerson,
+            sheetTitle: formatMonthlySheetTitle(
+              new Date(),
+              process.env.COMMISSION_SHEET_TIMEZONE,
+            ),
+          },
+        });
+      };
+
+      // 1) Handle item status transition
+      switch (itemStatus) {
+        case "ordered": {
+          const updatePatch: Record<string, any> = {
+            itemStatus,
+          };
+
+          if (isProduct) {
+            Object.assign(updatePatch, getProductSnapshots());
           }
 
-          const currentSheet = await CommissionSheet.findOne({
-            where: {
-              userId: order?.salesPerson,
-              sheetTitle: formatMonthlySheetTitle(
-                new Date(),
-                process.env.COMMISSION_SHEET_TIMEZONE,
-              ),
-            },
-          });
-          await orderItem.update({
-            sheetId: currentSheet?.sheetId,
-            itemStatus: item.itemStatus,
-          });
-          await Delivery.create({
-            itemId: item.itemId,
-            sheetId: currentSheet?.sheetId ?? null,
-            deliveredQuantity: 1,
-          });
-        } else {
-          await orderItem?.update({
-            itemStatus: item.itemStatus,
-            sheetId: null,
-          });
-          await Delivery.destroy({
-            where: {
-              itemId: item.itemId,
-            },
-          });
+          await orderItem.update(updatePatch);
+          await destroyDelivery();
+          break;
         }
-      } else {
-        if (item.itemStatus === "ordered") {
-          await orderItem?.update({
-            itemStatus: item.itemStatus,
-          });
-          await Delivery.destroy({
-            where: {
-              itemId: item.itemId,
-            },
-          });
-        } else if (item.itemStatus === "complete") {
-          const currentSheet = await CommissionSheet.findOne({
-            where: {
-              userId: order?.salesPerson,
-              sheetTitle: formatMonthlySheetTitle(
-                new Date(),
-                process.env.COMMISSION_SHEET_TIMEZONE,
-              ),
-            },
-          });
+
+        case "complete": {
+          // Keep existing behavior: only hydrate missing product snapshots on complete
+          if (isProduct && !item.productNameSnapshot) {
+            await orderItem.update(getProductSnapshots());
+          }
+
+          const currentSheet = await getCurrentSheet();
+
           await orderItem.update({
             sheetId: currentSheet?.sheetId,
-            itemStatus: item.itemStatus,
+            itemStatus,
           });
+
           await Delivery.create({
             itemId: item.itemId,
             sheetId: currentSheet?.sheetId ?? null,
             deliveredQuantity: 1,
           });
-        } else {
-          await orderItem?.update({
-            itemStatus: item.itemStatus,
+
+          break;
+        }
+
+        case "in progress": {
+          await orderItem.update({
+            itemStatus,
             sheetId: null,
           });
-          await Delivery.destroy({
-            where: {
-              itemId: item.itemId,
-            },
+          await destroyDelivery();
+          break;
+        }
+
+        default: {
+          await orderItem.update({
+            itemStatus,
+            sheetId: null,
           });
+          await destroyDelivery();
+          break;
         }
       }
 
-      // updates order status based on orderItems
-
+      // 2) Recompute order status
       const orderItems = await OrderItem.findAll({
         where: { orderId: item.orderId },
       });
 
-      let newOrderStatus;
+      const completeCount = orderItems.filter(
+        (oi: any) => oi.itemStatus === "complete",
+      ).length;
 
-      const undeliveredItems = orderItems.filter(
-        (item: any) => item.itemStatus !== "complete",
-      );
-      if (undeliveredItems.length > 0) {
-        const deliveredItems = orderItems.filter(
-          (item: any) => item.itemStatus === "complete",
-        );
-        if (deliveredItems.length > 0) {
-          newOrderStatus = "partial";
-        } else newOrderStatus = "in progress";
-      } else newOrderStatus = "delivered";
+      let newOrderStatus: "in progress" | "partial" | "delivered";
+      if (completeCount === 0) {
+        newOrderStatus = "in progress";
+      } else if (completeCount < orderItems.length) {
+        newOrderStatus = "partial";
+      } else {
+        newOrderStatus = "delivered";
+      }
 
       await order?.update({
         orderStatus: newOrderStatus,
       });
 
+      // 3) Build response payload
       const itemData = orderItem.toJSON();
-      let payload;
+      let payload: Record<string, any> | null = null;
 
-      // get and send products
-
-      if (item.productType === "product") {
+      if (isProduct) {
         const product = await Product.findOne({
           where: { productId: item.product.productId },
           include: [{ model: UserProductCommission, required: false }],
         });
+
         payload = {
           ...itemData,
-          product: product,
+          product,
         };
       } else {
         const link = await Link.findOne({
           where: { linkId: item.linkId },
         });
+
         payload = {
           ...itemData,
-          link: link,
+          link,
         };
       }
 

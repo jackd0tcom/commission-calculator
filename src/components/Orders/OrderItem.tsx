@@ -15,6 +15,8 @@ interface props {
   index: number;
   setOrderItems: any;
   products: any;
+  bulkSelects: any;
+  setBulkSelects: any;
   linkList: any;
   onQuantityChange: any;
   onPriceChange: any;
@@ -29,6 +31,8 @@ const OrderItem = ({
   setOrderItems,
   products,
   onPriceChange,
+  bulkSelects,
+  setBulkSelects,
   linkList,
   vendorList,
   handleOrderItemUpdate,
@@ -44,13 +48,15 @@ const OrderItem = ({
   const [notes, setNotes] = useState(item.notes ?? "");
   const [targetUrl, setTargetUrl] = useState(item.targetUrl ?? "");
   const [anchorText, setAnchorText] = useState(item.anchorText ?? "");
-  const [status, setStatus] = useState(item.itemStatus ?? "");
+  let status = item.itemStatus ?? "";
   const [price, setPrice] = useState(
     item.priceSnapshot ?? item.price ?? item.product?.defaultPrice ?? 0,
   );
   const [showVendorRows, setShowVendorRows] = useState(false);
   const [vendorPayload, setVendorPayload] = useState(item.vendorPayload ?? {});
   const { xPos, yPos, showMenu, handleContextMenu } = useContextMenu();
+
+  let isSelected = bulkSelects.some((it: any) => it.itemId === item.itemId);
 
   const handleProductChange = async (newProduct: any, productType: string) => {
     const interiorVendor = vendorList.find(
@@ -104,7 +110,6 @@ const OrderItem = ({
       itemStatus: status,
       productType: currentProductType,
     };
-    console.log(newItem);
     try {
       await axios
         .post("/api/updateOrderStatus", {
@@ -112,13 +117,12 @@ const OrderItem = ({
         })
         .then((res) => {
           if (res.status === 200) {
-            console.log(res.data);
             setOrderItems((prev: any) =>
               prev.map((it: any) =>
                 it.itemId === item.itemId ? res.data : it,
               ),
             );
-            setStatus(status);
+            status = status;
           }
         });
     } catch (error) {
@@ -126,11 +130,70 @@ const OrderItem = ({
     }
   };
 
+  const handleBulkSelect = () => {
+    console.log(isSelected);
+    if (!isSelected) {
+      setBulkSelects((prev: any) => [...prev, item]);
+    } else {
+      setBulkSelects((prev: any) =>
+        prev.filter((it: any) => it.itemId !== item.itemId),
+      );
+    }
+  };
+
   const currentVendorName = vendorList.find(
     (vendor: any) => vendor.vendorId === currentVendor,
   )?.vendorName;
 
-  return status === "staged" ? (
+  return bulkSelects.length > 0 ? (
+    <div className="order-items-list-item-wrapper">
+      <div
+        className="order-items-list-item"
+        onMouseEnter={() => setHovering(true)}
+        onMouseLeave={() => setHovering(false)}
+      >
+        <input
+          type="radio"
+          className="bulk-select-radio"
+          checked={isSelected}
+          onClick={() => handleBulkSelect()}
+        />
+        <p className="sheet-item-number">{formatDateNoTime(item.createdAt)}</p>
+        <p>
+          {currentProductType === "product"
+            ? (item.productNameSnapshot ?? item.product?.productName)
+            : (item.link?.publication ?? "")}
+        </p>
+        <p>{currentVendorName}</p>
+        <OrderStatusPicker
+          currentStatus={status}
+          handleUpdateStatus={handleUpdateStatus}
+        />
+        <p>
+          $
+          {item.priceSnapshot ??
+            item.product?.defaultPrice ??
+            item.defaultPrice ??
+            0}
+        </p>
+        <p>{item.notes}</p>
+        <p>{item.targetUrl}</p>
+        <p>{item.anchorText}</p>
+        <OrderItemSettings item={item} setOrderItems={setOrderItems} />
+      </div>
+      {showVendorRows && (
+        <VendorRow
+          item={item}
+          status={status}
+          vendorList={vendorList}
+          currentVendor={currentVendor}
+          currentProduct={currentProduct}
+          vendorPayload={vendorPayload}
+          setVendorPayload={setVendorPayload}
+        />
+      )}
+    </div>
+  ) : status === "staged" ? (
     <div className="order-items-list-item-wrapper">
       <div
         className="order-items-list-item"
@@ -140,10 +203,11 @@ const OrderItem = ({
       >
         {showMenu && (
           <OrderItemContextMenu
+            item={item}
             yPos={yPos}
             xPos={xPos}
-            item={item}
             setOrderItems={setOrderItems}
+            setBulkSelects={setBulkSelects}
           />
         )}
         {!hovering ? (
@@ -244,7 +308,17 @@ const OrderItem = ({
         className="order-items-list-item"
         onMouseEnter={() => setHovering(true)}
         onMouseLeave={() => setHovering(false)}
+        onContextMenu={handleContextMenu}
       >
+        {showMenu && (
+          <OrderItemContextMenu
+            item={item}
+            yPos={yPos}
+            xPos={xPos}
+            setOrderItems={setOrderItems}
+            setBulkSelects={setBulkSelects}
+          />
+        )}
         {!hovering ? (
           <p className="sheet-item-number">{index + 1}</p>
         ) : currentVendorName && currentVendorName !== "Interior" ? (
