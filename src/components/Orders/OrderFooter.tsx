@@ -12,7 +12,7 @@ const OrderFooter = ({ items }: props) => {
     return acc + Number(price);
   }, 0);
   const totalDeliveries = filteredItems.filter((item: any) => {
-    item.itemStatus === "complete";
+    return item.itemStatus === "complete";
   });
 
   return (
