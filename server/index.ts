@@ -37,6 +37,7 @@ const {
   deleteOrder,
   getSheetOrderItems,
   updateOrderStatus,
+  bulkUpdateOrderStatus,
   duplicateOrderItem,
   updateOrderItemProduct,
   newLinkPortalOrder,
@@ -132,6 +133,7 @@ app.get(`/api/getOrder/:orderId`, getOrder);
 app.post(`/api/updateOrderItem`, updateOrderItem);
 app.post(`/api/updateOrderItemProduct`, updateOrderItemProduct);
 app.post(`/api/updateOrderStatus`, updateOrderStatus);
+app.post(`/api/bulkUpdateOrderStatus`, bulkUpdateOrderStatus);
 app.post(`/api/newOrder`, newOrder);
 app.post(`/api/newCalculatorOrder`, newCalculatorOrder);
 app.post(`/api/newLinkPortalOrder`, newLinkPortalOrder);

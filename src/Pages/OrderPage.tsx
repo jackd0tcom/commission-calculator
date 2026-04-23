@@ -11,6 +11,7 @@ import Loader from "../components/UI/Loader";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import UserSelector from "../components/UI/UserSelector";
 import { capitalize } from "../helpers";
+import BulkStatusPicker from "../components/Orders/BulkStatusPicker";
 
 const OrderPage = () => {
   const { orderId, calculatorOrder } = useParams();
@@ -31,6 +32,7 @@ const OrderPage = () => {
   const [showSettings, setShowSettings] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [notFound, setNotFound] = useState(false);
+  const [bulkSelects, setBulkSelects] = useState([]);
   const [currentUserId, setCurrentUserId] = useState(1);
   const [users, setUsers] = useState([{}]);
   const [orderStatus, setOrderStatus] = useState("");
@@ -336,24 +338,37 @@ const OrderPage = () => {
           </div>
           <div className="order-page-body">
             <div className="order-items-list">
-              <div className="order-items-list-item order-items-list-head">
-                <p>ID</p>
-                <p>Date</p>
-                <p className="picker-heading">Product</p>
-                <p className="picker-heading">Vendor</p>
-                <p>Status</p>
-                <p>Price</p>
-                <p className="input-heading">Notes / Restrictions</p>
-                <p className="input-heading">Target URL</p>
-                <p className="input-heading">Anchor Text</p>
-                {/* <p>Linking From</p> */}
-              </div>
+              {bulkSelects.length <= 0 ? (
+                <div className="order-items-list-item order-items-list-head">
+                  <p>ID</p>
+                  <p>Date</p>
+                  <p className="picker-heading">Product</p>
+                  <p className="picker-heading">Vendor</p>
+                  <p>Status</p>
+                  <p>Price</p>
+                  <p className="input-heading">Notes / Restrictions</p>
+                  <p className="input-heading">Target URL</p>
+                  <p className="input-heading">Anchor Text</p>
+                  {/* <p>Linking From</p> */}
+                </div>
+              ) : (
+                <div className="bulk-select-header">
+                  <button onClick={() => setBulkSelects([])}>Cancel</button>
+                  <BulkStatusPicker
+                    bulkSelects={bulkSelects}
+                    setBulkSelects={setBulkSelects}
+                    setOrderItems={setOrderItems}
+                  />
+                </div>
+              )}
               <div className="order-items-list-wrapper">
                 {orderItems?.length > 0 &&
                   orderItems?.map(
                     (item: any, index) =>
                       item.itemId && (
                         <OrderItem
+                          bulkSelects={bulkSelects}
+                          setBulkSelects={setBulkSelects}
                           key={`order-item-${item.itemId}`}
                           item={item}
                           index={index}
