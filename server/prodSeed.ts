@@ -358,7 +358,7 @@ const linkSeedData = [
 ];
 
 async function seed() {
-  await db.sync({ alter: true });
+  await db.sync({ force: true });
 
   const products = await Product.bulkCreate(productSeedData);
   const vendors = await Vendor.bulkCreate(vendorSeedData);
