@@ -5,16 +5,15 @@ interface props {
   client: any;
   isEditing: any;
   setIsEditing: any;
+  setIsDeleting: any;
 }
 
 const ClientItemSettings = ({
-  handleDeleteClient,
-  client,
+  setIsDeleting,
   isEditing,
   setIsEditing,
 }: props) => {
   const [showDropdown, setShowDropdown] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
   const dropdownRef = useRef<HTMLInputElement>(null);
 
   //   Handles blur
@@ -40,28 +39,7 @@ const ClientItemSettings = ({
     };
   }, [showDropdown]);
 
-  return isDeleting ? (
-    <div className="product-delete-modal">
-      <p>Are you sure you want to delete {client.clientName}?</p>
-      <div>
-        <button
-          className="delete-product"
-          onClick={() => {
-            handleDeleteClient(client.clientId);
-            setIsDeleting(false);
-          }}
-        >
-          Delete
-        </button>
-        <button
-          className="cancel-delete-product"
-          onClick={() => setIsDeleting(false)}
-        >
-          Cancel
-        </button>
-      </div>
-    </div>
-  ) : isEditing ? (
+  return isEditing ? (
     <button
       className="save-button"
       onClick={() => {
