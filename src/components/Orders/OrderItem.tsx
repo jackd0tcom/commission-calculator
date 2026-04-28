@@ -6,7 +6,7 @@ import { formatDateNoTime } from "../../helpers";
 import VendorPicker from "./VendorPicker";
 import VendorRow from "./VendorRow";
 import OrderItemSettings from "./OrderItemSettings";
-import { FaAngleUp } from "react-icons/fa6";
+import { FaAngleUp, FaCheck } from "react-icons/fa6";
 import { useContextMenu } from "../../hooks/UseContextMenu";
 import OrderItemContextMenu from "./OrderItemContextMenu";
 
@@ -131,7 +131,6 @@ const OrderItem = ({
   };
 
   const handleBulkSelect = () => {
-    console.log(isSelected);
     if (!isSelected) {
       setBulkSelects((prev: any) => [...prev, item]);
     } else {
@@ -152,12 +151,16 @@ const OrderItem = ({
         onMouseEnter={() => setHovering(true)}
         onMouseLeave={() => setHovering(false)}
       >
-        <input
-          type="radio"
-          className="bulk-select-radio"
-          checked={isSelected}
+        <div
           onClick={() => handleBulkSelect()}
-        />
+          className={
+            !isSelected
+              ? "bulk-select-radio"
+              : "bulk-select-radio selected-bulk"
+          }
+        >
+          {isSelected && <FaCheck className="bulk-select-radio-check" />}
+        </div>
         <p className="sheet-item-number">{formatDateNoTime(item.createdAt)}</p>
         <p>
           {currentProductType === "product"

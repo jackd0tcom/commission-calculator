@@ -387,3 +387,97 @@
   border: 1px solid var(--border);
   border-radius: 5px;
 }
+/* Bulk select */
+.bulk-select-header-wrapper {
+  padding: 6px 12px;
+  background-color: white;
+  border-bottom: 1px solid var(--border);
+}
+.bulk-select-header {
+  display: flex;
+  gap: 10px;
+  max-width: 500px;
+  justify-content: start;
+}
+.bulk-delete-buttons-wrapper {
+  flex: 2;
+  display: flex;
+  gap: 20px;
+}
+.bulk-delete-button-wrapper {
+  flex: 1;
+  display: flex;
+}
+.bulk-delete-button {
+  padding: 2px 8px;
+  display: flex;
+  align-items: center;
+  color: var(---grey);
+}
+.bulk-delete-button:hover {
+  background-color: var(--red);
+  border-color: var(--red);
+  color: white;
+}
+.bulk-delete {
+  background-color: var(--red);
+  color: white;
+  border: none;
+}
+.bulk-delete:hover {
+  background-color: var(--dark-red);
+}
+.bulk-status-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+  color: #525252;
+  flex: 1;
+}
+.bulk-selector-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+  color: var(---grey);
+  flex: 1;
+}
+.bulk-toggle {
+  cursor: pointer;
+  width: 10px;
+  height: 10px;
+  border: 2px solid var(--grey);
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 150ms;
+  padding: 2px;
+}
+.bulk-toggle:hover {
+  background-color: var(--dark-hover);
+}
+.bulk-check {
+  stroke: var(---grey);
+  fill: var(---grey);
+}
+.bulk-select-radio {
+  cursor: pointer;
+  width: 10px;
+  height: 10px;
+  border: 2px solid var(--grey);
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  padding: 2px;
+  justify-content: center;
+  transition: 150ms;
+}
+.bulk-select-radio:hover {
+  background-color: var(--dark-hover);
+}
+.bulk-select-radio-check {
+  stroke: var(---grey);
+  fill: var(---grey);
+}

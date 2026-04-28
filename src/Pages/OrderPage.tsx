@@ -8,10 +8,11 @@ import ClientPicker from "../components/Orders/ClientPicker";
 import OrderItem from "../components/Orders/OrderItem";
 import OrderFooter from "../components/Orders/OrderFooter";
 import Loader from "../components/UI/Loader";
-import { FaMagnifyingGlass } from "react-icons/fa6";
+import { FaMagnifyingGlass, FaTrash, FaTrashCan } from "react-icons/fa6";
 import UserSelector from "../components/UI/UserSelector";
 import { capitalize } from "../helpers";
 import BulkStatusPicker from "../components/Orders/BulkStatusPicker";
+import BulkSelector from "../components/Orders/BulkSelector";
 
 const OrderPage = () => {
   const { orderId, calculatorOrder } = useParams();
@@ -362,6 +363,11 @@ const OrderPage = () => {
             <div className="order-items-list">
               {bulkSelects.length <= 0 ? (
                 <div className="order-items-list-item order-items-list-head">
+                  <BulkSelector
+                    bulkSelects={bulkSelects}
+                    setBulkSelects={setBulkSelects}
+                    orderItems={orderItems}
+                  />
                   <p>ID</p>
                   <p>Date</p>
                   <p className="picker-heading">Product</p>
@@ -374,36 +380,50 @@ const OrderPage = () => {
                   {/* <p>Linking From</p> */}
                 </div>
               ) : (
-                <div className="bulk-select-header">
-                  <button
-                    onClick={() => {
-                      if (bulkDeleting) {
-                        setBulkDeleting(false);
-                      } else setBulkSelects([]);
-                    }}
-                  >
-                    Cancel
-                  </button>
-                  {bulkDeleting ? (
-                    <button
-                      onClick={() => handleBulkDelete()}
-                      className="bulk-delete-button"
-                    >
-                      Delete {bulkSelects.length}{" "}
-                      {bulkSelects.length > 1 ? "Items" : "Item"}
-                    </button>
-                  ) : (
-                    <>
-                      <BulkStatusPicker
-                        bulkSelects={bulkSelects}
-                        setBulkSelects={setBulkSelects}
-                        setOrderItems={setOrderItems}
-                      />
-                      <button onClick={() => setBulkDeleting(true)}>
-                        Delete
-                      </button>
-                    </>
-                  )}
+                <div className="bulk-select-header-wrapper">
+                  <div className="bulk-select-header">
+                    <BulkSelector
+                      bulkSelects={bulkSelects}
+                      setBulkSelects={setBulkSelects}
+                      orderItems={orderItems}
+                    />
+                    {bulkDeleting ? (
+                      <div className="bulk-delete-buttons-wrapper">
+                        <button
+                          onClick={() => setBulkDeleting(false)}
+                          className="cancel-bulk-delete"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          onClick={() => handleBulkDelete()}
+                          className="bulk-delete"
+                        >
+                          Delete {bulkSelects.length}{" "}
+                          {bulkSelects.length > 1 ? "Items" : "Item"}
+                        </button>
+                      </div>
+                    ) : (
+                      <>
+                        <div className="bulk-status-wrapper">
+                          Status:
+                          <BulkStatusPicker
+                            bulkSelects={bulkSelects}
+                            setBulkSelects={setBulkSelects}
+                            setOrderItems={setOrderItems}
+                          />
+                        </div>
+                        <div className="bulk-delete-button-wrapper">
+                          <button
+                            className="bulk-delete-button"
+                            onClick={() => setBulkDeleting(true)}
+                          >
+                            <FaTrashCan />
+                          </button>
+                        </div>
+                      </>
+                    )}
+                  </div>
                 </div>
               )}
               <div className="order-items-list-wrapper">
