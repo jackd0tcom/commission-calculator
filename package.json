@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "tsx watch server/index.ts",
     "build": "tsc -b && vite build",
-    "start": "tsx server/prodSeed.ts && tsx server/index.ts",
+    "start": "tsx server/index.ts",
+    "startCopy": "tsx server/prodSeed.ts && tsx server/index.ts",
     "seed:prod": "tsx server/prodSeed.ts",
     "lint": "eslint .",
     "initdb": "dropdb --if-exists commissions-db && createdb commissions-db && npx tsx server/seed.ts",
