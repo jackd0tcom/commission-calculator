@@ -886,6 +886,35 @@ export default {
       res.status(500).send("Internal server error");
     }
   },
+  bulkDeleteOrderItem: async (req: Request, res: Response) => {
+    try {
+      console.log("bulkDeleteOrderItem");
+
+      if (!req.session.user) {
+        res.status(401).send("user not logged in / no session set up");
+        return;
+      }
+
+      const { items } = req.body;
+
+      const deletedItems = items?.map(async (item: any) => {
+        const foundItem = await OrderItem.findOne({
+          where: { itemId: item.itemId },
+        });
+
+        if (!foundItem) {
+          return item;
+        }
+
+        await foundItem.destroy();
+      });
+
+      res.status(200).send(deletedItems);
+    } catch (error) {
+      console.error("Error getting sheets:", error);
+      res.status(500).send("Internal server error");
+    }
+  },
   duplicateOrderItem: async (req: Request, res: Response) => {
     try {
       console.log("duplicateOrderItem");
