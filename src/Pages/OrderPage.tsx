@@ -8,7 +8,7 @@ import ClientPicker from "../components/Orders/ClientPicker";
 import OrderItem from "../components/Orders/OrderItem";
 import OrderFooter from "../components/Orders/OrderFooter";
 import Loader from "../components/UI/Loader";
-import { FaMagnifyingGlass, FaTrash, FaTrashCan } from "react-icons/fa6";
+import { FaMagnifyingGlass, FaTrashCan } from "react-icons/fa6";
 import UserSelector from "../components/UI/UserSelector";
 import { capitalize } from "../helpers";
 import BulkStatusPicker from "../components/Orders/BulkStatusPicker";
