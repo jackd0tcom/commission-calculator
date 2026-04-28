@@ -21,10 +21,11 @@ const ClientItem = ({
   handleSelectClient,
   currentClient,
 }: props) => {
-  const [name, setName] = useState(client?.clientName ? client.clientName : "");
+  const [name, setName] = useState(client?.clientName ?? "");
   const nameRef = useRef<HTMLDivElement>(null);
   const [isEditing, setIsEditing] = useState(client.newClient ? true : false);
   const [currentUserId, setCurrentUserId] = useState(client?.userId ?? null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const updateClient = async (fieldName: string, value: any) => {
     try {
@@ -49,7 +50,28 @@ const ClientItem = ({
     setCurrentUserId(userId);
   };
 
-  return (
+  return isDeleting ? (
+    <div className="client-delete-modal">
+      <p>Are you sure you want to delete {client.clientName}?</p>
+      <div className="delete-client-buttons">
+        <button
+          className="delete-client"
+          onClick={() => {
+            handleDeleteClient(client.clientId);
+            setIsDeleting(false);
+          }}
+        >
+          Delete
+        </button>
+        <button
+          className="cancel-delete-client"
+          onClick={() => setIsDeleting(false)}
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  ) : (
     <div
       className={
         currentClient === client.clientId
@@ -95,6 +117,7 @@ const ClientItem = ({
         handleDeleteClient={handleDeleteClient}
         isEditing={isEditing}
         setIsEditing={setIsEditing}
+        setIsDeleting={setIsDeleting}
       />
     </div>
   );

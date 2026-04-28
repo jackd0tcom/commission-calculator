@@ -63,7 +63,7 @@ const Clients = () => {
             prev.filter(
               (p) =>
                 Number((p as { clientId?: number }).clientId) !==
-                Number(clientId),
+                Number(res.data.clientId),
             ),
           );
         }
@@ -81,7 +81,7 @@ const Clients = () => {
       <div className="clients-page-container">
         <div className="clients-list-wrapper">
           <div className="clients-list-item clients-list-head">
-            <p>User</p>
+            <p>Sales</p>
             <p>Name</p>
             <p>Date Created</p>
             <p>Orders</p>
@@ -91,8 +91,9 @@ const Clients = () => {
             <>Loading...</>
           ) : (
             <div className="clients-list-container">
-              {clientList?.map((client, index) => (
+              {clientList?.map((client: any, index: number) => (
                 <ClientItem
+                  key={`client-item-${client.clientId}`}
                   users={users}
                   client={client}
                   index={index}
