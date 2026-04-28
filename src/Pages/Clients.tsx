@@ -101,10 +101,7 @@ const Clients = () => {
                   currentClient={currentClient}
                 />
               ))}
-              <div
-                onClick={() => handleAddClient()}
-                className="clients-list-item new-client-row"
-              >
+              <div onClick={() => handleAddClient()} className="new-client-row">
                 <p>+</p>
                 <p>Add Client</p>
               </div>
