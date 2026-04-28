@@ -39,6 +39,7 @@ const {
   updateOrderStatus,
   bulkUpdateOrderStatus,
   duplicateOrderItem,
+  updateCalculatorOrder,
   updateOrderItemProduct,
   newLinkPortalOrder,
   massDuplicateOrderItem,
@@ -139,6 +140,7 @@ app.post(`/api/newOrder`, newOrder);
 app.post(`/api/newCalculatorOrder`, newCalculatorOrder);
 app.post(`/api/newLinkPortalOrder`, newLinkPortalOrder);
 app.post("/api/updateOrder", updateOrder);
+app.post("/api/updateCalculatorOrder", updateCalculatorOrder);
 app.post(`/api/newOrderItem`, newOrderItem);
 app.post(`/api/deleteOrderItem`, deleteOrderItem);
 app.post(`/api/bulkDeleteOrderItem`, bulkDeleteOrderItem);

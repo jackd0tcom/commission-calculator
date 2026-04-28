@@ -109,7 +109,7 @@ const OrderPage = () => {
 
   useEffect(() => {
     fetchData();
-  }, [orderId]);
+  }, [orderId, isCalculatorOrder]);
 
   //   Handles blur
   useEffect(() => {
@@ -203,6 +203,24 @@ const OrderPage = () => {
       }
   };
 
+  const updateCalculatorOrder = async () => {
+    try {
+      await axios
+        .post("/api/updateCalculatorOrder", {
+          orderId,
+          clientId: currentClient?.clientId,
+          salesPerson: currentClient?.userId,
+        })
+        .then((res) => {
+          if (res.status === 200) {
+            navigate(`/order/${res.data.orderId}/false`);
+          }
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const deleteOrder = async () => {
     try {
       await axios.post("/api/deleteOrder", { orderId }).then((res) => {
@@ -272,9 +290,7 @@ const OrderPage = () => {
           <button
             onClick={() => {
               if (isCalculatorOrder) {
-                updateOrder("clientId", currentClient?.clientId);
-                updateOrder("salesPerson", currentClient?.userId);
-                navigate(`/order/${orderId}/false`);
+                updateCalculatorOrder();
               } else updateOrder("clientId", newClient.clientId);
             }}
             className="create-sheet-button"
