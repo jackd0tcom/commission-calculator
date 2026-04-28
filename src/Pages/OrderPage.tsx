@@ -32,6 +32,7 @@ const OrderPage = () => {
   const [showSettings, setShowSettings] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [notFound, setNotFound] = useState(false);
+  const [bulkDeleting, setBulkDeleting] = useState(false);
   const [bulkSelects, setBulkSelects] = useState([]);
   const [currentUserId, setCurrentUserId] = useState(1);
   const [users, setUsers] = useState([{}]);
@@ -222,6 +223,27 @@ const OrderPage = () => {
     }
   };
 
+  const handleBulkDelete = async () => {
+    try {
+      await axios
+        .post("/api/bulkDeleteOrderItem", { items: bulkSelects })
+        .then(() => {
+          const itemsCopy = [...orderItems];
+          const filteredItems = itemsCopy.filter((item: any) =>
+            bulkSelects.some(
+              (bulkItem: any) => bulkItem.itemId !== item.itemId,
+            ),
+          );
+          console.log(filteredItems);
+          setOrderItems(filteredItems);
+          setBulkDeleting(false);
+          setBulkSelects([]);
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return isLoading ? (
     <Loader />
   ) : unauthorized ? (
@@ -353,12 +375,35 @@ const OrderPage = () => {
                 </div>
               ) : (
                 <div className="bulk-select-header">
-                  <button onClick={() => setBulkSelects([])}>Cancel</button>
-                  <BulkStatusPicker
-                    bulkSelects={bulkSelects}
-                    setBulkSelects={setBulkSelects}
-                    setOrderItems={setOrderItems}
-                  />
+                  <button
+                    onClick={() => {
+                      if (bulkDeleting) {
+                        setBulkDeleting(false);
+                      } else setBulkSelects([]);
+                    }}
+                  >
+                    Cancel
+                  </button>
+                  {bulkDeleting ? (
+                    <button
+                      onClick={() => handleBulkDelete()}
+                      className="bulk-delete-button"
+                    >
+                      Delete {bulkSelects.length}{" "}
+                      {bulkSelects.length > 1 ? "Items" : "Item"}
+                    </button>
+                  ) : (
+                    <>
+                      <BulkStatusPicker
+                        bulkSelects={bulkSelects}
+                        setBulkSelects={setBulkSelects}
+                        setOrderItems={setOrderItems}
+                      />
+                      <button onClick={() => setBulkDeleting(true)}>
+                        Delete
+                      </button>
+                    </>
+                  )}
                 </div>
               )}
               <div className="order-items-list-wrapper">

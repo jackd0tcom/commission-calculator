@@ -145,7 +145,7 @@ const OrderItem = ({
     (vendor: any) => vendor.vendorId === currentVendor,
   )?.vendorName;
 
-  return bulkSelects.length > 0 ? (
+  return bulkSelects.length > 0 && status !== "complete" ? (
     <div className="order-items-list-item-wrapper">
       <div
         className="order-items-list-item"
