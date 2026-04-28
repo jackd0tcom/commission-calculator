@@ -11,7 +11,7 @@ const BulkSelector = ({ bulkSelects, setBulkSelects, orderItems }: props) => {
     if (bulkSelects.length <= 0) {
       const items = [...orderItems];
       const filteredItems: any = items.filter(
-        (item: any) => item.itemStatus !== "complete",
+        (item: any) => item.itemId && item.itemStatus !== "complete",
       );
       setBulkSelects(filteredItems);
     } else setBulkSelects([]);
