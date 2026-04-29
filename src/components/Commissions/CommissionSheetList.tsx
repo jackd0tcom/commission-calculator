@@ -7,7 +7,7 @@ import { formatRelativeTime } from "../../helpers";
 import Loader from "../UI/Loader";
 import { useSelector } from "react-redux";
 import { FaMagnifyingGlass } from "react-icons/fa6";
-import { getCommissionAmount } from "../../helpers";
+import { formatDollar } from "../../helpers";
 
 const CommissionSheetList = () => {
   const [commissionList, setCommissionList] = useState([{}]);
@@ -34,6 +34,20 @@ const CommissionSheetList = () => {
     }
   }, [userId]);
 
+  const getTotal = (deliveries: any) => {
+    return deliveries.reduce((acc: number, delivery: any) => {
+      const item = delivery.order_item;
+      const price = item.priceSnapshot ?? item.defaultPriceSnapshot ?? 0;
+      const cost = item.costSnapshot ?? 0;
+      const contribution = price - cost;
+      const commission =
+        contribution * item.commissionRateSnapshot <= 0
+          ? 0
+          : contribution * item.commissionRateSnapshot;
+      return acc + commission;
+    }, 0);
+  };
+
   return (
     <div className="commission-sheet-list-wrapper">
       {isLoading ? (
@@ -56,7 +70,7 @@ const CommissionSheetList = () => {
                 <ProfilePic src={sheet.user.profilePic} />
                 <p>{sheet.sheetTitle}</p>
                 <StatusBadge status={sheet.sheetStatus} />
-                <p>{getCommissionAmount(sheet)}</p>
+                <p>{formatDollar(getTotal(sheet.deliveries))}</p>
                 <p>{formatRelativeTime(sheet.createdAt)}</p>
               </div>
             ))

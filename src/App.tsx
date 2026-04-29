@@ -71,11 +71,7 @@ function App() {
                 index
                 path="/"
                 element={
-                  !isAuthenticated ? (
-                    <Login />
-                  ) : (
-                    <Navigate to="/commission-sheets" />
-                  )
+                  !isAuthenticated ? <Login /> : <Navigate to="/orders" />
                 }
               ></Route>
               <Route

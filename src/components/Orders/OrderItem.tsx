@@ -50,7 +50,11 @@ const OrderItem = ({
   const [anchorText, setAnchorText] = useState(item.anchorText ?? "");
   let status = item.itemStatus ?? "";
   const [price, setPrice] = useState(
-    item.priceSnapshot ?? item.price ?? item.product?.defaultPrice ?? 0,
+    item.priceSnapshot ??
+      item.price ??
+      item.product?.defaultPrice ??
+      item.link?.defaultPrice ??
+      0,
   );
   const [showVendorRows, setShowVendorRows] = useState(false);
   const [vendorPayload, setVendorPayload] = useState(item.vendorPayload ?? {});
@@ -67,13 +71,22 @@ const OrderItem = ({
     setPrice(newProduct.defaultPrice);
     setShowVendorRows(false);
     setCurrentVendor(interiorVendor.vendorId ?? 1);
-    setOrderItems((prev: any) =>
-      prev.map((it: any) =>
-        it.itemId === item.itemId
-          ? { ...it, product: newProduct, price: newProduct.defaultPrice }
-          : it,
-      ),
-    );
+    if (productType === "product") {
+      setOrderItems((prev: any) =>
+        prev.map((it: any) =>
+          it.itemId === item.itemId
+            ? { ...it, product: newProduct, price: newProduct.defaultPrice }
+            : it,
+        ),
+      );
+    } else
+      setOrderItems((prev: any) =>
+        prev.map((it: any) =>
+          it.itemId === item.itemId
+            ? { ...it, link: newProduct, price: newProduct.defaultPrice }
+            : it,
+        ),
+      );
   };
 
   const persistOrderUpdate = async (fieldName: string, value: any) => {
@@ -172,13 +185,7 @@ const OrderItem = ({
           currentStatus={status}
           handleUpdateStatus={handleUpdateStatus}
         />
-        <p>
-          $
-          {item.priceSnapshot ??
-            item.product?.defaultPrice ??
-            item.defaultPrice ??
-            0}
-        </p>
+        <p>${price}</p>
         <p>{item.notes}</p>
         <p>{item.targetUrl}</p>
         <p>{item.anchorText}</p>

@@ -109,6 +109,15 @@ p {
 .draft {
   background-color: var(--border);
 }
+.draft-badge {
+  background-color: var(--grey);
+}
+.approved-badge {
+  background-color: var(--green);
+}
+.approve-button {
+  background-color: var(--teal);
+}
 .in,
 .approved {
   background-color: var(--teal);

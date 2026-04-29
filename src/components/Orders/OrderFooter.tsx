@@ -5,10 +5,14 @@ interface props {
 }
 
 const OrderFooter = ({ items }: props) => {
-  const filteredItems = items.filter((item: any) => item.product);
+  const filteredItems = items.filter((item: any) => item.product || item.link);
   const grandTotal: number = filteredItems.reduce((acc: number, item: any) => {
     const price =
-      item.priceSnapshot ?? item.price ?? item.product.defaultPrice ?? 0;
+      item.priceSnapshot ??
+      item.price ??
+      item.product?.defaultPrice ??
+      item.link?.price ??
+      0;
     return acc + Number(price);
   }, 0);
   const totalDeliveries = filteredItems.filter((item: any) => {

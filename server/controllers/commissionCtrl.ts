@@ -32,6 +32,16 @@ export default {
           model: Order,
           required: false,
         },
+        {
+          model: Delivery,
+          required: false,
+          include: [
+            {
+              model: OrderItem,
+              required: true,
+            },
+          ],
+        },
       ];
 
       let sheets;

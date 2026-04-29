@@ -244,7 +244,7 @@ async function seed() {
     },
     {
       productName: "On-Page Optimization",
-      cost: 300,
+      cost: 100,
       defaultPrice: 200,
       commissionRate: 0.05,
       productType: "technical services",
@@ -421,150 +421,6 @@ async function seed() {
     },
   ]);
 
-  const sheets = await CommissionSheet.bulkCreate([
-    {
-      userId: 1,
-      sheetTitle: "January 2025 Commissions",
-      sheetDescription: "Q1 kickoff sales",
-      sheetStatus: "submitted",
-    },
-    {
-      userId: 1,
-      sheetTitle: "February 2025 Draft",
-      sheetDescription: null,
-      sheetStatus: "draft",
-    },
-    {
-      userId: 1,
-      sheetTitle: "December 2024 Commissions",
-      sheetDescription: "Year-end",
-      sheetStatus: "approved",
-    },
-  ]);
-
-  const firstSheetId = (sheets[0]!.toJSON() as SheetRow).sheetId;
-
-  const c = clients.map((row) => row.toJSON() as ClientRow);
-
-  const ordersRaw = await Order.bulkCreate([
-    {
-      userId: 1,
-      clientId: c[0]!.clientId,
-      orderStatus: "in progress",
-      salesPerson: 1,
-    },
-    {
-      userId: 1,
-      clientId: c[1]!.clientId,
-      orderStatus: "in progress",
-      salesPerson: 1,
-    },
-    {
-      userId: 1,
-      clientId: c[2]!.clientId,
-      orderStatus: "delivered",
-      salesPerson: 1,
-    },
-  ]);
-
-  const orders = ordersRaw.map((row) => row.toJSON() as OrderRow);
-
-  const p = products.map((row) => row.toJSON() as ProductRow);
-
-  const orderItemsRaw = await OrderItem.bulkCreate([
-    {
-      orderId: orders[0]!.orderId,
-      productId: p[0]!.productId,
-      productType: "product",
-      itemStatus: "complete",
-      vendorId: vendors[0]!.vendorId,
-      vendorPayload: { poNumber: "PO-ACM-1001", rushOrder: false },
-      sheetId: firstSheetId,
-      price: 600,
-      anchorText: "best project management tools",
-      linkingFrom: "https://acme.example/resources",
-      linkingTo: "https://publisher.example/acme-story",
-      deliveredAnchorText: "best project management tools",
-      dateReported: "2025-01-15",
-      da: 52,
-      dr: 48,
-      tf: 18,
-      cf: 28,
-      traffic: 12000,
-      managerApproved: true,
-    },
-    {
-      orderId: orders[0]!.orderId,
-      productId: p[3]!.productId,
-      productType: "product",
-      itemStatus: "complete",
-      vendorId: vendors[0]!.vendorId,
-      vendorPayload: { poNumber: "PO-ACM-1002", rushOrder: true },
-      sheetId: firstSheetId,
-      price: 900,
-    },
-    {
-      orderId: orders[1]!.orderId,
-      productId: p[1]!.productId,
-      productType: "product",
-      itemStatus: "complete",
-      vendorId: vendors[1]!.vendorId,
-      vendorPayload: { campaignCode: "GLOBEX-Q1" },
-      sheetId: firstSheetId,
-      price: 5000,
-    },
-    {
-      orderId: orders[2]!.orderId,
-      productId: p[8]!.productId,
-      productType: "product",
-      itemStatus: "complete",
-      vendorId: vendors[1]!.vendorId,
-      vendorPayload: { campaignCode: "INITECH-LC" },
-      sheetId: firstSheetId,
-      price: 700,
-      productNameSnapshot: p[8]!.productName,
-      defaultPriceSnapshot: p[8]!.defaultPrice,
-      commissionRateSnapshot: p[8]!.commissionRate,
-      spiffSnapshot: p[8]!.spiff,
-      costSnapshot: p[8]!.cost,
-      priceSnapshot: 700,
-    },
-    {
-      orderId: orders[0]!.orderId,
-      productId: p[4]!.productId,
-      productType: "product",
-      itemStatus: "draft",
-      vendorId: null,
-      vendorPayload: null,
-      sheetId: null,
-      price: p[4]!.defaultPrice,
-    },
-  ]);
-
-  const orderItems = orderItemsRaw.map((row) => row.toJSON() as OrderItemRow);
-
-  const deliveries: Array<{
-    itemId: number;
-    sheetId: number;
-    deliveredQuantity: number;
-  }> = [];
-  const addDeliveries = (itemId: number, count: number, sheetId: number) => {
-    for (let i = 0; i < count; i += 1) {
-      deliveries.push({
-        itemId,
-        sheetId,
-        deliveredQuantity: 1,
-      });
-    }
-  };
-
-  addDeliveries(orderItems[0]!.itemId, 2, firstSheetId);
-  addDeliveries(orderItems[1]!.itemId, 5, firstSheetId);
-  addDeliveries(orderItems[2]!.itemId, 1, firstSheetId);
-  addDeliveries(orderItems[3]!.itemId, 3, firstSheetId);
-
-  await Delivery.bulkCreate(deliveries);
-
   console.log(
     [
       "Seed complete:",
@@ -574,10 +430,6 @@ async function seed() {
       `${links.length} links`,
       `${vendors.length} vendors`,
       "3 vendor field defs",
-      `${sheets.length} commission sheets`,
-      `${orders.length} orders`,
-      `${orderItems.length} order items`,
-      `${deliveries.length} deliveries`,
     ].join(", "),
   );
   process.exit(0);

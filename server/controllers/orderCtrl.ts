@@ -515,19 +515,6 @@ export default {
         return;
       }
 
-      const getProductSnapshots = (item: any) => ({
-        productNameSnapshot: item.product?.productName ?? null,
-        priceSnapshot: item.price ?? item.product?.defaultPrice ?? null,
-        defaultPriceSnapshot: item.product?.defaultPrice ?? null,
-        commissionRateSnapshot:
-          item.product?.user_product_commissions?.length > 0
-            ? (item.commissionRateSnapshot ??
-              item.product?.user_product_commissions[0].commissionRate)
-            : (item.commissionRateSnapshot ?? item.product?.commissionRate),
-        spiffSnapshot: item.product?.spiff ?? null,
-        costSnapshot: item.product?.cost,
-      });
-
       const destroyDelivery = async (itemId: number) => {
         await Delivery.destroy({
           where: { itemId },
@@ -556,15 +543,59 @@ export default {
             throw new Error(`No order item found for itemId ${item.itemId}`);
           }
 
-          const isProduct = item.productType === "product";
+          const currentOrderItem: any = orderItem;
+          const isProduct = currentOrderItem.productType === "product";
+          const product: any = isProduct
+            ? await Product.findOne({
+              where: { productId: currentOrderItem.productId },
+              include: [{ model: UserProductCommission, required: false }],
+            })
+            : null;
+          const link: any = !isProduct
+            ? await Link.findOne({
+              where: { linkId: currentOrderItem.linkId },
+            })
+            : null;
+
+          const getProductSnapshots = () => ({
+            productNameSnapshot: product?.productName ?? null,
+            priceSnapshot:
+              item.price ?? currentOrderItem.price ?? product?.defaultPrice ?? null,
+            defaultPriceSnapshot: product?.defaultPrice ?? null,
+            commissionRateSnapshot:
+              item.commissionRateSnapshot ??
+              product?.user_product_commissions?.[0]?.commissionRate ??
+              product?.commissionRate ??
+              null,
+            spiffSnapshot: product?.spiff ?? null,
+            costSnapshot: product?.cost ?? null,
+          });
+
+          const getLinkSnapshots = () => ({
+            productNameSnapshot: link?.publication ?? null,
+            priceSnapshot:
+              item.price ?? currentOrderItem.price ?? link?.defaultPrice ?? null,
+            defaultPriceSnapshot: link?.defaultPrice ?? null,
+            commissionRateSnapshot:
+              item.commissionRateSnapshot ?? link?.commissionRate ?? null,
+            spiffSnapshot: link?.spiff ?? null,
+            costSnapshot: link?.cost ?? null,
+          });
+
+          const snapshotsNeedHydration =
+            !currentOrderItem.productNameSnapshot ||
+            currentOrderItem.priceSnapshot == null ||
+            currentOrderItem.defaultPriceSnapshot == null ||
+            currentOrderItem.commissionRateSnapshot == null ||
+            currentOrderItem.costSnapshot == null;
 
           switch (itemStatus) {
             case "ordered": {
               const updatePatch: Record<string, any> = { itemStatus };
 
               if (isProduct) {
-                Object.assign(updatePatch, getProductSnapshots(item));
-              }
+                Object.assign(updatePatch, getProductSnapshots());
+              } else Object.assign(updatePatch, getLinkSnapshots());
 
               await orderItem.update(updatePatch);
               await destroyDelivery(item.itemId);
@@ -572,9 +603,12 @@ export default {
             }
 
             case "complete": {
-              // Keep parity with single-item endpoint behavior
-              if (isProduct && !item.productNameSnapshot) {
-                await orderItem.update(getProductSnapshots(item));
+              if (snapshotsNeedHydration) {
+                if (isProduct) {
+                  await orderItem.update(getProductSnapshots());
+                } else {
+                  await orderItem.update(getLinkSnapshots());
+                }
               }
 
               const currentSheet = await getCurrentSheet();
@@ -596,6 +630,11 @@ export default {
             }
 
             case "in progress": {
+              if (snapshotsNeedHydration) {
+                if (isProduct) {
+                  await orderItem.update(getProductSnapshots());
+                } else await orderItem.update(getLinkSnapshots());
+              }
               await orderItem.update({
                 itemStatus,
                 sheetId: null,
@@ -617,25 +656,16 @@ export default {
           const itemData = orderItem.toJSON();
 
           if (isProduct) {
-            const product = await Product.findOne({
-              where: { productId: item.product.productId },
-              include: [{ model: UserProductCommission, required: false }],
-            });
-
             return {
               ...itemData,
               product,
             };
+          } else {
+            return {
+              ...itemData,
+              link,
+            };
           }
-
-          const link = await Link.findOne({
-            where: { linkId: item.linkId },
-          });
-
-          return {
-            ...itemData,
-            link,
-          };
         }),
       );
 
@@ -684,7 +714,6 @@ export default {
 
       const { item } = req.body;
       const itemStatus = item.itemStatus;
-      const isProduct = item.productType === "product";
 
       const orderItem = await OrderItem.findOne({
         where: { itemId: item.itemId },
@@ -696,19 +725,51 @@ export default {
       }
 
       const order = await Order.findOne({ where: { orderId: item.orderId } });
+      const currentOrderItem: any = orderItem;
+      const isProduct = currentOrderItem.productType === "product";
+      const product: any = isProduct
+        ? await Product.findOne({
+          where: { productId: currentOrderItem.productId },
+          include: [{ model: UserProductCommission, required: false }],
+        })
+        : null;
+      const link: any = !isProduct
+        ? await Link.findOne({
+          where: { linkId: currentOrderItem.linkId },
+        })
+        : null;
 
       const getProductSnapshots = () => ({
-        productNameSnapshot: item.product?.productName ?? null,
-        priceSnapshot: item.price ?? item.product?.defaultPrice ?? null,
-        defaultPriceSnapshot: item.product?.defaultPrice ?? null,
+        productNameSnapshot: product?.productName ?? null,
+        priceSnapshot:
+          item.price ?? currentOrderItem.price ?? product?.defaultPrice ?? null,
+        defaultPriceSnapshot: product?.defaultPrice ?? null,
         commissionRateSnapshot:
-          item.product?.user_product_commissions?.length > 0
-            ? (item.commissionRateSnapshot ??
-              item.product?.user_product_commissions[0].commissionRate)
-            : (item.commissionRateSnapshot ?? item.product?.commissionRate),
-        spiffSnapshot: item.product?.spiff ?? null,
-        costSnapshot: item.product?.cost,
+          item.commissionRateSnapshot ??
+          product?.user_product_commissions?.[0]?.commissionRate ??
+          product?.commissionRate ??
+          null,
+        spiffSnapshot: product?.spiff ?? null,
+        costSnapshot: product?.cost ?? null,
       });
+
+      const getLinkSnapshots = () => ({
+        productNameSnapshot: link?.publication ?? null,
+        priceSnapshot:
+          item.price ?? currentOrderItem.price ?? link?.defaultPrice ?? null,
+        defaultPriceSnapshot: link?.defaultPrice ?? null,
+        commissionRateSnapshot:
+          item.commissionRateSnapshot ?? link?.commissionRate ?? null,
+        spiffSnapshot: link?.spiff ?? null,
+        costSnapshot: link?.cost ?? null,
+      });
+
+      const snapshotsNeedHydration =
+        !currentOrderItem.productNameSnapshot ||
+        currentOrderItem.priceSnapshot == null ||
+        currentOrderItem.defaultPriceSnapshot == null ||
+        currentOrderItem.commissionRateSnapshot == null ||
+        currentOrderItem.costSnapshot == null;
 
       const destroyDelivery = async () => {
         await Delivery.destroy({
@@ -737,7 +798,7 @@ export default {
 
           if (isProduct) {
             Object.assign(updatePatch, getProductSnapshots());
-          }
+          } else Object.assign(updatePatch, getLinkSnapshots());
 
           await orderItem.update(updatePatch);
           await destroyDelivery();
@@ -745,9 +806,10 @@ export default {
         }
 
         case "complete": {
-          // Keep existing behavior: only hydrate missing product snapshots on complete
-          if (isProduct && !item.productNameSnapshot) {
-            await orderItem.update(getProductSnapshots());
+          if (snapshotsNeedHydration) {
+            if (isProduct) {
+              await orderItem.update(getProductSnapshots());
+            } else await orderItem.update(getLinkSnapshots());
           }
 
           const currentSheet = await getCurrentSheet();
@@ -767,6 +829,12 @@ export default {
         }
 
         case "in progress": {
+          if (snapshotsNeedHydration) {
+            if (isProduct) {
+              await orderItem.update(getProductSnapshots());
+            } else await orderItem.update(getLinkSnapshots());
+          }
+
           await orderItem.update({
             itemStatus,
             sheetId: null,
@@ -812,20 +880,11 @@ export default {
       let payload: Record<string, any> | null = null;
 
       if (isProduct) {
-        const product = await Product.findOne({
-          where: { productId: item.product.productId },
-          include: [{ model: UserProductCommission, required: false }],
-        });
-
         payload = {
           ...itemData,
           product,
         };
       } else {
-        const link = await Link.findOne({
-          where: { linkId: item.linkId },
-        });
-
         payload = {
           ...itemData,
           link,

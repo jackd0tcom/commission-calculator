@@ -162,7 +162,7 @@ const productSeedData = [
   },
   {
     productName: "On-Page Optimization",
-    cost: 300,
+    cost: 100,
     defaultPrice: 200,
     commissionRate: 0.05,
     productType: "technical services",

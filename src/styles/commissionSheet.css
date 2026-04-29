@@ -292,6 +292,7 @@ h2 {
 }
 .new-sheet-wrapper .profile-image {
   height: 35px;
+  width: 35px;
 }
 .delete-sheet {
   display: flex;
