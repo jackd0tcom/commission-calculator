@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import axios from "axios";
+// import axios from "axios";
 
 interface props {
   clientList: any;
@@ -13,7 +13,7 @@ interface props {
 }
 
 const ClientPicker = ({
-  setClientList,
+  // setClientList,
   clientList,
   newClient,
   setNewClient,
@@ -24,9 +24,9 @@ const ClientPicker = ({
 }: props) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef<HTMLInputElement>(null);
-  const [addingClient, setAddingClient] = useState(false);
-  const [name, setName] = useState("");
-  const nameRef = useRef<HTMLInputElement>(null);
+  // const [addingClient, setAddingClient] = useState(false);
+  // const [name, setName] = useState("");
+  // const nameRef = useRef<HTMLInputElement>(null);
 
   //   Handles blur
   useEffect(() => {
@@ -51,21 +51,21 @@ const ClientPicker = ({
     };
   }, [showDropdown]);
 
-  const handleAddClient = async () => {
-    try {
-      await axios
-        .post("/api/addNewClient", { clientName: name })
-        .then((res) => {
-          if (res.status === 200) {
-            console.log(res.data);
-            setClientList([...clientList, res.data]);
-            setName("");
-          }
-        });
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const handleAddClient = async () => {
+  //   try {
+  //     await axios
+  //       .post("/api/addNewClient", { clientName: name })
+  //       .then((res) => {
+  //         if (res.status === 200) {
+  //           console.log(res.data);
+  //           setClientList([...clientList, res.data]);
+  //           setName("");
+  //         }
+  //       });
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   const handleClientClick = (client: any) => {
     if (orderId !== 0) {
@@ -95,7 +95,7 @@ const ClientPicker = ({
               {client.clientName}
             </div>
           ))}
-          <div className="dropdown-item new-client-item">
+          {/* <div className="dropdown-item new-client-item">
             {!addingClient ? (
               <p onClick={() => setAddingClient(true)}>+ Add Client</p>
             ) : (
@@ -124,7 +124,7 @@ const ClientPicker = ({
                 }}
               />
             )}
-          </div>
+          </div> */}
         </div>
       )}
     </div>

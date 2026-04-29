@@ -4,6 +4,7 @@ import ClientItem from "../components/Clients/ClientItem";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import ClientsOrderItem from "../components/Clients/ClientsOrderItem";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router";
 
 const Clients = () => {
   const [clientList, setClientList] = useState([{}]);
@@ -12,12 +13,23 @@ const Clients = () => {
   const [orderList, setOrderList] = useState([]);
   const [currentClient, setCurrentClient] = useState(0);
   const userId = useSelector((state: any) => state.user.userId);
+  const navigate = useNavigate();
+
+  const currentClientName: any =
+    clientList.find((client: any) => client.clientId === currentClient)
+      ?.clientName ?? "selected client";
 
   const fetchClients = async () => {
     try {
       await axios.get("/api/getClients").then((res) => {
         if (res.status === 200) {
           setClientList(res.data);
+          const defaultClientId = res.data[0]?.clientId;
+          const defaultClient = res.data.find(
+            (client: any) => client.clientId === defaultClientId,
+          );
+          setOrderList(defaultClient.orders ?? []);
+          setCurrentClient(defaultClientId ?? 0);
           setIsLoading(false);
         }
       });
@@ -73,6 +85,23 @@ const Clients = () => {
     }
   };
 
+  const newOrder = async () => {
+    if (currentClient === 0) {
+      return;
+    }
+    try {
+      await axios
+        .post("/api/newOrder", { clientId: currentClient })
+        .then((res) => {
+          if (res.status === 200) {
+            navigate(`/order/${res.data.orderId}/false`);
+          }
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="clients-page-wrapper">
       <div className="page-header-wrapper">
@@ -116,11 +145,31 @@ const Clients = () => {
             <p>Date Created</p>
           </div>
           {orderList?.length > 0 ? (
-            orderList?.map((order: any) => <ClientsOrderItem order={order} />)
+            <div className="client-orders-list">
+              {orderList?.map((order: any) => (
+                <ClientsOrderItem order={order} />
+              ))}
+              <div className="client-list-new-order-button">
+                <button
+                  className="client-new-order-button"
+                  onClick={() => newOrder()}
+                >
+                  New Order
+                </button>
+              </div>
+            </div>
           ) : (
             <div className="no-sheets-available">
               <FaMagnifyingGlass className="magnifying" />
-              <p>No orders found for selected client</p>
+              <p>No orders found for {currentClientName}</p>
+              {currentClient !== 0 && (
+                <button
+                  className="client-new-order-button"
+                  onClick={() => newOrder()}
+                >
+                  New Order
+                </button>
+              )}
             </div>
           )}
         </div>

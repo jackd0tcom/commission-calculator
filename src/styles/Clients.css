@@ -155,3 +155,11 @@
   font-size: 2rem;
   color: var(--blue);
 }
+.client-new-order-button {
+  margin: 10px 0 0 10px;
+  transition: 150ms;
+}
+.client-new-order-button:hover {
+  background-color: var(--purple);
+  color: white;
+}
