@@ -5,7 +5,7 @@ const db = await connectToDb(
   process.env.DATABASE_URL || "postgresql:///commission-db",
 );
 
-export class User extends Model {}
+export class User extends Model { }
 User.init(
   {
     userId: {
@@ -53,7 +53,7 @@ User.init(
   { sequelize: db, modelName: "user", tableName: "users", timestamps: true },
 );
 
-export class CommissionSheet extends Model {}
+export class CommissionSheet extends Model { }
 CommissionSheet.init(
   {
     sheetId: {
@@ -85,7 +85,7 @@ CommissionSheet.init(
   },
 );
 
-export class Vendor extends Model {}
+export class Vendor extends Model { }
 Vendor.init(
   {
     vendorId: {
@@ -110,7 +110,7 @@ Vendor.init(
   },
 );
 
-export class VendorProduct extends Model {}
+export class VendorProduct extends Model { }
 VendorProduct.init(
   {
     vendorProductId: {
@@ -137,7 +137,7 @@ VendorProduct.init(
   },
 );
 
-export class VendorField extends Model {}
+export class VendorField extends Model { }
 VendorField.init(
   {
     vendorFieldId: {
@@ -183,7 +183,7 @@ VendorField.init(
   },
 );
 
-export class Order extends Model {}
+export class Order extends Model { }
 Order.init(
   {
     orderId: {
@@ -219,7 +219,7 @@ Order.init(
   },
 );
 
-export class OrderItem extends Model {}
+export class OrderItem extends Model { }
 OrderItem.init(
   {
     itemId: {
@@ -343,7 +343,7 @@ OrderItem.init(
   },
 );
 
-export class Delivery extends Model {}
+export class Delivery extends Model { }
 Delivery.init(
   {
     deliveryId: {
@@ -375,7 +375,7 @@ Delivery.init(
   },
 );
 
-export class Product extends Model {}
+export class Product extends Model { }
 Product.init(
   {
     productId: {
@@ -434,7 +434,7 @@ Product.init(
   },
 );
 
-export class UserProductCommission extends Model {}
+export class UserProductCommission extends Model { }
 UserProductCommission.init(
   {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
@@ -462,7 +462,7 @@ UserProductCommission.init(
   },
 );
 
-export class Link extends Model {}
+export class Link extends Model { }
 Link.init(
   {
     linkId: {
@@ -538,7 +538,7 @@ Link.init(
   },
 );
 
-export class Client extends Model {}
+export class Client extends Model { }
 Client.init(
   {
     clientId: {
@@ -562,6 +562,51 @@ Client.init(
     sequelize: db,
     modelName: "client",
     tableName: "clients",
+    timestamps: true,
+  },
+);
+
+export class VendorSheetSyncJob extends Model { }
+VendorSheetSyncJob.init(
+  {
+    jobId: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    jobType: {
+      type: DataTypes.ENUM("push", "pull"),
+    },
+    itemId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: { model: "order_items" },
+    },
+    vendorId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: { model: "vendors" },
+    },
+    attempts: {
+      type: DataTypes.INTEGER,
+      defaultValue: 1,
+    },
+    nextRunAt: {
+      type: DataTypes.DATEONLY,
+      allowNull: true,
+    },
+    payload: {
+      type: DataTypes.JSONB,
+    },
+    status: {
+      type: DataTypes.ENUM("waiting", "processing", "succeeded", "failed"),
+      defaultValue: "waiting",
+    },
+  },
+  {
+    sequelize: db,
+    modelName: "vendor_sheet_sync_job",
+    tableName: "vendor_sheet_sync_jobs",
     timestamps: true,
   },
 );
@@ -595,6 +640,12 @@ OrderItem.belongsTo(Vendor, { foreignKey: "vendorId" });
 
 OrderItem.hasMany(Delivery, { foreignKey: "itemId" });
 Delivery.belongsTo(OrderItem, { foreignKey: "itemId" });
+
+VendorSheetSyncJob.belongsTo(OrderItem, { foreignKey: "itemId" });
+OrderItem.hasMany(VendorSheetSyncJob, { foreignKey: "itemId" });
+
+VendorSheetSyncJob.belongsTo(Vendor, { foreignKey: "vendorId" });
+Vendor.hasMany(VendorSheetSyncJob, { foreignKey: "vendorId" });
 
 CommissionSheet.hasMany(Delivery, { foreignKey: "sheetId" });
 Delivery.belongsTo(CommissionSheet, { foreignKey: "sheetId" });
