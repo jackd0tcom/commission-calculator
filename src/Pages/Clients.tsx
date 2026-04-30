@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 
 const Clients = () => {
-  const [clientList, setClientList] = useState([{}]);
+  const [clientList, setClientList] = useState<any>([{}]);
   const [users, setUsers] = useState([{}]);
   const [isLoading, setIsLoading] = useState(true);
   const [orderList, setOrderList] = useState([]);
@@ -16,7 +16,7 @@ const Clients = () => {
   const navigate = useNavigate();
 
   const currentClientName: any =
-    clientList.find((client: any) => client.clientId === currentClient)
+    clientList.find((client: any) => client?.clientId === currentClient)
       ?.clientName ?? "selected client";
 
   const fetchClients = async () => {
@@ -71,9 +71,9 @@ const Clients = () => {
     try {
       await axios.post("/api/deleteClient", { clientId }).then((res) => {
         if (res.status === 200) {
-          setClientList((prev) =>
+          setClientList((prev: any) =>
             prev.filter(
-              (p) =>
+              (p: any) =>
                 Number((p as { clientId?: number }).clientId) !==
                 Number(res.data.clientId),
             ),
