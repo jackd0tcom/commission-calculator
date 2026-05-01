@@ -28,7 +28,7 @@ const Clients = () => {
           const defaultClient = res.data.find(
             (client: any) => client.clientId === defaultClientId,
           );
-          setOrderList(defaultClient.orders ?? []);
+          setOrderList(defaultClient?.orders ?? []);
           setCurrentClient(defaultClientId ?? 0);
           setIsLoading(false);
         }
