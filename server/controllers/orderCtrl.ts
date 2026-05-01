@@ -12,6 +12,7 @@ import {
 } from "../model.ts";
 import { Request, Response } from "express";
 import { formatMonthlySheetTitle } from "../commissionSheets.ts";
+import { enqueueJob, syncJobImmediate } from "../services/vendorSyncQueue.ts";
 
 export default {
   getOrders: async (req: Request, res: Response) => {
@@ -547,20 +548,23 @@ export default {
           const isProduct = currentOrderItem.productType === "product";
           const product: any = isProduct
             ? await Product.findOne({
-              where: { productId: currentOrderItem.productId },
-              include: [{ model: UserProductCommission, required: false }],
-            })
+                where: { productId: currentOrderItem.productId },
+                include: [{ model: UserProductCommission, required: false }],
+              })
             : null;
           const link: any = !isProduct
             ? await Link.findOne({
-              where: { linkId: currentOrderItem.linkId },
-            })
+                where: { linkId: currentOrderItem.linkId },
+              })
             : null;
 
           const getProductSnapshots = () => ({
             productNameSnapshot: product?.productName ?? null,
             priceSnapshot:
-              item.price ?? currentOrderItem.price ?? product?.defaultPrice ?? null,
+              item.price ??
+              currentOrderItem.price ??
+              product?.defaultPrice ??
+              null,
             defaultPriceSnapshot: product?.defaultPrice ?? null,
             commissionRateSnapshot:
               item.commissionRateSnapshot ??
@@ -574,7 +578,10 @@ export default {
           const getLinkSnapshots = () => ({
             productNameSnapshot: link?.publication ?? null,
             priceSnapshot:
-              item.price ?? currentOrderItem.price ?? link?.defaultPrice ?? null,
+              item.price ??
+              currentOrderItem.price ??
+              link?.defaultPrice ??
+              null,
             defaultPriceSnapshot: link?.defaultPrice ?? null,
             commissionRateSnapshot:
               item.commissionRateSnapshot ?? link?.commissionRate ?? null,
@@ -729,14 +736,14 @@ export default {
       const isProduct = currentOrderItem.productType === "product";
       const product: any = isProduct
         ? await Product.findOne({
-          where: { productId: currentOrderItem.productId },
-          include: [{ model: UserProductCommission, required: false }],
-        })
+            where: { productId: currentOrderItem.productId },
+            include: [{ model: UserProductCommission, required: false }],
+          })
         : null;
       const link: any = !isProduct
         ? await Link.findOne({
-          where: { linkId: currentOrderItem.linkId },
-        })
+            where: { linkId: currentOrderItem.linkId },
+          })
         : null;
 
       const getProductSnapshots = () => ({
@@ -789,6 +796,10 @@ export default {
         });
       };
 
+      const interiorVendor = await Vendor.findOne({
+        where: { vendorName: "Interior" },
+      });
+
       // 1) Handle item status transition
       switch (itemStatus) {
         case "ordered": {
@@ -802,6 +813,11 @@ export default {
 
           await orderItem.update(updatePatch);
           await destroyDelivery();
+
+          // queue up job if the vendor is exterior
+          if (item.vendorId && item.vendorId !== interiorVendor?.vendorId) {
+            syncJobImmediate(item);
+          }
           break;
         }
 

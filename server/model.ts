@@ -5,7 +5,7 @@ const db = await connectToDb(
   process.env.DATABASE_URL || "postgresql:///commission-db",
 );
 
-export class User extends Model { }
+export class User extends Model {}
 User.init(
   {
     userId: {
@@ -53,7 +53,7 @@ User.init(
   { sequelize: db, modelName: "user", tableName: "users", timestamps: true },
 );
 
-export class CommissionSheet extends Model { }
+export class CommissionSheet extends Model {}
 CommissionSheet.init(
   {
     sheetId: {
@@ -85,7 +85,7 @@ CommissionSheet.init(
   },
 );
 
-export class Vendor extends Model { }
+export class Vendor extends Model {}
 Vendor.init(
   {
     vendorId: {
@@ -110,7 +110,7 @@ Vendor.init(
   },
 );
 
-export class VendorProduct extends Model { }
+export class VendorProduct extends Model {}
 VendorProduct.init(
   {
     vendorProductId: {
@@ -137,7 +137,7 @@ VendorProduct.init(
   },
 );
 
-export class VendorField extends Model { }
+export class VendorField extends Model {}
 VendorField.init(
   {
     vendorFieldId: {
@@ -183,7 +183,7 @@ VendorField.init(
   },
 );
 
-export class Order extends Model { }
+export class Order extends Model {}
 Order.init(
   {
     orderId: {
@@ -219,7 +219,7 @@ Order.init(
   },
 );
 
-export class OrderItem extends Model { }
+export class OrderItem extends Model {}
 OrderItem.init(
   {
     itemId: {
@@ -343,7 +343,7 @@ OrderItem.init(
   },
 );
 
-export class Delivery extends Model { }
+export class Delivery extends Model {}
 Delivery.init(
   {
     deliveryId: {
@@ -375,7 +375,7 @@ Delivery.init(
   },
 );
 
-export class Product extends Model { }
+export class Product extends Model {}
 Product.init(
   {
     productId: {
@@ -434,7 +434,7 @@ Product.init(
   },
 );
 
-export class UserProductCommission extends Model { }
+export class UserProductCommission extends Model {}
 UserProductCommission.init(
   {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
@@ -462,7 +462,7 @@ UserProductCommission.init(
   },
 );
 
-export class Link extends Model { }
+export class Link extends Model {}
 Link.init(
   {
     linkId: {
@@ -538,7 +538,7 @@ Link.init(
   },
 );
 
-export class Client extends Model { }
+export class Client extends Model {}
 Client.init(
   {
     clientId: {
@@ -566,7 +566,7 @@ Client.init(
   },
 );
 
-export class VendorSheetSyncJob extends Model { }
+export class VendorSheetSyncJob extends Model {}
 VendorSheetSyncJob.init(
   {
     jobId: {
@@ -579,7 +579,7 @@ VendorSheetSyncJob.init(
     },
     itemId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
       references: { model: "order_items" },
     },
     vendorId: {
@@ -589,18 +589,22 @@ VendorSheetSyncJob.init(
     },
     attempts: {
       type: DataTypes.INTEGER,
-      defaultValue: 1,
+      defaultValue: 0,
     },
     nextRunAt: {
-      type: DataTypes.DATEONLY,
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    processedAt: {
+      type: DataTypes.DATE,
       allowNull: true,
     },
     payload: {
       type: DataTypes.JSONB,
     },
     status: {
-      type: DataTypes.ENUM("waiting", "processing", "succeeded", "failed"),
-      defaultValue: "waiting",
+      type: DataTypes.ENUM("pending", "processing", "succeeded", "failed"),
+      defaultValue: "pending",
     },
   },
   {

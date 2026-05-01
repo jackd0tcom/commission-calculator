@@ -12,6 +12,7 @@ import deliveryCtrl from "./controllers/deliveryCtrl.js";
 import linkCtrl from "./controllers/linkCtrl.js";
 import { startMonthlyCommissionSheetCron } from "./monthlySheetCron.js";
 import { db } from "./model.js";
+import { startVendorSyncWorker } from "./vendorSyncWorker.js";
 
 const {
   getProducts,
@@ -182,4 +183,5 @@ ViteExpress.listen(app, PORT, () => {
     }`,
   );
   startMonthlyCommissionSheetCron();
+  startVendorSyncWorker();
 });
