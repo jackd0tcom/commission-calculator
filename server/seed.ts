@@ -329,10 +329,14 @@ async function seed() {
     {
       vendorName: "Next Net",
       googleSheetId: "13Pzz4DqTRVouK7vOhkH_bUcGQcMkN0pul2jfkfCndrw",
+      sheetTabName: "Sheet1",
+      sheetHeaderRow: 2,
     },
     {
-      vendorName: "Vissoula",
+      vendorName: "Vazoola",
       googleSheetId: null,
+      sheetTabName: "Sheet1",
+      sheetHeaderRow: 1,
     },
   ]);
 
@@ -364,6 +368,9 @@ async function seed() {
       sortIndex: 1,
       defaultValue: null,
       googleSheetId: "A",
+      appField: "currentDate",
+      isClient: false,
+      isGenerated: true,
     },
     {
       vendorProductId: 1,
@@ -373,6 +380,8 @@ async function seed() {
       sortIndex: 2,
       defaultValue: null,
       googleSheetId: "B",
+      appField: "vendorPayload.p1pTeam",
+      isClient: false,
     },
     {
       vendorProductId: 1,
@@ -382,6 +391,9 @@ async function seed() {
       sortIndex: 3,
       defaultValue: null,
       googleSheetId: "C",
+      appField: "client.clientId",
+      isClient: false,
+      isGenerated: true,
     },
     {
       vendorProductId: 1,
@@ -391,6 +403,9 @@ async function seed() {
       sortIndex: 4,
       defaultValue: null,
       googleSheetId: "D",
+      appField: "client.clientName",
+      isClient: false,
+      isGenerated: true,
     },
     {
       vendorProductId: 1,
@@ -400,6 +415,8 @@ async function seed() {
       sortIndex: 5,
       defaultValue: null,
       googleSheetId: "E",
+      appField: "item.notes",
+      isClient: false,
     },
     {
       vendorProductId: 1,
@@ -409,6 +426,8 @@ async function seed() {
       sortIndex: 6,
       defaultValue: null,
       googleSheetId: "F",
+      appField: "vendorPayload.targetPages",
+      isClient: false,
     },
     {
       vendorProductId: 1,
@@ -418,6 +437,8 @@ async function seed() {
       sortIndex: 7,
       defaultValue: null,
       googleSheetId: "G",
+      appField: "vendorPayload.targetPageChosen",
+      isClient: true,
     },
     {
       vendorProductId: 1,
@@ -427,6 +448,8 @@ async function seed() {
       sortIndex: 8,
       defaultValue: null,
       googleSheetId: "H",
+      appField: "vendorPayload.p1pSuggestedAnchorText",
+      isClient: false,
     },
     {
       vendorProductId: 1,
@@ -436,6 +459,8 @@ async function seed() {
       sortIndex: 9,
       defaultValue: null,
       googleSheetId: "I",
+      appField: "item.anchorText",
+      isClient: true,
     },
     {
       vendorProductId: 1,
@@ -445,6 +470,9 @@ async function seed() {
       sortIndex: 10,
       defaultValue: null,
       googleSheetId: "J",
+      appField: "p1p_id",
+      isClient: false,
+      isGenerated: true,
     },
     {
       vendorProductId: 3,

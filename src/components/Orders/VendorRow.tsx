@@ -46,6 +46,10 @@ const VendorRow = ({
     }
   };
 
+  const orderedFields = vendorProductData.vendor_fields?.sort(
+    (a: any, b: any) => a.sortIndex - b.sortIndex,
+  );
+
   return (
     <div className="vendor-row">
       {vendorProductData?.vendor_fields ? (
@@ -66,8 +70,10 @@ const VendorRow = ({
               gridTemplateColumns: `repeat(${vendorProductData.vendor_fields.length}, 1fr)`,
             }}
           >
-            {vendorProductData.vendor_fields.map((field: any) =>
-              status !== "staged" ? (
+            {orderedFields.map((field: any) =>
+              field.isGenerated || field.isClient ? (
+                <p>{vendorPayload?.[camelCase(field.label)] ?? ""}</p>
+              ) : status !== "staged" ? (
                 <p>{vendorPayload?.[camelCase(field.label)] ?? ""}</p>
               ) : (
                 <VendorRowInput

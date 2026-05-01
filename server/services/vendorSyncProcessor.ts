@@ -1,11 +1,31 @@
-import { OrderItem, Vendor, VendorField, VendorProduct } from "../model";
+import {
+  OrderItem,
+  Vendor,
+  VendorField,
+  VendorProduct,
+  Client,
+  Order,
+} from "../model";
 import { upsertVendorRowToSheet } from "./googleSheetsSyncService.ts";
+
+function asPlain(v: any) {
+  if (!v) return v;
+  if (typeof v.get === "function") return v.get({ plain: true });
+  if (typeof v.toJSON === "function") return v.toJSON();
+  return v;
+}
 
 export async function processVendorSyncJob(job: any) {
   console.log("processing vendor syncing");
   switch (job.jobType) {
     case "push": {
-      const item = await OrderItem.findByPk(job.itemId);
+      const item = await OrderItem.findOne({
+        where: {
+          itemId: job.itemId,
+        },
+        include: [{ model: Order, required: true }],
+      });
+      const client = await Client.findByPk(item?.order?.clientId);
       if (!item) throw new Error(`OrderItem not found: ${job.itemId}`);
 
       const vendor = await Vendor.findByPk(job.vendorId);
@@ -24,8 +44,9 @@ export async function processVendorSyncJob(job: any) {
       const mappings = fields.map((field: any) => field.toJSON());
 
       await upsertVendorRowToSheet({
-        item,
-        vendor,
+        item: asPlain(item),
+        vendor: asPlain(vendor),
+        client: asPlain(client) as any,
         mappings,
         payload: job.payload,
       });

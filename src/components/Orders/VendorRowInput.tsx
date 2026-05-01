@@ -20,7 +20,7 @@ const VendorRowInput = ({ field, vendorPayload, orderUpdate }: props) => {
         setValue(e.target.value);
       }}
       onBlur={(e) => {
-        if (e.target.value !== value) {
+        if (e.target.value !== vendorPayload?.[slug]) {
           orderUpdate(slug, value);
         }
       }}

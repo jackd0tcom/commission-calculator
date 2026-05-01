@@ -101,6 +101,15 @@ Vendor.init(
       type: DataTypes.STRING,
       allowNull: true,
     },
+    sheetTabName: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    sheetHeaderRow: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      defaultValue: 1,
+    },
   },
   {
     sequelize: db,
@@ -173,6 +182,18 @@ VendorField.init(
     googleSheetId: {
       type: DataTypes.STRING,
       allowNull: true,
+    },
+    appField: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    isClient: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+    isGenerated: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
     },
   },
   {

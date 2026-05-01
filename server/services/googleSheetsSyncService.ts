@@ -4,8 +4,9 @@ type VendorLike = {
   vendorId: number;
   vendorName?: string;
   googleSheetId?: string | null;
+  sheetTabName: string;
+  sheetHeaderRow: number;
 };
-
 type OrderItemLike = {
   itemId: number;
   orderId: number;
@@ -34,6 +35,7 @@ type UpsertParams = {
   mappings: any;
   sheetTabName?: string; // default "Sheet1"
   externalKeyColumn?: string; // default "external_order_item_key"
+  client: any;
 };
 
 type PullParams = {
@@ -83,26 +85,53 @@ function getSheetsClient() {
 // ---------- Helpers ----------
 
 function buildExternalOrderItemKey(item: OrderItemLike): string {
-  return `orderItem:${item.itemId}`;
+  return `${item.orderId}-${item.itemId}`;
 }
 
 function toA1Range(tabName: string) {
   const safeTab = tabName.replace(/'/g, "''");
   return `'${safeTab}'!A:ZZ`;
 }
+function getValueByPath(
+  client: any,
+  vendor: VendorLike,
+  item: OrderItemLike,
+  path: string,
+): unknown {
+  const roots: Record<string, any> = {
+    client,
+    vendor,
+    item,
+    vendorPayload: item?.vendorPayload, // convenience alias
+  };
 
-function getValueByPath(obj: unknown, path: string): unknown {
-  // supports "vendorPayload.status" style paths
-  return path.split(".").reduce<unknown>((acc, key) => {
-    if (
-      acc &&
-      typeof acc === "object" &&
-      key in (acc as Record<string, unknown>)
-    ) {
-      return (acc as Record<string, unknown>)[key];
+  const parts = path.split(".");
+  const [first, ...rest] = parts;
+
+  // If path starts with known root (item/client/vendor/vendorPayload), use that root.
+  // Otherwise default to item for backward compatibility.
+  let acc: any = first in roots ? roots[first] : item;
+  const keys = first in roots ? rest : parts;
+
+  console.log(path);
+
+  if (path === "client.clientName") {
+    console.log(client);
+  }
+
+  for (const key of keys) {
+    if (path === "currentDate") {
+      acc = new Date().toLocaleDateString("en-US");
+    } else if (path === "p1p_id") {
+      acc = buildExternalOrderItemKey(item);
+    } else if (acc && typeof acc === "object" && key in acc) {
+      acc = acc[key];
+    } else {
+      return undefined;
     }
-    return undefined;
-  }, obj);
+  }
+
+  return acc;
 }
 
 function setValueByPath(
@@ -136,6 +165,13 @@ function indexHeaders(headerRow: string[]): Map<string, number> {
   return map;
 }
 
+function prependRow(sheet: any, rowData: any, sheetHeaderRow: number) {
+  sheet
+    .insertRowBefore(sheetHeaderRow + 1)
+    .getRange(sheetHeaderRow + 1, 1, 1, rowData.length)
+    .setValues([rowData]);
+}
+
 // ---------- Core: Connectivity ----------
 
 export async function testSpreadsheetAccess(spreadsheetId: string) {
@@ -156,12 +192,14 @@ export async function upsertVendorRowToSheet(
 ): Promise<{ externalKey: string; rowIndex: number }> {
   console.log("upsertting");
   const {
+    client,
     vendor,
     item,
     mappings,
-    sheetTabName = "Sheet1",
     externalKeyColumn = "p1p_id",
   } = params;
+  const sheetTabName = vendor.sheetTabName;
+  const sheetHeaderRow = vendor.sheetHeaderRow - 1;
 
   if (!vendor.googleSheetId) {
     throw new Error(`Vendor ${vendor.vendorId} has no googleSheetId`);
@@ -180,14 +218,15 @@ export async function upsertVendorRowToSheet(
   if (rows.length === 0)
     throw new Error(`Sheet ${spreadsheetId}/${sheetTabName} has no header row`);
 
-  const header = rows[1];
+  const header = rows[sheetHeaderRow];
   const headerIndex = indexHeaders(header);
 
   // Validate required columns
   const requiredCols = [
     externalKeyColumn,
-    ...mappings?.map((m: any) => m.label.toLowerCase()),
+    ...mappings?.map((m: any) => m.label?.toLowerCase()),
   ];
+
   for (const col of requiredCols) {
     if (!headerIndex.has(normalizeHeader(col))) {
       throw new Error(`Missing required column ${col} in ${sheetTabName}`);
@@ -219,8 +258,10 @@ export async function upsertVendorRowToSheet(
   for (const m of mappings) {
     const colIdx = headerIndex.get(normalizeHeader(m.label));
     if (colIdx === undefined) continue;
-    const v = getValueByPath(item, m.appField);
-    rowArray[colIdx] = toStringCell(v);
+    if (!m.isClient) {
+      const v = getValueByPath(client, vendor, item, m.appField);
+      rowArray[colIdx] = toStringCell(v);
+    }
   }
 
   if (existingRowIndex >= 0) {
@@ -235,12 +276,46 @@ export async function upsertVendorRowToSheet(
     return { externalKey, rowIndex: existingRowIndex };
   }
 
-  // Append new row
-  await sheets.spreadsheets.values.append({
+  const meta = await sheets.spreadsheets.get({
     spreadsheetId,
-    range,
+    fields: "sheets(properties(sheetId,title))",
+  });
+
+  const tab = meta.data.sheets?.find(
+    (s) => s.properties?.title === sheetTabName,
+  );
+
+  if (!tab?.properties?.sheetId) {
+    throw new Error(`Tab "${sheetTabName}" not found`);
+  }
+
+  const gid = tab.properties.sheetId; // numeric gid for batchUpdate insertDimension
+
+  await sheets.spreadsheets.batchUpdate({
+    spreadsheetId,
+    requestBody: {
+      requests: [
+        {
+          insertDimension: {
+            range: {
+              sheetId: gid,
+              dimension: "ROWS",
+              startIndex: sheetHeaderRow + 2,
+              endIndex: sheetHeaderRow + 2,
+            },
+            inheritFromBefore: false,
+          },
+        },
+      ],
+    },
+  });
+
+  console.log(rowArray);
+
+  await sheets.spreadsheets.values.update({
+    spreadsheetId,
+    range: `${sheetTabName}!A${sheetHeaderRow + 2}:ZZ${sheetHeaderRow + 2}`,
     valueInputOption: "USER_ENTERED",
-    insertDataOption: "INSERT_ROWS",
     requestBody: { values: [rowArray] },
   });
 
