@@ -11,6 +11,7 @@
 @import "./styles/Links.css";
 @import "./styles/Vendors.css";
 @import "./styles/QuoteGenerator.css";
+@import "./styles/Dashboard.css";
 
 #root {
   --black: #222222;
