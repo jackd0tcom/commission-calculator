@@ -12,6 +12,7 @@ dist
 dist-ssr
 *.local
 .cursor
+p1p-portal-484219e57794.json
 
 # Editor directories and files
 .vscode/*
