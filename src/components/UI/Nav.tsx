@@ -11,6 +11,7 @@ import { FaBoxOpen } from "react-icons/fa6";
 import { FaLink } from "react-icons/fa";
 import { FaStore } from "react-icons/fa";
 import { FaMoneyBillWave } from "react-icons/fa";
+import { RiDashboardHorizontalFill } from "react-icons/ri";
 
 import HideNavToggle from "./HideNavToggle";
 
@@ -34,6 +35,15 @@ const Nav = ({ setShowNav, showNav }: props) => {
         <img src="/p1p-logo-white.png" alt="p1p-logo" className="nav-logo" />
         <div className="nav-links-wrapper">
           <div className="nav-link-container">
+            <NavLink
+              to="/dashboard"
+              className={({ isActive }) =>
+                isActive ? "active-nav nav-button" : "inactive-nav nav-button"
+              }
+            >
+              <RiDashboardHorizontalFill />
+              Dashboard
+            </NavLink>
             <NavLink
               to="/clients"
               className={({ isActive }) =>

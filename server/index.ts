@@ -10,6 +10,7 @@ import clientCtrl from "./controllers/clientCtrl";
 import orderCtrl from "./controllers/orderCtrl.js";
 import deliveryCtrl from "./controllers/deliveryCtrl.js";
 import linkCtrl from "./controllers/linkCtrl.js";
+import statCtrl from "./controllers/statCtrl.js";
 import { startMonthlyCommissionSheetCron } from "./monthlySheetCron.js";
 import { db } from "./model.js";
 
@@ -65,6 +66,8 @@ const {
 } = clientCtrl;
 
 const { newDelivery, deleteDelivery } = deliveryCtrl;
+
+const { getDashboardStats } = statCtrl;
 
 configDotenv();
 
@@ -169,6 +172,9 @@ app.post("/api/deleteDelivery", deleteDelivery);
 app.post("/api/sync-auth0-user", syncAuth0User);
 app.post("/api/updateAdmin", updateAdmin);
 app.get("/api/getUsers", getUsers);
+
+// Stat endpoints
+app.get("/api/getDashboardStats", getDashboardStats);
 
 const shouldAlterSchema = process.env.NODE_ENV !== "production";
 await db.sync(shouldAlterSchema ? { alter: true } : undefined);

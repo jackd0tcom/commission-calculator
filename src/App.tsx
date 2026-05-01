@@ -17,6 +17,7 @@ import Admin from "./Pages/Admin.tsx";
 import Submitted from "./Pages/Submitted.tsx";
 import Approved from "./Pages/Approved.tsx";
 import Orders from "./Pages/Orders.tsx";
+import Dashboard from "./Pages/Dashboard.tsx";
 import OrderPage from "./Pages/OrderPage.tsx";
 import Links from "./Pages/Links.tsx";
 import Vendors from "./Pages/Vendors.tsx";
@@ -71,7 +72,7 @@ function App() {
                 index
                 path="/"
                 element={
-                  !isAuthenticated ? <Login /> : <Navigate to="/orders" />
+                  !isAuthenticated ? <Login /> : <Navigate to="/dashboard" />
                 }
               ></Route>
               <Route
@@ -79,6 +80,7 @@ function App() {
                 element={<Commissions />}
               ></Route>
               <Route path="/orders" element={<Orders />}></Route>
+              <Route path="/dashboard" element={<Dashboard />}></Route>
               <Route
                 path="/order/:orderId/:calculatorOrder"
                 element={<OrderPage />}
