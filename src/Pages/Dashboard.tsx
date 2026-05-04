@@ -61,8 +61,8 @@ const Dashboard = () => {
   };
 
   const latestOrders = (orders: any) => {
-    if (orders.length > 5) {
-      return orders.slice(5);
+    if (orders.length > 7) {
+      return orders.slice(0, 7);
     } else return orders;
   };
 
