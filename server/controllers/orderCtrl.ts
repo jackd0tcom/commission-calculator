@@ -547,20 +547,23 @@ export default {
           const isProduct = currentOrderItem.productType === "product";
           const product: any = isProduct
             ? await Product.findOne({
-              where: { productId: currentOrderItem.productId },
-              include: [{ model: UserProductCommission, required: false }],
-            })
+                where: { productId: currentOrderItem.productId },
+                include: [{ model: UserProductCommission, required: false }],
+              })
             : null;
           const link: any = !isProduct
             ? await Link.findOne({
-              where: { linkId: currentOrderItem.linkId },
-            })
+                where: { linkId: currentOrderItem.linkId },
+              })
             : null;
 
           const getProductSnapshots = () => ({
             productNameSnapshot: product?.productName ?? null,
             priceSnapshot:
-              item.price ?? currentOrderItem.price ?? product?.defaultPrice ?? null,
+              item.price ??
+              currentOrderItem.price ??
+              product?.defaultPrice ??
+              null,
             defaultPriceSnapshot: product?.defaultPrice ?? null,
             commissionRateSnapshot:
               item.commissionRateSnapshot ??
@@ -574,7 +577,10 @@ export default {
           const getLinkSnapshots = () => ({
             productNameSnapshot: link?.publication ?? null,
             priceSnapshot:
-              item.price ?? currentOrderItem.price ?? link?.defaultPrice ?? null,
+              item.price ??
+              currentOrderItem.price ??
+              link?.defaultPrice ??
+              null,
             defaultPriceSnapshot: link?.defaultPrice ?? null,
             commissionRateSnapshot:
               item.commissionRateSnapshot ?? link?.commissionRate ?? null,
@@ -647,6 +653,12 @@ export default {
               await orderItem.update({
                 itemStatus,
                 sheetId: null,
+                productNameSnapshot: null,
+                priceSnapshot: null,
+                defaultPriceSnapshot: null,
+                commissionRateSnapshot: null,
+                spiffSnapshot: null,
+                costSnapshot: null,
               });
               await destroyDelivery(item.itemId);
               break;
@@ -729,15 +741,24 @@ export default {
       const isProduct = currentOrderItem.productType === "product";
       const product: any = isProduct
         ? await Product.findOne({
-          where: { productId: currentOrderItem.productId },
-          include: [{ model: UserProductCommission, required: false }],
-        })
+            where: { productId: currentOrderItem.productId },
+            include: [{ model: UserProductCommission, required: false }],
+          })
         : null;
       const link: any = !isProduct
         ? await Link.findOne({
-          where: { linkId: currentOrderItem.linkId },
-        })
+            where: { linkId: currentOrderItem.linkId },
+          })
         : null;
+
+      const clearSnapshots = () => ({
+        productNameSnapshot: null,
+        priceSnapshot: null,
+        defaultPriceSnapshot: null,
+        commissionRateSnapshot: null,
+        spiffSnapshot: null,
+        costSnapshot: null,
+      });
 
       const getProductSnapshots = () => ({
         productNameSnapshot: product?.productName ?? null,
@@ -847,6 +868,12 @@ export default {
           await orderItem.update({
             itemStatus,
             sheetId: null,
+            productNameSnapshot: null,
+            priceSnapshot: null,
+            defaultPriceSnapshot: null,
+            commissionRateSnapshot: null,
+            spiffSnapshot: null,
+            costSnapshot: null,
           });
           await destroyDelivery();
           break;

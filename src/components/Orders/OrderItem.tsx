@@ -354,13 +354,7 @@ const OrderItem = ({
           currentStatus={status}
           handleUpdateStatus={handleUpdateStatus}
         />
-        <p>
-          $
-          {item.priceSnapshot ??
-            item.product?.defaultPrice ??
-            item.defaultPrice ??
-            0}
-        </p>
+        <p>${price}</p>
         <p>{item.notes}</p>
         <p>{item.targetUrl}</p>
         <p>{item.anchorText}</p>

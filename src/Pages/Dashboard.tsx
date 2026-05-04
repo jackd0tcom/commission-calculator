@@ -19,8 +19,8 @@ const Dashboard = () => {
         const total =
           item.priceSnapshot ??
           item.price ??
-          item.product.defaultPrice ??
-          item.link.defaultPrice ??
+          item.product?.defaultPrice ??
+          item.link?.defaultPrice ??
           0;
 
         return acc + Number(total);

@@ -248,10 +248,9 @@ const OrderPage = () => {
         .post("/api/bulkDeleteOrderItem", { items: bulkSelects })
         .then(() => {
           const itemsCopy = [...orderItems];
-          const filteredItems = itemsCopy.filter((item: any) =>
-            bulkSelects.some(
-              (bulkItem: any) => bulkItem.itemId !== item.itemId,
-            ),
+          const filteredItems = itemsCopy.filter(
+            (item: any) =>
+              !bulkSelects.some((bulkItem: any) => bulkItem.itemId === item?.itemId),
           );
           console.log(filteredItems);
           setOrderItems(filteredItems);
