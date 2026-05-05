@@ -360,30 +360,44 @@ const linkSeedData = [
 async function seed() {
   await db.sync({ alter: true });
 
-  const products = await Product.bulkCreate(productSeedData, {
-    ignoreDuplicates: true,
-  });
-  const vendors = await Vendor.bulkCreate(vendorSeedData, {
-    ignoreDuplicates: true,
-  });
-  await VendorProduct.bulkCreate(vendorProductSeedData, {
-    ignoreDuplicates: true,
-  });
-  await VendorField.bulkCreate(vendorFieldSeedData, {
-    ignoreDuplicates: true,
-  });
-  await User.bulkCreate(userSeedData, {
-    ignoreDuplicates: true,
-  });
-  const clients = await Client.bulkCreate(clientSeedData, {
-    ignoreDuplicates: true,
-  });
-  await Link.bulkCreate(linkSeedData, {
-    ignoreDuplicates: true,
-  });
+  const existingProducts = await Product.count();
+
+  if (existingProducts === 0) {
+    const products = await Product.bulkCreate(productSeedData, {
+      ignoreDuplicates: true,
+    });
+  }
+
+  const existingVendors = await Vendor.count();
+
+  if (existingVendors === 0) {
+    const vendors = await Vendor.bulkCreate(vendorSeedData, {
+      ignoreDuplicates: true,
+    });
+    await VendorProduct.bulkCreate(vendorProductSeedData, {
+      ignoreDuplicates: true,
+    });
+    await VendorField.bulkCreate(vendorFieldSeedData, {
+      ignoreDuplicates: true,
+    });
+  }
+
+  const users = await User.count();
+
+  if (users === 0) {
+    await User.bulkCreate(userSeedData, {
+      ignoreDuplicates: true,
+    });
+    const clients = await Client.bulkCreate(clientSeedData, {
+      ignoreDuplicates: true,
+    });
+    await Link.bulkCreate(linkSeedData, {
+      ignoreDuplicates: true,
+    });
+  }
 
   console.log(
-    `Prod seed done: ${products.length} product(s), ${userSeedData.length} user(s), ${clients.length} client(s), ${vendors.length} vendor(s), ${linkSeedData.length} link(s)`,
+    `Prod seed done: ${existingProducts} product(s), ${users} user(s)`,
   );
   process.exit(0);
 }
