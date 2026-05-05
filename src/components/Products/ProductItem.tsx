@@ -3,6 +3,7 @@ import axios from "axios";
 import { TiDelete } from "react-icons/ti";
 import { FaAngleRight } from "react-icons/fa6";
 import UserProductRow from "./UserProductRow";
+import { current } from "@reduxjs/toolkit";
 
 interface props {
   product: any;
@@ -26,12 +27,17 @@ const ProductItem = ({
   const [name, setName] = useState(
     product?.productName ? product?.productName : "Add a name",
   );
-  const [cost, setCost] = useState(product?.cost ? product?.cost : "");
+  const [cost, setCost] = useState(
+    product?.defaultCost ? product?.defaultCost : "",
+  );
   const [defaultPrice, setDefaultPrice] = useState(
     product?.defaultPrice ? product?.defaultPrice : 0,
   );
   const [commissionRate, setCommissionRate] = useState(
     product?.commissionRate ? product?.commissionRate : 0,
+  );
+  const [isCostDynamic, setIsCostDynamic] = useState(
+    product?.isCostDynamic ?? false,
   );
   const [spiff, setSpiff] = useState(product?.spiff ? product.spiff : 0);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -43,7 +49,8 @@ const ProductItem = ({
   const commissionRef = useRef<HTMLInputElement>(null);
   const spiffRef = useRef<HTMLInputElement>(null);
 
-  const updateProduct = async (fieldName: string, value: string) => {
+  const updateProduct = async (fieldName: string, value: any) => {
+    console.log(value);
     try {
       await axios
         .post("/api/updateProduct", {
@@ -59,6 +66,9 @@ const ProductItem = ({
             );
             if (fieldName === "commissionRate") {
               currentProduct[fieldName] = value;
+            }
+            if (fieldName === "isCostDynamic") {
+              setIsCostDynamic(res.data.isCostDynamic);
             }
             setProductList(listCopy);
             return;
@@ -123,6 +133,21 @@ const ProductItem = ({
             }
           }}
         />
+        <div className="toggle-container">
+          <label
+            htmlFor={`allow-toggle-${product.productId}`}
+            className="switch"
+          >
+            <input
+              type="checkbox"
+              onChange={() => updateProduct("isCostDynamic", !isCostDynamic)}
+              name={`allow-toggle-${product.productId}`}
+              id={`allow-toggle-${product.productId}`}
+              checked={isCostDynamic}
+            />
+            <span className="slider round"></span>
+          </label>
+        </div>
         <div className="product-list-number-wrapper">
           <p>$</p>
           <input
@@ -256,6 +281,18 @@ const ProductItem = ({
     <div className="product-list-item">
       <p>{index + 1}</p>
       <p>{name}</p>
+      <div className="toggle-container">
+        <label htmlFor={`allow-toggle-${product.productId}`} className="switch">
+          <input
+            type="checkbox"
+            name={`allow-toggle-${product.productId}`}
+            id={`allow-toggle-${product.productId}`}
+            checked={isCostDynamic}
+            disabled={true}
+          />
+          <span className="slider round"></span>
+        </label>
+      </div>
       <p>${cost}</p>
       <p>${defaultPrice}</p>
       <p>{commissionRate}</p>

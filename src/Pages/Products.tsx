@@ -84,6 +84,7 @@ const Products = () => {
             <div className="product-list-item product-list-head">
               <p>#</p>
               <p>Product</p>
+              <p>Dynamic Cost</p>
               <p>Cost</p>
               <p>Default Price</p>
               <p>Commission Rate</p>

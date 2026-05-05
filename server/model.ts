@@ -328,8 +328,10 @@ OrderItem.init(
       references: { model: "commission_sheets", key: "sheet_id" },
     },
     price: { type: DataTypes.DECIMAL(10, 2), allowNull: true },
+    cost: { type: DataTypes.DECIMAL(10, 2), allowNull: true },
     productNameSnapshot: { type: DataTypes.STRING, allowNull: true },
     defaultPriceSnapshot: { type: DataTypes.DECIMAL(10, 2), allowNull: true },
+    defaultCostSnapshot: { type: DataTypes.DECIMAL(10, 2), allowNull: true },
     commissionRateSnapshot: { type: DataTypes.DECIMAL(5, 4), allowNull: true },
     spiffSnapshot: { type: DataTypes.DECIMAL(10, 2), allowNull: true },
     costSnapshot: { type: DataTypes.DECIMAL(10, 2), allowNull: true },
@@ -384,7 +386,7 @@ Product.init(
       autoIncrement: true,
     },
     productName: { type: DataTypes.STRING, allowNull: true },
-    cost: {
+    defaultCost: {
       type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
       defaultValue: 10,
@@ -401,6 +403,11 @@ Product.init(
     },
     spiff: { type: DataTypes.DECIMAL(10, 2), allowNull: true },
     isArchived: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
+    isCostDynamic: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: false,

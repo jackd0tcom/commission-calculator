@@ -18,7 +18,8 @@ const SheetOrderItem = ({ item, productList }: props) => {
     product?.defaultPrice ??
     0;
   const quantity = item.deliveries?.length ?? 0;
-  const cost = item.costSnapshot ?? product?.cost ?? item.link?.cost ?? 0;
+  const cost =
+    item.costSnapshot ?? product?.defaultCost ?? item.link?.cost ?? 0;
   const totalPrice = quantity * price;
   const totalCost = quantity * cost;
   const contribution = totalPrice - totalCost;
