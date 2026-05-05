@@ -146,6 +146,12 @@ const OrderPage = () => {
     );
   };
 
+  const handleCostChange = (itemId: number, cost: number) => {
+    setOrderItems((prev) =>
+      prev.map((it: any) => (it.itemId === itemId ? { ...it, cost } : it)),
+    );
+  };
+
   const handleDeliveriesChange = (itemId: number, deliveries: any[]) => {
     setOrderItems((prev) =>
       prev.map((it: any) =>
@@ -162,7 +168,7 @@ const OrderPage = () => {
     console.log(fieldName);
     setOrderItems((prev) =>
       prev.map((it: any) =>
-        it.itemId === itemId ? { ...it, fieldName: value } : it,
+        it.itemId === itemId ? { ...it, [fieldName]: value } : it,
       ),
     );
   };
@@ -250,7 +256,9 @@ const OrderPage = () => {
           const itemsCopy = [...orderItems];
           const filteredItems = itemsCopy.filter(
             (item: any) =>
-              !bulkSelects.some((bulkItem: any) => bulkItem.itemId === item?.itemId),
+              !bulkSelects.some(
+                (bulkItem: any) => bulkItem.itemId === item?.itemId,
+              ),
           );
           console.log(filteredItems);
           setOrderItems(filteredItems);
@@ -387,6 +395,7 @@ const OrderPage = () => {
                   <p className="picker-heading">Product</p>
                   <p className="picker-heading">Vendor</p>
                   <p>Status</p>
+                  <p>Cost</p>
                   <p>Price</p>
                   <p className="input-heading">Notes / Restrictions</p>
                   <p className="input-heading">Target URL</p>
@@ -459,6 +468,7 @@ const OrderPage = () => {
                           onDeliveriesChange={handleDeliveriesChange}
                           vendorList={vendorList}
                           handleOrderItemUpdate={handleOrderItemUpdate}
+                          handleCostChange={handleCostChange}
                         />
                       ),
                   )}

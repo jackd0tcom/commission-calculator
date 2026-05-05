@@ -572,7 +572,11 @@ export default {
               product?.commissionRate ??
               null,
             spiffSnapshot: product?.spiff ?? null,
-            costSnapshot: product?.defaultCost ?? null,
+            costSnapshot:
+              item.cost ??
+              currentOrderItem.cost ??
+              product?.defaultCost ??
+              null,
           });
 
           const getLinkSnapshots = () => ({
@@ -657,6 +661,7 @@ export default {
                 productNameSnapshot: null,
                 priceSnapshot: null,
                 defaultPriceSnapshot: null,
+                defaultCostSnapshot: null,
                 commissionRateSnapshot: null,
                 spiffSnapshot: null,
                 costSnapshot: null,
@@ -773,7 +778,8 @@ export default {
           product?.commissionRate ??
           null,
         spiffSnapshot: product?.spiff ?? null,
-        costSnapshot: product?.defaultCost ?? null,
+        costSnapshot:
+          item.cost ?? currentOrderItem.cost ?? product?.defaultCost ?? null,
       });
 
       const getLinkSnapshots = () => ({
@@ -873,6 +879,7 @@ export default {
             productNameSnapshot: null,
             priceSnapshot: null,
             defaultPriceSnapshot: null,
+            defaultCostSnapshot: null,
             commissionRateSnapshot: null,
             spiffSnapshot: null,
             costSnapshot: null,

@@ -23,6 +23,7 @@ interface props {
   onDeliveriesChange?: (itemId: number, deliveries: any[]) => void;
   vendorList: any;
   handleOrderItemUpdate: any;
+  handleCostChange: any;
 }
 
 const OrderItem = ({
@@ -36,6 +37,7 @@ const OrderItem = ({
   linkList,
   vendorList,
   handleOrderItemUpdate,
+  handleCostChange,
 }: props) => {
   const [currentProduct, setCurrentProduct] = useState(
     item.linkId ? { linkId: item.linkId } : (item?.product ?? null),
@@ -56,6 +58,9 @@ const OrderItem = ({
       item.link?.defaultPrice ??
       0,
   );
+  const [cost, setCost] = useState(
+    item.costSnapshot ?? item.cost ?? item.product?.defaultCost ?? 0,
+  );
   const [showVendorRows, setShowVendorRows] = useState(false);
   const [vendorPayload, setVendorPayload] = useState(item.vendorPayload ?? {});
   const { xPos, yPos, showMenu, handleContextMenu } = useContextMenu();
@@ -69,6 +74,7 @@ const OrderItem = ({
     setCurrentProduct(newProduct);
     setCurrentProductType(productType);
     setPrice(newProduct.defaultPrice);
+    setCost(newProduct.defaultCost);
     setShowVendorRows(false);
     setCurrentVendor(interiorVendor.vendorId ?? 1);
     if (productType === "product") {
@@ -100,6 +106,9 @@ const OrderItem = ({
         switch (fieldName) {
           case "price":
             setPrice(value);
+            break;
+          case "cost":
+            setCost(value);
             break;
           case "notes":
             setNotes(value);
@@ -185,6 +194,7 @@ const OrderItem = ({
           currentStatus={status}
           handleUpdateStatus={handleUpdateStatus}
         />
+        <p>${cost}</p>
         <p>${price}</p>
         <p>{item.notes}</p>
         <p>{item.targetUrl}</p>
@@ -254,6 +264,24 @@ const OrderItem = ({
           currentStatus={status}
           handleUpdateStatus={handleUpdateStatus}
         />
+        {currentProductType === "product" && currentProduct?.isCostDynamic ? (
+          <div className="order-price-input-wrapper">
+            <span>$</span>
+            <input
+              className="order-price-input"
+              type="number"
+              value={`${cost}`}
+              onChange={(e) => {
+                const val = Number(e.target.value);
+                setCost(val);
+                handleCostChange?.(item.itemId, val);
+              }}
+              onBlur={() => persistOrderUpdate("cost", cost)}
+            />
+          </div>
+        ) : (
+          <p>${cost}</p>
+        )}
         <div className="order-price-input-wrapper">
           <span>$</span>
           <input
@@ -354,6 +382,7 @@ const OrderItem = ({
           currentStatus={status}
           handleUpdateStatus={handleUpdateStatus}
         />
+        <p>${cost}</p>
         <p>${price}</p>
         <p>{item.notes}</p>
         <p>{item.targetUrl}</p>

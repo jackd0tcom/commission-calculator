@@ -95,7 +95,8 @@ export const getCommissionAmount = (sheet: any) => {
     sheet.commission_items?.reduce((acc: number, item: any) => {
       if (!item.product) return acc;
       const price = item.price ?? item.product?.defaultPrice ?? 0;
-      const contribution = (price - item.product?.defaultCost) * item.quantity;
+      const cost = item.cost ?? item.product?.defaultCost ?? 0;
+      const contribution = (price - cost) * item.quantity;
       return acc + contribution * (item.product?.commissionRate ?? 0);
     }, 0),
   );

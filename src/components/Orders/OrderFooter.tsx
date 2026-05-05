@@ -6,6 +6,16 @@ interface props {
 
 const OrderFooter = ({ items }: props) => {
   const filteredItems = items.filter((item: any) => item.product || item.link);
+  const totalCost: number = filteredItems.reduce((acc: number, item: any) => {
+    const cost =
+      item.costSnapshot ??
+      item.cost ??
+      item.product?.defaultCost ??
+      item.link?.cost;
+
+    0;
+    return acc + Number(cost);
+  }, 0);
   const grandTotal: number = filteredItems.reduce((acc: number, item: any) => {
     const price =
       item.priceSnapshot ??
@@ -27,6 +37,7 @@ const OrderFooter = ({ items }: props) => {
         <p></p>
         <p></p>
         <p></p>
+        <p>Total Cost</p>
         <p>Deliveries</p>
         <p>Total</p>
       </div>
@@ -36,6 +47,7 @@ const OrderFooter = ({ items }: props) => {
         <p></p>
         <p></p>
         <p></p>
+        <p>{formatDollarNoCents(totalCost)}</p>
         <p>
           {totalDeliveries.length} / {filteredItems.length}
         </p>

@@ -128,7 +128,7 @@ const ProductItem = ({
               return;
             }
             if (e.key === "Enter") {
-              updateProduct("sheetTitle", name);
+              updateProduct("productName", name);
               nameRef.current?.blur();
             }
           }}
@@ -162,16 +162,16 @@ const ProductItem = ({
               setCost(e.target.value);
             }}
             onBlur={() => {
-              if (cost !== product.cost) {
-                updateProduct("cost", cost);
+              if (cost !== product.defaultCost) {
+                updateProduct("defaultCost", cost);
               }
             }}
             onKeyDown={(e) => {
-              if (cost === product.cost) {
+              if (cost === product.defaultCost) {
                 return;
               }
               if (e.key === "Enter") {
-                updateProduct("cost", cost);
+                updateProduct("defaultCost", cost);
                 costRef.current?.blur();
               }
             }}
