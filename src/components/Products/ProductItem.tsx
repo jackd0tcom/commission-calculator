@@ -3,7 +3,6 @@ import axios from "axios";
 import { TiDelete } from "react-icons/ti";
 import { FaAngleRight } from "react-icons/fa6";
 import UserProductRow from "./UserProductRow";
-import { current } from "@reduxjs/toolkit";
 
 interface props {
   product: any;
