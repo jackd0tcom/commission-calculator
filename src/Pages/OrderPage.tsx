@@ -29,7 +29,6 @@ const OrderPage = () => {
   });
   const [productList, setProductList] = useState([{}]);
   const [linkList, setLinkList] = useState([{}]);
-  const [unauthorized, setUnauthorized] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [notFound, setNotFound] = useState(false);
@@ -98,9 +97,6 @@ const OrderPage = () => {
       console.log(error);
       if (error?.response?.status === 404) {
         setNotFound(true);
-      }
-      if (error?.response?.status === 401) {
-        setUnauthorized(true);
       }
     } finally {
       setIsLoading(false);
@@ -272,10 +268,6 @@ const OrderPage = () => {
 
   return isLoading ? (
     <Loader />
-  ) : unauthorized ? (
-    <div className="unauthorized">
-      <h2>You are not authorized to view this order</h2>
-    </div>
   ) : (
     <div className="order-page-wrapper">
       {Number(orderId) === 0 || isCalculatorOrder ? (
