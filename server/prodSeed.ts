@@ -358,7 +358,7 @@ const linkSeedData = [
 ];
 
 async function seed() {
-  await db.sync({ alter: true });
+  await db.sync({ force: true });
 
   const existingProducts = await Product.count();
 
@@ -370,7 +370,7 @@ async function seed() {
 
   const existingVendors = await Vendor.count();
 
-  if (existingVendors === 0) {
+  if (existingVendors !== 0) {
     const vendors = await Vendor.bulkCreate(vendorSeedData, {
       ignoreDuplicates: true,
     });
@@ -384,7 +384,7 @@ async function seed() {
 
   const users = await User.count();
 
-  if (users === 0) {
+  if (users !== 0) {
     await User.bulkCreate(userSeedData, {
       ignoreDuplicates: true,
     });
