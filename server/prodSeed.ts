@@ -358,7 +358,7 @@ const linkSeedData = [
 ];
 
 async function seed() {
-  await db.sync({ force: true });
+  await db.sync({ alter: true });
 
   const existingProducts = await Product.count();
 
@@ -366,11 +366,12 @@ async function seed() {
     const products = await Product.bulkCreate(productSeedData, {
       ignoreDuplicates: true,
     });
+    console.log("Creating products");
   }
 
   const existingVendors = await Vendor.count();
 
-  if (existingVendors !== 0) {
+  if (existingVendors === 0) {
     const vendors = await Vendor.bulkCreate(vendorSeedData, {
       ignoreDuplicates: true,
     });
@@ -380,11 +381,12 @@ async function seed() {
     await VendorField.bulkCreate(vendorFieldSeedData, {
       ignoreDuplicates: true,
     });
+    console.log("Creating Vendors");
   }
 
   const users = await User.count();
 
-  if (users !== 0) {
+  if (users === 0) {
     await User.bulkCreate(userSeedData, {
       ignoreDuplicates: true,
     });
@@ -394,6 +396,7 @@ async function seed() {
     await Link.bulkCreate(linkSeedData, {
       ignoreDuplicates: true,
     });
+    console.log("Creating Users");
   }
 
   console.log(
