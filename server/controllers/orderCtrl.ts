@@ -1156,11 +1156,6 @@ export default {
         return;
       }
 
-      if (order.userId !== req.session.user.userId) {
-        res.status(401).send("You do not have permission to delete this sheet");
-        return;
-      }
-
       await order.destroy();
 
       res.status(200).send("Order deleted successfully");
