@@ -47,20 +47,10 @@ export default {
         },
       ];
 
-      let orders;
-
-      if (req.session.user.isAdmin) {
-        orders = await Order.findAll({
-          order: [["updatedAt", "DESC"]],
-          include: orderInclude,
-        });
-      } else {
-        orders = await Order.findAll({
-          where: { userId },
-          order: [["updatedAt", "DESC"]],
-          include: orderInclude,
-        });
-      }
+      const orders = await Order.findAll({
+        order: [["updatedAt", "DESC"]],
+        include: orderInclude,
+      });
 
       if (orders) {
         res.send(orders);
