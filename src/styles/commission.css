@@ -16,7 +16,7 @@
   flex-direction: column;
   border: 1px solid var(--border);
   scrollbar-width: thin;
-  background-color: white;
+  background-color: var(--white);
   box-shadow: var(--shadow);
   overscroll-behavior: none;
 }
@@ -27,7 +27,7 @@
 .commission-sheet-header {
   position: sticky;
   top: 0;
-  background-color: white;
+  background-color: var(--white);
 }
 
 .commission-sheet-header,
@@ -68,13 +68,13 @@
 }
 .new-sheet-button {
   background-color: var(--green);
-  color: white;
+  color: var(--white);
   font-weight: 500;
   border: 1px solid transparent;
 }
 .new-sheet-button:hover {
   background-color: var(--dark-green);
-  color: white;
+  color: var(--white);
 }
 .new-sheet-button:disabled {
   background-color: lightgrey;

@@ -12,7 +12,7 @@
 .clients-list-wrapper {
   margin: 15px;
   border: 1px solid var(--border);
-  background-color: white;
+  background-color: var(--white);
   height: calc(100% - 30px);
   overflow: hidden;
 }
@@ -32,7 +32,7 @@
   padding: 5px 15px;
   border-bottom: 1px solid var(--border);
   transition: 100ms;
-  background-color: white;
+  background-color: var(--white);
 }
 .client-list-name {
   padding: 10px;
@@ -49,7 +49,7 @@
 }
 .save-button {
   background-color: var(--green);
-  color: white;
+  color: var(--white);
   transition: 100ms;
 }
 .save-button:hover {
@@ -63,7 +63,7 @@
 }
 .clients-list-head:hover,
 .clients-sheet-head:hover {
-  background-color: white;
+  background-color: var(--white);
 }
 .current-client {
   background-color: var(--hover);
@@ -81,13 +81,13 @@
   margin: 10px 0px 0px 10px;
   border-radius: 5px;
   padding: 0px 8px;
-  background-color: white;
+  background-color: var(--white);
   transition: 150ms;
   margin-bottom: 60px;
 }
 .new-client-row:hover {
   background-color: var(--purple);
-  color: white;
+  color: var(--white);
 }
 .client-item-settings {
   position: relative;
@@ -106,7 +106,7 @@
   padding: 20px;
   gap: 10px;
   font-size: 0.9rem;
-  background-color: white;
+  background-color: var(--white);
   border-bottom: 1px solid var(--border);
 }
 .delete-client-buttons {
@@ -115,7 +115,7 @@
 }
 .delete-client {
   background-color: var(--red);
-  color: white;
+  color: var(--white);
   border: none;
   transition: 150ms;
 }
@@ -125,7 +125,7 @@
 .clients-sheet-wrapper {
   margin: 15px 15px 15px 0;
   border: 1px solid var(--border);
-  background-color: white;
+  background-color: var(--white);
   overflow-y: scroll;
   scrollbar-width: thin;
   font-size: 0.95rem;
@@ -133,7 +133,7 @@
 .clients-sheet-head {
   cursor: default !important;
   position: sticky;
-  background-color: white;
+  background-color: var(--white);
   top: 0;
 }
 .clients-sheet-item {
@@ -164,5 +164,5 @@
 }
 .client-new-order-button:hover {
   background-color: var(--purple);
-  color: white;
+  color: var(--white);
 }

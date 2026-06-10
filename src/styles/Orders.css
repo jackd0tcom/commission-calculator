@@ -20,7 +20,7 @@
   background-color: var(--hover);
 }
 .orders-lists {
-  background-color: white;
+  background-color: var(--white);
   border: 1px solid var(--border);
   height: 100%;
   overflow-y: scroll;
@@ -71,7 +71,7 @@
   font-weight: 500;
 }
 .orders-list-head:hover {
-  background-color: white;
+  background-color: var(--white);
 }
 .order-items-list-item {
   display: grid;
@@ -81,7 +81,8 @@
     minmax(75px, 0.75fr) minmax(100px, 0.5fr) minmax(100px, 0.5fr) minmax(
       250px,
       2fr
-    ) minmax(250px, 2fr)
+    )
+    minmax(250px, 2fr)
     minmax(250px, 2fr) minmax(50px, 0.5fr);
   align-items: center;
   min-width: max-content;
@@ -89,7 +90,7 @@
   padding: 6px 12px;
   border-bottom: 1px solid var(--border);
   font-size: 0.9rem;
-  background-color: white;
+  background-color: var(--white);
   width: 100%;
   white-space: nowrap;
   position: relative;
@@ -133,7 +134,7 @@
   display: grid;
   gap: 10px;
   font-size: 0.9rem;
-  background-color: white;
+  background-color: var(--white);
   border-bottom: 1px solid var(--border);
   padding: 6px 12px;
   width: 100%;
@@ -214,22 +215,22 @@
 .in-progress {
   background-color: var(--blue);
   font-weight: 500;
-  color: white;
+  color: var(--white);
 }
 .partial {
   background-color: var(--yellow);
-  color: black;
+  color: var(--black);
   font-weight: 500;
 }
 .in-progress {
   background-color: var(--blue);
   font-weight: 500;
-  color: white;
+  color: var(--white);
 }
 .delivered {
   background-color: var(--green);
   font-weight: 500;
-  color: white;
+  color: var(--white);
 }
 .order-items-list-wrapper {
   height: calc(100% - 135px);
@@ -247,7 +248,7 @@
 .order-status-button {
   border: none;
   border-radius: 5px;
-  color: white;
+  color: var(--white);
 }
 .draft-button {
   background-color: grey;
@@ -267,7 +268,7 @@
 .order-status-badge {
   padding: 5px 12px;
   border-radius: 5px;
-  color: white;
+  color: var(--white);
   font-size: 0.9rem;
 }
 .submitted-badge {
@@ -281,15 +282,15 @@
 }
 .partial-badge {
   background-color: var(--yellow);
-  color: black;
+  color: var(--black);
 }
 .next-net {
   background-color: var(--purple);
-  color: white;
+  color: var(--white);
 }
 .next-net:hover {
   background-color: var(--purple);
-  color: white;
+  color: var(--white);
 }
 .delivery-picker-wrapper {
   display: flex;
@@ -374,7 +375,7 @@
 }
 .new-item-row:hover {
   background-color: var(--purple);
-  color: white;
+  color: var(--white);
 }
 .mass-duplication {
   display: flex;
@@ -392,7 +393,7 @@
 /* Bulk select */
 .bulk-select-header-wrapper {
   padding: 6px 12px;
-  background-color: white;
+  background-color: var(--white);
   border-bottom: 1px solid var(--border);
 }
 .bulk-select-header {
@@ -419,11 +420,11 @@
 .bulk-delete-button:hover {
   background-color: var(--red);
   border-color: var(--red);
-  color: white;
+  color: var(--white);
 }
 .bulk-delete {
   background-color: var(--red);
-  color: white;
+  color: var(--white);
   border: none;
 }
 .bulk-delete:hover {

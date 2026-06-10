@@ -22,7 +22,7 @@
 }
 .dashboard-stats-card {
   padding: 20px;
-  background-color: white;
+  background-color: var(--white);
   border: 1px solid var(--border);
   display: flex;
   flex-direction: column;
@@ -40,7 +40,7 @@
 .dashboard-orders-wrapper {
   padding: 20px 20px 40px;
   border: 1px solid var(--border);
-  background-color: white;
+  background-color: var(--white);
   display: flex;
   flex-direction: column;
   gap: 20px;

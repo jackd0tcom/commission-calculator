@@ -24,6 +24,6 @@
   background-color: var(--hover);
 }
 .pending-sheets-head:hover {
-  background-color: white;
+  background-color: var(--white);
   cursor: default;
 }

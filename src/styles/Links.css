@@ -21,7 +21,7 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  background-color: white;
+  background-color: var(--white);
 }
 .links-list {
   height: 100%;
@@ -68,7 +68,7 @@
 }
 .link-add-to-cart:hover {
   background-color: var(--black);
-  color: white;
+  color: var(--white);
   border: none;
 }
 .links-list-item input {
@@ -124,7 +124,7 @@
 .link-cart-wrapper {
   padding: 30px;
   min-width: 300px;
-  background-color: white;
+  background-color: var(--white);
   display: flex;
   flex-direction: column;
   gap: 40px;
@@ -214,7 +214,7 @@
   transition: 250ms;
 }
 .submit-order:hover {
-  color: white;
+  color: var(--white);
   background-color: var(--black);
 }
 .submission-success {
@@ -222,7 +222,7 @@
   align-items: center;
   justify-content: center;
   background-color: var(--green);
-  color: white;
+  color: var(--white);
   padding: 6px;
   border-radius: 3px;
 }

@@ -52,7 +52,7 @@ p {
   height: 100%;
   display: flex;
   flex-direction: column;
-  background-color: white;
+  background-color: var(--white);
 }
 .route-container h1 {
   font-size: 2rem;
@@ -63,7 +63,7 @@ p {
   justify-content: space-between;
   padding: 15px;
   border-bottom: 1px solid var(--border);
-  background-color: white;
+  background-color: var(--white);
 }
 
 /* status badge */
@@ -71,7 +71,7 @@ p {
   display: flex;
 }
 .status-badge {
-  background-color: black;
+  background-color: var(--black);
   border-radius: 5px;
   padding: 0px 12px;
   display: flex;
@@ -82,7 +82,7 @@ p {
 }
 .denied {
   background-color: var(--red);
-  color: white;
+  color: var(--white);
 }
 .submitted {
   background-color: var(--yellow);
@@ -102,17 +102,17 @@ p {
 .in,
 .approved {
   background-color: var(--teal);
-  color: white;
+  color: var(--white);
 }
 .delivered,
 .paid {
   background-color: var(--green);
-  color: white;
+  color: var(--white);
 }
 .dropdown {
   position: absolute;
   border: 1px solid var(--border);
-  background-color: white;
+  background-color: var(--white);
   max-height: 250px;
   overflow-y: scroll;
   scrollbar-width: none;
@@ -169,7 +169,7 @@ p {
   justify-content: center;
 }
 .login-copy-wrapper {
-  background-color: white;
+  background-color: var(--white);
   max-height: 450px;
   height: 100%;
   max-width: 350px;
@@ -216,7 +216,7 @@ p {
 .context-menu-item:hover {
   background-color: var(--dark-grey);
   font-weight: 500;
-  color: white;
+  color: var(--white);
 }
 .context-item-icons {
   height: 12px;
