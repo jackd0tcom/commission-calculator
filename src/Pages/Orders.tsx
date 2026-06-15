@@ -86,18 +86,7 @@ const Orders = () => {
   }, []);
 
   // Order filter handler
-  const {
-    allOrders,
-    submittedOrders,
-    progressOrders,
-    partialOrders,
-    deliveredOrders,
-  } = useMemo(() => {
-    const submittedOrders: any = [];
-    const progressOrders: any = [];
-    const partialOrders: any = [];
-    let deliveredOrders: any = [];
-
+  const { allOrders } = useMemo(() => {
     let data: any;
 
     // Search
@@ -189,33 +178,29 @@ const Orders = () => {
       }
     });
 
-    data.forEach((order: any) => {
-      if (order.order_items?.length > 0) {
-        if (order.orderStatus === "submitted") {
-          submittedOrders.push(order);
-          return;
-        }
-        const undeliveredItems = order.order_items.filter(
-          (item: any) => item.itemStatus !== "complete",
-        );
-        if (undeliveredItems.length > 0) {
-          const deliveredItems = order.order_items.filter(
-            (item: any) => item.itemStatus === "complete",
-          );
-          if (deliveredItems.length > 0) {
-            partialOrders.push(order);
-          } else progressOrders.push(order);
-        } else deliveredOrders.push(order);
-      } else progressOrders.push(order);
-    });
+    // data.forEach((order: any) => {
+    //   if (order.order_items?.length > 0) {
+    //     if (order.orderStatus === "submitted") {
+    //       submittedOrders.push(order);
+    //       return;
+    //     }
+    //     const undeliveredItems = order.order_items.filter(
+    //       (item: any) => item.itemStatus !== "complete",
+    //     );
+    //     if (undeliveredItems.length > 0) {
+    //       const deliveredItems = order.order_items.filter(
+    //         (item: any) => item.itemStatus === "complete",
+    //       );
+    //       if (deliveredItems.length > 0) {
+    //         partialOrders.push(order);
+    //       } else progressOrders.push(order);
+    //     } else deliveredOrders.push(order);
+    //   } else progressOrders.push(order);
+    // });
 
     const allOrders = data;
     return {
       allOrders,
-      submittedOrders,
-      progressOrders,
-      partialOrders,
-      deliveredOrders,
     };
   }, [orders, filter, search]);
 
