@@ -42,12 +42,14 @@ const Orders = () => {
 
           res.data.forEach((order: any) => {
             if (
-              !salesPeople.some((user: any) => user.id === order.salesPerson)
+              !salesPeople.some(
+                (user: any) => user.id === order.salesPerson.userId,
+              )
             ) {
               salesArray.push({
-                title: `${order.user.firstName} ${order.user.lastName}`,
-                profilePic: order.user.profilePic,
-                id: order.user.userId,
+                title: `${order.salesPerson.firstName} ${order.salesPerson.lastName}`,
+                profilePic: order.salesPerson.profilePic,
+                id: order.salesPerson.userId,
               });
             }
             if (!clients.some((client: any) => client.id === order.clientId)) {
@@ -280,7 +282,7 @@ const Orders = () => {
                           }
                         >
                           <div className="user-width">
-                            <ProfilePic src={order.user?.profilePic} />
+                            <ProfilePic src={order.salesPerson?.profilePic} />
                           </div>
                           <div>Order #{order.orderId}</div>
                           <div>{order.client?.clientName}</div>

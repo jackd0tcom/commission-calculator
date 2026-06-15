@@ -52,8 +52,20 @@ export default {
         include: orderInclude,
       });
 
-      if (orders) {
-        res.send(orders);
+      const updatedOrders = await Promise.all(
+        orders.map(async (order: any) => {
+          const salesPerson = await User.findOne({
+            where: {
+              userId: order.salesPerson,
+            },
+          });
+          const orderData = order.toJSON();
+          return { ...orderData, salesPerson };
+        }),
+      );
+
+      if (updatedOrders) {
+        res.send(updatedOrders);
       } else {
         res.status(400).send("No orders found");
       }
