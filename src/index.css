@@ -47,6 +47,10 @@ button {
     --green: #008a5d;
     --dark-green: #006745;
     --teal: #00bdae;
+    --hover-teal: #01ac9e;
+    --hover-light-teal: #5bd6cb;
+    --dark-teal: #005b53;
+    --light-teal: #8eebe4;
     --blue: #009fa5;
     --dark-blue: #006f73;
     --yellow: #ffb62f;
@@ -81,6 +85,9 @@ button {
     --green: #008a5d;
     --dark-green: #006745;
     --teal: #00bdae;
+    --hover-teal: #01ac9e;
+    --dark-teal: #005b53;
+    --light-teal: #8eebe4;
     --blue: #009fa5;
     --dark-blue: #006f73;
     --yellow: #ffb62f;

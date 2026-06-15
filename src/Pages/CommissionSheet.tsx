@@ -152,8 +152,15 @@ const CommissionSheet = () => {
                       return (
                         <div className="sheet-list-order-wrapper">
                           <div className="sheet-list-order">
-                            <p>Order #{order.orderId}</p>
-                            <p>{order.client?.clientName}</p>
+                            <span
+                              className="commission-sheet-order-title"
+                              onClick={() =>
+                                navigate(`/order/${order.orderId}/false`)
+                              }
+                            >
+                              <p>Order #{order.orderId}</p>
+                              <p>{order.client?.clientName}</p>
+                            </span>
                           </div>
                           {order?.order_items?.length > 0 &&
                             order.order_items.map((item: any) => (

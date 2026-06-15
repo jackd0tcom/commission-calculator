@@ -29,7 +29,7 @@ export default {
         {
           model: User,
           as: "user",
-          attributes: ["profilePic", "firstName", "lastName"],
+          attributes: ["profilePic", "firstName", "lastName", "userId"],
         },
         {
           model: OrderItem,

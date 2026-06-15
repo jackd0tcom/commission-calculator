@@ -75,6 +75,15 @@ h2 {
   border-top: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
 }
+.commission-sheet-order-title {
+  display: flex;
+  gap: 8px;
+  cursor: pointer;
+  transition: 100ms;
+}
+.commission-sheet-order-title:hover {
+  font-weight: 500;
+}
 .sheet-list-order-item {
   display: grid;
   grid-template-columns: 1.5fr 1fr 1.2fr 1fr 1.2fr 1.2fr 1fr 0.5fr;

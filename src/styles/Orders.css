@@ -31,6 +31,8 @@
   border-bottom: 1px solid var(--border);
   padding-bottom: 10px;
   margin-bottom: 0px;
+  font-size: 1rem;
+  font-weight: 500;
 }
 .order-settings-wrapper {
   position: relative;
@@ -56,6 +58,64 @@
   font-size: 0.9rem;
   align-items: center;
 }
+.order-filter {
+  display: flex;
+  padding-left: 6px !important;
+}
+.order-filter-dropdown-wrapper {
+  position: relative;
+}
+.order-filter-dropdown-item {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  justify-content: space-between;
+}
+.order-filter-dropdown-span {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+.order-filter-button {
+  padding: 5px 12px;
+  border: 0px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: 150ms;
+}
+.order-filter-x-wrapper {
+  display: flex;
+  padding: 0px 3px;
+  border-radius: 4px;
+}
+.filter-icon-wrapper {
+  transition: 200ms;
+  display: flex;
+  width: 12px;
+}
+.hidden-filter {
+  opacity: 0;
+}
+.filter-icon {
+  fill: var(--grey);
+  stroke: var(--grey);
+}
+.order-filter-x-wrapper:hover {
+  background-color: var(--dark-teal);
+  color: var(--white);
+}
+.order-filter-x {
+  width: 8px;
+}
+.active-filter {
+  background-color: var(--light-teal);
+  color: var(--dark-teal);
+}
+.active-filter:hover {
+  background-color: var(--hover-light-teal);
+}
 .order-items-list {
   border: 1px solid var(--border);
   height: 100%;
@@ -70,8 +130,29 @@
 .order-items-list-head {
   font-weight: 500;
 }
+.orders-list-head {
+  padding: 0 !important;
+}
+
+.orders-list-item > div {
+  border-left: 1px solid var(--border);
+  padding: 6px 12px;
+  display: flex;
+  align-items: center;
+}
+.orders-list-item > div:first-child {
+  border: 0px;
+}
+.orders-list-heading {
+  padding: 9px 12px !important;
+}
+.user-width {
+  display: flex;
+  min-width: 65px;
+}
 .orders-list-head:hover {
-  background-color: var(--white);
+  background-color: var(--white) !important;
+  cursor: default !important;
 }
 .order-items-list-item {
   display: grid;
@@ -158,10 +239,9 @@
 .orders-list-item {
   display: grid;
   grid-template-columns: 0.3fr 1fr 1fr 0.75fr 0.5fr 0.5fr;
-  padding: 6px 12px;
+  align-items: stretch;
   border-bottom: 1px solid var(--border);
   font-size: 0.9rem;
-  align-items: center;
   justify-items: start;
   transition: 100ms;
 }
