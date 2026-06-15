@@ -42,7 +42,7 @@ const Orders = () => {
 
           res.data.forEach((order: any) => {
             if (
-              !salesPeople.some(
+              !salesArray.some(
                 (user: any) => user.id === order.salesPerson.userId,
               )
             ) {
