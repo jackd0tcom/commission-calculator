@@ -221,7 +221,7 @@ const Orders = () => {
 
   return (
     <div className="commissions-page-wrapper">
-      <div className="page-header-wrapper">
+      <div className="page-header-wrapper order-page-header">
         <h2>Orders</h2>
         <button
           onClick={() => {
@@ -310,7 +310,7 @@ const Orders = () => {
                       );
                     })
                   ) : (
-                    <div className="orders-list-item">
+                    <div className="orders-list-item no-orders">
                       <p></p>
                       <p>No orders</p>
                     </div>

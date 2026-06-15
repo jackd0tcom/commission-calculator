@@ -1,3 +1,6 @@
+.order-page-header {
+  padding: 10px 15px !important;
+}
 .order-page-wrapper {
   height: 100%;
   display: flex;
@@ -639,4 +642,8 @@
 .bulk-select-radio-check {
   stroke: var(---grey);
   fill: var(---grey);
+}
+.no-orders:hover {
+  background-color: var(--white);
+  cursor: default;
 }
