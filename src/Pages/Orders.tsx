@@ -136,7 +136,7 @@ const Orders = () => {
           return false;
 
       if (filter.user !== 0)
-        if (order.salesPerson !== filter.user) return false;
+        if (order.salesPerson.userId !== filter.user) return false;
 
       if (filter.status.length > 0)
         if (
