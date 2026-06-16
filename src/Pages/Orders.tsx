@@ -5,7 +5,7 @@ import ProfilePic from "../components/UI/ProfilePic";
 import { formatDateNoTime } from "../helpers";
 import OrderStatusBadge from "../components/Orders/OrderStatusBadge";
 import Loader from "../components/UI/Loader";
-import OrderFilterDropdown from "../components/Orders/OrderFilterDropdown";
+import FilterDropdown from "../components/UI/FilterDropdown";
 import OrderSort from "../components/Orders/OrderSort";
 
 type FilterOption = {
@@ -248,7 +248,7 @@ const Orders = () => {
               <div className="orders-list-wrapper">
                 <div className="orders-list">
                   <div className="orders-list-item orders-list-head">
-                    <OrderFilterDropdown
+                    <FilterDropdown
                       heading={"User"}
                       options={salesPeople}
                       array={false}
@@ -256,14 +256,14 @@ const Orders = () => {
                       setFilter={setFilter}
                     />
                     <div className="orders-list-heading">Order #</div>
-                    <OrderFilterDropdown
+                    <FilterDropdown
                       heading={"Client"}
                       options={clients}
                       array={true}
                       filter={filter}
                       setFilter={setFilter}
                     />
-                    <OrderFilterDropdown
+                    <FilterDropdown
                       heading={"Status"}
                       options={statuses}
                       array={true}

@@ -1,4 +1,4 @@
-import { CommissionSheet, Order, OrderItem, Client } from "../model";
+import { CommissionSheet, Order, OrderItem, Client, User } from "../model";
 import { Request, Response } from "express";
 import { Op } from "sequelize";
 
@@ -20,6 +20,10 @@ export default {
           {
             model: Order,
             as: "orders",
+          },
+          {
+            model: User,
+            as: "user",
           },
         ],
       });

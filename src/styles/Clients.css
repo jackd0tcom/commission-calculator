@@ -5,12 +5,32 @@
 }
 .clients-list-container {
   overflow-y: scroll;
-  scrollbar-width: thin;
+  scrollbar-width: none;
   height: 100%;
   background-color: var(--hover);
 }
+.clients-page-list-wrapper {
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+  gap: 10px;
+}
+.clients-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.clients-search {
+  border: 1px solid var(--border);
+  border-radius: 25px;
+  padding: 6px 14px;
+  min-width: 175px;
+  font-size: 0.8rem;
+}
+.clients-search:focus-visible {
+  outline: none;
+}
 .clients-list-wrapper {
-  margin: 15px;
   border: 1px solid var(--border);
   background-color: var(--white);
   height: calc(100% - 30px);
@@ -26,13 +46,21 @@
 
 .clients-list-item {
   display: grid;
-  grid-template-columns: 0.5fr 2fr 1fr 1fr 0.5fr;
+  grid-template-columns:
+    minmax(85px, 0.5fr) minmax(160px, 2fr) minmax(60px, 1fr)
+    1fr 0.5fr !important;
   align-items: center;
   gap: 10px;
   padding: 5px 15px;
   border-bottom: 1px solid var(--border);
   transition: 100ms;
   background-color: var(--white);
+  padding-left: 0;
+}
+.clients-list-item .user-selector-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .client-list-name {
   padding: 10px;
@@ -60,6 +88,9 @@
 }
 .clients-sheet-item:hover {
   background-color: var(--hover);
+}
+.clients-list-head {
+  padding-left: 0px;
 }
 .clients-list-head:hover,
 .clients-sheet-head:hover {

@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import ProfilePic from "../UI/ProfilePic";
+import ProfilePic from "./ProfilePic";
 import { FaCheck } from "react-icons/fa6";
 import { capitalize } from "../../helpers";
 import { FaX } from "react-icons/fa6";
@@ -13,7 +13,7 @@ interface props {
   setFilter: any;
 }
 
-const OrderFilterDropdown = ({
+const FilterDropdown = ({
   heading,
   options,
   array,
@@ -150,4 +150,4 @@ const OrderFilterDropdown = ({
     </div>
   );
 };
-export default OrderFilterDropdown;
+export default FilterDropdown;
