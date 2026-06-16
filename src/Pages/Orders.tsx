@@ -52,7 +52,9 @@ const Orders = () => {
                 id: order.salesPerson.userId,
               });
             }
-            if (!clients.some((client: any) => client.id === order.clientId)) {
+            if (
+              !clientsArray.some((client: any) => client.id === order.clientId)
+            ) {
               clientsArray.push({
                 title: order.client.clientName,
                 id: order.client.clientId,
@@ -75,7 +77,14 @@ const Orders = () => {
           setClients(
             clientsArray.sort((a, b) => a.title.localeCompare(b.title)),
           );
-          setStatuses(statusArray);
+          const statusSort = ["in progress", "partial", "delivered"];
+          setStatuses(
+            statusArray.sort(
+              (a: any, b: any) =>
+                statusSort.indexOf(a.orderStatus) -
+                statusSort.indexOf(b.orderStatus),
+            ),
+          );
         }
       });
     } catch (error) {
