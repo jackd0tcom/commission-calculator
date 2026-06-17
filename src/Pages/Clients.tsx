@@ -243,7 +243,7 @@ const Clients = () => {
               filter={filter}
               setFilter={setFilter}
               direction={"direction"}
-              position="left"
+              position="right"
               options={[
                 {
                   heading: "Name",
