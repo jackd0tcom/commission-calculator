@@ -142,7 +142,7 @@ const Clients = () => {
     } else {
       data = clientList;
       data = data.filter((client: any) => {
-        const name = client.clientName.toLowerCase();
+        const name = client.clientName?.toLowerCase();
         if (name.includes(searchQuery)) return true;
         else return false;
       });
@@ -186,7 +186,7 @@ const Clients = () => {
       });
     } else
       data = data.sort((a: any, b: any) =>
-        a.clientName.toLowerCase().localeCompare(b.clientName.toLowerCase()),
+        a.clientName?.toLowerCase().localeCompare(b.clientName?.toLowerCase()),
       );
 
     // Order Sort sorting
