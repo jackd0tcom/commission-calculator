@@ -13,6 +13,7 @@
   display: flex;
   flex-direction: column;
   padding: 15px;
+  padding-right: 0px;
   gap: 10px;
 }
 .clients-top-bar {
@@ -153,13 +154,25 @@
 .delete-client:hover {
   background-color: var(--dark-red);
 }
+.clients-orders-wrapper {
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+  gap: 10px;
+}
+.clients-order-top-bar {
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+}
+
 .clients-sheet-wrapper {
-  margin: 15px 15px 15px 0;
   border: 1px solid var(--border);
-  background-color: var(--white);
+  background-color: var(--hover);
   overflow-y: scroll;
   scrollbar-width: thin;
   font-size: 0.95rem;
+  height: calc(100% - 30px);
 }
 .clients-sheet-head {
   cursor: default !important;
@@ -174,6 +187,7 @@
   border-bottom: 1px solid var(--border);
   cursor: pointer;
   transition: 100ms;
+  background-color: var(--white);
 }
 .no-sheets-available {
   padding: 15px;
@@ -192,8 +206,12 @@
 .client-new-order-button {
   margin: 10px 0 0 10px;
   transition: 150ms;
+  background-color: var(--white);
 }
 .client-new-order-button:hover {
   background-color: var(--purple);
   color: var(--white);
+}
+.right-positioning {
+  right: 0;
 }

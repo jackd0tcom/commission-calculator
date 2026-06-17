@@ -6,9 +6,12 @@ import { FaSortAmountDownAlt, FaSortAmountUp } from "react-icons/fa";
 interface props {
   filter: any;
   setFilter: any;
+  options: any;
+  direction: string;
+  position: string;
 }
 
-const ClientsSort = ({ filter, setFilter }: props) => {
+const Sorter = ({ filter, setFilter, options, direction, position }: props) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [isFiltered, setIsFiltered] = useState(false);
   const dropdownRef = useRef<HTMLInputElement>(null);
@@ -66,13 +69,13 @@ const ClientsSort = ({ filter, setFilter }: props) => {
       {isFiltered && (
         <button
           onClick={() => {
-            filter.direction === "up"
-              ? setFilter({ ...filter, direction: "down" })
-              : setFilter({ ...filter, direction: "up" });
+            filter[direction] === "up"
+              ? setFilter({ ...filter, [direction]: "down" })
+              : setFilter({ ...filter, [direction]: "up" });
           }}
           className="order-sort-direction"
         >
-          {filter.direction === "up" ? (
+          {filter[direction] === "up" ? (
             <FaSortAmountDownAlt />
           ) : (
             <FaSortAmountUp />
@@ -80,55 +83,40 @@ const ClientsSort = ({ filter, setFilter }: props) => {
         </button>
       )}
       {showDropdown && (
-        <div className="dropdown order-sort-dropdown" ref={dropdownRef}>
-          <div
-            className="dropdown-item"
-            onClick={() => {
-              if (filter.sort !== "name") {
-                setFilter({ ...filter, sort: "name" });
-                setIsFiltered(true);
-              } else {
-                setFilter({ ...filter, sort: "" });
-                setIsFiltered(false);
-              }
-              setShowDropdown(false);
-            }}
-          >
-            Name
-          </div>
-          <div
-            className="dropdown-item"
-            onClick={() => {
-              if (filter.sort !== "dateCreated") {
-                setFilter({ ...filter, sort: "dateCreated" });
-                setIsFiltered(true);
-              } else {
-                setFilter({ ...filter, sort: "" });
-                setIsFiltered(false);
-              }
-              setShowDropdown(false);
-            }}
-          >
-            Date Created
-          </div>
-          <div
-            className="dropdown-item"
-            onClick={() => {
-              if (filter.sort !== "orders") {
-                setFilter({ ...filter, sort: "orders" });
-                setIsFiltered(true);
-              } else {
-                setFilter({ ...filter, sort: "" });
-                setIsFiltered(false);
-              }
-              setShowDropdown(false);
-            }}
-          >
-            # of Orders
-          </div>
+        <div
+          className={
+            position === "left"
+              ? "dropdown order-sort-dropdown"
+              : "dropdown order-sort-dropdown right-positioning"
+          }
+          ref={dropdownRef}
+        >
+          {options.map((option: any) => (
+            <div
+              className="dropdown-item"
+              onClick={() => {
+                if (filter[option.sortHeading] !== option.sortValue) {
+                  setFilter({
+                    ...filter,
+                    [option.sortHeading]: option.sortValue,
+                  });
+                  setIsFiltered(true);
+                } else {
+                  setFilter({
+                    ...filter,
+                    [option.sortHeading]: option.sortValue,
+                  });
+                  setIsFiltered(false);
+                }
+                setShowDropdown(false);
+              }}
+            >
+              {option.heading}
+            </div>
+          ))}
         </div>
       )}
     </div>
   );
 };
-export default ClientsSort;
+export default Sorter;

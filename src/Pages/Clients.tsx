@@ -5,7 +5,7 @@ import { FaMagnifyingGlass } from "react-icons/fa6";
 import ClientsOrderItem from "../components/Clients/ClientsOrderItem";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
-import ClientsSort from "../components/Clients/ClientsSort";
+import Sorter from "../components/Clients/Sorter";
 import FilterDropdown from "../components/UI/FilterDropdown";
 
 type FilterOption = {
@@ -28,6 +28,8 @@ const Clients = () => {
     sales: 0,
     sort: "",
     direction: "up",
+    orderSort: "",
+    orderDirection: "up",
   });
 
   const currentClientName: any =
@@ -128,8 +130,9 @@ const Clients = () => {
     }
   };
 
-  const filteredClientList = useMemo(() => {
+  const { filteredClientList, filteredOrderList } = useMemo((): any => {
     let data;
+    let orderData = orderList;
 
     const searchQuery = search.toLowerCase();
 
@@ -145,7 +148,7 @@ const Clients = () => {
       });
     }
 
-    // Sort filtering
+    // Client Sort filtering
     if (filter.sort !== "") {
       data = data.sort((a: any, b: any) => {
         switch (filter.sort) {
@@ -179,8 +182,41 @@ const Clients = () => {
         a.clientName.toLowerCase().localeCompare(b.clientName.toLowerCase()),
       );
 
-    return data;
-  }, [search, clientList, filter]);
+    // Order Sort filtering
+    if (filter.orderSort !== "") {
+      orderData = orderData.sort((a: any, b: any): any => {
+        const statusOrder = ["in progress", "partial", "delivered"];
+        const orderName = (orderId: number) => {
+          return `order #${orderId}`;
+        };
+        switch (filter.orderSort) {
+          case "name":
+            return filter.orderDirection === "up"
+              ? orderName(a.orderId).localeCompare(orderName(b.orderId))
+              : orderName(b.orderId).localeCompare(orderName(a.orderId));
+
+          case "dateCreated":
+            return filter.orderDirection === "up"
+              ? new Date(a.createdAt).getTime() -
+                  new Date(b.createdAt).getTime()
+              : new Date(b.createdAt).getTime() -
+                  new Date(a.createdAt).getTime();
+
+          case "status":
+            return filter.orderDirection === "up"
+              ? statusOrder.indexOf(a.orderStatus) -
+                  statusOrder.indexOf(b.orderStatus)
+              : statusOrder.indexOf(b.orderStatus) -
+                  statusOrder.indexOf(a.orderStatus);
+
+          default:
+            break;
+        }
+      });
+    }
+
+    return { filteredClientList: data, filteredOrderList: orderData };
+  }, [search, clientList, filter, orderList]);
 
   return (
     <div className="clients-page-wrapper">
@@ -196,7 +232,29 @@ const Clients = () => {
               className="clients-search"
               onChange={(e: any) => setSearch(e.target.value)}
             />
-            <ClientsSort filter={filter} setFilter={setFilter} />
+            <Sorter
+              filter={filter}
+              setFilter={setFilter}
+              direction={"direction"}
+              position="left"
+              options={[
+                {
+                  heading: "Name",
+                  sortHeading: "sort",
+                  sortValue: "name",
+                },
+                {
+                  heading: "Date Created",
+                  sortHeading: "sort",
+                  sortValue: "dateCreated",
+                },
+                {
+                  heading: "# Orders",
+                  sortHeading: "sort",
+                  sortValue: "orders",
+                },
+              ]}
+            />
           </div>
           <div className="clients-list-wrapper">
             <div className="clients-list-item clients-list-head">
@@ -238,40 +296,67 @@ const Clients = () => {
             )}
           </div>
         </div>
-        <div className="clients-sheet-wrapper">
-          <div className="clients-sheet-head clients-sheet-item">
-            <p>Title</p>
-            <p>Status</p>
-            <p>Date Created</p>
+        <div className="clients-orders-wrapper">
+          <div className="clients-order-top-bar">
+            <Sorter
+              filter={filter}
+              setFilter={setFilter}
+              direction={"orderDirection"}
+              position="right"
+              options={[
+                {
+                  heading: "Name",
+                  sortHeading: "orderSort",
+                  sortValue: "name",
+                },
+                {
+                  heading: "Date Created",
+                  sortHeading: "orderSort",
+                  sortValue: "dateCreated",
+                },
+                {
+                  heading: "Status",
+                  sortHeading: "orderSort",
+                  sortValue: "status",
+                },
+              ]}
+            />
           </div>
-          {orderList?.length > 0 ? (
-            <div className="client-orders-list">
-              {orderList?.map((order: any) => (
-                <ClientsOrderItem order={order} />
-              ))}
-              <div className="client-list-new-order-button">
-                <button
-                  className="client-new-order-button"
-                  onClick={() => newOrder()}
-                >
-                  New Order
-                </button>
+          <div className="clients-sheet-wrapper">
+            <div className="clients-sheet-head clients-sheet-item">
+              <p>Title</p>
+              <p>Status</p>
+              <p>Date Created</p>
+            </div>
+            {filteredOrderList?.length > 0 ? (
+              <div className="client-orders-list">
+                {filteredOrderList?.map((order: any) => (
+                  <ClientsOrderItem order={order} />
+                ))}
+                <div className="client-list-new-order-button">
+                  <button
+                    className="client-new-order-button"
+                    onClick={() => newOrder()}
+                  >
+                    New Order
+                  </button>
+                </div>
               </div>
-            </div>
-          ) : (
-            <div className="no-sheets-available">
-              <FaMagnifyingGlass className="magnifying" />
-              <p>No orders found for {currentClientName}</p>
-              {currentClient !== 0 && (
-                <button
-                  className="client-new-order-button"
-                  onClick={() => newOrder()}
-                >
-                  New Order
-                </button>
-              )}
-            </div>
-          )}
+            ) : (
+              <div className="no-sheets-available">
+                <FaMagnifyingGlass className="magnifying" />
+                <p>No orders found for {currentClientName}</p>
+                {currentClient !== 0 && (
+                  <button
+                    className="client-new-order-button"
+                    onClick={() => newOrder()}
+                  >
+                    New Order
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
