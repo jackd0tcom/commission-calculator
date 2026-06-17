@@ -27,6 +27,10 @@ const ProductPicker = ({
   const dropdownRef = useRef<HTMLInputElement>(null);
   const [showLinks, setShowLinks] = useState(false);
 
+  const alphabetizedProducts = products.sort((a: any, b: any) =>
+    a.productName.toLowerCase().localeCompare(b.productName.toLowerCase()),
+  );
+
   let selectedProduct;
   let currentName;
 
@@ -138,7 +142,7 @@ const ProductPicker = ({
           </div>
           <div className="product-picker-items">
             {!showLinks
-              ? products.map((product: any) => (
+              ? alphabetizedProducts.map((product: any) => (
                   <div
                     className="dropdown-item product-picker-item"
                     key={product.productId}
