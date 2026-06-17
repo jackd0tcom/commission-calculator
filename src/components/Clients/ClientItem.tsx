@@ -80,11 +80,13 @@ const ClientItem = ({
       }
       onClick={() => handleSelectClient(client.clientId)}
     >
-      <UserSelector
-        users={users}
-        currentUserId={currentUserId}
-        handleSelectUser={handleSelectUser}
-      />
+      <div className="client-list-user-selector">
+        <UserSelector
+          users={users}
+          currentUserId={currentUserId}
+          handleSelectUser={handleSelectUser}
+        />
+      </div>
       {isEditing ? (
         <input
           type="text"

@@ -59,10 +59,13 @@
   background-color: var(--white);
   padding-left: 0;
 }
-.clients-list-item .user-selector-wrapper {
+.client-list-user-selector {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+.client-list-user-selector .user-selector-wrapper {
+  display: flex;
 }
 .client-list-name {
   padding: 10px;

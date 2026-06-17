@@ -148,7 +148,14 @@ const Clients = () => {
       });
     }
 
-    // Client Sort filtering
+    // Client filtering
+    if (filter.sales !== 0) {
+      data = data.filter((client: any) => {
+        return client.user.userId === filter.sales;
+      });
+    }
+
+    // Client Sort sorting
     if (filter.sort !== "") {
       data = data.sort((a: any, b: any) => {
         switch (filter.sort) {
@@ -182,7 +189,7 @@ const Clients = () => {
         a.clientName.toLowerCase().localeCompare(b.clientName.toLowerCase()),
       );
 
-    // Order Sort filtering
+    // Order Sort sorting
     if (filter.orderSort !== "") {
       orderData = orderData.sort((a: any, b: any): any => {
         const statusOrder = ["in progress", "partial", "delivered"];
