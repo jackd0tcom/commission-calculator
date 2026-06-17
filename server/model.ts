@@ -235,6 +235,10 @@ OrderItem.init(
     orderIndex: {
       type: DataTypes.FLOAT,
     },
+    dueDate: {
+      type: DataTypes.DATEONLY,
+      allowNull: true,
+    },
     productId: {
       type: DataTypes.INTEGER,
       allowNull: true,

@@ -383,7 +383,7 @@ const OrderPage = () => {
                     setBulkSelects={setBulkSelects}
                     orderItems={orderItems}
                   />
-                  <p>Date</p>
+                  <p>Due</p>
                   <p className="picker-heading">Product</p>
                   <p className="picker-heading">Vendor</p>
                   <p>Status</p>

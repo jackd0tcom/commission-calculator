@@ -9,6 +9,7 @@ import OrderItemSettings from "./OrderItemSettings";
 import { FaAngleUp, FaCheck } from "react-icons/fa6";
 import { useContextMenu } from "../../hooks/UseContextMenu";
 import OrderItemContextMenu from "./OrderItemContextMenu";
+import DuePicker from "./DuePicker";
 
 interface props {
   item: any;
@@ -62,6 +63,7 @@ const OrderItem = ({
     item.costSnapshot ?? item.cost ?? item.product?.defaultCost ?? 0,
   );
   const [showVendorRows, setShowVendorRows] = useState(false);
+  const [currentDueDate, setCurrentDueDate] = useState(item.dueDate);
   const [vendorPayload, setVendorPayload] = useState(item.vendorPayload ?? {});
   const { xPos, yPos, showMenu, handleContextMenu } = useContextMenu();
 
@@ -103,6 +105,7 @@ const OrderItem = ({
         value,
       });
       if (res.status === 200) {
+        console.log(res.data);
         switch (fieldName) {
           case "price":
             setPrice(value);
@@ -118,6 +121,9 @@ const OrderItem = ({
             break;
           case "anchorText":
             setAnchorText(value);
+            break;
+          case "dueDate":
+            setCurrentDueDate(value);
             break;
         }
       }
@@ -183,7 +189,11 @@ const OrderItem = ({
         >
           {isSelected && <FaCheck className="bulk-select-radio-check" />}
         </div>
-        <p className="sheet-item-number">{formatDateNoTime(item.createdAt)}</p>
+        <DuePicker
+          currentDate={currentDueDate}
+          updateDate={persistOrderUpdate}
+          isEditable={false}
+        />
         <p>
           {currentProductType === "product"
             ? (item.productNameSnapshot ?? item.product?.productName)
@@ -244,7 +254,11 @@ const OrderItem = ({
         ) : (
           <p className="sheet-item-number">{index + 1}</p>
         )}
-        <p className="sheet-item-number">{formatDateNoTime(item.createdAt)}</p>
+        <DuePicker
+          currentDate={currentDueDate}
+          updateDate={persistOrderUpdate}
+          isEditable={true}
+        />
         <ProductPicker
           item={item}
           currentProductType={currentProductType}
@@ -371,7 +385,11 @@ const OrderItem = ({
         ) : (
           <p className="sheet-item-number">{index + 1}</p>
         )}
-        <p className="sheet-item-number">{formatDateNoTime(item.createdAt)}</p>
+        <DuePicker
+          currentDate={currentDueDate}
+          updateDate={persistOrderUpdate}
+          isEditable={false}
+        />
         <p>
           {currentProductType === "product"
             ? (item.productNameSnapshot ?? item.product?.productName)

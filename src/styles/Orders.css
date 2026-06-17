@@ -239,7 +239,7 @@
   display: grid;
   grid-template-columns:
     minmax(40px, 0.2fr)
-    minmax(50px, 0.3fr) minmax(200px, 1fr) minmax(100px, 0.65fr)
+    minmax(100px, 0.4fr) minmax(200px, 1fr) minmax(100px, 0.65fr)
     minmax(75px, 0.75fr) minmax(100px, 0.5fr) minmax(100px, 0.5fr) minmax(
       250px,
       2fr
@@ -648,4 +648,35 @@
 .no-orders:hover {
   background-color: var(--white);
   cursor: default;
+}
+/* Due picker */
+.due-picker-wrapper {
+  display: flex;
+}
+.due-picker-wrapper input {
+  padding: 0.6em 6px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  max-width: 80px;
+  cursor: pointer;
+  transition: 150ms;
+  caret-color: transparent;
+}
+.due-picker-wrapper input:hover {
+  background-color: var(--hover);
+}
+.due-picker-wrapper input:focus-visible {
+  outline: none;
+}
+.react-datepicker__close-icon:hover {
+  background-color: transparent;
+}
+.react-datepicker__close-icon::after {
+  color: var(--white) !important;
+  background-color: var(--grey) !important;
+  height: 10px !important;
+  width: 12px !important;
+}
+.react-datepicker__close-icon:hover::after {
+  background-color: var(--black);
 }
