@@ -2,7 +2,6 @@ import { useState } from "react";
 import ProductPicker from "./ProductPicker";
 import OrderStatusPicker from "./OrderStatusPicker";
 import axios from "axios";
-import { formatDateNoTime } from "../../helpers";
 import VendorPicker from "./VendorPicker";
 import VendorRow from "./VendorRow";
 import OrderItemSettings from "./OrderItemSettings";
