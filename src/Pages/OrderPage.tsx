@@ -14,6 +14,7 @@ import { capitalize } from "../helpers";
 import BulkStatusPicker from "../components/Orders/BulkStatusPicker";
 import BulkSelector from "../components/Orders/BulkSelector";
 import FilterDropdown from "../components/UI/FilterDropdown";
+import Sorter from "../components/Clients/Sorter";
 
 type FilterOption = {
   title: string;
@@ -51,11 +52,22 @@ const OrderPage = () => {
     product: [],
     vendor: [],
     status: [],
+    sort: "",
+    direction: "up",
   });
   const [dueDates, setDueDates] = useState<FilterOption[]>([]);
   const [products, setProducts] = useState<FilterOption[]>([]);
   const [vendors, setVendors] = useState<FilterOption[]>([]);
   const [statuses, setStatuses] = useState<FilterOption[]>([]);
+  const [search, setSearch] = useState("");
+  const statusOrder = [
+    "staged",
+    "ordered",
+    "in progress",
+    "cancelled",
+    "support needed",
+    "complete",
+  ];
 
   const fetchData = async () => {
     try {
@@ -135,14 +147,6 @@ const OrderPage = () => {
                       id: item.itemStatus,
                     });
                   }
-                  const statusOrder = [
-                    "staged",
-                    "ordered",
-                    "in progress",
-                    "cancelled",
-                    "support needed",
-                    "complete",
-                  ];
                   setStatuses(
                     statusesArray.sort(
                       (a: any, b: any) =>
@@ -235,6 +239,25 @@ const OrderPage = () => {
   const filteredOrderItems = useMemo(() => {
     let data: any = orderItems;
 
+    if (search.trim() !== "") {
+      const searchTerm = search.toLowerCase();
+      data = data.filter((item: any) => {
+        // Return true since searchTerm only has to match with one of the items, not match all criteria
+
+        // Search in products
+        if (item.product?.productName.toLowerCase().includes(searchTerm))
+          return true;
+
+        // Search in vendors
+        if (item.vendor?.vendorName.toLowerCase().includes(searchTerm))
+          return true;
+
+        // Search status date
+        if (item.itemStatus?.toLowerCase().includes(searchTerm)) return true;
+      });
+    }
+
+    // Filtering
     data = data.filter((item: any) => {
       if (!item) {
         return false;
@@ -267,8 +290,64 @@ const OrderPage = () => {
       return true;
     });
 
+    // Sorting
+    if (filter.sort !== "") {
+      data = data.sort((a: any, b: any) => {
+        const price = (item: any) => {
+          const price =
+            item.priceSnapshot ??
+            item.price ??
+            item.product?.defaultPrice ??
+            item.link?.price ??
+            0;
+          return price;
+        };
+
+        const cost = (item: any) => {
+          const cost =
+            item.costSnapshot ??
+            item.cost ??
+            item.product?.defaultCost ??
+            item.link?.cost;
+
+          0;
+          return cost;
+        };
+        switch (filter.sort) {
+          case "due":
+            return filter.direction === "up"
+              ? new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()
+              : new Date(b.dueDate).getTime() - new Date(a.dueDate).getTime();
+            break;
+
+          case "status":
+            return filter.direction === "up"
+              ? statusOrder.indexOf(a.itemStatus) -
+                  statusOrder.indexOf(b.itemStatus)
+              : statusOrder.indexOf(b.itemStatus) -
+                  statusOrder.indexOf(a.itemStatus);
+            break;
+
+          case "price":
+            return filter.direction === "up"
+              ? price(a) - price(b)
+              : price(b) - price(a);
+            break;
+
+          case "cost":
+            return filter.direction === "up"
+              ? cost(a) - cost(b)
+              : cost(b) - cost(a);
+            break;
+
+          default:
+            break;
+        }
+      });
+    }
+
     return data;
-  }, [filter, orderItems]);
+  }, [filter, orderItems, search]);
 
   const handleQuantityChange = (itemId: number, quantity: number) => {
     setOrderItems((prev) =>
@@ -465,13 +544,15 @@ const OrderPage = () => {
       ) : (
         <>
           <div className="page-header-wrapper">
-            <div className="order-profile-wrapper">
+            <div className="order-client-header-wrapper">
               <ProfilePic src={user.profilePic} />
-              <h2>Order #{orderId}</h2>
-            </div>
-            <div className="order-client-wrapper">
-              Client:
-              <p>{currentClient?.clientName}</p>
+              <div className="order-profile-wrapper">
+                <h4>Order #{orderId}</h4>
+                <div className="order-client-wrapper">
+                  Client:
+                  <p>{currentClient?.clientName}</p>
+                </div>
+              </div>
             </div>
             <div className="order-sales-wrapper">
               <p>Sales Person:</p>
@@ -515,6 +596,42 @@ const OrderPage = () => {
             </div>
           </div>
           <div className="order-page-body">
+            <div className="order-page-top-bar">
+              <input
+                type="text"
+                placeholder="Search"
+                className="orders-search-input"
+                onChange={(e: any) => setSearch(e.target.value)}
+              />
+              <Sorter
+                filter={filter}
+                setFilter={setFilter}
+                options={[
+                  {
+                    heading: "Due Date",
+                    sortHeading: "sort",
+                    sortValue: "due",
+                  },
+                  {
+                    heading: "Status",
+                    sortHeading: "sort",
+                    sortValue: "status",
+                  },
+                  {
+                    heading: "Price",
+                    sortHeading: "sort",
+                    sortValue: "price",
+                  },
+                  {
+                    heading: "Cost",
+                    sortHeading: "sort",
+                    sortValue: "cost",
+                  },
+                ]}
+                direction={"direction"}
+                position="left"
+              />
+            </div>
             <div className="order-items-list">
               {bulkSelects.length <= 0 ? (
                 <div className="order-items-list-item order-items-list-head">

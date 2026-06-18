@@ -45,10 +45,29 @@
 .order-settings-dropdown {
   right: 0;
 }
-.order-profile-wrapper {
+.order-client-header-wrapper {
   display: flex;
   gap: 10px;
-  align-items: center;
+}
+.order-client-header-wrapper .profile-pic-wrapper .profile-image {
+  height: 32px;
+  width: 32px;
+}
+.order-profile-wrapper {
+  display: flex;
+  flex-direction: column;
+  /* gap: 10px; */
+}
+.order-profile-wrapper h4 {
+  margin: 0;
+}
+.order-client-wrapper p {
+  margin: 0;
+}
+.order-page-top-bar {
+  margin: 5px 15px;
+  display: flex;
+  gap: 10px;
 }
 .order-sales-wrapper {
   display: flex;
@@ -206,7 +225,7 @@
   width: 100%;
   overflow-x: scroll;
   overscroll-behavior: none;
-  margin: 15px;
+  margin: 0px 15px 15px;
 }
 .order-items-list-head {
   font-weight: 500;
