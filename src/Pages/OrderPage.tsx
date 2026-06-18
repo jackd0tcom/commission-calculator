@@ -10,7 +10,7 @@ import OrderFooter from "../components/Orders/OrderFooter";
 import Loader from "../components/UI/Loader";
 import { FaMagnifyingGlass, FaTrashCan } from "react-icons/fa6";
 import UserSelector from "../components/UI/UserSelector";
-import { capitalize, formatDateNoTime } from "../helpers";
+import { capitalize } from "../helpers";
 import BulkStatusPicker from "../components/Orders/BulkStatusPicker";
 import BulkSelector from "../components/Orders/BulkSelector";
 import FilterDropdown from "../components/UI/FilterDropdown";
@@ -608,7 +608,7 @@ const OrderPage = () => {
               <div className="order-items-list-wrapper">
                 {filteredOrderItems?.length > 0 &&
                   filteredOrderItems?.map(
-                    (item: any, index) =>
+                    (item: any, index: number) =>
                       item.itemId && (
                         <OrderItem
                           bulkSelects={bulkSelects}
