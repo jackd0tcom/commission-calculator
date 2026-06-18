@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { useParams } from "react-router";
 import { useSelector } from "react-redux";
 import ProfilePic from "../components/UI/ProfilePic";
@@ -10,9 +10,16 @@ import OrderFooter from "../components/Orders/OrderFooter";
 import Loader from "../components/UI/Loader";
 import { FaMagnifyingGlass, FaTrashCan } from "react-icons/fa6";
 import UserSelector from "../components/UI/UserSelector";
-import { capitalize } from "../helpers";
+import { capitalize, formatDateNoTime } from "../helpers";
 import BulkStatusPicker from "../components/Orders/BulkStatusPicker";
 import BulkSelector from "../components/Orders/BulkSelector";
+import FilterDropdown from "../components/UI/FilterDropdown";
+
+type FilterOption = {
+  title: string;
+  id?: number;
+  profilePic?: string;
+};
 
 const OrderPage = () => {
   const { orderId, calculatorOrder } = useParams();
@@ -39,6 +46,16 @@ const OrderPage = () => {
   const [orderStatus, setOrderStatus] = useState("");
   const dropdownRef = useRef<HTMLInputElement>(null);
   const isCalculatorOrder = calculatorOrder === "true";
+  const [filter, setFilter] = useState({
+    due: [],
+    product: [],
+    vendor: [],
+    status: [],
+  });
+  const [dueDates, setDueDates] = useState<FilterOption[]>([]);
+  const [products, setProducts] = useState<FilterOption[]>([]);
+  const [vendors, setVendors] = useState<FilterOption[]>([]);
+  const [statuses, setStatuses] = useState<FilterOption[]>([]);
 
   const fetchData = async () => {
     try {
@@ -48,9 +65,93 @@ const OrderPage = () => {
         promises.push(
           axios.get(`/api/getOrder/${orderId}`).then((res) => {
             if (res.status === 200) {
-              console.log(res.data);
               if (res.data.orderItems && res.data.orderItems.length > 0) {
                 const orderItems = res.data.orderItems;
+
+                // Create arrays for filters
+                let dueDatesArray: FilterOption[] = [];
+                let productsArray: FilterOption[] = [];
+                let vendorsArray: FilterOption[] = [];
+                let statusesArray: FilterOption[] = [];
+
+                orderItems.forEach((item: any) => {
+                  if (
+                    !dueDatesArray.some((date: any) => date.id === item.dueDate)
+                  ) {
+                    const dateArray = item.dueDate.split("-");
+                    dueDatesArray.push({
+                      title: `${dateArray[1]}/${dateArray[0]}`,
+                      id: item.dueDate,
+                    });
+                  }
+                  setDueDates(
+                    dueDatesArray.sort(
+                      (a: any, b: any) =>
+                        new Date(a.id).getTime() - new Date(b.id).getTime(),
+                    ),
+                  );
+
+                  if (
+                    item.product &&
+                    !productsArray.some(
+                      (product: any) => product.id === item.product?.productId,
+                    )
+                  ) {
+                    productsArray.push({
+                      title: item.product.productName,
+                      id: item.product.productId,
+                    });
+                  }
+                  setProducts(
+                    productsArray.sort((a: any, b: any) =>
+                      a.title.localeCompare(b.title),
+                    ),
+                  );
+
+                  if (
+                    item.vendor &&
+                    !vendorsArray.some(
+                      (vendor: any) => vendor.id === item.vendor?.vendorId,
+                    )
+                  ) {
+                    vendorsArray.push({
+                      title: item.vendor.vendorName,
+                      id: item.vendor.vendorId,
+                    });
+                  }
+                  setVendors(
+                    vendorsArray.sort((a: any, b: any) =>
+                      a.title.localeCompare(b.title),
+                    ),
+                  );
+
+                  if (
+                    !statusesArray.some(
+                      (status: any) => status.id === item.itemStatus,
+                    )
+                  ) {
+                    statusesArray.push({
+                      title: item.itemStatus,
+                      id: item.itemStatus,
+                    });
+                  }
+                  const statusOrder = [
+                    "staged",
+                    "ordered",
+                    "in progress",
+                    "cancelled",
+                    "support needed",
+                    "complete",
+                  ];
+                  setStatuses(
+                    statusesArray.sort(
+                      (a: any, b: any) =>
+                        statusOrder.indexOf(a.id) - statusOrder.indexOf(b.id),
+                    ),
+                  );
+                });
+
+                // set orderItems to allItems
                 setOrderItems(
                   orderItems.sort(
                     (a: any, b: any) => a.orderIndex - b.orderIndex,
@@ -61,6 +162,12 @@ const OrderPage = () => {
               setCurrentUserId(res.data.salesPerson ?? 1);
               setCurrentClient(res.data.client ?? {});
             }
+          }),
+        );
+
+        promises.push(
+          axios.get("/api/getVendors").then((res) => {
+            if (res.status === 200) setVendorList(res.data);
           }),
         );
 
@@ -77,12 +184,6 @@ const OrderPage = () => {
       promises.push(
         axios.get("/api/getClients").then((res) => {
           if (res.status === 200) setClientList(res.data);
-        }),
-      );
-
-      promises.push(
-        axios.get("/api/getVendors").then((res) => {
-          if (res.status === 200) setVendorList(res.data);
         }),
       );
 
@@ -129,6 +230,45 @@ const OrderPage = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [showSettings]);
+
+  // Filtering / Sorting
+  const filteredOrderItems = useMemo(() => {
+    let data: any = orderItems;
+
+    data = data.filter((item: any) => {
+      if (!item) {
+        return false;
+      }
+      if (filter.due.length > 0) {
+        if (!filter.due.some((date: any) => date.id === item.dueDate))
+          return false;
+      }
+      if (filter.product.length > 0) {
+        if (
+          !filter.product.some(
+            (product: any) => product.id === item.product?.productId,
+          )
+        )
+          return false;
+      }
+      if (filter.vendor.length > 0) {
+        if (
+          !filter.vendor.some(
+            (vendor: any) => vendor.id === item.vendor?.vendorId,
+          )
+        )
+          return false;
+      }
+      if (filter.status.length > 0) {
+        if (!filter.status.some((status: any) => status.id === item.itemStatus))
+          return false;
+      }
+
+      return true;
+    });
+
+    return data;
+  }, [filter, orderItems]);
 
   const handleQuantityChange = (itemId: number, quantity: number) => {
     setOrderItems((prev) =>
@@ -381,12 +521,36 @@ const OrderPage = () => {
                   <BulkSelector
                     bulkSelects={bulkSelects}
                     setBulkSelects={setBulkSelects}
-                    orderItems={orderItems}
+                    orderItems={filteredOrderItems}
                   />
-                  <p>Due</p>
-                  <p className="picker-heading">Product</p>
-                  <p className="picker-heading">Vendor</p>
-                  <p>Status</p>
+                  <FilterDropdown
+                    heading={"Due"}
+                    array={true}
+                    options={dueDates}
+                    filter={filter}
+                    setFilter={setFilter}
+                  />
+                  <FilterDropdown
+                    heading={"Product"}
+                    array={true}
+                    options={products}
+                    filter={filter}
+                    setFilter={setFilter}
+                  />
+                  <FilterDropdown
+                    heading={"Vendor"}
+                    array={true}
+                    options={vendors}
+                    filter={filter}
+                    setFilter={setFilter}
+                  />
+                  <FilterDropdown
+                    heading={"Status"}
+                    array={true}
+                    options={statuses}
+                    filter={filter}
+                    setFilter={setFilter}
+                  />
                   <p>Cost</p>
                   <p>Price</p>
                   <p className="input-heading">Notes / Restrictions</p>
@@ -400,7 +564,7 @@ const OrderPage = () => {
                     <BulkSelector
                       bulkSelects={bulkSelects}
                       setBulkSelects={setBulkSelects}
-                      orderItems={orderItems}
+                      orderItems={filteredOrderItems}
                     />
                     {bulkDeleting ? (
                       <div className="bulk-delete-buttons-wrapper">
@@ -442,8 +606,8 @@ const OrderPage = () => {
                 </div>
               )}
               <div className="order-items-list-wrapper">
-                {orderItems?.length > 0 &&
-                  orderItems?.map(
+                {filteredOrderItems?.length > 0 &&
+                  filteredOrderItems?.map(
                     (item: any, index) =>
                       item.itemId && (
                         <OrderItem
@@ -473,7 +637,7 @@ const OrderPage = () => {
                 </div>
               </div>
             </div>
-            <OrderFooter items={orderItems} />
+            <OrderFooter items={filteredOrderItems} />
           </div>
         </>
       )}

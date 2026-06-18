@@ -307,6 +307,10 @@ export default {
             model: Delivery,
             required: false,
           },
+          {
+            model: Vendor,
+            as: "vendor",
+          },
         ],
       });
 

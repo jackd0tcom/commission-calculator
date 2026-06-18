@@ -48,7 +48,7 @@ const FilterDropdown = ({
   }, [showDropdown]);
 
   const isActive = array
-    ? filter[heading.toLowerCase()].length > 0
+    ? filter[heading.toLowerCase()]?.length > 0
     : filter[heading.toLowerCase()] !== 0;
 
   return (
@@ -101,7 +101,7 @@ const FilterDropdown = ({
             {options.map((option: any) => {
               let isSelected = false;
               if (array) {
-                isSelected = filter[heading.toLowerCase()].some(
+                isSelected = filter[heading.toLowerCase()]?.some(
                   (item: any) => item.id === option.id,
                 );
               } else isSelected = option.id === filter[heading.toLowerCase()];
