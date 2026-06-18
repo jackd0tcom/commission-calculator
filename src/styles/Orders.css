@@ -657,7 +657,7 @@
   padding: 0.6em 6px;
   border: 1px solid var(--border);
   border-radius: 5px;
-  max-width: 80px;
+  max-width: 70px;
   cursor: pointer;
   transition: 150ms;
   caret-color: transparent;
@@ -673,10 +673,11 @@
 }
 .react-datepicker__close-icon::after {
   color: var(--white) !important;
-  background-color: var(--grey) !important;
+  background-color: var(--white) !important;
   height: 10px !important;
   width: 12px !important;
+  transition: 150ms;
 }
 .react-datepicker__close-icon:hover::after {
-  background-color: var(--black);
+  background-color: var(--grey) !important;
 }
