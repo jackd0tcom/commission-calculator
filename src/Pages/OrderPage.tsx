@@ -70,7 +70,6 @@ const OrderPage = () => {
   ];
 
   const createFilters = (items: any) => {
-    console.log("creating filters");
     // Create arrays for filters
     let dueDatesArray: FilterOption[] = [];
     let productsArray: FilterOption[] = [];
@@ -128,8 +127,7 @@ const OrderPage = () => {
     );
     setDueDates(
       dueDatesArray.sort(
-        (a: any, b: any) =>
-          new Date(a.id).getTime() - new Date(b.id).getTime(),
+        (a: any, b: any) => new Date(a.id).getTime() - new Date(b.id).getTime(),
       ),
     );
   };
@@ -203,7 +201,6 @@ const OrderPage = () => {
   }, [orderId, isCalculatorOrder]);
 
   useMemo(() => {
-    console.log("creating filters");
     if (orderItems.length > 0) {
       createFilters(orderItems);
     }
@@ -320,9 +317,9 @@ const OrderPage = () => {
           case "status":
             return filter.direction === "up"
               ? statusOrder.indexOf(a.itemStatus) -
-              statusOrder.indexOf(b.itemStatus)
+                  statusOrder.indexOf(b.itemStatus)
               : statusOrder.indexOf(b.itemStatus) -
-              statusOrder.indexOf(a.itemStatus);
+                  statusOrder.indexOf(a.itemStatus);
             break;
 
           case "price":
