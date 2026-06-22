@@ -90,7 +90,8 @@ const OrderPage = () => {
                   if (
                     !dueDatesArray.some((date: any) => date.id === item.dueDate)
                   ) {
-                    const dateArray = item.dueDate.split("-");
+                    if (!item.dueDate) return;
+                    const dateArray = item.dueDate?.split("-");
                     dueDatesArray.push({
                       title: `${dateArray[1]}/${dateArray[0]}`,
                       id: item.dueDate,
