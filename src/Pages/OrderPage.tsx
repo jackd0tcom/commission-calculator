@@ -64,9 +64,9 @@ const OrderPage = () => {
     "staged",
     "ordered",
     "in progress",
+    "complete",
     "cancelled",
     "support needed",
-    "complete",
   ];
 
   const fetchData = async () => {

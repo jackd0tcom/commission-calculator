@@ -14,9 +14,9 @@ const OrderStatusPicker = ({ currentStatus, handleUpdateStatus }: props) => {
     "staged",
     "ordered",
     "in progress",
+    "complete",
     "cancelled",
     "support needed",
-    "complete",
   ];
 
   //   Handles blur

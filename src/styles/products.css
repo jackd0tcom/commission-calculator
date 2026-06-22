@@ -5,10 +5,22 @@
   overflow: hidden;
   background-color: var(--hover);
 }
+.products-page-body {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  margin: 10px 15px;
+  gap: 10px;
+}
+.products-top-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 .products-list-wrapper {
   display: flex;
   flex-direction: column;
-  margin: 15px;
   border: 1px solid var(--border);
   height: 100%;
   overflow-y: scroll;
