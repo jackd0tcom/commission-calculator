@@ -389,12 +389,16 @@ const OrderItem = ({
           updateDate={persistOrderUpdate}
           isEditable={false}
         />
-        <p>
-          {currentProductType === "product"
-            ? (item.productNameSnapshot ?? item.product?.productName)
-            : (item.link?.publication ?? "")}
-        </p>
-        <p>{currentVendorName}</p>
+        <div className="order-item-p-wrapper">
+          <p>
+            {currentProductType === "product"
+              ? (item.productNameSnapshot ?? item.product?.productName)
+              : (item.link?.publication ?? "")}
+          </p>
+        </div>
+        <div className="order-item-p-wrapper">
+          <p>{currentVendorName}</p>
+        </div>
         <OrderStatusPicker
           currentStatus={status}
           handleUpdateStatus={handleUpdateStatus}

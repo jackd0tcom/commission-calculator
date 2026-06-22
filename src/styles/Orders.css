@@ -260,7 +260,7 @@
   display: grid;
   grid-template-columns:
     minmax(40px, 0.2fr)
-    minmax(100px, 0.4fr) minmax(200px, 1fr) minmax(100px, 0.65fr)
+    minmax(100px, 0.4fr) minmax(200px, 0.75fr) minmax(100px, 0.65fr)
     minmax(75px, 0.75fr) minmax(100px, 0.5fr) minmax(100px, 0.5fr) minmax(
       250px,
       2fr
@@ -277,6 +277,11 @@
   width: 100%;
   white-space: nowrap;
   position: relative;
+}
+.order-item-p-wrapper p {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 .order-items-list-item-wrapper {
   min-width: max-content;
