@@ -69,6 +69,71 @@ const OrderPage = () => {
     "support needed",
   ];
 
+  const createFilters = (items: any) => {
+    console.log("creating filters");
+    // Create arrays for filters
+    let dueDatesArray: FilterOption[] = [];
+    let productsArray: FilterOption[] = [];
+    let vendorsArray: FilterOption[] = [];
+    let statusesArray: FilterOption[] = [];
+
+    items.forEach((item: any) => {
+      if (!dueDatesArray.some((date: any) => date.id === item.dueDate)) {
+        if (item.dueDate) {
+          const dateArray = item.dueDate?.split("-");
+          dueDatesArray.push({
+            title: `${dateArray[1]}/${dateArray[0]}`,
+            id: item.dueDate,
+          });
+        }
+      }
+      if (
+        item.product &&
+        !productsArray.some(
+          (product: any) => product.id === item.product?.productId,
+        )
+      ) {
+        productsArray.push({
+          title: item.product.productName,
+          id: item.product.productId,
+        });
+      }
+      if (
+        item.vendor &&
+        !vendorsArray.some((vendor: any) => vendor.id === item.vendor?.vendorId)
+      ) {
+        vendorsArray.push({
+          title: item.vendor.vendorName,
+          id: item.vendor.vendorId,
+        });
+      }
+      if (!statusesArray.some((status: any) => status.id === item.itemStatus)) {
+        statusesArray.push({
+          title: item.itemStatus,
+          id: item.itemStatus,
+        });
+      }
+    });
+    setVendors(
+      vendorsArray.sort((a: any, b: any) => a.title.localeCompare(b.title)),
+    );
+    setProducts(
+      productsArray.sort((a: any, b: any) => a.title.localeCompare(b.title)),
+    );
+    setStatuses(
+      statusesArray.sort(
+        (a: any, b: any) =>
+          statusOrder.indexOf(a.id) - statusOrder.indexOf(b.id),
+      ),
+    );
+    setDueDates(
+      dueDatesArray.sort(
+        (a: any, b: any) =>
+          new Date(a.id).getTime() - new Date(b.id).getTime(),
+      ),
+    );
+  };
+
   const fetchData = async () => {
     try {
       const promises = [];
@@ -79,83 +144,7 @@ const OrderPage = () => {
             if (res.status === 200) {
               if (res.data.orderItems && res.data.orderItems.length > 0) {
                 const orderItems = res.data.orderItems;
-
-                // Create arrays for filters
-                let dueDatesArray: FilterOption[] = [];
-                let productsArray: FilterOption[] = [];
-                let vendorsArray: FilterOption[] = [];
-                let statusesArray: FilterOption[] = [];
-
-                orderItems.forEach((item: any) => {
-                  if (
-                    !dueDatesArray.some((date: any) => date.id === item.dueDate)
-                  ) {
-                    if (!item.dueDate) return;
-                    const dateArray = item.dueDate?.split("-");
-                    dueDatesArray.push({
-                      title: `${dateArray[1]}/${dateArray[0]}`,
-                      id: item.dueDate,
-                    });
-                  }
-                  setDueDates(
-                    dueDatesArray.sort(
-                      (a: any, b: any) =>
-                        new Date(a.id).getTime() - new Date(b.id).getTime(),
-                    ),
-                  );
-
-                  if (
-                    item.product &&
-                    !productsArray.some(
-                      (product: any) => product.id === item.product?.productId,
-                    )
-                  ) {
-                    productsArray.push({
-                      title: item.product.productName,
-                      id: item.product.productId,
-                    });
-                  }
-                  setProducts(
-                    productsArray.sort((a: any, b: any) =>
-                      a.title.localeCompare(b.title),
-                    ),
-                  );
-
-                  if (
-                    item.vendor &&
-                    !vendorsArray.some(
-                      (vendor: any) => vendor.id === item.vendor?.vendorId,
-                    )
-                  ) {
-                    vendorsArray.push({
-                      title: item.vendor.vendorName,
-                      id: item.vendor.vendorId,
-                    });
-                  }
-                  setVendors(
-                    vendorsArray.sort((a: any, b: any) =>
-                      a.title.localeCompare(b.title),
-                    ),
-                  );
-
-                  if (
-                    !statusesArray.some(
-                      (status: any) => status.id === item.itemStatus,
-                    )
-                  ) {
-                    statusesArray.push({
-                      title: item.itemStatus,
-                      id: item.itemStatus,
-                    });
-                  }
-                  setStatuses(
-                    statusesArray.sort(
-                      (a: any, b: any) =>
-                        statusOrder.indexOf(a.id) - statusOrder.indexOf(b.id),
-                    ),
-                  );
-                });
-
+                createFilters(orderItems);
                 // set orderItems to allItems
                 setOrderItems(
                   orderItems.sort(
@@ -212,6 +201,13 @@ const OrderPage = () => {
   useEffect(() => {
     fetchData();
   }, [orderId, isCalculatorOrder]);
+
+  useMemo(() => {
+    console.log("creating filters");
+    if (orderItems.length > 0) {
+      createFilters(orderItems);
+    }
+  }, [orderItems]);
 
   //   Handles blur
   useEffect(() => {
@@ -324,9 +320,9 @@ const OrderPage = () => {
           case "status":
             return filter.direction === "up"
               ? statusOrder.indexOf(a.itemStatus) -
-                  statusOrder.indexOf(b.itemStatus)
+              statusOrder.indexOf(b.itemStatus)
               : statusOrder.indexOf(b.itemStatus) -
-                  statusOrder.indexOf(a.itemStatus);
+              statusOrder.indexOf(a.itemStatus);
             break;
 
           case "price":
