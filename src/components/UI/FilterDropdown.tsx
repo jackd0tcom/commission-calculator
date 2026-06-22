@@ -138,7 +138,7 @@ const FilterDropdown = ({
                     {option.profilePic && (
                       <ProfilePic src={option.profilePic} />
                     )}
-                    {capitalize(option.title)}
+                    {capitalize(option.title) ?? ""}
                   </span>
                   {isSelected && <FaCheck />}
                 </div>
