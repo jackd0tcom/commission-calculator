@@ -1,4 +1,4 @@
-import { formatDollarNoCents } from "../../helpers";
+import { formatDollarNoCents, getGPclass } from "../../helpers";
 
 interface props {
   items: any;
@@ -29,29 +29,33 @@ const OrderFooter = ({ items }: props) => {
     return item.itemStatus === "complete";
   });
 
+  const GP: number = grandTotal - totalCost;
+  const GPPercentage: number = Math.floor((GP / grandTotal) * 100);
+
   return (
     <div className="order-sheet-footer">
-      <div className="order-items-list-item order-items-list-head">
-        <p></p>
-        <p></p>
-        <p></p>
-        <p></p>
-        <p></p>
-        <p>Total Cost</p>
-        <p>Deliveries</p>
-        <p>Total</p>
+      <div className="order-footer-wrapper">
+        <div className="order-footer-items">
+          <p>Total Cost</p>
+          <p>Delivered</p>
+          <p>Total Invoice</p>
+          <p>Gross Profit</p>
+        </div>
       </div>
-      <div className="order-items-list-item">
-        <p></p>
-        <p></p>
-        <p></p>
-        <p></p>
-        <p></p>
-        <p>{formatDollarNoCents(totalCost)}</p>
-        <p>
-          {totalDeliveries.length} / {filteredItems.length}
-        </p>
-        <p>{formatDollarNoCents(grandTotal)}</p>
+      <div className="order-footer-wrapper">
+        <div className="order-footer-items">
+          <p>{formatDollarNoCents(totalCost)}</p>
+          <p>
+            {totalDeliveries.length} / {filteredItems.length}
+          </p>
+          <p>{formatDollarNoCents(grandTotal)}</p>
+          <div className="gp-wrapper">
+            {formatDollarNoCents(GP)}{" "}
+            <span className={`gp-percentage ${getGPclass(GPPercentage)}`}>
+              {GPPercentage}%
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   );

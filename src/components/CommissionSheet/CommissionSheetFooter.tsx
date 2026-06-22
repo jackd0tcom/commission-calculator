@@ -1,4 +1,4 @@
-import { formatDollar } from "../../helpers";
+import { formatDollar, getGPclass } from "../../helpers";
 
 interface props {
   items: any;
@@ -94,6 +94,7 @@ const CommissionSheetFooter = ({ items, products }: props) => {
     );
   }, 0);
   const grandTotal: number = commission + bonus;
+  const GPPercentage: number = Math.floor((contribution / price) * 100);
 
   return (
     <div className="commission-sheet-footer">
@@ -102,7 +103,7 @@ const CommissionSheetFooter = ({ items, products }: props) => {
         <p></p>
         <p>Price</p>
         <p>Cost</p>
-        <p>Contribution</p>
+        <p>GP</p>
         <p>Commission</p>
         <p>Bonus</p>
         <p>Total</p>
@@ -112,7 +113,12 @@ const CommissionSheetFooter = ({ items, products }: props) => {
         <p></p>
         <p>{formatDollar(price)}</p>
         <p>{formatDollar(cost)}</p>
-        <p>{formatDollar(contribution)}</p>
+        <div className="gp-wrapper">
+          {formatDollar(contribution)}{" "}
+          <span className={`gp-percentage ${getGPclass(GPPercentage)}`}>
+            {GPPercentage}%
+          </span>
+        </div>
         <p>{formatDollar(commission)}</p>
         <p>{formatDollar(bonus)}</p>
         <p>{formatDollar(grandTotal)}</p>

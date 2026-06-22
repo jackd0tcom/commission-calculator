@@ -133,7 +133,7 @@ const CommissionSheet = () => {
               <p>Quantity</p>
               <p>Price</p>
               <p>Cost</p>
-              <p>Contribution</p>
+              <p>GP</p>
               <p>Commission</p>
               <p>Bonus</p>
               <p>Total</p>

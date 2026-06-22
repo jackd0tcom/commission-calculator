@@ -127,3 +127,12 @@ export const camelCase = (str: string) => {
     })
     .join("");
 };
+
+export const getGPclass = (gp: number) => {
+  if (gp < 40) {
+    return "low-gp";
+  }
+  if (gp > 40 && gp < 60) {
+    return "mid-gp";
+  } else return "high-gp";
+};

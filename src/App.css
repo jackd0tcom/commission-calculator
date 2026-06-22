@@ -226,3 +226,25 @@ p {
   border-bottom: 1px solid var(--border);
   margin: 0;
 }
+.gp-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.gp-percentage {
+  font-size: 0.8rem;
+  padding: 1px 8px;
+  border-radius: 20px;
+  font-weight: 600;
+}
+.high-gp {
+  background-color: var(--light-green);
+  color: white;
+}
+.mid-gp {
+  background-color: var(--yellow);
+}
+.low-gp {
+  background-color: var(--red);
+  color: white;
+}

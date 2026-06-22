@@ -17,7 +17,13 @@ const Products = () => {
         await axios.get(`/api/getProducts/${user.userId}`).then((res) => {
           if (res.status === 200) {
             console.log(res.data);
-            setProductList(res.data.products);
+            setProductList(
+              res.data.products.sort((a: any, b: any) =>
+                a.productName
+                  .toLowerCase()
+                  .localeCompare(b.productName.toLowerCase()),
+              ),
+            );
             setIsLoading(false);
           }
         });
@@ -25,7 +31,13 @@ const Products = () => {
         await axios.get(`/api/getAdminProducts`).then((res) => {
           if (res.status === 200) {
             console.log(res.data);
-            setProductList(res.data.products);
+            setProductList(
+              res.data.products.sort((a: any, b: any) =>
+                a.productName
+                  .toLowerCase()
+                  .localeCompare(b.productName.toLowerCase()),
+              ),
+            );
             setUsers(res.data.users);
             setIsLoading(false);
           }

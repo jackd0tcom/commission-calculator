@@ -418,6 +418,26 @@
   flex-direction: column;
   scrollbar-width: thin;
 }
+.order-footer-wrapper {
+  border-bottom: 1px solid var(--border);
+  background-color: var(--white);
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.order-footer-items {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  align-items: center;
+  min-width: max-content;
+  padding: 6px 12px;
+  gap: 10px;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  position: relative;
+  width: 50%;
+}
 .order-sheet-footer {
   border-top: 1px solid var(--border);
 }
@@ -503,6 +523,9 @@
   min-width: unset !important;
 }
 .active-category {
+  background-color: var(--hover);
+}
+.product-picker-item.active {
   background-color: var(--hover);
 }
 
@@ -699,4 +722,17 @@
 }
 .react-datepicker__close-icon:hover::after {
   background-color: var(--grey) !important;
+}
+
+.product-search {
+  width: calc(100% - 12px);
+  padding: 6px;
+  border-bottom: 1px solid var(--border);
+}
+.product-search-input {
+  border: 1px solid var(--border);
+  border-radius: 25px;
+  padding: 4.5px 14px;
+  font-size: 0.8rem;
+  width: 85%;
 }

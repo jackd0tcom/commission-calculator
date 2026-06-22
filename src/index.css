@@ -45,6 +45,7 @@ button {
     --grey: #777777;
     --dark-grey: #5e5e5e;
     --green: #008a5d;
+    --light-green: #0cb67d;
     --dark-green: #006745;
     --teal: #00bdae;
     --hover-teal: #01ac9e;
@@ -83,6 +84,7 @@ button {
     --border: #3c3c3c;
     --grey: #777777;
     --dark-grey: #383838;
+    --light-green: #0cb67d;
     --green: #008a5d;
     --dark-green: #006745;
     --teal: #00bdae;
