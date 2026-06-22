@@ -107,10 +107,12 @@ const OrderPage = () => {
         });
       }
       if (!statusesArray.some((status: any) => status.id === item.itemStatus)) {
-        statusesArray.push({
-          title: item.itemStatus,
-          id: item.itemStatus,
-        });
+        if (item.itemStatus) {
+          statusesArray.push({
+            title: item.itemStatus,
+            id: item.itemStatus,
+          });
+        }
       }
     });
     setVendors(

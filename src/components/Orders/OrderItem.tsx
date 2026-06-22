@@ -199,10 +199,14 @@ const OrderItem = ({
             : (item.link?.publication ?? "")}
         </p>
         <p>{currentVendorName}</p>
-        <OrderStatusPicker
-          currentStatus={status}
-          handleUpdateStatus={handleUpdateStatus}
-        />
+        {item.product ? (
+          <OrderStatusPicker
+            currentStatus={status}
+            handleUpdateStatus={handleUpdateStatus}
+          />
+        ) : (
+          <div></div>
+        )}
         <p>${cost}</p>
         <p>${price}</p>
         <p>{item.notes}</p>
@@ -273,10 +277,14 @@ const OrderItem = ({
           currentVendor={currentVendor}
           setCurrentVendor={setCurrentVendor}
         />
-        <OrderStatusPicker
-          currentStatus={status}
-          handleUpdateStatus={handleUpdateStatus}
-        />
+        {item.product ? (
+          <OrderStatusPicker
+            currentStatus={status}
+            handleUpdateStatus={handleUpdateStatus}
+          />
+        ) : (
+          <div></div>
+        )}
         {currentProductType === "product" && currentProduct?.isCostDynamic ? (
           <div className="order-price-input-wrapper">
             <span>$</span>
@@ -399,10 +407,14 @@ const OrderItem = ({
         <div className="order-item-p-wrapper">
           <p>{currentVendorName}</p>
         </div>
-        <OrderStatusPicker
-          currentStatus={status}
-          handleUpdateStatus={handleUpdateStatus}
-        />
+        {item.product ? (
+          <OrderStatusPicker
+            currentStatus={status}
+            handleUpdateStatus={handleUpdateStatus}
+          />
+        ) : (
+          <div></div>
+        )}
         <p>${cost}</p>
         <p>${price}</p>
         <p>{item.notes}</p>
