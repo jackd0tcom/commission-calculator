@@ -528,7 +528,7 @@ export default {
       };
 
       const getCurrentSheet = async () => {
-        return CommissionSheet.findOne({
+        return CommissionSheet.findOrCreate({
           where: {
             userId: order?.salesPerson,
             sheetTitle: formatMonthlySheetTitle(
@@ -630,15 +630,17 @@ export default {
 
               const currentSheet = await getCurrentSheet();
 
+              console.log(currentSheet);
+
               await orderItem.update({
-                sheetId: currentSheet?.sheetId,
+                sheetId: currentSheet[0]?.sheetId,
                 itemStatus,
               });
 
               await Delivery.findOrCreate({
                 where: { itemId: item.itemId },
                 defaults: {
-                  sheetId: currentSheet?.sheetId ?? null,
+                  sheetId: currentSheet[0]?.sheetId ?? null,
                   deliveredQuantity: 1,
                 },
               });
@@ -813,7 +815,7 @@ export default {
       };
 
       const getCurrentSheet = async () => {
-        return CommissionSheet.findOne({
+        const sheet = CommissionSheet.findOrCreate({
           where: {
             userId: order?.salesPerson,
             sheetTitle: formatMonthlySheetTitle(
@@ -822,6 +824,9 @@ export default {
             ),
           },
         });
+        if (sheet) {
+          return sheet;
+        }
       };
 
       // 1) Handle item status transition
@@ -849,14 +854,14 @@ export default {
 
           const currentSheet = await getCurrentSheet();
 
-          await orderItem.update({
-            sheetId: currentSheet?.sheetId,
+          const updatedItem = await orderItem.update({
+            sheetId: currentSheet[0]?.sheetId ?? null,
             itemStatus,
           });
 
           await Delivery.create({
             itemId: item.itemId,
-            sheetId: currentSheet?.sheetId ?? null,
+            sheetId: currentSheet[0]?.sheetId ?? null,
             deliveredQuantity: 1,
           });
 
