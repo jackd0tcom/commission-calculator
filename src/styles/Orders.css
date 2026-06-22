@@ -76,6 +76,9 @@
   align-items: center;
 }
 
+.order-sales-wrapper .user-selector-wrapper {
+  display: flex;
+}
 .order-client-wrapper {
   display: flex;
   gap: 10px;

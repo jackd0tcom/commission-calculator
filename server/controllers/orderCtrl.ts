@@ -974,6 +974,7 @@ export default {
         productType: "product",
         vendorId: interiorVendor?.vendorId ?? null,
         orderIndex: orderItemsCount + 1,
+        dueDate: new Date(),
       });
 
       if (!item) {
