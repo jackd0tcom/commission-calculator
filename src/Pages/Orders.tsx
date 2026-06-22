@@ -230,7 +230,6 @@ const Orders = () => {
       </div>
       <div className="orders-page-body">
         <div className="orders-filter-box-wrapper">
-          <OrderSort filter={filter} setFilter={setFilter} />
           <div className="orders-search-wrapper">
             <input
               type="text"
@@ -239,6 +238,7 @@ const Orders = () => {
               placeholder="Search"
             />
           </div>
+          <OrderSort filter={filter} setFilter={setFilter} />
         </div>
         <div className="orders-lists">
           {isLoading ? (

@@ -19,7 +19,7 @@
 .orders-page-body {
   height: 100%;
   overflow: hidden;
-  padding: 5px 15px;
+  padding: 10px 15px;
   display: flex;
   flex-direction: column;
   background-color: var(--hover);
@@ -143,8 +143,7 @@
 .orders-filter-box-wrapper {
   display: flex;
   align-items: center;
-  justify-content: right;
-  padding-bottom: 5px;
+  padding-bottom: 10px;
   gap: 5px;
 }
 .orders-search-input {
