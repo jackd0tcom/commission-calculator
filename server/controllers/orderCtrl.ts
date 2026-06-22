@@ -284,12 +284,12 @@ export default {
         return;
       }
 
-      if (order.userId !== req.session.user.userId) {
-        if (!req.session.user.isAdmin) {
-          res.status(401).send("User is not allowed to view this order!");
-          return;
-        }
-      }
+      // if (order.userId !== req.session.user.userId) {
+      //   if (!req.session.user.isAdmin) {
+      //     res.status(401).send("User is not allowed to view this order!");
+      //     return;
+      //   }
+      // }
 
       const orderItemRows = await OrderItem.findAll({
         where: { orderId },
