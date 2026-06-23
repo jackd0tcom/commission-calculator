@@ -553,14 +553,14 @@ export default {
           const isProduct = currentOrderItem.productType === "product";
           const product: any = isProduct
             ? await Product.findOne({
-                where: { productId: currentOrderItem.productId },
-                include: [{ model: UserProductCommission, required: false }],
-              })
+              where: { productId: currentOrderItem.productId },
+              include: [{ model: UserProductCommission, required: false }],
+            })
             : null;
           const link: any = !isProduct
             ? await Link.findOne({
-                where: { linkId: currentOrderItem.linkId },
-              })
+              where: { linkId: currentOrderItem.linkId },
+            })
             : null;
 
           const getProductSnapshots = () => ({
@@ -755,14 +755,14 @@ export default {
       const isProduct = currentOrderItem.productType === "product";
       const product: any = isProduct
         ? await Product.findOne({
-            where: { productId: currentOrderItem.productId },
-            include: [{ model: UserProductCommission, required: false }],
-          })
+          where: { productId: currentOrderItem.productId },
+          include: [{ model: UserProductCommission, required: false }],
+        })
         : null;
       const link: any = !isProduct
         ? await Link.findOne({
-            where: { linkId: currentOrderItem.linkId },
-          })
+          where: { linkId: currentOrderItem.linkId },
+        })
         : null;
 
       const clearSnapshots = () => ({
@@ -1183,6 +1183,84 @@ export default {
       res.status(200).send("Order deleted successfully");
     } catch (error) {
       console.error("Error getting sheets:", error);
+      res.status(500).send("Internal server error");
+    }
+  },
+  duplicateOrder: async (req: Request, res: Response) => {
+    try {
+      if (!req.session.user) {
+        res.status(401).send("user not logged in / no session set up");
+        return;
+      }
+
+      const { orderId, quantity, monthly } = req.body;
+      const quantityNumber = Number(quantity);
+
+      if (!quantityNumber || quantityNumber < 1) {
+        res.status(400).send("Quantity must be at least 1");
+        return;
+      }
+
+      const order = await Order.findOne({ where: { orderId } });
+      if (!order) {
+        res.status(400).send("No order found");
+        return;
+      }
+
+      const orderItems = await OrderItem.findAll({ where: { orderId } });
+      const newOrders: any[] = [];
+      const today = new Date();
+
+      for (let index = 0; index < quantityNumber; index++) {
+        const newOrder = await Order.create({
+          userId: order.userId,
+          clientId: order.clientId,
+          orderStatus: "in progress",
+          salesPerson: order.salesPerson,
+        });
+
+        const newOrderItems = await Promise.all(
+          orderItems.map(async (item) => {
+            const itemCopy = item.toJSON();
+            delete itemCopy.itemId;
+            delete itemCopy.createdAt;
+            delete itemCopy.updatedAt;
+
+            let dueDate = itemCopy.dueDate ?? null;
+            if (monthly) {
+              let year: number, month: number, day: number;
+              if (itemCopy.dueDate) {
+                [year, month, day] = String(itemCopy.dueDate)
+                  .split("T")[0]
+                  .split("-")
+                  .map(Number);
+                month -= 1; // 0-indexed for Date constructor
+              } else {
+                year = today.getFullYear();
+                month = today.getMonth();
+                day = today.getDate();
+              }
+              dueDate = new Date(year, month + index + 1, day);
+            }
+
+            return OrderItem.create({
+              ...itemCopy,
+              orderId: newOrder.orderId,
+              dueDate,
+              itemStatus: "staged",
+            });
+          }),
+        );
+
+        newOrders.push({
+          ...newOrder.toJSON(),
+          orderItems: newOrderItems.map((i) => i.toJSON()),
+        });
+      }
+
+      res.status(200).send(newOrders);
+    } catch (error) {
+      console.error("Error duplicating order:", error);
       res.status(500).send("Internal server error");
     }
   },

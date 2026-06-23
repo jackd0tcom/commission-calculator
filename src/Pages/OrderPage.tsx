@@ -15,6 +15,7 @@ import BulkStatusPicker from "../components/Orders/BulkStatusPicker";
 import BulkSelector from "../components/Orders/BulkSelector";
 import FilterDropdown from "../components/UI/FilterDropdown";
 import Sorter from "../components/Clients/Sorter";
+import DuplicateOrder from "../components/Orders/DuplicateOrder";
 
 type FilterOption = {
   title: string;
@@ -45,6 +46,8 @@ const OrderPage = () => {
   const [currentUserId, setCurrentUserId] = useState(1);
   const [users, setUsers] = useState([{}]);
   const [orderStatus, setOrderStatus] = useState("");
+  const [showDuplicateOrder, setShowDuplicateOrder] = useState(false);
+  const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const dropdownRef = useRef<HTMLInputElement>(null);
   const isCalculatorOrder = calculatorOrder === "true";
   const [filter, setFilter] = useState({
@@ -219,6 +222,7 @@ const OrderPage = () => {
         !isButtonClick
       ) {
         setShowSettings(false);
+        setShowDuplicateOrder(false);
       }
     };
 
@@ -481,6 +485,23 @@ const OrderPage = () => {
     }
   };
 
+  const handleDuplicateOrder = async (quantity: number, monthly: boolean) => {
+    if (quantity === 0) {
+      setShowDuplicateOrder(false);
+      setShowSettings(false);
+    }
+    try {
+      await axios
+        .post("/api/duplicateOrder", { orderId, quantity, monthly })
+        .then(() => {
+          setShowDuplicateOrder(false);
+          navigate("/orders");
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return isLoading ? (
     <Loader />
   ) : (
@@ -584,9 +605,42 @@ const OrderPage = () => {
                   className="order-settings-dropdown dropdown"
                   ref={dropdownRef}
                 >
-                  <div onClick={() => deleteOrder()} className="dropdown-item">
-                    Delete Order
-                  </div>
+                  {showConfirmDelete ? (
+                    <div className="confirm-delete">
+                      <p>Are you sure you want to delete this order?</p>
+                      <div className="confirm-delete-buttons">
+                        <button
+                          className="delete-order"
+                          onClick={() => deleteOrder()}
+                        >
+                          Delete
+                        </button>
+                        <button onClick={() => setShowConfirmDelete(false)}>
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  ) : !showDuplicateOrder ? (
+                    <>
+                      <div
+                        onClick={() => setShowConfirmDelete(true)}
+                        className="dropdown-item"
+                      >
+                        Delete Order
+                      </div>
+                      <div
+                        className="dropdown-item"
+                        onClick={() => setShowDuplicateOrder(true)}
+                      >
+                        Duplicate Order
+                      </div>
+                    </>
+                  ) : (
+                    <DuplicateOrder
+                      setShowDuplicateOrder={setShowDuplicateOrder}
+                      handleDuplicateOrder={handleDuplicateOrder}
+                    />
+                  )}
                 </div>
               )}
             </div>

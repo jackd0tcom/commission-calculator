@@ -45,6 +45,7 @@ const {
   newLinkPortalOrder,
   massDuplicateOrderItem,
   bulkDeleteOrderItem,
+  duplicateOrder,
 } = orderCtrl;
 const {
   getCommissionSheets,
@@ -150,6 +151,7 @@ app.post(`/api/bulkDeleteOrderItem`, bulkDeleteOrderItem);
 app.post(`/api/duplicateOrderItem`, duplicateOrderItem);
 app.post(`/api/massDuplicateOrderItem`, massDuplicateOrderItem);
 app.post(`/api/deleteOrder`, deleteOrder);
+app.post(`/api/duplicateOrder`, duplicateOrder);
 
 // Client endpoints
 app.get(`/api/getClients`, getClients);
