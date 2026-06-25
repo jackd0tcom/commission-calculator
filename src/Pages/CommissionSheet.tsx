@@ -8,6 +8,7 @@ import StatusPicker from "../components/CommissionSheet/StatusPicker";
 import { useNavigate } from "react-router";
 import { formatDateWithDay } from "../helpers";
 import Loader from "../components/UI/Loader";
+import ProfilePic from "../components/UI/ProfilePic";
 
 const CommissionSheet = () => {
   const { sheetId } = useParams();
@@ -18,6 +19,7 @@ const CommissionSheet = () => {
   const [unauthorized, setUnauthorized] = useState(false);
   const descriptionRef = useRef<HTMLTextAreaElement>(null);
   const creatingSheetRef = useRef<boolean>(false);
+  const [profilePic, setProfilePic] = useState("");
   const [sheetData, setSheetData] = useState({
     sheetId: sheetId ? sheetId : 0,
     userId: user?.userId || 0,
@@ -38,6 +40,7 @@ const CommissionSheet = () => {
         promises.push(
           axios.get(`/api/getSheet/${sheetId}`).then((res) => {
             if (res.status === 200) {
+              setProfilePic(res.data.user?.profilePic);
               setSheetData((prev) => ({
                 ...prev,
                 sheetTitle: res.data.sheetTitle,
@@ -117,7 +120,10 @@ const CommissionSheet = () => {
     <div className="commission-sheet-page-wrapper">
       <>
         <div className="page-header-wrapper">
-          <h2>{sheetData.sheetTitle}</h2>
+          <div className="commission-sheet-profile-wrapper">
+            <ProfilePic src={profilePic} />
+            <h2>{sheetData.sheetTitle}</h2>
+          </div>
           <div className="sheet-header-container">
             <p className="sheet-date">
               {formatDateWithDay(sheetData?.createdAt)}
@@ -217,7 +223,10 @@ const CommissionSheet = () => {
                   ? "archive-button archived"
                   : "archive-button"
               }
-              onClick={() => updateSheet("isArchived", !sheetData.isArchived)}
+              onClick={() => {
+                updateSheet("isArchived", !sheetData.isArchived);
+                navigate("/commission-sheets");
+              }}
             >
               {!sheetData.isArchived ? "Archive" : "Archived"}
             </button>

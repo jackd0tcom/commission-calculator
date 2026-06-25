@@ -157,7 +157,15 @@ export default {
 
       const { sheetId } = req.params;
 
-      const sheet = await CommissionSheet.findOne({ where: { sheetId } });
+      const sheet = await CommissionSheet.findOne({
+        where: { sheetId },
+        include: [
+          {
+            model: User,
+            as: "user",
+          },
+        ],
+      });
 
       if (sheet.userId !== req.session.user.userId) {
         if (!req.session.user.isAdmin) {

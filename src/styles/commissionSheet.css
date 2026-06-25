@@ -9,7 +9,11 @@
   height: 100%;
   overflow: hidden;
 }
-
+.commission-sheet-profile-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 h2 {
   margin: 0;
 }
