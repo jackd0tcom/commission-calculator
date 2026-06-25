@@ -26,6 +26,7 @@ const CommissionSheet = () => {
     sheetStatus: "draft",
     createdAt: null,
     updatedAt: null,
+    isArchived: false,
   });
   const [isLoading, setIsLoading] = useState(true);
 
@@ -45,6 +46,7 @@ const CommissionSheet = () => {
                 sheetStatus: res.data.sheetStatus,
                 createdAt: res.data.createdAt,
                 updatedAt: res.data.updatedAt,
+                isArchived: res.data.isArchived,
               }));
               setOrderList(res.data.orders);
             }
@@ -79,7 +81,7 @@ const CommissionSheet = () => {
     fetchData();
   }, [user?.userId, sheetId]);
 
-  const updateSheet = async (fieldName: string, value: string) => {
+  const updateSheet = async (fieldName: string, value: any) => {
     if (Number(sheetId) === 0) {
       if (creatingSheetRef.current) return;
       if (fieldName !== "sheetTitle") return;
@@ -99,8 +101,11 @@ const CommissionSheet = () => {
         await axios
           .post("/api/updateSheet", { sheetId, fieldName, value })
           .then((res) => {
-            if (res.status !== 200) {
-              console.log(res);
+            if (res.status === 200) {
+              console.log(res.data);
+              if (fieldName === "isArchived") {
+                setSheetData({ ...sheetData, isArchived: res.data.isArchived });
+              }
             }
           });
       } catch (error) {
@@ -205,6 +210,18 @@ const CommissionSheet = () => {
             }}
             value={sheetData.sheetDescription}
           ></textarea>
+          <div>
+            <button
+              className={
+                sheetData.isArchived
+                  ? "archive-button archived"
+                  : "archive-button"
+              }
+              onClick={() => updateSheet("isArchived", !sheetData.isArchived)}
+            >
+              {!sheetData.isArchived ? "Archive" : "Archived"}
+            </button>
+          </div>
         </div>
       </>
     </div>

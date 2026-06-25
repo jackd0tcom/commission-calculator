@@ -163,7 +163,7 @@ const Orders = () => {
       const statusOrder = ["in progress", "partial", "delivered"];
       switch (filter.sort) {
         case "dateCreated":
-          return filter.direction === "up"
+          return filter.direction !== "up"
             ? new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
             : new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
 

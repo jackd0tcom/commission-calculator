@@ -320,3 +320,12 @@ h2 {
   display: flex;
   gap: 10px;
 }
+
+/* Archive button */
+.archive-button {
+  background-color: var(--black);
+  color: var(--white);
+}
+.archive-button:hover {
+  background-color: var(--dark-red);
+}

@@ -50,10 +50,13 @@ export default {
         sheets = await CommissionSheet.findAll({
           order: [["updatedAt", "DESC"]],
           include: sheetInclude,
+          where: {
+            isArchived: false,
+          },
         });
       } else {
         sheets = await CommissionSheet.findAll({
-          where: { userId },
+          where: { userId, isArchived: false },
           order: [["updatedAt", "DESC"]],
           include: sheetInclude,
         });

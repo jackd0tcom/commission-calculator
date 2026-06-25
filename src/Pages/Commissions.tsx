@@ -39,13 +39,13 @@ const Commissions = () => {
     <div className="commissions-page-wrapper">
       <div className="page-header-wrapper">
         <h2>Commission Sheets</h2>
-        <button
+        {/* <button
           onClick={() => handleNewSheet()}
           className="new-sheet-button"
           disabled={sheetExists}
         >
           New Sheet
-        </button>
+        </button> */}
       </div>
       <CommissionSheetList />
     </div>

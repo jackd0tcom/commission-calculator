@@ -143,6 +143,14 @@ const Products = () => {
     <div className="products-page-wrapper">
       <div className="page-header-wrapper">
         <h2>Products</h2>
+        {user?.isAdmin && (
+          <button
+            onClick={() => handleAddProduct()}
+            className="new-sheet-button"
+          >
+            Add Product
+          </button>
+        )}
       </div>
       <div className="products-page-body">
         <div className="products-top-bar">
@@ -209,15 +217,6 @@ const Products = () => {
                   );
                 })}
             </>
-          )}
-          {user?.isAdmin && (
-            <div
-              onClick={() => handleAddProduct()}
-              className="product-list-item add-product-wrapper"
-            >
-              <p>+</p>
-              <p>Add Product</p>
-            </div>
           )}
         </div>
       </div>
