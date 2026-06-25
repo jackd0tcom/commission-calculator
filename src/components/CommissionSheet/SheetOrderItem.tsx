@@ -17,6 +17,11 @@ const SheetOrderItem = ({ item, productList }: props) => {
     item.price ??
     product?.defaultPrice ??
     0;
+  const defaultPrice =
+    item.defaultPriceSnapshot ??
+    item.link?.defaultPrice ??
+    product?.defaultPrice ??
+    0;
   const quantity = item.deliveries?.length ?? 0;
   const cost =
     item.costSnapshot ?? product?.defaultCost ?? item.link?.cost ?? 0;
@@ -33,8 +38,8 @@ const SheetOrderItem = ({ item, productList }: props) => {
   const commission =
     contribution * commissionRate <= 0 ? 0 : contribution * commissionRate;
   const spiff = item.spiffSnapshot ?? product?.spiff ?? 0;
-  const bonus = quantity * spiff;
-  const total = commission + bonus;
+  const bonus = Number(price) >= Number(defaultPrice) ? spiff : 0;
+  const total = Number(commission) + Number(bonus);
 
   return (
     <div className="sheet-list-order-item">
