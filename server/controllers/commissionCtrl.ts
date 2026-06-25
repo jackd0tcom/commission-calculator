@@ -162,7 +162,6 @@ export default {
         include: [
           {
             model: User,
-            as: "user",
           },
         ],
       });
@@ -201,6 +200,7 @@ export default {
 
       const sheetWithOrders = {
         ...sheet?.dataValues,
+        user: sheet?.user,
         orders,
       };
 

@@ -1,5 +1,5 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface props {
   src: string;
@@ -16,6 +16,13 @@ const ProfilePic = ({ src }: props) => {
       setImageSrc("/default-profile-pic.jpg");
     }
   };
+
+  useEffect(() => {
+    if (src) {
+      setImageSrc(src);
+      setHasError(false);
+    }
+  }, [src]);
 
   if (!isAuthenticated && !src) {
     return null;
