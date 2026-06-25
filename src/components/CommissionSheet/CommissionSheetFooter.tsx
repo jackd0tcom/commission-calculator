@@ -88,10 +88,20 @@ const CommissionSheetFooter = ({ items, products }: props) => {
     const product = products.find(
       (product: any) => product.productId === item.productId,
     );
-    return (
-      acc +
-      (item.spiffSnapshot ?? product?.spiff ?? 0) * item.deliveries?.length
-    );
+    const defaultPrice =
+      item.defaultPriceSnapshot ??
+      item.link?.defaultPrice ??
+      product?.defaultPrice ??
+      0;
+    const price =
+      item.priceSnapshot ??
+      item.defaultPriceSnapshot ??
+      item.link?.defaultPrice ??
+      item.price ??
+      product?.defaultPrice ??
+      0;
+    const spiff = item.spiffSnapshot ?? product?.spiff ?? 0;
+    return acc + (Number(price) >= Number(defaultPrice) ? Number(spiff) : 0);
   }, 0);
   const grandTotal: number = commission + bonus;
   const GPPercentage: number = Math.floor((contribution / price) * 100);
