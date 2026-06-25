@@ -12,6 +12,7 @@ interface props {
   handleDeleteClient: any;
   handleSelectClient: any;
   currentClient: any;
+  setClientList: any;
 }
 
 const ClientItem = ({
@@ -20,6 +21,7 @@ const ClientItem = ({
   handleDeleteClient,
   handleSelectClient,
   currentClient,
+  setClientList,
 }: props) => {
   const [name, setName] = useState(client?.clientName ?? "");
   const nameRef = useRef<HTMLDivElement>(null);
@@ -28,21 +30,34 @@ const ClientItem = ({
   const [isDeleting, setIsDeleting] = useState(false);
 
   const updateClient = async (fieldName: string, value: any) => {
-    try {
-      await axios
-        .post("/api/updateClient", {
-          clientId: client.clientId,
-          fieldName,
-          value,
-        })
-        .then((res) => {
+    if (client.newClient) {
+      try {
+        await axios.post("/api/newClient", { name: value }).then((res) => {
           if (res.status === 200) {
-            return;
+            setClientList((prev: any) =>
+              prev.map((client: any) => (client.newClient ? res.data : client)),
+            );
           }
         });
-    } catch (error) {
-      console.log(error);
-    }
+      } catch (error) {
+        console.log(error);
+      }
+    } else
+      try {
+        await axios
+          .post("/api/updateClient", {
+            clientId: client.clientId,
+            fieldName,
+            value,
+          })
+          .then((res) => {
+            if (res.status === 200) {
+              return;
+            }
+          });
+      } catch (error) {
+        console.log(error);
+      }
   };
 
   const handleSelectUser = (userId: number) => {

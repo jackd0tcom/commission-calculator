@@ -94,6 +94,8 @@ export default {
     try {
       console.log("newClient");
 
+      const { name } = req.body;
+
       if (!req.session.user) {
         res.status(401).send("No user signed in!");
         console.log("user not logged in / no session set up");
@@ -102,6 +104,7 @@ export default {
 
       const client = await Client.create({
         userId: req.session.user.userId,
+        clientName: name,
       });
 
       if (!client) {

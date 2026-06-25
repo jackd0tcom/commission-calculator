@@ -76,6 +76,10 @@ CommissionSheet.init(
       type: DataTypes.DATE,
       allowNull: true,
     },
+    // isArchived: {
+    //   type: DataTypes.BOOLEAN,
+    //   defaultValue: false,
+    // },
   },
   {
     sequelize: db,

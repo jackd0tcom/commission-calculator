@@ -82,17 +82,14 @@ const Clients = () => {
   };
 
   const handleAddClient = async () => {
-    try {
-      await axios.post("/api/newClient").then((res) => {
-        if (res.status === 200) {
-          const newClient = res.data;
-          res.data.newClient = true;
-          setClientList([...clientList, newClient]);
-        }
-      });
-    } catch (error) {
-      console.log(error);
-    }
+    const emptyClient = {
+      newClient: true,
+      createdAt: new Date().toISOString(),
+      userId: userId,
+      clientName: "",
+    };
+
+    setClientList((prev: any) => [emptyClient, ...prev]);
   };
 
   const handleDeleteClient = async (clientId: number) => {
@@ -169,7 +166,7 @@ const Clients = () => {
                   .localeCompare(a.clientName.toLowerCase());
 
           case "dateCreated":
-            return filter.direction === "up"
+            return filter.direction !== "up"
               ? new Date(a.createdAt).getTime() -
                   new Date(b.createdAt).getTime()
               : new Date(b.createdAt).getTime() -
@@ -185,9 +182,13 @@ const Clients = () => {
         }
       });
     } else
-      data = data.sort((a: any, b: any) =>
-        a.clientName?.toLowerCase().localeCompare(b.clientName?.toLowerCase()),
-      );
+      data = data.sort((a: any, b: any) => {
+        if (a.newClient) return -1;
+        if (b.newClient) return 1;
+        return a.clientName
+          ?.toLowerCase()
+          .localeCompare(b.clientName?.toLowerCase());
+      });
 
     // Order Sort sorting
     if (filter.orderSort !== "") {
@@ -203,7 +204,7 @@ const Clients = () => {
               : orderName(b.orderId).localeCompare(orderName(a.orderId));
 
           case "dateCreated":
-            return filter.orderDirection === "up"
+            return filter.orderDirection !== "up"
               ? new Date(a.createdAt).getTime() -
                   new Date(b.createdAt).getTime()
               : new Date(b.createdAt).getTime() -
@@ -229,6 +230,9 @@ const Clients = () => {
     <div className="clients-page-wrapper">
       <div className="page-header-wrapper">
         <h2>Clients</h2>
+        <button onClick={() => handleAddClient()} className="new-sheet-button">
+          Add Client
+        </button>
       </div>
       <div className="clients-page-container">
         <div className="clients-page-list-wrapper">
@@ -290,6 +294,7 @@ const Clients = () => {
                     handleDeleteClient={handleDeleteClient}
                     handleSelectClient={handleSelectClient}
                     currentClient={currentClient}
+                    setClientList={setClientList}
                   />
                 ))}
                 <div
