@@ -4,8 +4,31 @@
   flex-direction: column;
   background-color: var(--hover);
 }
+.commission-sheet-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 5px;
+  padding: 6px 12px;
+}
+.commission-sheet-top-bar-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 5px;
+  padding: 6px 12px;
+}
+.commission-sheet-top-bar .order-filter-button {
+  border: 1px solid var(--border);
+  background-color: var(--white);
+}
+.commission-sheet-top-bar .active-filter {
+  border: 1px solid var(--border);
+  background-color: var(--light-teal);
+}
 .sheet-page-body {
   display: flex;
+  /* flex-direction: column; */
   height: 100%;
   overflow: hidden;
 }
@@ -101,7 +124,7 @@ h2 {
 .sheet-items-list {
   display: flex;
   flex-direction: column;
-  margin: 15px;
+  margin: 0px 15px 15px;
   border: 1px solid var(--border);
   background-color: var(--white);
   overflow-y: hidden;
@@ -119,6 +142,7 @@ h2 {
   overflow-y: scroll;
   scrollbar-width: thin;
   padding-bottom: 15px;
+  background-color: var(--hover);
 }
 .sheet-item {
   display: grid;
