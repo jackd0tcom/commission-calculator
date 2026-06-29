@@ -248,3 +248,7 @@ p {
   background-color: var(--red);
   color: white;
 }
+.filter-dropdown-wrapper {
+  display: flex;
+  align-items: center;
+}

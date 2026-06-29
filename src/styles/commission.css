@@ -29,13 +29,27 @@
   top: 0;
   background-color: var(--white);
 }
-
-.commission-sheet-header,
+.commission-sheet-header-item {
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  border-left: 1px solid var(--border);
+  padding: 6px 10px;
+}
+.commission-profile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.commission-sheet-header {
+  border-bottom: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: 0.3fr 1fr 1fr 1fr 0.7fr;
+}
 .commission-sheet-item {
   border-bottom: 1px solid var(--border);
   display: grid;
-  grid-template-columns: 0.25fr 1.5fr 1fr 1fr 0.5fr;
-  padding: 5px 10px;
+  grid-template-columns: 0.3fr 1fr 1fr 1fr 0.7fr;
 }
 .commission-sheet-item:hover {
   transition: 100ms;
