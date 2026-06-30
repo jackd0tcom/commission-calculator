@@ -12,6 +12,7 @@ import {
 } from "../model.ts";
 import { Request, Response } from "express";
 import { formatMonthlySheetTitle } from "../commissionSheets.ts";
+import { getOrCreateMonthlySheetForUser } from "../helpers.ts";
 
 export default {
   getOrders: async (req: Request, res: Response) => {
@@ -527,17 +528,10 @@ export default {
         });
       };
 
-      const getCurrentSheet = async () => {
-        return CommissionSheet.findOrCreate({
-          where: {
-            userId: order?.salesPerson,
-            sheetTitle: formatMonthlySheetTitle(
-              new Date(),
-              process.env.COMMISSION_SHEET_TIMEZONE,
-            ),
-          },
-        });
-      };
+      const currentSheet =
+        itemStatus === "complete"
+          ? await getOrCreateMonthlySheetForUser(order.salesPerson)
+          : null;
 
       const payloads = await Promise.all(
         items.map(async (item: any) => {
@@ -553,14 +547,14 @@ export default {
           const isProduct = currentOrderItem.productType === "product";
           const product: any = isProduct
             ? await Product.findOne({
-              where: { productId: currentOrderItem.productId },
-              include: [{ model: UserProductCommission, required: false }],
-            })
+                where: { productId: currentOrderItem.productId },
+                include: [{ model: UserProductCommission, required: false }],
+              })
             : null;
           const link: any = !isProduct
             ? await Link.findOne({
-              where: { linkId: currentOrderItem.linkId },
-            })
+                where: { linkId: currentOrderItem.linkId },
+              })
             : null;
 
           const getProductSnapshots = () => ({
@@ -628,19 +622,15 @@ export default {
                 }
               }
 
-              const currentSheet = await getCurrentSheet();
-
-              console.log(currentSheet);
-
               await orderItem.update({
-                sheetId: currentSheet[0]?.sheetId,
+                sheetId: currentSheet?.sheetId ?? null,
                 itemStatus,
               });
 
               await Delivery.findOrCreate({
                 where: { itemId: item.itemId },
                 defaults: {
-                  sheetId: currentSheet[0]?.sheetId ?? null,
+                  sheetId: currentSheet?.sheetId ?? null,
                   deliveredQuantity: 1,
                 },
               });
@@ -755,14 +745,14 @@ export default {
       const isProduct = currentOrderItem.productType === "product";
       const product: any = isProduct
         ? await Product.findOne({
-          where: { productId: currentOrderItem.productId },
-          include: [{ model: UserProductCommission, required: false }],
-        })
+            where: { productId: currentOrderItem.productId },
+            include: [{ model: UserProductCommission, required: false }],
+          })
         : null;
       const link: any = !isProduct
         ? await Link.findOne({
-          where: { linkId: currentOrderItem.linkId },
-        })
+            where: { linkId: currentOrderItem.linkId },
+          })
         : null;
 
       const clearSnapshots = () => ({
