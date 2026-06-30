@@ -142,7 +142,7 @@ const CommissionSheet = () => {
           return orderCopy;
         } else return;
       });
-    }
+    } else data = orderList;
 
     // Filter
     if (filter.clients.length > 0) {
