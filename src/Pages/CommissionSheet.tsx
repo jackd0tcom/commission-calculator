@@ -69,6 +69,8 @@ const CommissionSheet = () => {
               }));
               setOrderList(res.data.orders);
 
+              console.log(res.data);
+
               const deliveries =
                 res.data.orders?.length > 0 &&
                 res.data.orders
