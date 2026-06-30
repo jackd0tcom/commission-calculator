@@ -200,7 +200,7 @@ const CommissionSheet = () => {
     }
 
     return data;
-  }, [filter, sheetData, search]);
+  }, [filter, sheetData, search, orderList, deliveryList]);
 
   const updateSheet = async (fieldName: string, value: any) => {
     if (Number(sheetId) === 0) {

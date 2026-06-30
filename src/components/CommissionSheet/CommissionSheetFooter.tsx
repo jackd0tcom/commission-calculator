@@ -27,15 +27,16 @@ const CommissionSheetFooter = ({ items, products, filter }: props) => {
       item.price ??
       product?.defaultPrice ??
       0;
-    return acc + itemPrice * item.deliveries?.length;
+    return acc + itemPrice * (item.deliveries?.length ?? 0);
   }, 0);
   const cost: number = filteredItems.reduce((acc: number, item: any) => {
     const product = products.find(
       (product: any) => product.productId === item.productId,
     );
 
-    const cost = item.costSnapshot ?? product?.defaultCost ?? item.link?.cost;
-    return acc + cost * item.deliveries?.length;
+    const cost =
+      item.costSnapshot ?? product?.defaultCost ?? item.link?.cost ?? 0;
+    return acc + cost * (item.deliveries?.length ?? 0);
   }, 0);
   const contribution: number = filteredItems.reduce(
     (acc: number, item: any) => {
@@ -43,7 +44,7 @@ const CommissionSheetFooter = ({ items, products, filter }: props) => {
         (product: any) => product.productId === item.productId,
       );
       const totalPrice =
-        item.deliveries?.length *
+        (item.deliveries?.length ?? 0) *
         (item.priceSnapshot ??
           item.defaultPriceSnapshot ??
           item.link?.defaultPrice ??
@@ -51,7 +52,7 @@ const CommissionSheetFooter = ({ items, products, filter }: props) => {
           product?.defaultPrice ??
           0);
       const totalCost =
-        item.deliveries?.length *
+        (item.deliveries?.length ?? 0) *
         (item.costSnapshot ?? product?.defaultCost ?? item.link?.cost);
       return acc + totalPrice - totalCost;
     },
@@ -64,7 +65,7 @@ const CommissionSheetFooter = ({ items, products, filter }: props) => {
       (product: any) => product.productId === item.productId,
     );
     const totalPrice =
-      item.deliveries?.length *
+      (item.deliveries?.length ?? 0) *
       (item.priceSnapshot ??
         item.defaultPriceSnapshot ??
         item.link?.defaultPrice ??
@@ -72,15 +73,16 @@ const CommissionSheetFooter = ({ items, products, filter }: props) => {
         product?.defaultPrice ??
         0);
     const totalCost =
-      item.deliveries?.length *
+      (item.deliveries?.length ?? 0) *
       (item.costSnapshot ?? product?.defaultCost ?? item.link?.cost);
     const rate =
       product?.user_product_commissions?.length > 0
         ? (item.commissionRateSnapshot ??
-          product.user_product_commissions[0].commissionRate)
+          product.user_product_commissions[0].commissionRate ??
+          0)
         : !item.link
-          ? (item.commissionRateSnapshot ?? product?.commissionRate)
-          : item.link?.commissionRate;
+          ? (item.commissionRateSnapshot ?? product?.commissionRate ?? 0)
+          : (item.link?.commissionRate ?? 0);
 
     const contribution = totalPrice - totalCost;
     if (contribution <= 0) {

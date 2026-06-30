@@ -547,14 +547,14 @@ export default {
           const isProduct = currentOrderItem.productType === "product";
           const product: any = isProduct
             ? await Product.findOne({
-                where: { productId: currentOrderItem.productId },
-                include: [{ model: UserProductCommission, required: false }],
-              })
+              where: { productId: currentOrderItem.productId },
+              include: [{ model: UserProductCommission, required: false }],
+            })
             : null;
           const link: any = !isProduct
             ? await Link.findOne({
-                where: { linkId: currentOrderItem.linkId },
-              })
+              where: { linkId: currentOrderItem.linkId },
+            })
             : null;
 
           const getProductSnapshots = () => ({
@@ -745,14 +745,14 @@ export default {
       const isProduct = currentOrderItem.productType === "product";
       const product: any = isProduct
         ? await Product.findOne({
-            where: { productId: currentOrderItem.productId },
-            include: [{ model: UserProductCommission, required: false }],
-          })
+          where: { productId: currentOrderItem.productId },
+          include: [{ model: UserProductCommission, required: false }],
+        })
         : null;
       const link: any = !isProduct
         ? await Link.findOne({
-            where: { linkId: currentOrderItem.linkId },
-          })
+          where: { linkId: currentOrderItem.linkId },
+        })
         : null;
 
       const clearSnapshots = () => ({
