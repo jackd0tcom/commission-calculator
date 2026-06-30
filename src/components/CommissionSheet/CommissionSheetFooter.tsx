@@ -3,14 +3,18 @@ import { formatDollar, getGPclass } from "../../helpers";
 interface props {
   items: any;
   products: any;
+  filter: any;
 }
 
-const CommissionSheetFooter = ({ items, products }: props) => {
-  const filteredItems = items.flatMap((item: any) => item.order_items ?? []);
+const CommissionSheetFooter = ({ items, products, filter }: props) => {
+  let filteredItems = items.flatMap((item: any) => item.order_items ?? []);
   // const quantity: number = filteredItems.reduce(
   //   (acc: number, item: any) => acc + item.quantity,
   //   0,
   // );
+  if (filter.sort === "gp" || filter.sort === "commission") {
+    filteredItems = items;
+  }
 
   const price: number = filteredItems.reduce((acc: number, item: any) => {
     const product = products.find(

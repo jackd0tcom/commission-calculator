@@ -358,6 +358,7 @@ const CommissionSheet = () => {
                   <CommissionSheetFooter
                     items={filteredData}
                     products={productList}
+                    filter={filter}
                   />
                 )}
               </>
