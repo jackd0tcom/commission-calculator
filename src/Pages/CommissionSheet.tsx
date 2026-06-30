@@ -142,19 +142,24 @@ const CommissionSheet = () => {
 
     // Sorting
     if (filter.sort !== "") {
-      if (filter.sort === "gp") {
+      if (filter.sort === "gp" || filter.sort === "commission") {
         data = deliveryList;
         data = data.sort((a: any, b: any) => {
-          return filter.direction !== "up"
-            ? getGP(a, productList) - getGP(b, productList)
-            : getGP(b, productList) - getGP(a, productList);
-        });
-      } else if (filter.sort === "commission") {
-        data = deliveryList;
-        data = data.sort((a: any, b: any) => {
-          return filter.direction !== "up"
-            ? getCommission(a, productList) - getCommission(b, productList)
-            : getCommission(b, productList) - getCommission(a, productList);
+          switch (filter.sort) {
+            case "gp":
+              return filter.direction !== "up"
+                ? getGP(a, productList) - getGP(b, productList)
+                : getGP(b, productList) - getGP(a, productList);
+              break;
+            case "commission":
+              return filter.direction !== "up"
+                ? getCommission(a, productList) - getCommission(b, productList)
+                : getCommission(b, productList) - getCommission(a, productList);
+              break;
+
+            default:
+              break;
+          }
         });
       } else
         data = data.sort((a: any, b: any) => {
