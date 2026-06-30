@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 import axios from "axios";
 import StatusBadge from "../UI/StatusBadge";
-import { useNavigate, useRouteLoaderData } from "react-router";
+import { useNavigate } from "react-router";
 import ProfilePic from "../UI/ProfilePic";
 import { formatDateWithDay } from "../../helpers";
 import Loader from "../UI/Loader";
