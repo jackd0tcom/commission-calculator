@@ -167,9 +167,9 @@ const CommissionSheet = () => {
             case "commission":
               return filter.direction !== "up"
                 ? getCommission(a, productList, sheetData.userId) -
-                getCommission(b, productList, sheetData.userId)
+                    getCommission(b, productList, sheetData.userId)
                 : getCommission(b, productList, sheetData.userId) -
-                getCommission(a, productList, sheetData.userId);
+                    getCommission(a, productList, sheetData.userId);
               break;
 
             default:
@@ -188,9 +188,9 @@ const CommissionSheet = () => {
             case "date":
               return filter.direction === "up"
                 ? new Date(a.createdAt).getTime() -
-                new Date(b.createdAt).getTime()
+                    new Date(b.createdAt).getTime()
                 : new Date(b.createdAt).getTime() -
-                new Date(a.createdAt).getTime();
+                    new Date(a.createdAt).getTime();
               break;
 
             default:
@@ -323,40 +323,37 @@ const CommissionSheet = () => {
                 <div className="sheet-list-container">
                   {filter.sort === "gp" || filter.sort === "commission"
                     ? filteredData?.length > 0 &&
-                    filteredData.map((delivery: any) => {
-                      return (
-                        <SheetOrderItem
-                          item={delivery}
-                          productList={productList}
-                          userId={sheetData.userId}
-                        />
-                      );
-                    })
+                      filteredData.map((delivery: any) => {
+                        return (
+                          <SheetOrderItem
+                            item={delivery}
+                            productList={productList}
+                            userId={sheetData.userId}
+                          />
+                        );
+                      })
                     : filteredData?.map((order: any) => {
-                      return (
-                        <div className="sheet-list-order-wrapper">
-                          <div className="sheet-list-order">
-                            <span
-                              className="commission-sheet-order-title"
-                              onClick={() =>
-                                navigate(`/order/${order.orderId}/false`)
-                              }
-                            >
-                              <p>Order #{order.orderId}</p>
-                              <p>{order.client?.clientName}</p>
-                            </span>
+                        return (
+                          <div className="sheet-list-order-wrapper">
+                            <div className="sheet-list-order">
+                              <a href={`/order/${order.orderId}/false`}>
+                                <span className="commission-sheet-order-title">
+                                  <p>Order #{order.orderId}</p>
+                                  <p>{order.client?.clientName}</p>
+                                </span>
+                              </a>
+                            </div>
+                            {order?.order_items?.length > 0 &&
+                              order.order_items.map((item: any) => (
+                                <SheetOrderItem
+                                  item={item}
+                                  productList={productList}
+                                  userId={sheetData.userId}
+                                />
+                              ))}
                           </div>
-                          {order?.order_items?.length > 0 &&
-                            order.order_items.map((item: any) => (
-                              <SheetOrderItem
-                                item={item}
-                                productList={productList}
-                                userId={sheetData.userId}
-                              />
-                            ))}
-                        </div>
-                      );
-                    })}
+                        );
+                      })}
                 </div>
                 {!isLoading && (
                   <CommissionSheetFooter
