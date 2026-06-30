@@ -19,6 +19,7 @@ const DuplicateOrder = ({
         <p>Quantity</p>
         <input
           type="number"
+          onWheel={(e) => e.currentTarget.blur()}
           value={quantity}
           onChange={(e) => setQuantity(Number(e.target.value))}
         />

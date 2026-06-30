@@ -307,6 +307,7 @@ export default function QuoteGenerator({ showNav, setShowNav }: props) {
               <input
                 className="calculator-input monthly-input"
                 type="number"
+                onWheel={(e) => e.currentTarget.blur()}
                 name="monthly-term"
                 value={monthlyTerm}
                 onChange={(e) =>

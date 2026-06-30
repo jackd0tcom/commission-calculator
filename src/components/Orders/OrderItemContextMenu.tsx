@@ -99,6 +99,7 @@ const OrderItemContextMenu = ({
             className="duplicate-input"
             onClick={(e: any) => e.stopPropagation()}
             type="number"
+            onWheel={(e) => e.currentTarget.blur()}
             value={duplications}
             onChange={(e: any) => setDuplications(Number(e.target.value))}
           />

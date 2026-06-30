@@ -48,6 +48,7 @@ const UserProductRow = ({ user, product }: props) => {
       <p></p>
       <input
         type="number"
+        onWheel={(e) => e.currentTarget.blur()}
         value={commission}
         onChange={(e) => setCommission(e.target.value)}
         onBlur={() => {

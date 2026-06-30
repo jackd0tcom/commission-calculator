@@ -291,6 +291,7 @@ const OrderItem = ({
             <input
               className="order-price-input"
               type="number"
+              onWheel={(e) => e.currentTarget.blur()}
               value={`${cost}`}
               onChange={(e) => {
                 const val = Number(e.target.value);
@@ -308,6 +309,7 @@ const OrderItem = ({
           <input
             className="order-price-input"
             type="number"
+            onWheel={(e) => e.currentTarget.blur()}
             value={`${price}`}
             onChange={(e) => {
               const val = Number(e.target.value);

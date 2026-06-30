@@ -84,6 +84,7 @@ const QuoteRows = ({
                     disabled={index > 0 && index < 1}
                     className="calculator-input"
                     type="number"
+                    onWheel={(e) => e.currentTarget.blur()}
                     value={row.quantity >= 1 ? row.quantity : ""}
                     onChange={(e) =>
                       updateQuantity(
@@ -109,6 +110,7 @@ const QuoteRows = ({
                   <input
                     className="price-input"
                     type="number"
+                    onWheel={(e) => e.currentTarget.blur()}
                     value={Number(row.price).toString()}
                     onChange={(e) => {
                       updatePrice(

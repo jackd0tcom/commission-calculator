@@ -127,6 +127,7 @@ const LinkItem = ({
         <p>$</p>
         <input
           type="number"
+          onWheel={(e) => e.currentTarget.blur()}
           className="link-list-number"
           value={cost}
           onChange={(e) => {
@@ -155,6 +156,7 @@ const LinkItem = ({
         <p>$</p>
         <input
           type="number"
+          onWheel={(e) => e.currentTarget.blur()}
           className="link-list-number"
           value={defaultPrice}
           onChange={(e) => {
@@ -181,6 +183,7 @@ const LinkItem = ({
       </div>
       <input
         type="number"
+        onWheel={(e) => e.currentTarget.blur()}
         className="link-list-number"
         value={commissionRate}
         onChange={(e) => {
@@ -208,6 +211,7 @@ const LinkItem = ({
         <p>$</p>
         <input
           type="number"
+          onWheel={(e) => e.currentTarget.blur()}
           className="link-list-number"
           value={spiff}
           onChange={(e) => {

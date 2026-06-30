@@ -80,6 +80,7 @@ const LinkCart = ({ showCart, setShowCart, cart, setCart }: props) => {
                     </div>
                     <input
                       type="number"
+                      onWheel={(e) => e.currentTarget.blur()}
                       className="link-cart-input"
                       value={link.quantity}
                       onChange={(e) => {

@@ -151,6 +151,7 @@ const ProductItem = ({
           <p>$</p>
           <input
             type="number"
+            onWheel={(e) => e.currentTarget.blur()}
             className="product-list-number"
             value={cost}
             onChange={(e) => {
@@ -180,6 +181,7 @@ const ProductItem = ({
           <p>$</p>
           <input
             type="number"
+            onWheel={(e) => e.currentTarget.blur()}
             className="product-list-number"
             value={defaultPrice}
             onChange={(e) => {
@@ -207,6 +209,7 @@ const ProductItem = ({
         </div>
         <input
           type="number"
+          onWheel={(e) => e.currentTarget.blur()}
           className="product-list-number"
           value={commissionRate}
           onChange={(e) => {
@@ -235,6 +238,7 @@ const ProductItem = ({
           <p>$</p>
           <input
             type="number"
+            onWheel={(e) => e.currentTarget.blur()}
             className="product-list-number"
             value={spiff}
             onChange={(e) => {

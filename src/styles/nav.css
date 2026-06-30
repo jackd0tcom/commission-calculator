@@ -59,7 +59,8 @@
 .nav-button {
   color: white;
   transition: 150ms;
-  padding: 10px 15px;
+  padding: 8px 14px;
+  font-size: 0.95rem;
   display: flex;
   align-items: center;
   gap: 10px;
