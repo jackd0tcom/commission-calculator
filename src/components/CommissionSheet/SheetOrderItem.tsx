@@ -3,9 +3,10 @@ import { formatDollar } from "../../helpers";
 interface props {
   item: any;
   productList: any;
+  userId: number;
 }
 
-const SheetOrderItem = ({ item, productList }: props) => {
+const SheetOrderItem = ({ item, productList, userId }: props) => {
   const product = productList.find(
     (product: any) => product.productId === item.productId,
   );
@@ -28,13 +29,14 @@ const SheetOrderItem = ({ item, productList }: props) => {
   const totalPrice = quantity * price;
   const totalCost = quantity * cost;
   const contribution = totalPrice - totalCost;
-  const commissionRate =
-    product?.user_product_commissions?.length > 0
-      ? (item.commissionRateSnapshot ??
-        product.user_product_commissions[0].commissionRate)
-      : !item.link
-        ? (item.commissionRateSnapshot ?? product?.commissionRate)
-        : item.link?.commissionRate;
+  const userProductCommission = product?.user_product_commissions?.find(
+    (rate: any) => rate.userId === userId,
+  );
+  const commissionRate = userProductCommission
+    ? (item.commissionRateSnapshot ?? userProductCommission.commissionRate)
+    : !item.link
+      ? (item.commissionRateSnapshot ?? product?.commissionRate)
+      : item.link?.commissionRate;
   const commission =
     contribution * commissionRate <= 0 ? 0 : contribution * commissionRate;
   const spiff = item.spiffSnapshot ?? product?.spiff ?? 0;

@@ -69,8 +69,6 @@ const CommissionSheet = () => {
               }));
               setOrderList(res.data.orders);
 
-              console.log(res.data);
-
               const deliveries =
                 res.data.orders?.length > 0 &&
                 res.data.orders
@@ -168,8 +166,10 @@ const CommissionSheet = () => {
               break;
             case "commission":
               return filter.direction !== "up"
-                ? getCommission(a, productList) - getCommission(b, productList)
-                : getCommission(b, productList) - getCommission(a, productList);
+                ? getCommission(a, productList, sheetData.userId) -
+                getCommission(b, productList, sheetData.userId)
+                : getCommission(b, productList, sheetData.userId) -
+                getCommission(a, productList, sheetData.userId);
               break;
 
             default:
@@ -188,9 +188,9 @@ const CommissionSheet = () => {
             case "date":
               return filter.direction === "up"
                 ? new Date(a.createdAt).getTime() -
-                    new Date(b.createdAt).getTime()
+                new Date(b.createdAt).getTime()
                 : new Date(b.createdAt).getTime() -
-                    new Date(a.createdAt).getTime();
+                new Date(a.createdAt).getTime();
               break;
 
             default:
@@ -323,44 +323,47 @@ const CommissionSheet = () => {
                 <div className="sheet-list-container">
                   {filter.sort === "gp" || filter.sort === "commission"
                     ? filteredData?.length > 0 &&
-                      filteredData.map((delivery: any) => {
-                        return (
-                          <SheetOrderItem
-                            item={delivery}
-                            productList={productList}
-                          />
-                        );
-                      })
+                    filteredData.map((delivery: any) => {
+                      return (
+                        <SheetOrderItem
+                          item={delivery}
+                          productList={productList}
+                          userId={sheetData.userId}
+                        />
+                      );
+                    })
                     : filteredData?.map((order: any) => {
-                        return (
-                          <div className="sheet-list-order-wrapper">
-                            <div className="sheet-list-order">
-                              <span
-                                className="commission-sheet-order-title"
-                                onClick={() =>
-                                  navigate(`/order/${order.orderId}/false`)
-                                }
-                              >
-                                <p>Order #{order.orderId}</p>
-                                <p>{order.client?.clientName}</p>
-                              </span>
-                            </div>
-                            {order?.order_items?.length > 0 &&
-                              order.order_items.map((item: any) => (
-                                <SheetOrderItem
-                                  item={item}
-                                  productList={productList}
-                                />
-                              ))}
+                      return (
+                        <div className="sheet-list-order-wrapper">
+                          <div className="sheet-list-order">
+                            <span
+                              className="commission-sheet-order-title"
+                              onClick={() =>
+                                navigate(`/order/${order.orderId}/false`)
+                              }
+                            >
+                              <p>Order #{order.orderId}</p>
+                              <p>{order.client?.clientName}</p>
+                            </span>
                           </div>
-                        );
-                      })}
+                          {order?.order_items?.length > 0 &&
+                            order.order_items.map((item: any) => (
+                              <SheetOrderItem
+                                item={item}
+                                productList={productList}
+                                userId={sheetData.userId}
+                              />
+                            ))}
+                        </div>
+                      );
+                    })}
                 </div>
                 {!isLoading && (
                   <CommissionSheetFooter
                     items={filteredData}
                     products={productList}
                     filter={filter}
+                    userId={sheetData.userId}
                   />
                 )}
               </>

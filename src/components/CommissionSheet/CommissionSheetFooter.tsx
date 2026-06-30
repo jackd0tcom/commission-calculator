@@ -4,9 +4,10 @@ interface props {
   items: any;
   products: any;
   filter: any;
+  userId: number;
 }
 
-const CommissionSheetFooter = ({ items, products, filter }: props) => {
+const CommissionSheetFooter = ({ items, products, filter, userId }: props) => {
   let filteredItems = items.flatMap((item: any) => item.order_items ?? []);
   // const quantity: number = filteredItems.reduce(
   //   (acc: number, item: any) => acc + item.quantity,
@@ -75,14 +76,14 @@ const CommissionSheetFooter = ({ items, products, filter }: props) => {
     const totalCost =
       (item.deliveries?.length ?? 0) *
       (item.costSnapshot ?? product?.defaultCost ?? item.link?.cost ?? 0);
-    const rate =
-      product?.user_product_commissions?.length > 0
-        ? (item.commissionRateSnapshot ??
-          product.user_product_commissions[0].commissionRate ??
-          0)
-        : !item.link
-          ? (item.commissionRateSnapshot ?? product?.commissionRate ?? 0)
-          : (item.link?.commissionRate ?? 0);
+    const userProductCommission = product?.user_product_commissions?.find(
+      (rate: any) => rate.userId === userId,
+    );
+    const rate = userProductCommission
+      ? (item.commissionRateSnapshot ?? userProductCommission.commissionRate)
+      : !item.link
+        ? (item.commissionRateSnapshot ?? product?.commissionRate)
+        : item.link?.commissionRate;
 
     const contribution = totalPrice - totalCost;
     if (contribution <= 0) {

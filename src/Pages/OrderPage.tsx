@@ -43,6 +43,7 @@ const OrderPage = () => {
   const [notFound, setNotFound] = useState(false);
   const [bulkDeleting, setBulkDeleting] = useState(false);
   const [bulkSelects, setBulkSelects] = useState([]);
+  const [orderTitle, setOrderTitle] = useState("");
   const [currentUserId, setCurrentUserId] = useState(1);
   const [users, setUsers] = useState([{}]);
   const [orderStatus, setOrderStatus] = useState("");
@@ -158,6 +159,7 @@ const OrderPage = () => {
               setOrderStatus(res.data.orderStatus);
               setCurrentUserId(res.data.salesPerson ?? 1);
               setCurrentClient(res.data.client ?? {});
+              setOrderTitle(res.data.orderTitle ?? "");
             }
           }),
         );
@@ -564,12 +566,31 @@ const OrderPage = () => {
             <div className="order-client-header-wrapper">
               <ProfilePic src={user.profilePic} />
               <div className="order-profile-wrapper">
-                <h4>Order #{orderId}</h4>
                 <div className="order-client-wrapper">
-                  Client:
-                  <p>{currentClient?.clientName}</p>
+                  <h4>Order #{orderId}</h4>
+                  <input
+                    type="text"
+                    placeholder="Title"
+                    className="order-title-input"
+                    onChange={(e) => setOrderTitle(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        updateOrder("orderTitle", orderTitle);
+                      }
+                    }}
+                    value={orderTitle}
+                    onBlur={(e) => {
+                      if (e.target.value !== orderTitle) {
+                        updateOrder("orderTitle", orderTitle);
+                      }
+                    }}
+                  />
                 </div>
               </div>
+            </div>
+            <div className="order-client-wrapper">
+              Client:
+              <p>{currentClient?.clientName}</p>
             </div>
             <div className="order-sales-wrapper">
               <p>Sales Person:</p>

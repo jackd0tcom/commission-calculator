@@ -49,6 +49,7 @@
 .order-client-header-wrapper {
   display: flex;
   gap: 10px;
+  align-items: center;
 }
 .order-client-header-wrapper .profile-pic-wrapper .profile-image {
   height: 32px;
@@ -58,12 +59,18 @@
   display: flex;
   flex-direction: column;
   /* gap: 10px; */
+  align-items: center;
 }
 .order-profile-wrapper h4 {
   margin: 0;
 }
 .order-client-wrapper p {
   margin: 0;
+}
+.order-title-input {
+  padding: 3px 6px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
 }
 .order-page-top-bar {
   margin: 5px 15px;

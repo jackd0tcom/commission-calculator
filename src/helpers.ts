@@ -160,7 +160,7 @@ export const getGP = (item: any, productList: any) => {
   return contribution;
 };
 
-export const getCommission = (item: any, productList: any) => {
+export const getCommission = (item: any, productList: any, userId: number) => {
   const product = productList.find(
     (product: any) => product.productId === item.productId,
   );
@@ -179,13 +179,14 @@ export const getCommission = (item: any, productList: any) => {
   const totalPrice = quantity * price;
   const totalCost = quantity * cost;
   const contribution = totalPrice - totalCost;
-  const commissionRate =
-    product?.user_product_commissions?.length > 0
-      ? (item.commissionRateSnapshot ??
-        product.user_product_commissions[0].commissionRate)
-      : !item.link
-        ? (item.commissionRateSnapshot ?? product?.commissionRate)
-        : item.link?.commissionRate;
+  const userProductCommission = product?.user_product_commissions?.find(
+    (rate: any) => rate.userId === userId,
+  );
+  const commissionRate = userProductCommission
+    ? (item.commissionRateSnapshot ?? userProductCommission.commissionRate)
+    : !item.link
+      ? (item.commissionRateSnapshot ?? product?.commissionRate)
+      : item.link?.commissionRate;
   const commission =
     contribution * commissionRate <= 0 ? 0 : contribution * commissionRate;
 

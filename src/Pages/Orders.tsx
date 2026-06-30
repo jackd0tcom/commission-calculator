@@ -293,7 +293,10 @@ const Orders = () => {
                           <div className="user-width">
                             <ProfilePic src={order.salesPerson?.profilePic} />
                           </div>
-                          <div>Order #{order.orderId}</div>
+                          <div>
+                            #{order.orderId}{" "}
+                            {order.orderTitle && `- ${order.orderTitle}`}
+                          </div>
                           <div>{order.client?.clientName}</div>
                           <div>
                             <OrderStatusBadge status={order.orderStatus} />

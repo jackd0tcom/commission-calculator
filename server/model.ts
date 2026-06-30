@@ -214,6 +214,10 @@ Order.init(
       allowNull: true,
       references: { model: "users" },
     },
+    orderTitle: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   },
   {
     sequelize: db,

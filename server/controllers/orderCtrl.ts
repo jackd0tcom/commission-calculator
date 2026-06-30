@@ -547,15 +547,19 @@ export default {
           const isProduct = currentOrderItem.productType === "product";
           const product: any = isProduct
             ? await Product.findOne({
-              where: { productId: currentOrderItem.productId },
-              include: [{ model: UserProductCommission, required: false }],
-            })
+                where: { productId: currentOrderItem.productId },
+                include: [{ model: UserProductCommission, required: false }],
+              })
             : null;
           const link: any = !isProduct
             ? await Link.findOne({
-              where: { linkId: currentOrderItem.linkId },
-            })
+                where: { linkId: currentOrderItem.linkId },
+              })
             : null;
+
+          const userRate = product?.user_product_commissions?.find(
+            (c: any) => c.userId === order.salesPerson,
+          )?.commissionRate;
 
           const getProductSnapshots = () => ({
             productNameSnapshot: product?.productName ?? null,
@@ -568,7 +572,7 @@ export default {
             defaultCostSnapshot: product?.defaultCost ?? null,
             commissionRateSnapshot:
               item.commissionRateSnapshot ??
-              product?.user_product_commissions?.[0]?.commissionRate ??
+              userRate?.commissionRate ??
               product?.commissionRate ??
               null,
             spiffSnapshot: product?.spiff ?? null,
@@ -745,14 +749,14 @@ export default {
       const isProduct = currentOrderItem.productType === "product";
       const product: any = isProduct
         ? await Product.findOne({
-          where: { productId: currentOrderItem.productId },
-          include: [{ model: UserProductCommission, required: false }],
-        })
+            where: { productId: currentOrderItem.productId },
+            include: [{ model: UserProductCommission, required: false }],
+          })
         : null;
       const link: any = !isProduct
         ? await Link.findOne({
-          where: { linkId: currentOrderItem.linkId },
-        })
+            where: { linkId: currentOrderItem.linkId },
+          })
         : null;
 
       const clearSnapshots = () => ({
@@ -764,6 +768,10 @@ export default {
         costSnapshot: null,
       });
 
+      const userRate = product?.user_product_commissions?.find(
+        (c: any) => c.userId === order?.salesPerson,
+      )?.commissionRate;
+
       const getProductSnapshots = () => ({
         productNameSnapshot: product?.productName ?? null,
         priceSnapshot:
@@ -772,7 +780,7 @@ export default {
         defaultCostSnapshot: product?.defaultCost ?? null,
         commissionRateSnapshot:
           item.commissionRateSnapshot ??
-          product?.user_product_commissions?.[0]?.commissionRate ??
+          userRate?.commissionRate ??
           product?.commissionRate ??
           null,
         spiffSnapshot: product?.spiff ?? null,
