@@ -12,6 +12,12 @@ import ProfilePic from "../components/UI/ProfilePic";
 import FilterDropdown from "../components/UI/FilterDropdown";
 import Sorter from "../components/Clients/Sorter";
 
+type FilterOption = {
+  title: string;
+  id?: number;
+  profilePic?: string;
+};
+
 const CommissionSheet = () => {
   const { sheetId } = useParams();
   const navigate = useNavigate();
@@ -22,7 +28,7 @@ const CommissionSheet = () => {
   const descriptionRef = useRef<HTMLTextAreaElement>(null);
   const creatingSheetRef = useRef<boolean>(false);
   const [profilePic, setProfilePic] = useState("");
-  const [clientList, setClientList] = useState([]);
+  const [clientList, setClientList] = useState<FilterOption[]>([]);
   const [deliveryList, setDeliveryList] = useState([]);
   const [sheetData, setSheetData] = useState({
     sheetId: sheetId ? sheetId : 0,
@@ -69,13 +75,20 @@ const CommissionSheet = () => {
                   .map((order: any) => order.order_items ?? null)
                   ?.flat();
 
-              console.log(deliveries);
               setDeliveryList(deliveries);
 
-              const clients = res.data.orders.map((order: any) => ({
-                id: order.client.clientId,
-                title: order.client.clientName,
-              }));
+              const clients: FilterOption[] = [];
+              res.data.orders.forEach((order: any) => {
+                if (
+                  !clients.some(
+                    (client: any) => client.id === order.client.clientId,
+                  )
+                )
+                  clients.push({
+                    id: order.client.clientId,
+                    title: order.client.clientName,
+                  });
+              });
               setClientList(clients);
             }
           }),
