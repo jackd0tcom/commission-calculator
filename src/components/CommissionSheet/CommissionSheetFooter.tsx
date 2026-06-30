@@ -74,7 +74,7 @@ const CommissionSheetFooter = ({ items, products, filter }: props) => {
         0);
     const totalCost =
       (item.deliveries?.length ?? 0) *
-      (item.costSnapshot ?? product?.defaultCost ?? item.link?.cost);
+      (item.costSnapshot ?? product?.defaultCost ?? item.link?.cost ?? 0);
     const rate =
       product?.user_product_commissions?.length > 0
         ? (item.commissionRateSnapshot ??
@@ -110,7 +110,8 @@ const CommissionSheetFooter = ({ items, products, filter }: props) => {
     return acc + (Number(price) >= Number(defaultPrice) ? Number(spiff) : 0);
   }, 0);
   const grandTotal: number = commission + bonus;
-  const GPPercentage: number = Math.floor((contribution / price) * 100);
+  const GPPercentage: number =
+    price > 0 ? Math.floor((contribution / price) * 100) : 0;
 
   return (
     <div className="commission-sheet-footer">
