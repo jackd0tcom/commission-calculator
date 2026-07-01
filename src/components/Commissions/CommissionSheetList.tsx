@@ -45,7 +45,7 @@ const CommissionSheetList = () => {
           let statusArray: FilterOption[] = [];
 
           res.data.forEach((order: any) => {
-            if (!users.some((user: any) => order.user?.userId === user.id)) {
+            if (!users.some((user: any) => order.userId === user.id)) {
               users.push({
                 title: `${order.user.firstName ?? ""}`,
                 id: order.userId,
