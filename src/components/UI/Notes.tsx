@@ -17,7 +17,7 @@ const Notes = ({
   count,
   setCount,
 }: props) => {
-  const saveTimer = useRef<HTMLInputElement>(null);
+  const saveTimer = useRef<any>(null);
   const valueRef = useRef(value);
   const isDirtyRef = useRef(false);
   const updateNotesRef = useRef(updateNotes);
