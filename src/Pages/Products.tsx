@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { FaTrashCan } from "react-icons/fa6";
 import Loader from "../components/UI/Loader";
 import Sorter from "../components/Clients/Sorter";
+import { usePersistedFilter } from "../hooks/usePersistedFilter";
 
 const Products = () => {
   const [productList, setProductList] = useState([{}]);
@@ -12,7 +13,7 @@ const Products = () => {
   const [isLoading, setIsLoading] = useState(true);
   const user = useSelector((state: any) => state.user);
   const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState({
+  const [filter, setFilter] = usePersistedFilter("products", user.userId, {
     sort: "",
     direction: "up",
   });

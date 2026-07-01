@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import { formatDollar } from "../../helpers";
 import FilterDropdown from "../UI/FilterDropdown";
+import { usePersistedFilter } from "../../hooks/usePersistedFilter";
 
 type FilterOption = {
   title: string;
@@ -21,7 +22,7 @@ const CommissionSheetList = () => {
   const [isLoading, setIsLoading] = useState(true);
   const nav = useNavigate();
   const userId = useSelector((state: any) => state.user.userId);
-  const [filter, setFilter] = useState({
+  const [filter, setFilter] = usePersistedFilter("commission-sheets", userId, {
     sort: "",
     user: [],
     title: [],

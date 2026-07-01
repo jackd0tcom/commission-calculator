@@ -11,6 +11,7 @@ import Loader from "../components/UI/Loader";
 import ProfilePic from "../components/UI/ProfilePic";
 import FilterDropdown from "../components/UI/FilterDropdown";
 import Sorter from "../components/Clients/Sorter";
+import { usePersistedFilter } from "../hooks/usePersistedFilter";
 
 type FilterOption = {
   title: string;
@@ -41,11 +42,15 @@ const CommissionSheet = () => {
     isArchived: false,
   });
   const [isLoading, setIsLoading] = useState(true);
-  const [filter, setFilter] = useState({
-    direction: "up",
-    sort: "",
-    clients: [],
-  });
+  const [filter, setFilter] = usePersistedFilter(
+    `/sheet/${sheetId}`,
+    user.userId,
+    {
+      direction: "up",
+      sort: "",
+      clients: [],
+    },
+  );
   const [search, setSearch] = useState("");
 
   const fetchData = async () => {
@@ -148,7 +153,7 @@ const CommissionSheet = () => {
     if (filter.clients.length > 0) {
       data = data.filter((order: any) =>
         filter.clients.some(
-          (client: any) => client.id === order.client.clientId,
+          (client: any) => client.id === order.client?.clientId,
         ),
       );
     }

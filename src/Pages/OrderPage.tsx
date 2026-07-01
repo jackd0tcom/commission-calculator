@@ -16,6 +16,7 @@ import BulkSelector from "../components/Orders/BulkSelector";
 import FilterDropdown from "../components/UI/FilterDropdown";
 import Sorter from "../components/Clients/Sorter";
 import DuplicateOrder from "../components/Orders/DuplicateOrder";
+import { usePersistedFilter } from "../hooks/usePersistedFilter";
 
 type FilterOption = {
   title: string;
@@ -51,14 +52,18 @@ const OrderPage = () => {
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const dropdownRef = useRef<HTMLInputElement>(null);
   const isCalculatorOrder = calculatorOrder === "true";
-  const [filter, setFilter] = useState({
-    due: [],
-    product: [],
-    vendor: [],
-    status: [],
-    sort: "",
-    direction: "up",
-  });
+  const [filter, setFilter] = usePersistedFilter(
+    `order/${orderId}/${calculatorOrder}`,
+    user.userId,
+    {
+      due: [],
+      product: [],
+      vendor: [],
+      status: [],
+      sort: "",
+      direction: "up",
+    },
+  );
   const [dueDates, setDueDates] = useState<FilterOption[]>([]);
   const [products, setProducts] = useState<FilterOption[]>([]);
   const [vendors, setVendors] = useState<FilterOption[]>([]);

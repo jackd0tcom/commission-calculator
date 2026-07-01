@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import Sorter from "../components/Clients/Sorter";
 import FilterDropdown from "../components/UI/FilterDropdown";
+import { usePersistedFilter } from "../hooks/usePersistedFilter";
 
 type FilterOption = {
   title: string;
@@ -24,7 +25,7 @@ const Clients = () => {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [salesPeople, setSalesPeople] = useState<FilterOption[]>();
-  const [filter, setFilter] = useState({
+  const [filter, setFilter] = usePersistedFilter("clients", userId, {
     sales: 0,
     sort: "",
     direction: "up",

@@ -10,7 +10,7 @@ interface props {
 
 const OrderSort = ({ filter, setFilter }: props) => {
   const [showDropdown, setShowDropdown] = useState(false);
-  const [isFiltered, setIsFiltered] = useState(false);
+  const isFiltered = filter.sort !== "";
   const dropdownRef = useRef<HTMLInputElement>(null);
 
   //   Handles blur
@@ -53,7 +53,6 @@ const OrderSort = ({ filter, setFilter }: props) => {
             className="order-sort-filter-x-wrapper"
             onClick={() => {
               setFilter({ ...filter, sort: "" });
-              setIsFiltered(false);
               setTimeout(() => {
                 setShowDropdown(false);
               }, 50);
@@ -86,10 +85,8 @@ const OrderSort = ({ filter, setFilter }: props) => {
             onClick={() => {
               if (filter.sort !== "dateCreated") {
                 setFilter({ ...filter, sort: "dateCreated" });
-                setIsFiltered(true);
               } else {
                 setFilter({ ...filter, sort: "" });
-                setIsFiltered(false);
               }
               setShowDropdown(false);
             }}
@@ -101,10 +98,8 @@ const OrderSort = ({ filter, setFilter }: props) => {
             onClick={() => {
               if (filter.sort !== "client") {
                 setFilter({ ...filter, sort: "client" });
-                setIsFiltered(true);
               } else {
                 setFilter({ ...filter, sort: "" });
-                setIsFiltered(false);
               }
               setShowDropdown(false);
             }}
@@ -116,10 +111,8 @@ const OrderSort = ({ filter, setFilter }: props) => {
             onClick={() => {
               if (filter.sort !== "status") {
                 setFilter({ ...filter, sort: "status" });
-                setIsFiltered(true);
               } else {
                 setFilter({ ...filter, sort: "" });
-                setIsFiltered(false);
               }
               setShowDropdown(false);
             }}
@@ -131,10 +124,8 @@ const OrderSort = ({ filter, setFilter }: props) => {
             onClick={() => {
               if (filter.sort !== "number") {
                 setFilter({ ...filter, sort: "number" });
-                setIsFiltered(true);
               } else {
                 setFilter({ ...filter, sort: "" });
-                setIsFiltered(false);
               }
               setShowDropdown(false);
             }}

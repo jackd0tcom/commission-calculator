@@ -7,6 +7,8 @@ import OrderStatusBadge from "../components/Orders/OrderStatusBadge";
 import Loader from "../components/UI/Loader";
 import FilterDropdown from "../components/UI/FilterDropdown";
 import OrderSort from "../components/Orders/OrderSort";
+import { usePersistedFilter } from "../hooks/usePersistedFilter";
+import { useSelector } from "react-redux";
 
 type FilterOption = {
   title: string;
@@ -18,7 +20,8 @@ const Orders = () => {
   const navigate = useNavigate();
   const [orders, setOrders] = useState([{}]);
   const [isLoading, setIsLoading] = useState(true);
-  const [filter, setFilter] = useState({
+  const userId = useSelector((state: any) => state.user.userId);
+  const [filter, setFilter] = usePersistedFilter("orders", userId, {
     user: 0,
     client: [],
     status: [],
@@ -145,7 +148,7 @@ const Orders = () => {
           return false;
 
       if (filter.user !== 0)
-        if (order.salesPerson.userId !== filter.user) return false;
+        if (order.salesPerson?.userId !== filter.user) return false;
 
       if (filter.status.length > 0)
         if (
@@ -188,26 +191,6 @@ const Orders = () => {
           break;
       }
     });
-
-    // data.forEach((order: any) => {
-    //   if (order.order_items?.length > 0) {
-    //     if (order.orderStatus === "submitted") {
-    //       submittedOrders.push(order);
-    //       return;
-    //     }
-    //     const undeliveredItems = order.order_items.filter(
-    //       (item: any) => item.itemStatus !== "complete",
-    //     );
-    //     if (undeliveredItems.length > 0) {
-    //       const deliveredItems = order.order_items.filter(
-    //         (item: any) => item.itemStatus === "complete",
-    //       );
-    //       if (deliveredItems.length > 0) {
-    //         partialOrders.push(order);
-    //       } else progressOrders.push(order);
-    //     } else deliveredOrders.push(order);
-    //   } else progressOrders.push(order);
-    // });
 
     const allOrders = data;
     return {

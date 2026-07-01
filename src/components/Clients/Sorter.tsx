@@ -13,7 +13,7 @@ interface props {
 
 const Sorter = ({ filter, setFilter, options, direction, position }: props) => {
   const [showDropdown, setShowDropdown] = useState(false);
-  const [isFiltered, setIsFiltered] = useState(false);
+  const isFiltered = filter[options[0].sortHeading] !== "";
   const dropdownRef = useRef<HTMLInputElement>(null);
 
   //   Handles blur
@@ -55,8 +55,7 @@ const Sorter = ({ filter, setFilter, options, direction, position }: props) => {
           <span
             className="order-sort-filter-x-wrapper"
             onClick={() => {
-              setFilter({ ...filter, sort: "" });
-              setIsFiltered(false);
+              setFilter({ ...filter, [options[0].sortHeading]: "" });
               setTimeout(() => {
                 setShowDropdown(false);
               }, 50);
@@ -100,13 +99,11 @@ const Sorter = ({ filter, setFilter, options, direction, position }: props) => {
                     ...filter,
                     [option.sortHeading]: option.sortValue,
                   });
-                  setIsFiltered(true);
                 } else {
                   setFilter({
                     ...filter,
                     [option.sortHeading]: option.sortValue,
                   });
-                  setIsFiltered(false);
                 }
                 setShowDropdown(false);
               }}
