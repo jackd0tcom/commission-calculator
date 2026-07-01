@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { useParams } from "react-router";
 import { useSelector } from "react-redux";
-import ProfilePic from "../components/UI/ProfilePic";
 import { useNavigate } from "react-router";
+import ProfilePic from "../components/UI/ProfilePic";
 import axios from "axios";
 import ClientPicker from "../components/Orders/ClientPicker";
 import OrderItem from "../components/Orders/OrderItem";
@@ -17,6 +17,8 @@ import FilterDropdown from "../components/UI/FilterDropdown";
 import Sorter from "../components/Clients/Sorter";
 import DuplicateOrder from "../components/Orders/DuplicateOrder";
 import { usePersistedFilter } from "../hooks/usePersistedFilter";
+import { saveOrderNotesKeepAlive } from "../helpers";
+import Notes from "../components/UI/Notes";
 
 type FilterOption = {
   title: string;
@@ -52,6 +54,8 @@ const OrderPage = () => {
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const dropdownRef = useRef<HTMLInputElement>(null);
   const isCalculatorOrder = calculatorOrder === "true";
+  const [orderNotes, setOrderNotes] = useState("");
+  const [originalOrderTitle, setOriginalOrderTitle] = useState("");
   const [filter, setFilter] = usePersistedFilter(
     `order/${orderId}/${calculatorOrder}`,
     user.userId,
@@ -68,6 +72,7 @@ const OrderPage = () => {
   const [products, setProducts] = useState<FilterOption[]>([]);
   const [vendors, setVendors] = useState<FilterOption[]>([]);
   const [statuses, setStatuses] = useState<FilterOption[]>([]);
+  const [count, setCount] = useState(0);
   const [search, setSearch] = useState("");
   const statusOrder = [
     "staged",
@@ -165,6 +170,8 @@ const OrderPage = () => {
               setCurrentUserId(res.data.salesPerson ?? 1);
               setCurrentClient(res.data.client ?? {});
               setOrderTitle(res.data.orderTitle ?? "");
+              setOriginalOrderTitle(res.data.orderTitle ?? "");
+              setOrderNotes(res.data.orderNotes ?? "");
             }
           }),
         );
@@ -509,6 +516,29 @@ const OrderPage = () => {
     }
   };
 
+  const updateNotes = (notesToSave: any) => {
+    if (!orderId) return;
+    const valueToSave = notesToSave !== undefined ? notesToSave : orderNotes;
+    try {
+      axios
+        .post("/api/updateOrder", {
+          orderId,
+          fieldName: "orderNotes",
+          value: valueToSave,
+        })
+        .then(() => {
+          setCount(0);
+        });
+    } catch (error) {}
+  };
+
+  const handleUpdateNotes = (notes: string) => {
+    setOrderNotes(notes);
+    if (count >= 75) {
+      updateNotes(notes);
+    }
+  };
+
   return isLoading ? (
     <Loader />
   ) : (
@@ -585,7 +615,7 @@ const OrderPage = () => {
                     }}
                     value={orderTitle}
                     onBlur={(e) => {
-                      if (e.target.value !== orderTitle) {
+                      if (e.target.value !== originalOrderTitle) {
                         updateOrder("orderTitle", orderTitle);
                       }
                     }}
@@ -830,7 +860,19 @@ const OrderPage = () => {
                 </div>
               </div>
             </div>
-            <OrderFooter items={filteredOrderItems} />
+            <div className="order-sheet-footer">
+              <div className="order-notes-wrapper">
+                <Notes
+                  value={orderNotes}
+                  onChange={handleUpdateNotes}
+                  updateNotes={updateNotes}
+                  count={count}
+                  setCount={setCount}
+                  saveNotesKeepalive={saveOrderNotesKeepAlive}
+                />
+              </div>
+              <OrderFooter items={filteredOrderItems} />
+            </div>
           </div>
         </>
       )}

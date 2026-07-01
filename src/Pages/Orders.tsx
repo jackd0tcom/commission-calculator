@@ -278,7 +278,7 @@ const Orders = () => {
                           </div>
                           <div>
                             #{order.orderId}{" "}
-                            {order.orderTitle && `- ${order.orderTitle}`}
+                            {order.orderTitle && `${order.orderTitle}`}
                           </div>
                           <div>{order.client?.clientName}</div>
                           <div>

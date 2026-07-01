@@ -30,10 +30,11 @@ const OrderFooter = ({ items }: props) => {
   });
 
   const GP: number = grandTotal - totalCost;
-  const GPPercentage: number = Math.floor((GP / grandTotal) * 100);
+  const GPPercentage: number =
+    grandTotal > 0 ? Math.floor((GP / grandTotal) * 100) : 0;
 
   return (
-    <div className="order-sheet-footer">
+    <div className="order-sheet-stats">
       <div className="order-footer-wrapper">
         <div className="order-footer-items">
           <p>Total Cost</p>

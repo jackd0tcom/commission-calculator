@@ -218,6 +218,10 @@ Order.init(
       type: DataTypes.STRING,
       allowNull: true,
     },
+    orderNotes: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
   },
   {
     sequelize: db,

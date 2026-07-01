@@ -129,6 +129,9 @@ export const camelCase = (str: string) => {
 };
 
 export const getGPclass = (gp: number) => {
+  if (gp === 0) {
+    return "high-gp";
+  }
   if (gp < 40) {
     return "low-gp";
   }
@@ -192,3 +195,16 @@ export const getCommission = (item: any, productList: any, userId: number) => {
 
   return commission;
 };
+export function saveOrderNotesKeepAlive(orderId: number, notes: any) {
+  fetch("/api/updateOrder", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    keepalive: true,
+    body: JSON.stringify({
+      orderId,
+      fieldName: "orderNotes",
+      value: notes,
+    }),
+  });
+}

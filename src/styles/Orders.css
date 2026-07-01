@@ -435,6 +435,30 @@
   flex-direction: column;
   scrollbar-width: thin;
 }
+.order-sheet-footer {
+  display: flex;
+  width: 100%;
+}
+.order-notes-wrapper {
+  padding: 10px;
+  background-color: var(--white);
+  border-right: 1px solid var(--border);
+  width: 75%;
+  display: flex;
+}
+.order-notes {
+  resize: none;
+  min-width: 250px;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+}
+.order-sheet-stats {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
 .order-footer-wrapper {
   border-bottom: 1px solid var(--border);
   background-color: var(--white);
@@ -453,7 +477,7 @@
   font-size: 0.9rem;
   white-space: nowrap;
   position: relative;
-  width: 50%;
+  width: 90%;
 }
 .order-sheet-footer {
   border-top: 1px solid var(--border);
