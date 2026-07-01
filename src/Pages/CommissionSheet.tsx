@@ -343,8 +343,10 @@ const CommissionSheet = () => {
                             <div className="sheet-list-order">
                               <a href={`/order/${order.orderId}/false`}>
                                 <span className="commission-sheet-order-title">
-                                  <p>Order #{order.orderId}</p>
-                                  <p>{order.client?.clientName}</p>
+                                  <p>
+                                    Order #{order.orderId} {order.orderTitle}
+                                  </p>
+                                  <p>- {order.client?.clientName}</p>
                                 </span>
                               </a>
                             </div>
