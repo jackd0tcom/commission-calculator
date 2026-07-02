@@ -238,6 +238,7 @@
   overflow-x: scroll;
   overscroll-behavior: none;
   margin: 0px 15px 15px;
+  scrollbar-width: thin;
 }
 .order-items-list-head {
   font-weight: 500;
@@ -545,8 +546,7 @@
 .product-picker-dropdown {
   display: flex;
   width: 450px;
-  overflow-y: hidden !important;
-  top: 110% !important;
+  overflow-y: hidden;
 }
 .product-picker-category {
   border-right: 1px solid var(--border);

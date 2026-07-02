@@ -24,6 +24,7 @@ interface props {
   vendorList: any;
   handleOrderItemUpdate: any;
   handleCostChange: any;
+  boundaryRef: any;
 }
 
 const OrderItem = ({
@@ -38,6 +39,7 @@ const OrderItem = ({
   vendorList,
   handleOrderItemUpdate,
   handleCostChange,
+  boundaryRef,
 }: props) => {
   const [currentProduct, setCurrentProduct] = useState(
     item.linkId ? { linkId: item.linkId } : (item?.product ?? null),
@@ -203,6 +205,7 @@ const OrderItem = ({
           <OrderStatusPicker
             currentStatus={status}
             handleUpdateStatus={handleUpdateStatus}
+            boundaryRef={boundaryRef}
           />
         ) : (
           <div></div>
@@ -269,6 +272,7 @@ const OrderItem = ({
           currentProduct={currentProduct}
           handleProductChange={handleProductChange}
           linkList={linkList}
+          boundaryRef={boundaryRef}
         />
         <VendorPicker
           currentProduct={currentProduct}
@@ -276,11 +280,13 @@ const OrderItem = ({
           vendorList={vendorList}
           currentVendor={currentVendor}
           setCurrentVendor={setCurrentVendor}
+          boundaryRef={boundaryRef}
         />
         {item.product ? (
           <OrderStatusPicker
             currentStatus={status}
             handleUpdateStatus={handleUpdateStatus}
+            boundaryRef={boundaryRef}
           />
         ) : (
           <div></div>
@@ -413,6 +419,7 @@ const OrderItem = ({
           <OrderStatusPicker
             currentStatus={status}
             handleUpdateStatus={handleUpdateStatus}
+            boundaryRef={boundaryRef}
           />
         ) : (
           <div></div>

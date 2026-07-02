@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import axios from "axios";
+import { useFloatingDropdown } from "../../hooks/useFloatingDropdown";
 
 interface props {
   item: any;
@@ -8,6 +9,7 @@ interface props {
   handleProductChange: any;
   currentProductType: any;
   linkList: any;
+  boundaryRef: any;
 }
 
 const ProductPicker = ({
@@ -17,14 +19,21 @@ const ProductPicker = ({
   currentProductType,
   handleProductChange,
   linkList,
+  boundaryRef,
 }: props) => {
   const [selectedProductId, setSelectedProductId] = useState(
     item.productType === "product"
       ? currentProduct?.productId
       : currentProduct?.linkId,
   );
-  const [showDropDown, setShowDropdown] = useState(false);
-  const dropdownRef = useRef<HTMLInputElement>(null);
+  const {
+    open: showDropDown,
+    setOpen: setShowDropdown,
+    referenceRef,
+    floatingRef,
+    floatingStyles,
+    FloatingPortal,
+  } = useFloatingDropdown({ boundaryRef, maxHeight: 300, minHeight: 250 });
   const [showLinks, setShowLinks] = useState(false);
   const [search, setSearch] = useState("");
   const [activeIndex, setActiveIndex] = useState(0);
@@ -125,51 +134,34 @@ const ProductPicker = ({
     });
   }, [activeIndex]);
 
-  //   Handles blur
-  useEffect(() => {
-    const handleClickOutside = (event: any) => {
-      // Don't close if clicking on the project-picker-button or its children
-      const isButtonClick = event.target.closest(".product-picker-button");
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target) &&
-        !isButtonClick
-      ) {
-        setShowDropdown(false);
-      }
-    };
-
-    if (showDropDown) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [showDropDown]);
-
   return (
     <div className="product-picker">
       <button
+        ref={referenceRef}
         className="product-picker-button"
         onClick={() => setShowDropdown(!showDropDown)}
       >
         {currentName ?? "Add a product"}
       </button>
       {showDropDown && (
-        <div className="dropdown product-picker-dropdown" ref={dropdownRef}>
-          <div className="product-picker-category">
-            <div
-              className={
-                !showLinks
-                  ? "dropdown-item product-picker-category-item active-category"
-                  : "dropdown-item product-picker-category-item"
-              }
-              onClick={() => setShowLinks(false)}
-            >
-              Products
-            </div>
-            {/* <div
+        <FloatingPortal>
+          <div
+            className="dropdown-floating product-picker-dropdown"
+            ref={floatingRef}
+            style={floatingStyles}
+          >
+            <div className="product-picker-category">
+              <div
+                className={
+                  !showLinks
+                    ? "dropdown-item product-picker-category-item active-category"
+                    : "dropdown-item product-picker-category-item"
+                }
+                onClick={() => setShowLinks(false)}
+              >
+                Products
+              </div>
+              {/* <div
               className={
                 showLinks
                   ? "dropdown-item product-picker-category-item active-category"
@@ -179,56 +171,57 @@ const ProductPicker = ({
             >
               Links
             </div> */}
-          </div>
-          <div className="product-picker-items">
-            <div className="product-search">
-              <input
-                ref={searchInputRef}
-                type="text"
-                onChange={(e) => setSearch(e.target.value)}
-                onKeyDown={handleKeyDown}
-                className="product-search-input"
-                placeholder="Search"
-              />
             </div>
-            <div className="product-picker-items-wrapper">
-              {!showLinks
-                ? filteredProducts.map((product: any, index: number) => (
-                  <div
-                    className={
-                      index === activeIndex
-                        ? "dropdown-item product-picker-item active"
-                        : "dropdown-item product-picker-item"
-                    }
-                    key={product.productId}
-                    ref={(el) => {
-                      itemRefs.current[index] = el;
-                    }}
-                    onMouseEnter={() => setActiveIndex(index)}
-                    onClick={() =>
-                      updateProduct(product.productId, "product")
-                    }
-                  >
-                    {product.productName}
-                  </div>
-                ))
-                : linkList.map((link: any) => {
-                  if (!link.publication) {
-                    return;
-                  }
-                  return (
-                    <div
-                      className="dropdown-item product-picker-item"
-                      key={link.linkId}
-                      onClick={() => updateProduct(link.linkId, "link")}
-                    >
-                      {link.publication ?? "No url provided"}
-                    </div>
-                  );
-                })}
+            <div className="product-picker-items">
+              <div className="product-search">
+                <input
+                  ref={searchInputRef}
+                  type="text"
+                  onChange={(e) => setSearch(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  className="product-search-input"
+                  placeholder="Search"
+                />
+              </div>
+              <div className="product-picker-items-wrapper">
+                {!showLinks
+                  ? filteredProducts.map((product: any, index: number) => (
+                      <div
+                        className={
+                          index === activeIndex
+                            ? "dropdown-item product-picker-item active"
+                            : "dropdown-item product-picker-item"
+                        }
+                        key={product.productId}
+                        ref={(el) => {
+                          itemRefs.current[index] = el;
+                        }}
+                        onMouseEnter={() => setActiveIndex(index)}
+                        onClick={() =>
+                          updateProduct(product.productId, "product")
+                        }
+                      >
+                        {product.productName}
+                      </div>
+                    ))
+                  : linkList.map((link: any) => {
+                      if (!link.publication) {
+                        return;
+                      }
+                      return (
+                        <div
+                          className="dropdown-item product-picker-item"
+                          key={link.linkId}
+                          onClick={() => updateProduct(link.linkId, "link")}
+                        >
+                          {link.publication ?? "No url provided"}
+                        </div>
+                      );
+                    })}
+              </div>
             </div>
           </div>
-        </div>
+        </FloatingPortal>
       )}
     </div>
   );

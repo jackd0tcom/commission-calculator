@@ -39,7 +39,7 @@ button {
 }
 
 @media (prefers-color-scheme: light) {
-  #root {
+  body {
     --black: #222222;
     --border: rgb(225, 225, 225);
     --light-grey: #ababab;
@@ -80,7 +80,7 @@ button {
 }
 
 @media (prefers-color-scheme: dark) {
-  #root {
+  body {
     --black: #222222;
     --border: #3c3c3c;
     --light-grey: #ababab;

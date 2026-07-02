@@ -56,6 +56,7 @@ const OrderPage = () => {
   const isCalculatorOrder = calculatorOrder === "true";
   const [orderNotes, setOrderNotes] = useState("");
   const [originalOrderTitle, setOriginalOrderTitle] = useState("");
+  const listWrapperRef = useRef<HTMLDivElement>(null);
   const [filter, setFilter] = usePersistedFilter(
     `order/${orderId}/${calculatorOrder}`,
     user.userId,
@@ -624,7 +625,7 @@ const OrderPage = () => {
               </div>
             </div>
             <div className="order-client-wrapper">
-              Client:
+              x Client:
               <p>{currentClient?.clientName}</p>
             </div>
             <div className="order-sales-wrapper">
@@ -738,7 +739,7 @@ const OrderPage = () => {
                 position="left"
               />
             </div>
-            <div className="order-items-list">
+            <div className="order-items-list" ref={listWrapperRef}>
               {bulkSelects.length <= 0 ? (
                 <div className="order-items-list-item order-items-list-head">
                   <BulkSelector
@@ -834,6 +835,7 @@ const OrderPage = () => {
                     (item: any, index: number) =>
                       item.itemId && (
                         <OrderItem
+                          boundaryRef={listWrapperRef}
                           bulkSelects={bulkSelects}
                           setBulkSelects={setBulkSelects}
                           key={`order-item-${item.itemId}`}
@@ -851,12 +853,14 @@ const OrderPage = () => {
                         />
                       ),
                   )}
-                <div
-                  className="sheet-item new-item-row"
-                  onClick={() => handleAddItem()}
-                >
-                  <p>+</p>
-                  <p>Add Product</p>
+                <div className="new-item-row-wrapper">
+                  <div
+                    className="sheet-item new-item-row"
+                    onClick={() => handleAddItem()}
+                  >
+                    <p>+</p>
+                    <p>Add Product</p>
+                  </div>
                 </div>
               </div>
             </div>

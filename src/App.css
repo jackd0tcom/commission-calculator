@@ -121,6 +121,17 @@ p {
   box-shadow: var(--shadow);
   overscroll-behavior: none;
 }
+.dropdown-floating {
+  position: absolute;
+  border: 1px solid var(--border);
+  background-color: var(--white);
+  max-height: 250px;
+  overflow-y: scroll;
+  scrollbar-width: none;
+  z-index: 100;
+  box-shadow: var(--shadow);
+  overscroll-behavior: none;
+}
 .dropdown-item {
   padding: 8px 15px;
   font-size: 0.9rem;
