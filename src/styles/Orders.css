@@ -288,14 +288,12 @@
   width: 100%;
   white-space: nowrap;
   position: relative;
+  min-width: max-content;
 }
 .order-item-p-wrapper p {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-}
-.order-items-list-item-wrapper {
-  min-width: max-content;
 }
 .order-input {
   padding: 8px 12px;

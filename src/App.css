@@ -12,6 +12,7 @@
 @import "./styles/Vendors.css";
 @import "./styles/QuoteGenerator.css";
 @import "./styles/Dashboard.css";
+@import "./styles/Production.css";
 
 button {
   font-size: 0.9rem;

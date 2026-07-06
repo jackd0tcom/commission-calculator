@@ -744,7 +744,10 @@ export default {
         return;
       }
 
-      const order = await Order.findOne({ where: { orderId: item.orderId } });
+      const order = await Order.findOne({
+        where: { orderId: item.orderId },
+        include: [{ model: Client, as: "client" }],
+      });
       const currentOrderItem: any = orderItem;
       const isProduct = currentOrderItem.productType === "product";
       const product: any = isProduct
@@ -927,11 +930,13 @@ export default {
       if (isProduct) {
         payload = {
           ...itemData,
+          order,
           product,
         };
       } else {
         payload = {
           ...itemData,
+          order,
           link,
         };
       }

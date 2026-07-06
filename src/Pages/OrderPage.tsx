@@ -835,6 +835,7 @@ const OrderPage = () => {
                     (item: any, index: number) =>
                       item.itemId && (
                         <OrderItem
+                          isProduction={false}
                           boundaryRef={listWrapperRef}
                           bulkSelects={bulkSelects}
                           setBulkSelects={setBulkSelects}

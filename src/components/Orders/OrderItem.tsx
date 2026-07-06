@@ -11,6 +11,7 @@ import OrderItemContextMenu from "./OrderItemContextMenu";
 import DuePicker from "./DuePicker";
 
 interface props {
+  isProduction: boolean;
   item: any;
   index: number;
   setOrderItems: any;
@@ -28,6 +29,7 @@ interface props {
 }
 
 const OrderItem = ({
+  isProduction,
   item,
   index,
   setOrderItems,
@@ -232,7 +234,11 @@ const OrderItem = ({
   ) : status === "staged" ? (
     <div className="order-items-list-item-wrapper">
       <div
-        className="order-items-list-item"
+        className={
+          isProduction
+            ? "order-items-list-item-production"
+            : "order-items-list-item"
+        }
         onMouseEnter={() => setHovering(true)}
         onMouseLeave={() => setHovering(false)}
         onContextMenu={handleContextMenu}
@@ -247,7 +253,11 @@ const OrderItem = ({
           />
         )}
         {!hovering ? (
-          <p className="sheet-item-number">{index + 1}</p>
+          isProduction ? (
+            <a href={`/order/${item.orderId}/false`}>{item.orderId}</a>
+          ) : (
+            <p className="sheet-item-number">{index + 1}</p>
+          )
         ) : currentVendorName && currentVendorName !== "Interior" ? (
           <FaAngleUp
             onClick={() => setShowVendorRows(!showVendorRows)}
@@ -257,9 +267,12 @@ const OrderItem = ({
                 : "order-item-carat"
             }
           />
+        ) : isProduction ? (
+          <a href={`/order/${item.orderId}/false`}>{item.orderId}</a>
         ) : (
           <p className="sheet-item-number">{index + 1}</p>
         )}
+        {isProduction && <p>{item.order?.client?.clientName ?? ""}</p>}
         <DuePicker
           currentDate={currentDueDate}
           updateDate={persistOrderUpdate}
@@ -372,7 +385,11 @@ const OrderItem = ({
   ) : (
     <div className="order-items-list-item-wrapper">
       <div
-        className="order-items-list-item"
+        className={
+          isProduction
+            ? "order-items-list-item-production"
+            : "order-items-list-item"
+        }
         onMouseEnter={() => setHovering(true)}
         onMouseLeave={() => setHovering(false)}
         onContextMenu={handleContextMenu}
@@ -387,7 +404,11 @@ const OrderItem = ({
           />
         )}
         {!hovering ? (
-          <p className="sheet-item-number">{index + 1}</p>
+          isProduction ? (
+            <a href={`/order/${item.orderId}/false`}>{item.orderId}</a>
+          ) : (
+            <p className="sheet-item-number">{index + 1}</p>
+          )
         ) : currentVendorName && currentVendorName !== "Interior" ? (
           <FaAngleUp
             onClick={() => setShowVendorRows(!showVendorRows)}
@@ -397,9 +418,12 @@ const OrderItem = ({
                 : "order-item-carat"
             }
           />
+        ) : isProduction ? (
+          <a href={`/order/${item.orderId}/false`}>{item.orderId}</a>
         ) : (
           <p className="sheet-item-number">{index + 1}</p>
         )}
+        {isProduction && <p>{item.order?.client?.clientName ?? ""}</p>}
         <DuePicker
           currentDate={currentDueDate}
           updateDate={persistOrderUpdate}
