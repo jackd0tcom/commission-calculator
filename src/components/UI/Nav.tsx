@@ -12,6 +12,7 @@ import { FaLink } from "react-icons/fa";
 import { FaStore } from "react-icons/fa";
 import { FaMoneyBillWave } from "react-icons/fa";
 import { RiDashboardHorizontalFill } from "react-icons/ri";
+import { FaKeyboard } from "react-icons/fa6";
 
 import HideNavToggle from "./HideNavToggle";
 
@@ -61,6 +62,15 @@ const Nav = ({ setShowNav, showNav }: props) => {
             >
               <FaBoxOpen />
               Orders
+            </NavLink>
+            <NavLink
+              to="/production"
+              className={({ isActive }) =>
+                isActive ? "active-nav nav-button" : "inactive-nav nav-button"
+              }
+            >
+              <FaKeyboard />
+              Production
             </NavLink>
             <NavLink
               to="/commission-sheets"

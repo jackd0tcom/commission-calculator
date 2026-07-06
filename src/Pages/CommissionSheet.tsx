@@ -381,7 +381,6 @@ const CommissionSheet = () => {
             ref={descriptionRef}
             name="notes"
             id="notes"
-            disabled={sheetData?.sheetStatus !== "draft"}
             onChange={(e) =>
               setSheetData({ ...sheetData, sheetDescription: e.target.value })
             }

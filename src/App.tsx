@@ -23,6 +23,7 @@ import Links from "./Pages/Links.tsx";
 import Vendors from "./Pages/Vendors.tsx";
 import VendorPage from "./Pages/VendorPage.tsx";
 import QuoteGenerator from "./Pages/QuoteGenerator.tsx";
+import Production from "./Pages/Production.tsx";
 
 function App() {
   const { isAuthenticated, isLoading, error } = useAuth0();
@@ -95,6 +96,7 @@ function App() {
               <Route path="/vendors" element={<Vendors />}></Route>
               <Route path="/vendor/:vendorId" element={<VendorPage />}></Route>
               <Route path="/clients" element={<Clients />}></Route>
+              <Route path="/production" element={<Production />}></Route>
               <Route
                 path="/quote"
                 element={
