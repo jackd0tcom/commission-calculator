@@ -19,13 +19,11 @@ const Production = () => {
   const [orderItems, setOrderItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState("");
-  const [clientList, setClientList] = useState([{}]);
   const [vendorList, setVendorList] = useState([{}]);
   const [productList, setProductList] = useState([{}]);
   const [linkList, setLinkList] = useState([{}]);
   const [bulkSelects, setBulkSelects] = useState([]);
   const listWrapperRef = useRef<HTMLDivElement>(null);
-  const [users, setUsers] = useState([{}]);
   const statusOrder = [
     "staged",
     "ordered",
@@ -165,18 +163,6 @@ const Production = () => {
             setProductList(res.data.products);
             setLinkList(res.data.links);
           }
-        }),
-      );
-
-      promises.push(
-        axios.get("/api/getClients").then((res) => {
-          if (res.status === 200) setClientList(res.data);
-        }),
-      );
-
-      promises.push(
-        axios.get("/api/getUsers").then((res) => {
-          if (res.status === 200) setUsers(res.data);
         }),
       );
       await Promise.all(promises);
@@ -386,131 +372,137 @@ const Production = () => {
         <h2>Production</h2>
       </div>
       <div className="production-page-body">
-        <div className="production-top-bar">
-          <input
-            type="text"
-            placeholder="Search"
-            className="orders-search-input"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-          <Sorter
-            filter={filter}
-            setFilter={setFilter}
-            options={[
-              {
-                heading: "Due Date",
-                sortHeading: "sort",
-                sortValue: "due",
-              },
-              {
-                heading: "Client",
-                sortHeading: "sort",
-                sortValue: "client",
-              },
-              {
-                heading: "Order #",
-                sortHeading: "sort",
-                sortValue: "order",
-              },
-              {
-                heading: "Status",
-                sortHeading: "sort",
-                sortValue: "status",
-              },
-              {
-                heading: "Price",
-                sortHeading: "sort",
-                sortValue: "price",
-              },
-              {
-                heading: "Cost",
-                sortHeading: "sort",
-                sortValue: "cost",
-              },
-            ]}
-            direction="direction"
-            position="left"
-          />
-          <FilterDropdown
-            heading="Sales"
-            array={true}
-            options={sales}
-            filter={filter}
-            setFilter={setFilter}
-          />
-        </div>
-        <div className="order-items-list" ref={listWrapperRef}>
-          <div className="order-items-list-item-production order-items-list-head">
-            <div>Order</div>
-            <FilterDropdown
-              heading={"Client"}
-              array={true}
-              options={clients}
-              filter={filter}
-              setFilter={setFilter}
-            />
-            <FilterDropdown
-              heading={"Due"}
-              array={true}
-              options={dueDates}
-              filter={filter}
-              setFilter={setFilter}
-            />
-            <FilterDropdown
-              heading={"Product"}
-              array={true}
-              options={products}
-              filter={filter}
-              setFilter={setFilter}
-            />
-            <FilterDropdown
-              heading={"Vendor"}
-              array={true}
-              options={vendors}
-              filter={filter}
-              setFilter={setFilter}
-            />
-            <FilterDropdown
-              heading={"Status"}
-              array={true}
-              options={statuses}
-              filter={filter}
-              setFilter={setFilter}
-            />
-            <p>Cost</p>
-            <p>Price</p>
-            <p className="input-heading">Notes / Restrictions</p>
-            <p className="input-heading">Target URL</p>
-            <p className="input-heading">Anchor Text</p>
-          </div>
-          <div className="order-items-list-wrapper">
-            {filteredOrderItems?.length > 0 &&
-              filteredOrderItems?.map(
-                (item: any, index: number) =>
-                  item.itemId && (
-                    <OrderItem
-                      isProduction={true}
-                      boundaryRef={listWrapperRef}
-                      bulkSelects={bulkSelects}
-                      setBulkSelects={setBulkSelects}
-                      key={`order-item-${item.itemId}`}
-                      item={item}
-                      index={index}
-                      setOrderItems={setOrderItems}
-                      products={productList}
-                      linkList={linkList}
-                      onQuantityChange={handleQuantityChange}
-                      onPriceChange={handlePriceChange}
-                      onDeliveriesChange={handleDeliveriesChange}
-                      vendorList={vendorList}
-                      handleOrderItemUpdate={handleOrderItemUpdate}
-                      handleCostChange={handleCostChange}
-                    />
-                  ),
-              )}
-          </div>
-        </div>
+        {isLoading ? (
+          <Loader />
+        ) : (
+          <>
+            <div className="production-top-bar">
+              <input
+                type="text"
+                placeholder="Search"
+                className="orders-search-input"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+              <Sorter
+                filter={filter}
+                setFilter={setFilter}
+                options={[
+                  {
+                    heading: "Due Date",
+                    sortHeading: "sort",
+                    sortValue: "due",
+                  },
+                  {
+                    heading: "Client",
+                    sortHeading: "sort",
+                    sortValue: "client",
+                  },
+                  {
+                    heading: "Order #",
+                    sortHeading: "sort",
+                    sortValue: "order",
+                  },
+                  {
+                    heading: "Status",
+                    sortHeading: "sort",
+                    sortValue: "status",
+                  },
+                  {
+                    heading: "Price",
+                    sortHeading: "sort",
+                    sortValue: "price",
+                  },
+                  {
+                    heading: "Cost",
+                    sortHeading: "sort",
+                    sortValue: "cost",
+                  },
+                ]}
+                direction="direction"
+                position="left"
+              />
+              <FilterDropdown
+                heading="Sales"
+                array={true}
+                options={sales}
+                filter={filter}
+                setFilter={setFilter}
+              />
+            </div>
+            <div className="order-items-list" ref={listWrapperRef}>
+              <div className="order-items-list-item-production order-items-list-head">
+                <div>Order</div>
+                <FilterDropdown
+                  heading={"Client"}
+                  array={true}
+                  options={clients}
+                  filter={filter}
+                  setFilter={setFilter}
+                />
+                <FilterDropdown
+                  heading={"Due"}
+                  array={true}
+                  options={dueDates}
+                  filter={filter}
+                  setFilter={setFilter}
+                />
+                <FilterDropdown
+                  heading={"Product"}
+                  array={true}
+                  options={products}
+                  filter={filter}
+                  setFilter={setFilter}
+                />
+                <FilterDropdown
+                  heading={"Vendor"}
+                  array={true}
+                  options={vendors}
+                  filter={filter}
+                  setFilter={setFilter}
+                />
+                <FilterDropdown
+                  heading={"Status"}
+                  array={true}
+                  options={statuses}
+                  filter={filter}
+                  setFilter={setFilter}
+                />
+                <p>Cost</p>
+                <p>Price</p>
+                <p className="input-heading">Notes / Restrictions</p>
+                <p className="input-heading">Target URL</p>
+                <p className="input-heading">Anchor Text</p>
+              </div>
+              <div className="order-items-list-wrapper">
+                {filteredOrderItems?.length > 0 &&
+                  filteredOrderItems?.map(
+                    (item: any, index: number) =>
+                      item.itemId && (
+                        <OrderItem
+                          isProduction={true}
+                          boundaryRef={listWrapperRef}
+                          bulkSelects={bulkSelects}
+                          setBulkSelects={setBulkSelects}
+                          key={`order-item-${item.itemId}`}
+                          item={item}
+                          index={index}
+                          setOrderItems={setOrderItems}
+                          products={productList}
+                          linkList={linkList}
+                          onQuantityChange={handleQuantityChange}
+                          onPriceChange={handlePriceChange}
+                          onDeliveriesChange={handleDeliveriesChange}
+                          vendorList={vendorList}
+                          handleOrderItemUpdate={handleOrderItemUpdate}
+                          handleCostChange={handleCostChange}
+                        />
+                      ),
+                  )}
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
