@@ -135,6 +135,7 @@ const ClientItem = ({
         isEditing={isEditing}
         setIsEditing={setIsEditing}
         setIsDeleting={setIsDeleting}
+        updateClient={updateClient}
       />
     </div>
   );

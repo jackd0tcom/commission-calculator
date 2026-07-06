@@ -14,7 +14,6 @@ export default {
       }
 
       const clients = await Client.findAll({
-        where: { isArchived: false },
         order: [["clientName", "ASC"]],
         include: [
           {

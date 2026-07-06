@@ -625,7 +625,7 @@ const OrderPage = () => {
               </div>
             </div>
             <div className="order-client-wrapper">
-              x Client:
+              Client:
               <p>{currentClient?.clientName}</p>
             </div>
             <div className="order-sales-wrapper">

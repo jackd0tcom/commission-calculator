@@ -222,6 +222,10 @@ Order.init(
       type: DataTypes.TEXT,
       allowNull: true,
     },
+    isArchived: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
   },
   {
     sequelize: db,

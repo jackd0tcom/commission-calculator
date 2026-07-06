@@ -6,12 +6,15 @@ interface props {
   isEditing: any;
   setIsEditing: any;
   setIsDeleting: any;
+  updateClient: any;
 }
 
 const ClientItemSettings = ({
   setIsDeleting,
   isEditing,
+  client,
   setIsEditing,
+  updateClient,
 }: props) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef<HTMLInputElement>(null);
@@ -70,6 +73,12 @@ const ClientItemSettings = ({
             onClick={() => setIsDeleting(true)}
           >
             Delete
+          </div>
+          <div
+            className="dropdown-item client-settings-item"
+            onClick={() => updateClient("isArchived", !client.isArchived)}
+          >
+            {!client?.isArchived ? "Archive" : "Unarchive"}
           </div>
         </div>
       )}

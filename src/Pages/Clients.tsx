@@ -20,6 +20,7 @@ const Clients = () => {
   const [users, setUsers] = useState([{}]);
   const [isLoading, setIsLoading] = useState(true);
   const [orderList, setOrderList] = useState([]);
+  const [archivedClients, setArchivedClients] = useState([]);
   const [currentClient, setCurrentClient] = useState(0);
   const userId = useSelector((state: any) => state.user.userId);
   const navigate = useNavigate();
@@ -33,15 +34,20 @@ const Clients = () => {
     orderDirection: "up",
   });
 
+  const list = filter.sort === "archived" ? archivedClients : clientList;
+
   const currentClientName: any =
-    clientList.find((client: any) => client?.clientId === currentClient)
+    list.find((client: any) => client?.clientId === currentClient)
       ?.clientName ?? "selected client";
 
   const fetchClients = async () => {
     try {
       await axios.get("/api/getClients").then((res) => {
         if (res.status === 200) {
-          setClientList(res.data);
+          setClientList(res.data.filter((client: any) => !client.isArchived));
+          setArchivedClients(
+            res.data.filter((client: any) => client.isArchived),
+          );
           const defaultClientId = res.data[0]?.clientId;
           const defaultClient = res.data.find(
             (client: any) => client.clientId === defaultClientId,
@@ -77,7 +83,7 @@ const Clients = () => {
   }, [userId]);
 
   const handleSelectClient = (clientId: number) => {
-    const client: any = clientList.find((cl: any) => cl.clientId === clientId);
+    const client: any = list.find((cl: any) => cl.clientId === clientId);
     setCurrentClient(clientId);
     setOrderList(client?.orders ?? []);
   };
@@ -133,6 +139,13 @@ const Clients = () => {
     let orderData = orderList;
 
     const searchQuery = search.toLowerCase();
+
+    if (filter.sort === "archived") {
+      return {
+        filteredClientList: archivedClients,
+        filteredOrderList: orderList,
+      };
+    }
 
     // Search filtering
     if (searchQuery.trim() === "") {
@@ -264,6 +277,11 @@ const Clients = () => {
                   heading: "# Orders",
                   sortHeading: "sort",
                   sortValue: "orders",
+                },
+                {
+                  heading: "Archived",
+                  sortHeading: "sort",
+                  sortValue: "archived",
                 },
               ]}
             />
