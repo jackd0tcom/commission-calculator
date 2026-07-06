@@ -50,9 +50,13 @@ const ClientItem = ({
             fieldName,
             value,
           })
-          .then((res) => {
-            if (res.status === 200) {
-              return;
+          .then(() => {
+            if (fieldName === "isArchived") {
+              setClientList((prev: any) =>
+                prev.filter(
+                  (filtClient: any) => filtClient.clientId !== client.clientId,
+                ),
+              );
             }
           });
       } catch (error) {
