@@ -59,12 +59,13 @@ const Production = () => {
     let salesArray: FilterOption[] = [];
 
     items.forEach((item: any) => {
-      if (!dueDatesArray.some((date: any) => date.id === item.dueDate)) {
-        if (item.dueDate) {
-          const dateArray = item.dueDate?.split("-");
+      if (item.dueDate) {
+        const monthKey = item.dueDate.slice(0, 7);
+        if (!dueDatesArray.some((date) => date.id === monthKey)) {
+          const [year, month] = item.dueDate.split("-");
           dueDatesArray.push({
-            title: `${dateArray[1]}/${dateArray[0]}`,
-            id: item.dueDate,
+            title: `${month}/${year}`,
+            id: monthKey,
           });
         }
       }
@@ -210,7 +211,11 @@ const Production = () => {
         return false;
       }
       if (filter.due.length > 0) {
-        if (!filter.due.some((date: any) => date.id === item.dueDate))
+        if (
+          !filter.due.some(
+            (date: any) => item.dueDate?.slice(0, 7) === date.id
+          )
+        )
           return false;
       }
       if (filter.client.length > 0) {
@@ -289,9 +294,9 @@ const Production = () => {
           case "status":
             return filter.direction === "up"
               ? statusOrder.indexOf(a.itemStatus) -
-                  statusOrder.indexOf(b.itemStatus)
+              statusOrder.indexOf(b.itemStatus)
               : statusOrder.indexOf(b.itemStatus) -
-                  statusOrder.indexOf(a.itemStatus);
+              statusOrder.indexOf(a.itemStatus);
             break;
 
           case "price":

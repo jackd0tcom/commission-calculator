@@ -92,7 +92,11 @@ const OrderPage = () => {
     let statusesArray: FilterOption[] = [];
 
     items.forEach((item: any) => {
-      if (!dueDatesArray.some((date: any) => date.id === item.dueDate)) {
+      if (
+        !dueDatesArray.some(
+          (date: any) => item.dueDate?.slice(0, 7) === date.id,
+        )
+      ) {
         if (item.dueDate) {
           const dateArray = item.dueDate?.split("-");
           dueDatesArray.push({
@@ -278,7 +282,11 @@ const OrderPage = () => {
         return false;
       }
       if (filter.due.length > 0) {
-        if (!filter.due.some((date: any) => date.id === item.dueDate))
+        if (
+          !filter.due.some(
+            (date: any) => item.dueDate?.slice(0, 7) === date.id,
+          )
+        )
           return false;
       }
       if (filter.product.length > 0) {
@@ -338,9 +346,9 @@ const OrderPage = () => {
           case "status":
             return filter.direction === "up"
               ? statusOrder.indexOf(a.itemStatus) -
-                  statusOrder.indexOf(b.itemStatus)
+              statusOrder.indexOf(b.itemStatus)
               : statusOrder.indexOf(b.itemStatus) -
-                  statusOrder.indexOf(a.itemStatus);
+              statusOrder.indexOf(a.itemStatus);
             break;
 
           case "price":
@@ -530,7 +538,7 @@ const OrderPage = () => {
         .then(() => {
           setCount(0);
         });
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const handleUpdateNotes = (notes: string) => {
