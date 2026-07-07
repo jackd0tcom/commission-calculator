@@ -27,7 +27,7 @@ const BulkSelector = ({ bulkSelects, setBulkSelects, orderItems }: props) => {
       >
         {bulkSelects.length > 0 && <FaCheck className="bulk-check" />}
       </div>
-      {bulkSelects.length > 0 && <p>{bulkSelects.length} Selected</p>}
+      {bulkSelects.length > 0 && <p>{bulkSelects.length}</p>}
     </div>
   );
 };

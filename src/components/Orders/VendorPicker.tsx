@@ -9,6 +9,7 @@ interface props {
   setCurrentVendor: any;
   currentProduct: any;
   boundaryRef: any;
+  handleBulkUpdate?: any;
 }
 
 const VendorPicker = ({

@@ -1,4 +1,3 @@
-import { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -16,7 +15,7 @@ function toLocalDate(value: string | Date | null | undefined): Date | null {
 }
 
 const DuePicker = ({ currentDate, updateDate, isEditable }: props) => {
-  const [dueDate, setDueDate] = useState(toLocalDate(currentDate));
+  const dueDate = toLocalDate(currentDate);
 
   return (
     <div className="due-picker-wrapper">
@@ -26,7 +25,6 @@ const DuePicker = ({ currentDate, updateDate, isEditable }: props) => {
         disabled={!isEditable}
         closeOnScroll
         onChange={(date: any) => {
-          setDueDate(date?.toISOString() ?? null);
           updateDate("dueDate", date);
         }}
         showMonthYearPicker

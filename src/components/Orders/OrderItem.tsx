@@ -62,7 +62,7 @@ const OrderItem = ({
 
   const cost = item.costSnapshot ?? item.cost ?? item.product?.defaultCost ?? 0;
   const [showVendorRows, setShowVendorRows] = useState(false);
-  const [currentDueDate, setCurrentDueDate] = useState(item.dueDate);
+  const currentDueDate = item.dueDate ?? null;
   const [vendorPayload, setVendorPayload] = useState(item.vendorPayload ?? {});
   const { xPos, yPos, showMenu, handleContextMenu } = useContextMenu();
 
@@ -101,12 +101,6 @@ const OrderItem = ({
       if (res.status === 200) {
         console.log(res.data);
         switch (fieldName) {
-          case "price":
-            setPrice(value);
-            break;
-          case "cost":
-            setCost(value);
-            break;
           case "notes":
             setNotes(value);
             break;
@@ -115,9 +109,6 @@ const OrderItem = ({
             break;
           case "anchorText":
             setAnchorText(value);
-            break;
-          case "dueDate":
-            setCurrentDueDate(value);
             break;
         }
       }
@@ -169,7 +160,11 @@ const OrderItem = ({
   return bulkSelects.length > 0 && status !== "complete" ? (
     <div className="order-items-list-item-wrapper">
       <div
-        className="order-items-list-item"
+        className={
+          isSelected
+            ? "order-items-list-item selected-order-item"
+            : "order-items-list-item"
+        }
         onMouseEnter={() => setHovering(true)}
         onMouseLeave={() => setHovering(false)}
       >

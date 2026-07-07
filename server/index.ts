@@ -48,6 +48,7 @@ const {
   bulkDeleteOrderItem,
   duplicateOrder,
   bulkUpdateOrderItemProduct,
+  bulkUpdateOrderItem,
 } = orderCtrl;
 const {
   getCommissionSheets,
@@ -157,6 +158,7 @@ app.post(`/api/massDuplicateOrderItem`, massDuplicateOrderItem);
 app.post(`/api/deleteOrder`, deleteOrder);
 app.post(`/api/duplicateOrder`, duplicateOrder);
 app.post(`/api/bulkUpdateOrderItemProduct`, bulkUpdateOrderItemProduct);
+app.post(`/api/bulkUpdateOrderItem`, bulkUpdateOrderItem);
 
 // Client endpoints
 app.get(`/api/getClients`, getClients);

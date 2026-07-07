@@ -20,6 +20,7 @@ import { usePersistedFilter } from "../hooks/usePersistedFilter";
 import { saveOrderNotesKeepAlive } from "../helpers";
 import Notes from "../components/UI/Notes";
 import ProductPicker from "../components/Orders/ProductPicker";
+import DuePicker from "../components/Orders/DuePicker";
 
 type FilterOption = {
   title: string;
@@ -46,7 +47,7 @@ const OrderPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [notFound, setNotFound] = useState(false);
   const [bulkDeleting, setBulkDeleting] = useState(false);
-  const [bulkSelects, setBulkSelects] = useState([]);
+  const [bulkSelects, setBulkSelects] = useState<any[]>([]);
   const [orderTitle, setOrderTitle] = useState("");
   const [currentUserId, setCurrentUserId] = useState(1);
   const [users, setUsers] = useState([{}]);
@@ -57,6 +58,8 @@ const OrderPage = () => {
   const isCalculatorOrder = calculatorOrder === "true";
   const [orderNotes, setOrderNotes] = useState("");
   const [originalOrderTitle, setOriginalOrderTitle] = useState("");
+  const [bulkCost, setBulkCost] = useState(0);
+  const [bulkPrice, setBulkPrice] = useState(0);
   const listWrapperRef = useRef<HTMLDivElement>(null);
   const [filter, setFilter] = usePersistedFilter(
     `order/${orderId}/${calculatorOrder}`,
@@ -572,6 +575,40 @@ const OrderPage = () => {
     setBulkSelects([]);
   };
 
+  const handleBulkUpdate = async (fieldName: string, value: any) => {
+    try {
+      const res = await axios.post("/api/bulkUpdateOrderItem", {
+        items: bulkSelects,
+        fieldName,
+        value,
+      });
+      if (res.status === 200) {
+        setOrderItems((prev) =>
+          prev.map((item: any) => {
+            const updated = res.data.find((n: any) => n.itemId === item.itemId);
+            if (!updated) return item;
+
+            return {
+              ...item,
+              ...updated,
+              product: updated.product,
+              link: updated.link ?? null,
+              productType: updated.productType,
+              price: updated.price,
+              cost: updated.cost,
+              priceSnapshot: null,
+              costSnapshot: null,
+              dueDate: updated.dueDate ?? null,
+            };
+          }),
+        );
+        setBulkSelects([]);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return isLoading ? (
     <Loader />
   ) : (
@@ -840,7 +877,14 @@ const OrderPage = () => {
                       </div>
                     ) : (
                       <>
-                        <div className="bulk-status-wrapper">
+                        <div>
+                          <DuePicker
+                            currentDate={null}
+                            updateDate={handleBulkUpdate}
+                            isEditable={true}
+                          />
+                        </div>
+                        <div>
                           <ProductPicker
                             item={{}}
                             products={productList}
@@ -851,12 +895,67 @@ const OrderPage = () => {
                             bulkItems={bulkSelects}
                             handleBulkProductChange={handleBulkProductChange}
                           />
-                          Status:
+                        </div>
+                        <div className="vendor-selector-placeholder"></div>
+                        <div className="bulk-status-wrapper">
                           <BulkStatusPicker
                             bulkSelects={bulkSelects}
                             setBulkSelects={setBulkSelects}
                             setOrderItems={setOrderItems}
                           />
+                        </div>
+                        <div className="order-price-input-wrapper">
+                          <span>$</span>
+                          <input
+                            className="order-price-input"
+                            type="number"
+                            value={bulkCost}
+                            onChange={(e) =>
+                              setBulkCost(Number(e.target.value))
+                            }
+                          />
+                          {bulkCost > 0 && (
+                            <>
+                              <button
+                                className="save-bulk"
+                                onClick={() => {
+                                  handleBulkUpdate("cost", bulkCost);
+                                  setBulkCost(0);
+                                }}
+                              >
+                                Save
+                              </button>
+                              <button
+                                className="cancel-bulk"
+                                onClick={() => {
+                                  setBulkCost(0);
+                                }}
+                              >
+                                Cancel
+                              </button>
+                            </>
+                          )}
+                        </div>
+                        <div className="order-price-input-wrapper">
+                          <span>$</span>
+                          <input
+                            className="order-price-input"
+                            type="number"
+                            onChange={(e) =>
+                              setBulkPrice(Number(e.target.value))
+                            }
+                          />
+                          {bulkPrice > 0 && (
+                            <button
+                              className="save-bulk"
+                              onClick={() => {
+                                handleBulkUpdate("price", bulkPrice);
+                                setBulkPrice(0);
+                              }}
+                            >
+                              Save
+                            </button>
+                          )}
                         </div>
                         <div className="bulk-delete-button-wrapper">
                           <button

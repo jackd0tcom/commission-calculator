@@ -456,6 +456,60 @@ export default {
       res.status(500).send("Internal server error");
     }
   },
+  bulkUpdateOrderItem: async (req: Request, res: Response) => {
+    try {
+      console.log("bulkUpdateOrderItem");
+
+      if (!req.session.user) {
+        res.status(401).send("user not logged in / no session set up");
+        return;
+      }
+
+      const { items, fieldName, value } = req.body;
+      let newProduct;
+      let payload;
+
+      const updatedItems = await Promise.all(
+        items.map(async (item: any) => {
+          const orderItem = await OrderItem.findOne({
+            where: { itemId: item.itemId },
+            include: [
+              {
+                model: Product,
+              },
+            ],
+          });
+
+          if (!orderItem) {
+            res.status(400).send("No order item found");
+            return;
+          }
+
+          if (fieldName === "cost") {
+            if (item.product.isCostDynamic) {
+              await orderItem?.update({ [fieldName]: value });
+            }
+          } else await orderItem?.update({ [fieldName]: value });
+
+          if (fieldName === "productId") {
+            newProduct = await Product.findOne({
+              where: { productId: value },
+            });
+            return { ...orderItem.toJSON(), product: newProduct };
+          } else return orderItem.toJSON();
+        }),
+      );
+
+      if (updatedItems) {
+        res.send(updatedItems);
+      } else {
+        res.status(400).send("No item found");
+      }
+    } catch (error) {
+      console.error("Error getting sheets:", error);
+      res.status(500).send("Internal server error");
+    }
+  },
   updateOrderItemProduct: async (req: Request, res: Response) => {
     try {
       console.log("updateOrderItem");

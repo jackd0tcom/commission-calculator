@@ -295,6 +295,9 @@
   white-space: nowrap;
   text-overflow: ellipsis;
 }
+.selected-order-item {
+  background-color: var(--selected);
+}
 .order-input {
   padding: 8px 12px;
   border: 1px solid var(--border);
@@ -640,24 +643,30 @@
 }
 .bulk-select-header {
   display: flex;
-  gap: 10px;
-  max-width: 500px;
-  justify-content: start;
+  gap: 20px;
+  align-items: center;
+  padding: 0 40px 0px 0px;
 }
+/* .bulk-select-header div {
+  display: flex;
+  align-items: center;
+  font-size: 0.9rem;
+  gap: 5px;
+} */
 .bulk-delete-buttons-wrapper {
   flex: 2;
   display: flex;
   gap: 20px;
 }
 .bulk-delete-button-wrapper {
-  flex: 1;
   display: flex;
 }
 .bulk-delete-button {
-  padding: 2px 8px;
+  padding: 9px;
   display: flex;
   align-items: center;
   color: var(---grey);
+  margin-left: 20px;
 }
 .bulk-delete-button:hover {
   background-color: var(--red);
@@ -678,7 +687,6 @@
   gap: 10px;
   font-size: 0.9rem;
   color: #525252;
-  flex: 1;
 }
 .bulk-selector-wrapper {
   display: flex;
@@ -686,7 +694,9 @@
   gap: 10px;
   font-size: 0.9rem;
   color: var(---grey);
-  flex: 1;
+}
+.vendor-selector-placeholder {
+  width: 160px;
 }
 .bulk-toggle {
   cursor: pointer;
@@ -729,6 +739,18 @@
 .no-orders:hover {
   background-color: var(--white);
   cursor: default;
+}
+.save-bulk {
+  background-color: var(--green);
+  color: var(--white);
+  border: 1px solid var(--green);
+  padding: 7px 8px;
+}
+.save-bulk:hover {
+  background-color: var(--dark-green);
+}
+.cancel-bulk {
+  padding: 8px;
 }
 /* Due picker */
 .due-picker-wrapper {

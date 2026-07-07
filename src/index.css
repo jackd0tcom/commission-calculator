@@ -49,6 +49,7 @@ button {
     --light-green: #0cb67d;
     --dark-green: #006745;
     --teal: #00bdae;
+    --selected: rgb(246 251 255);
     --hover-teal: #01ac9e;
     --hover-light-teal: #5bd6cb;
     --dark-teal: #005b53;
@@ -90,6 +91,7 @@ button {
     --green: #008a5d;
     --dark-green: #006745;
     --teal: #00bdae;
+    --selected: rgb(7, 20, 31);
     --hover-teal: #01ac9e;
     --hover-light-teal: #5bd6cb;
     --dark-teal: #005b53;
@@ -120,5 +122,13 @@ button {
   }
   .login-logo {
     filter: unset !important;
+  }
+  .bulk-toggle:hover {
+    background-color: var(--hover) !important;
+  }
+  .bulk-check,
+  .bulk-select-radio-check {
+    stroke: var(--light-grey) !important;
+    fill: var(--light-grey) !important;
   }
 }
