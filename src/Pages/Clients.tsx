@@ -162,7 +162,7 @@ const Clients = () => {
     // Client filtering
     if (filter.sales !== 0) {
       data = data.filter((client: any) => {
-        return client.user.userId === filter.sales;
+        return client.user && client.user?.userId === filter.sales;
       });
     }
 

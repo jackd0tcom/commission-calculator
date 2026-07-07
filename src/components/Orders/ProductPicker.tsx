@@ -6,10 +6,12 @@ interface props {
   item: any;
   products: any;
   currentProduct: any;
-  handleProductChange: any;
+  handleProductChange?: any;
   currentProductType: any;
   linkList: any;
   boundaryRef: any;
+  bulkItems?: any;
+  handleBulkProductChange?: any;
 }
 
 const ProductPicker = ({
@@ -20,12 +22,13 @@ const ProductPicker = ({
   handleProductChange,
   linkList,
   boundaryRef,
+  bulkItems,
+  handleBulkProductChange,
 }: props) => {
-  const [selectedProductId, setSelectedProductId] = useState(
+  const selectedProductId =
     item.productType === "product"
       ? currentProduct?.productId
-      : currentProduct?.linkId,
-  );
+      : currentProduct?.linkId;
   const {
     open: showDropDown,
     setOpen: setShowDropdown,
@@ -63,19 +66,30 @@ const ProductPicker = ({
 
   const updateProduct = async (id: number, productType: string) => {
     try {
-      await axios
-        .post("/api/updateOrderItemProduct", {
-          itemId: item.itemId,
-          productType,
-          id,
-        })
-        .then((res) => {
-          if (res.status === 200) {
-            handleProductChange(res.data.newProduct, productType);
-            setSelectedProductId(id);
-            setShowDropdown(false);
-          }
-        });
+      bulkItems
+        ? await axios
+            .post("/api/bulkUpdateOrderItemProduct", {
+              items: bulkItems,
+              productType,
+              id,
+            })
+            .then((res) => {
+              if (res.status === 200) {
+                handleBulkProductChange(res.data);
+              }
+            })
+        : await axios
+            .post("/api/updateOrderItemProduct", {
+              itemId: item.itemId,
+              productType,
+              id,
+            })
+            .then((res) => {
+              if (res.status === 200) {
+                handleProductChange(res.data.newProduct, productType);
+                setShowDropdown(false);
+              }
+            });
     } catch (error) {
       console.log(error);
     }

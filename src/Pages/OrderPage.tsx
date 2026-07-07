@@ -19,6 +19,7 @@ import DuplicateOrder from "../components/Orders/DuplicateOrder";
 import { usePersistedFilter } from "../hooks/usePersistedFilter";
 import { saveOrderNotesKeepAlive } from "../helpers";
 import Notes from "../components/UI/Notes";
+import ProductPicker from "../components/Orders/ProductPicker";
 
 type FilterOption = {
   title: string;
@@ -283,9 +284,7 @@ const OrderPage = () => {
       }
       if (filter.due.length > 0) {
         if (
-          !filter.due.some(
-            (date: any) => item.dueDate?.slice(0, 7) === date.id,
-          )
+          !filter.due.some((date: any) => item.dueDate?.slice(0, 7) === date.id)
         )
           return false;
       }
@@ -346,9 +345,9 @@ const OrderPage = () => {
           case "status":
             return filter.direction === "up"
               ? statusOrder.indexOf(a.itemStatus) -
-              statusOrder.indexOf(b.itemStatus)
+                  statusOrder.indexOf(b.itemStatus)
               : statusOrder.indexOf(b.itemStatus) -
-              statusOrder.indexOf(a.itemStatus);
+                  statusOrder.indexOf(a.itemStatus);
             break;
 
           case "price":
@@ -538,7 +537,7 @@ const OrderPage = () => {
         .then(() => {
           setCount(0);
         });
-    } catch (error) { }
+    } catch (error) {}
   };
 
   const handleUpdateNotes = (notes: string) => {
@@ -546,6 +545,18 @@ const OrderPage = () => {
     if (count >= 75) {
       updateNotes(notes);
     }
+  };
+
+  const handleBulkProductChange = async (newItems: any) => {
+    setOrderItems((prev: any) =>
+      prev.map((item: any) => {
+        const newItem = newItems.find(
+          (newItem: any) => newItem.itemId === item.itemId,
+        );
+        return newItem ?? item;
+      }),
+    );
+    setBulkSelects([]);
   };
 
   return isLoading ? (
@@ -817,6 +828,16 @@ const OrderPage = () => {
                     ) : (
                       <>
                         <div className="bulk-status-wrapper">
+                          <ProductPicker
+                            item={{}}
+                            products={productList}
+                            currentProduct={{}}
+                            currentProductType={""}
+                            linkList={linkList}
+                            boundaryRef={listWrapperRef}
+                            bulkItems={bulkSelects}
+                            handleBulkProductChange={handleBulkProductChange}
+                          />
                           Status:
                           <BulkStatusPicker
                             bulkSelects={bulkSelects}
