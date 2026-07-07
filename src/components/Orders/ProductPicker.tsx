@@ -155,7 +155,7 @@ const ProductPicker = ({
         className="product-picker-button"
         onClick={() => setShowDropdown(!showDropDown)}
       >
-        {currentName ?? "Add a product"}
+        {currentName ?? "Select a product"}
       </button>
       {showDropDown && (
         <FloatingPortal>

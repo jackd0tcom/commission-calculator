@@ -43,28 +43,24 @@ const OrderItem = ({
   handleCostChange,
   boundaryRef,
 }: props) => {
-  const [currentProduct, setCurrentProduct] = useState(
-    item.linkId ? { linkId: item.linkId } : (item?.product ?? null),
-  );
-  const [currentProductType, setCurrentProductType] = useState(
-    item?.productType ?? null,
-  );
+  const currentProduct = item.linkId
+    ? { linkId: item.linkId }
+    : (item?.product ?? null);
+  const currentProductType = item?.productType ?? null;
   const [currentVendor, setCurrentVendor] = useState(item.vendorId ?? null);
   const [hovering, setHovering] = useState(false);
   const [notes, setNotes] = useState(item.notes ?? "");
   const [targetUrl, setTargetUrl] = useState(item.targetUrl ?? "");
   const [anchorText, setAnchorText] = useState(item.anchorText ?? "");
   let status = item.itemStatus ?? "";
-  const [price, setPrice] = useState(
+  const price =
     item.priceSnapshot ??
-      item.price ??
-      item.product?.defaultPrice ??
-      item.link?.defaultPrice ??
-      0,
-  );
-  const [cost, setCost] = useState(
-    item.costSnapshot ?? item.cost ?? item.product?.defaultCost ?? 0,
-  );
+    item.price ??
+    item.product?.defaultPrice ??
+    item.link?.defaultPrice ??
+    0;
+
+  const cost = item.costSnapshot ?? item.cost ?? item.product?.defaultCost ?? 0;
   const [showVendorRows, setShowVendorRows] = useState(false);
   const [currentDueDate, setCurrentDueDate] = useState(item.dueDate);
   const [vendorPayload, setVendorPayload] = useState(item.vendorPayload ?? {});
@@ -76,28 +72,23 @@ const OrderItem = ({
     const interiorVendor = vendorList.find(
       (vendor: any) => vendor.vendorName === "Interior",
     );
-    setCurrentProduct(newProduct);
-    setCurrentProductType(productType);
-    setPrice(newProduct.defaultPrice);
-    setCost(newProduct.defaultCost);
-    setShowVendorRows(false);
     setCurrentVendor(interiorVendor.vendorId ?? 1);
-    if (productType === "product") {
-      setOrderItems((prev: any) =>
-        prev.map((it: any) =>
-          it.itemId === item.itemId
-            ? { ...it, product: newProduct, price: newProduct.defaultPrice }
-            : it,
-        ),
-      );
-    } else
-      setOrderItems((prev: any) =>
-        prev.map((it: any) =>
-          it.itemId === item.itemId
-            ? { ...it, link: newProduct, price: newProduct.defaultPrice }
-            : it,
-        ),
-      );
+    setShowVendorRows(false);
+    setOrderItems((prev: any) =>
+      prev.map((it: any) =>
+        it.itemId === item.itemId
+          ? {
+              ...it,
+              product: productType === "product" ? newProduct : null,
+              link: productType === "link" ? newProduct : null,
+              productType,
+              price: newProduct.defaultPrice,
+              cost: newProduct.defaultCost,
+              productNameSnapshot: null,
+            }
+          : it,
+      ),
+    );
   };
 
   const persistOrderUpdate = async (fieldName: string, value: any) => {
@@ -314,10 +305,9 @@ const OrderItem = ({
               value={`${cost}`}
               onChange={(e) => {
                 const val = Number(e.target.value);
-                setCost(val);
                 handleCostChange?.(item.itemId, val);
               }}
-              onBlur={() => persistOrderUpdate("cost", cost)}
+              onBlur={(e) => persistOrderUpdate("cost", Number(e.target.value))}
             />
           </div>
         ) : (
@@ -332,10 +322,9 @@ const OrderItem = ({
             value={`${price}`}
             onChange={(e) => {
               const val = Number(e.target.value);
-              setPrice(val);
               onPriceChange?.(item.itemId, val);
             }}
-            onBlur={() => persistOrderUpdate("price", price)}
+            onBlur={(e) => persistOrderUpdate("price", Number(e.target.value))}
           />
         </div>
         <input

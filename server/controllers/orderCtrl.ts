@@ -477,12 +477,22 @@ export default {
       }
 
       if (productType === "product") {
-        await orderItem?.update({ productType, productId: id, linkId: null });
+        await orderItem?.update({
+          productType,
+          productId: id,
+          linkId: null,
+          price: null,
+        });
         newProduct = await Product.findOne({
           where: { productId: id },
         });
       } else {
-        await orderItem?.update({ productType, linkId: id, productId: null });
+        await orderItem?.update({
+          productType,
+          linkId: id,
+          productId: null,
+          price: null,
+        });
         newProduct = await Link.findOne({ where: { linkId: id } });
       }
       payload = { ...orderItem.toJSON(), newProduct };
@@ -533,6 +543,7 @@ export default {
               productType,
               linkId: id,
               productId: null,
+              price: null,
             });
             newProduct = await Link.findOne({ where: { linkId: id } });
           }

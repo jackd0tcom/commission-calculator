@@ -547,13 +547,26 @@ const OrderPage = () => {
     }
   };
 
-  const handleBulkProductChange = async (newItems: any) => {
-    setOrderItems((prev: any) =>
+  const handleBulkProductChange = (newItems: any) => {
+    setOrderItems((prev) =>
       prev.map((item: any) => {
-        const newItem = newItems.find(
-          (newItem: any) => newItem.itemId === item.itemId,
-        );
-        return newItem ?? item;
+        const updated = newItems.find((n: any) => n.itemId === item.itemId);
+        if (!updated) return item;
+
+        const defaults = updated.product ?? updated.link;
+
+        return {
+          ...item,
+          ...updated,
+          product: updated.product,
+          link: updated.link ?? null,
+          productType: updated.productType,
+          price: defaults?.defaultPrice ?? item.price,
+          cost: defaults?.defaultCost ?? item.cost,
+          productNameSnapshot: null,
+          priceSnapshot: null,
+          costSnapshot: null,
+        };
       }),
     );
     setBulkSelects([]);
