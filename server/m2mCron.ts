@@ -1,5 +1,7 @@
 import { Order, OrderItem } from "./model";
-import cron from "node-cron";
+import { configDotenv } from "dotenv";
+
+configDotenv();
 
 const createMonthlyM2MOrders = async () => {
   try {
@@ -21,16 +23,19 @@ const createMonthlyM2MOrders = async () => {
         const newOrder: any = await Order.create({
           ...order,
           isM2M: false,
+          orderId: null,
           orderStatus: "in progress",
         });
-        const newItems = order.order_items.map(async (item: any) => {
-          return await OrderItem.create({
-            ...item,
-            dueDate: newDate,
-            orderId: newOrder.orderId,
-            status: "staged",
-          });
-        });
+        const newItems = await Promise.all(
+          order.order_items.map(async (item: any) => {
+            return await OrderItem.create({
+              ...item,
+              dueDate: newDate,
+              orderId: newOrder.orderId,
+              status: "staged",
+            });
+          }),
+        );
         return { ...newOrder, order_items: newItems };
       }),
     );
@@ -38,16 +43,12 @@ const createMonthlyM2MOrders = async () => {
     return newOrders;
   } catch (error) {
     console.log(error);
+    process.exit(1);
   }
 };
 
-export const startM2MCron = async () => {
-  cron.schedule("30 17 * * *", async () => {
-    try {
-      const response = await createMonthlyM2MOrders();
-      console.log("[M2M CRON] created monthly jobs:", response);
-    } catch (error) {
-      console.log("[M2M CRON] ERROR:", error);
-    }
-  });
-};
+console.log("[M2M CRON] starting");
+const response = await createMonthlyM2MOrders();
+console.log("[M2M CRON] created monthly jobs:", response);
+console.log("[M2M CRON] done");
+process.exit(0);

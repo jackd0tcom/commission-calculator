@@ -12,8 +12,6 @@ import deliveryCtrl from "./controllers/deliveryCtrl.js";
 import linkCtrl from "./controllers/linkCtrl.js";
 import productionCtrl from "./controllers/productionCtrl.js";
 import statCtrl from "./controllers/statCtrl.js";
-import { startMonthlyCommissionSheetCron } from "./monthlySheetCron.js";
-import { startM2MCron } from "./m2mCron.js";
 import { db } from "./model.js";
 
 const {
@@ -196,9 +194,7 @@ console.log("Database synced");
 
 ViteExpress.listen(app, PORT, () => {
   console.log(
-    `live on http://localhost:${PORT} ${
-      process.env.NODE_ENV === "production" ? "production" : "development"
+    `live on http://localhost:${PORT} ${process.env.NODE_ENV === "production" ? "production" : "development"
     }`,
   );
-  startM2MCron();
 });

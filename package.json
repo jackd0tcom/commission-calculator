@@ -15,7 +15,7 @@
     "seedClients": "npx tsx server/seedClients.ts",
     "seed": "npx tsx server/seed.ts",
     "preview": "vite preview",
-    "ensure-monthly-sheets": "npx tsx server/ensureMonthlySheets.ts"
+    "cron": "npx tsx server/m2mCron.ts"
   },
   "dependencies": {
     "@auth0/auth0-react": "^2.13.0",
