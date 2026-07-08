@@ -11,8 +11,73 @@ import OrderFooter from "../components/Orders/OrderFooter";
 
 type FilterOption = {
   title: string;
-  id?: number;
+  id?: number | string;
   profilePic?: string;
+};
+
+type FilterDimension =
+  | "due"
+  | "product"
+  | "vendor"
+  | "status"
+  | "client"
+  | "sales";
+
+const matchesItemFilters = (
+  item: any,
+  filter: Record<string, any>,
+  exclude?: FilterDimension,
+) => {
+  if (!item) return false;
+
+  if (
+    exclude !== "due" &&
+    filter.due.length > 0 &&
+    !filter.due.some((date: any) => item.dueDate?.slice(0, 7) === date.id)
+  ) {
+    return false;
+  }
+  if (
+    exclude !== "client" &&
+    filter.client.length > 0 &&
+    !filter.client.some((client: any) => client.id === item.order?.clientId)
+  ) {
+    return false;
+  }
+  if (
+    exclude !== "product" &&
+    filter.product.length > 0 &&
+    !filter.product.some(
+      (product: any) => product.id === item.product?.productId,
+    )
+  ) {
+    return false;
+  }
+  if (
+    exclude !== "vendor" &&
+    filter.vendor.length > 0 &&
+    !filter.vendor.some((vendor: any) => vendor.id === item.vendor?.vendorId)
+  ) {
+    return false;
+  }
+  if (
+    exclude !== "status" &&
+    filter.status.length > 0 &&
+    !filter.status.some((status: any) => status.id === item.itemStatus)
+  ) {
+    return false;
+  }
+  if (
+    exclude !== "sales" &&
+    filter.sales.length > 0 &&
+    !filter.sales.some(
+      (sales: any) => sales.id === item.order?.salesPersonUser?.userId,
+    )
+  ) {
+    return false;
+  }
+
+  return true;
 };
 
 const Production = () => {
@@ -43,104 +108,6 @@ const Production = () => {
     sort: "",
     direction: "up",
   });
-  const [dueDates, setDueDates] = useState<FilterOption[]>([]);
-  const [products, setProducts] = useState<FilterOption[]>([]);
-  const [vendors, setVendors] = useState<FilterOption[]>([]);
-  const [statuses, setStatuses] = useState<FilterOption[]>([]);
-  const [clients, setClients] = useState<FilterOption[]>([]);
-  const [sales, setSales] = useState<FilterOption[]>([]);
-
-  const createFilters = (items: any) => {
-    // Create arrays for filters
-    let dueDatesArray: FilterOption[] = [];
-    let productsArray: FilterOption[] = [];
-    let vendorsArray: FilterOption[] = [];
-    let statusesArray: FilterOption[] = [];
-    let clientsArray: FilterOption[] = [];
-    let salesArray: FilterOption[] = [];
-
-    items.forEach((item: any) => {
-      if (item.dueDate) {
-        const monthKey = item.dueDate.slice(0, 7);
-        if (!dueDatesArray.some((date) => date.id === monthKey)) {
-          const [year, month] = item.dueDate.split("-");
-          dueDatesArray.push({
-            title: `${month}/${year}`,
-            id: monthKey,
-          });
-        }
-      }
-      if (
-        item.product &&
-        !productsArray.some(
-          (product: any) => product.id === item.product?.productId,
-        )
-      ) {
-        productsArray.push({
-          title: item.product.productName,
-          id: item.product.productId,
-        });
-      }
-      if (
-        item.vendor &&
-        !vendorsArray.some((vendor: any) => vendor.id === item.vendor?.vendorId)
-      ) {
-        vendorsArray.push({
-          title: item.vendor.vendorName,
-          id: item.vendor.vendorId,
-        });
-      }
-      if (!statusesArray.some((status: any) => status.id === item.itemStatus)) {
-        if (item.itemStatus) {
-          statusesArray.push({
-            title: item.itemStatus,
-            id: item.itemStatus,
-          });
-        }
-      }
-      if (
-        !clientsArray.some((client: any) => client.id === item.order?.clientId)
-      ) {
-        clientsArray.push({
-          title: item.order?.client?.clientName,
-          id: item.order?.clientId,
-        });
-      }
-      if (
-        !salesArray.some(
-          (sales: any) => sales.id === item.order?.salesPersonUser.userId,
-        )
-      ) {
-        salesArray.push({
-          title: item.order?.salesPersonUser.firstName,
-          id: item.order?.salesPersonUser.userId,
-          profilePic: item.order?.salesPersonUser.profilePic,
-        });
-      }
-    });
-    setSales(salesArray);
-    setClients(
-      clientsArray.sort((a: any, b: any) => a.title.localeCompare(b.title)),
-    );
-    setVendors(
-      vendorsArray.sort((a: any, b: any) => a.title.localeCompare(b.title)),
-    );
-    setProducts(
-      productsArray.sort((a: any, b: any) => a.title.localeCompare(b.title)),
-    );
-    setStatuses(
-      statusesArray.sort(
-        (a: any, b: any) =>
-          statusOrder.indexOf(a.id) - statusOrder.indexOf(b.id),
-      ),
-    );
-    setDueDates(
-      dueDatesArray.sort(
-        (a: any, b: any) => new Date(a.id).getTime() - new Date(b.id).getTime(),
-      ),
-    );
-  };
-
   const fetch = async () => {
     try {
       const promises = [];
@@ -150,7 +117,6 @@ const Production = () => {
           setOrderItems(res.data);
           console.log(res.data);
           setIsLoading(false);
-          createFilters(res.data);
         }),
       );
       promises.push(
@@ -177,85 +143,150 @@ const Production = () => {
     fetch();
   }, []);
 
-  // Filtering / Sorting
-  const filteredOrderItems = useMemo(() => {
-    let data: any = orderItems;
+  const searchFilteredItems = useMemo(() => {
+    if (search.trim() === "") return orderItems;
 
-    if (search.trim() !== "") {
-      const searchTerm = search.toLowerCase();
-      data = data.filter((item: any) => {
-        // Return true since searchTerm only has to match with one of the items, not match all criteria
-
-        // Search in products
-        if (item.product?.productName.toLowerCase().includes(searchTerm))
-          return true;
-
-        // Search in client
-        if (item.order?.client?.clientName?.toLowerCase().includes(searchTerm))
-          return true;
-
-        // Search in client
-        if (item.orderId.toString().includes(searchTerm)) return true;
-
-        // Search in vendors
-        if (item.vendor?.vendorName.toLowerCase().includes(searchTerm))
-          return true;
-
-        // Search status date
-        if (item.itemStatus?.toLowerCase().includes(searchTerm)) return true;
-      });
-    }
-
-    // Filtering
-    data = data.filter((item: any) => {
-      if (!item) {
-        return false;
-      }
-      if (filter.due.length > 0) {
-        if (
-          !filter.due.some((date: any) => item.dueDate?.slice(0, 7) === date.id)
-        )
-          return false;
-      }
-      if (filter.client.length > 0) {
-        if (
-          !filter.client.some(
-            (client: any) => client.id === item.order?.clientId,
-          )
-        )
-          return false;
-      }
-      if (filter.product.length > 0) {
-        if (
-          !filter.product.some(
-            (product: any) => product.id === item.product?.productId,
-          )
-        )
-          return false;
-      }
-      if (filter.vendor.length > 0) {
-        if (
-          !filter.vendor.some(
-            (vendor: any) => vendor.id === item.vendor?.vendorId,
-          )
-        )
-          return false;
-      }
-      if (filter.status.length > 0) {
-        if (!filter.status.some((status: any) => status.id === item.itemStatus))
-          return false;
-      }
-      if (filter.sales.length > 0) {
-        if (
-          !filter.sales.some(
-            (sales: any) => sales.id === item.order?.salesPersonUser?.userId,
-          )
-        )
-          return false;
-      }
-
-      return true;
+    const searchTerm = search.toLowerCase();
+    return orderItems.filter((item: any) => {
+      if (item.product?.productName.toLowerCase().includes(searchTerm))
+        return true;
+      if (item.order?.client?.clientName?.toLowerCase().includes(searchTerm))
+        return true;
+      if (item.orderId.toString().includes(searchTerm)) return true;
+      if (item.vendor?.vendorName.toLowerCase().includes(searchTerm))
+        return true;
+      if (item.itemStatus?.toLowerCase().includes(searchTerm)) return true;
+      return false;
     });
+  }, [orderItems, search]);
+
+  const { dueDates, products, vendors, statuses, clients, sales } =
+    useMemo(() => {
+      const buildDueDates = (items: any[]): FilterOption[] => {
+        const options: FilterOption[] = [];
+        items.forEach((item) => {
+          if (!item.dueDate) return;
+          const monthKey = item.dueDate.slice(0, 7);
+          if (options.some((date) => date.id === monthKey)) return;
+          const [year, month] = item.dueDate.split("-");
+          options.push({ title: `${month}/${year}`, id: monthKey });
+        });
+        return options.sort(
+          (a, b) =>
+            new Date(a.id as string).getTime() -
+            new Date(b.id as string).getTime(),
+        );
+      };
+
+      const buildProducts = (items: any[]): FilterOption[] => {
+        const options: FilterOption[] = [];
+        items.forEach((item) => {
+          if (!item.product) return;
+          if (options.some((product) => product.id === item.product.productId))
+            return;
+          options.push({
+            title: item.product.productName,
+            id: item.product.productId,
+          });
+        });
+        return options.sort((a, b) => a.title.localeCompare(b.title));
+      };
+
+      const buildVendors = (items: any[]): FilterOption[] => {
+        const options: FilterOption[] = [];
+        items.forEach((item) => {
+          if (!item.vendor) return;
+          if (options.some((vendor) => vendor.id === item.vendor.vendorId))
+            return;
+          options.push({
+            title: item.vendor.vendorName,
+            id: item.vendor.vendorId,
+          });
+        });
+        return options.sort((a, b) => a.title.localeCompare(b.title));
+      };
+
+      const buildStatuses = (items: any[]): FilterOption[] => {
+        const options: FilterOption[] = [];
+        items.forEach((item) => {
+          if (!item.itemStatus) return;
+          if (options.some((status) => status.id === item.itemStatus)) return;
+          options.push({ title: item.itemStatus, id: item.itemStatus });
+        });
+        return options.sort(
+          (a, b) =>
+            statusOrder.indexOf(a.id as string) -
+            statusOrder.indexOf(b.id as string),
+        );
+      };
+
+      const buildClients = (items: any[]): FilterOption[] => {
+        const options: FilterOption[] = [];
+        items.forEach((item) => {
+          if (options.some((client) => client.id === item.order?.clientId))
+            return;
+          options.push({
+            title: item.order?.client?.clientName,
+            id: item.order?.clientId,
+          });
+        });
+        return options.sort((a, b) => a.title.localeCompare(b.title));
+      };
+
+      const buildSales = (items: any[]): FilterOption[] => {
+        const options: FilterOption[] = [];
+        items.forEach((item) => {
+          const salesPerson = item.order?.salesPersonUser;
+          if (!salesPerson) return;
+          if (options.some((person) => person.id === salesPerson.userId))
+            return;
+          options.push({
+            title: salesPerson.firstName,
+            id: salesPerson.userId,
+            profilePic: salesPerson.profilePic,
+          });
+        });
+        return options;
+      };
+
+      return {
+        dueDates: buildDueDates(
+          searchFilteredItems.filter((item) =>
+            matchesItemFilters(item, filter, "due"),
+          ),
+        ),
+        products: buildProducts(
+          searchFilteredItems.filter((item) =>
+            matchesItemFilters(item, filter, "product"),
+          ),
+        ),
+        vendors: buildVendors(
+          searchFilteredItems.filter((item) =>
+            matchesItemFilters(item, filter, "vendor"),
+          ),
+        ),
+        statuses: buildStatuses(
+          searchFilteredItems.filter((item) =>
+            matchesItemFilters(item, filter, "status"),
+          ),
+        ),
+        clients: buildClients(
+          searchFilteredItems.filter((item) =>
+            matchesItemFilters(item, filter, "client"),
+          ),
+        ),
+        sales: buildSales(
+          searchFilteredItems.filter((item) =>
+            matchesItemFilters(item, filter, "sales"),
+          ),
+        ),
+      };
+    }, [searchFilteredItems, filter]);
+
+  const filteredOrderItems = useMemo(() => {
+    let data = searchFilteredItems.filter((item) =>
+      matchesItemFilters(item, filter),
+    );
 
     const clientName = (item: any) =>
       (item.order?.client?.clientName ?? "").toLowerCase();
@@ -329,7 +360,7 @@ const Production = () => {
     }
 
     return data;
-  }, [filter, orderItems, search]);
+  }, [filter, searchFilteredItems]);
 
   const handleQuantityChange = (itemId: number, quantity: number) => {
     setOrderItems((prev: any) =>
