@@ -79,6 +79,8 @@ const OrderPage = () => {
   const [vendors, setVendors] = useState<FilterOption[]>([]);
   const [statuses, setStatuses] = useState<FilterOption[]>([]);
   const [isM2M, setIsM2M] = useState(false);
+  const [wasM2M, setWasM2M] = useState(false);
+  const [M2MId, setM2MId] = useState(0);
   const [count, setCount] = useState(0);
   const [search, setSearch] = useState("");
   const statusOrder = [
@@ -167,6 +169,7 @@ const OrderPage = () => {
         promises.push(
           axios.get(`/api/getOrder/${orderId}`).then((res) => {
             if (res.status === 200) {
+              console.log(res.data);
               if (res.data.orderItems && res.data.orderItems.length > 0) {
                 const orderItems = res.data.orderItems;
                 createFilters(orderItems);
@@ -184,6 +187,8 @@ const OrderPage = () => {
               setOriginalOrderTitle(res.data.orderTitle ?? "");
               setOrderNotes(res.data.orderNotes ?? "");
               setIsM2M(res.data.isM2M ?? false);
+              setWasM2M(res.data.wasM2M ?? false);
+              setM2MId(res.data.M2MId ?? false);
             }
           }),
         );
@@ -693,7 +698,8 @@ const OrderPage = () => {
                       }
                     }}
                   />
-                  {isM2M && <M2MIcon />}
+                  {isM2M && <M2MIcon wasM2M={false} M2MId={M2MId} />}
+                  {wasM2M && <M2MIcon wasM2M={true} M2MId={M2MId} />}
                 </div>
               </div>
             </div>

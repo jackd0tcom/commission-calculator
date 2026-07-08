@@ -278,3 +278,13 @@ p {
   height: 1.2em;
   width: 1.2em;
 }
+.was-m2m svg {
+  fill: var(--light-grey) !important;
+}
+.was-m2m:hover {
+  cursor: pointer;
+}
+.was-m2m svg:hover {
+  fill: var(--dark-yellow);
+  transition: 150ms;
+}

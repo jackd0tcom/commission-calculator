@@ -284,7 +284,12 @@ const Orders = () => {
                               #{order.orderId}{" "}
                               {order.orderTitle && `${order.orderTitle}`}
                             </div>
-                            {order.isM2M && <M2MIcon />}
+                            {order.isM2M && (
+                              <M2MIcon wasM2M={false} M2MId={order.M2MId} />
+                            )}
+                            {order.wasM2M && (
+                              <M2MIcon wasM2M={true} M2MId={order.M2MId} />
+                            )}
                           </div>
                           <div>{order.client?.clientName}</div>
                           <div>

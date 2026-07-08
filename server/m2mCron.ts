@@ -28,6 +28,8 @@ const createMonthlyM2MOrders = async () => {
           orderTitle: order.orderTitle,
           orderNotes: order.orderNotes,
           isM2M: false,
+          wasM2M: true,
+          M2MId: order.orderId,
         });
         const newItems = await Promise.all(
           order.order_items.map(async (item: any) => {

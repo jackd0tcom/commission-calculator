@@ -230,6 +230,14 @@ Order.init(
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
+    wasM2M: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+    M2MId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
   },
   {
     sequelize: db,
