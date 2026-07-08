@@ -9,6 +9,7 @@ import FilterDropdown from "../components/UI/FilterDropdown";
 import OrderSort from "../components/Orders/OrderSort";
 import { usePersistedFilter } from "../hooks/usePersistedFilter";
 import { useSelector } from "react-redux";
+import M2MIcon from "../components/UI/M2MIcon";
 
 type FilterOption = {
   title: string;
@@ -150,6 +151,8 @@ const Orders = () => {
       if (filter.user !== 0)
         if (order.salesPerson?.userId !== filter.user) return false;
 
+      if (filter.sort === "m2m") if (!order.isM2M) return false;
+
       if (filter.status.length > 0)
         if (
           !filter.status.some(
@@ -276,9 +279,12 @@ const Orders = () => {
                           <div className="user-width">
                             <ProfilePic src={order.salesPerson?.profilePic} />
                           </div>
-                          <div>
-                            #{order.orderId}{" "}
-                            {order.orderTitle && `${order.orderTitle}`}
+                          <div className="order-title-wrapper">
+                            <div>
+                              #{order.orderId}{" "}
+                              {order.orderTitle && `${order.orderTitle}`}
+                            </div>
+                            {order.isM2M && <M2MIcon />}
                           </div>
                           <div>{order.client?.clientName}</div>
                           <div>

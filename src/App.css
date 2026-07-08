@@ -269,3 +269,12 @@ p {
   align-items: center;
   justify-content: space-between;
 }
+.m2m-icon {
+  display: flex;
+  align-items: center;
+}
+.m2m-icon svg {
+  fill: var(--dark-yellow);
+  height: 1.2em;
+  width: 1.2em;
+}

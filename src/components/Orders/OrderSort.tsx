@@ -132,6 +132,19 @@ const OrderSort = ({ filter, setFilter }: props) => {
           >
             Order #
           </div>
+          <div
+            className="dropdown-item"
+            onClick={() => {
+              if (filter.sort !== "m2m") {
+                setFilter({ ...filter, sort: "m2m" });
+              } else {
+                setFilter({ ...filter, sort: "" });
+              }
+              setShowDropdown(false);
+            }}
+          >
+            M2M
+          </div>
         </div>
       )}
     </div>

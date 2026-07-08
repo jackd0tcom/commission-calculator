@@ -256,6 +256,12 @@
 .orders-list-item > div:first-child {
   border: 0px;
 }
+.order-title-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: calc(100% - 25px);
+}
 .orders-list-heading {
   padding: 9px 12px !important;
 }
@@ -883,4 +889,16 @@
 .delete-order:hover {
   background-color: var(--dark-red);
   color: var(--white);
+}
+.toggle-item:hover {
+  background-color: var(--white) !important;
+  cursor: default !important;
+}
+.toggle-item div {
+  justify-content: space-between;
+}
+.toggle-item p {
+  color: inherit;
+  font-size: 0.9rem;
+  margin: 0;
 }

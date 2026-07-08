@@ -21,6 +21,7 @@ import { saveOrderNotesKeepAlive } from "../helpers";
 import Notes from "../components/UI/Notes";
 import ProductPicker from "../components/Orders/ProductPicker";
 import DuePicker from "../components/Orders/DuePicker";
+import M2MIcon from "../components/UI/M2MIcon";
 
 type FilterOption = {
   title: string;
@@ -77,6 +78,7 @@ const OrderPage = () => {
   const [products, setProducts] = useState<FilterOption[]>([]);
   const [vendors, setVendors] = useState<FilterOption[]>([]);
   const [statuses, setStatuses] = useState<FilterOption[]>([]);
+  const [isM2M, setIsM2M] = useState(false);
   const [count, setCount] = useState(0);
   const [search, setSearch] = useState("");
   const statusOrder = [
@@ -181,6 +183,7 @@ const OrderPage = () => {
               setOrderTitle(res.data.orderTitle ?? "");
               setOriginalOrderTitle(res.data.orderTitle ?? "");
               setOrderNotes(res.data.orderNotes ?? "");
+              setIsM2M(res.data.isM2M ?? false);
             }
           }),
         );
@@ -690,6 +693,7 @@ const OrderPage = () => {
                       }
                     }}
                   />
+                  {isM2M && <M2MIcon />}
                 </div>
               </div>
             </div>
@@ -759,6 +763,22 @@ const OrderPage = () => {
                         onClick={() => setShowDuplicateOrder(true)}
                       >
                         Duplicate Order
+                      </div>
+                      <div className="dropdown-item toggle-item">
+                        <div className="toggle-container">
+                          <p>M2M</p>
+                          <label className="switch">
+                            <input
+                              type="checkbox"
+                              onChange={() => {
+                                updateOrder("isM2M", !isM2M);
+                                setIsM2M(!isM2M);
+                              }}
+                              checked={isM2M}
+                            />
+                            <span className="slider round"></span>
+                          </label>
+                        </div>
                       </div>
                     </>
                   ) : (

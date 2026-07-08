@@ -226,6 +226,10 @@ Order.init(
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
+    isM2M: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
   },
   {
     sequelize: db,
