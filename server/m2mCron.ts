@@ -42,7 +42,7 @@ const createMonthlyM2MOrders = async () => {
 };
 
 export const startM2MCron = async () => {
-  cron.schedule("17 30 * * *", async () => {
+  cron.schedule("30 17 * * *", async () => {
     try {
       const response = await createMonthlyM2MOrders();
       console.log("[M2M CRON] created monthly jobs:", response);
