@@ -21,16 +21,8 @@ export default {
         return;
       }
 
-      const yearStart = new Date(
-        new Date().getFullYear(),
-        new Date().getMonth(),
-        1,
-      );
-      const yearEnd = new Date(
-        new Date().getFullYear(),
-        new Date().getMonth() + 1,
-        0,
-      );
+      const yearStart = new Date(new Date().getFullYear(), 0, 1);
+      const yearEnd = new Date(new Date().getFullYear(), 11, 31);
 
       const yearsDeliveries = await Delivery.findAll({
         where: {
