@@ -108,6 +108,7 @@ const Sorter = ({ filter, setFilter, options, direction, position }: props) => {
                       [option.sortHeading]: option.sortValue,
                     });
                   }
+                  setShowDropdown(false);
                 }}
               >
                 {option.heading}
