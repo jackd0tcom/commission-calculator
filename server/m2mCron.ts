@@ -20,19 +20,27 @@ const createMonthlyM2MOrders = async () => {
 
     const newOrders = await Promise.all(
       m2mOrders.map(async (order: any) => {
-        const newOrder: any = await Order.create({
-          ...order,
-          isM2M: false,
-          orderId: null,
+        const newOrder = await Order.create({
+          userId: order.userId,
+          clientId: order.clientId,
           orderStatus: "in progress",
+          salesPerson: order.salesPerson,
+          orderTitle: order.orderTitle,
+          orderNotes: order.orderNotes,
+          isM2M: false,
         });
         const newItems = await Promise.all(
           order.order_items.map(async (item: any) => {
-            return await OrderItem.create({
-              ...item,
-              dueDate: newDate,
+            const itemCopy = item.toJSON();
+            delete itemCopy.itemId;
+            delete itemCopy.createdAt;
+            delete itemCopy.updatedAt;
+
+            return OrderItem.create({
+              ...itemCopy,
               orderId: newOrder.orderId,
-              status: "staged",
+              dueDate: newDate,
+              itemStatus: "staged",
             });
           }),
         );
