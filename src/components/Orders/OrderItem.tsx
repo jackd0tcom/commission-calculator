@@ -238,6 +238,8 @@ const OrderItem = ({
             setBulkSelects={setBulkSelects}
           />
         )}
+        {isProduction && <div className="prod-count">{index + 1}</div>}
+        {isProduction && <p>{item.order?.client?.clientName ?? ""}</p>}
         {!hovering ? (
           isProduction ? (
             <a href={`/order/${item.orderId}/false`}>{item.orderId}</a>
@@ -258,7 +260,6 @@ const OrderItem = ({
         ) : (
           <p className="sheet-item-number">{index + 1}</p>
         )}
-        {isProduction && <p>{item.order?.client?.clientName ?? ""}</p>}
         <DuePicker
           currentDate={currentDueDate}
           updateDate={persistOrderUpdate}
@@ -387,6 +388,8 @@ const OrderItem = ({
             setBulkSelects={setBulkSelects}
           />
         )}
+        {isProduction && <div className="prod-count">{index + 1}</div>}
+        {isProduction && <p>{item.order?.client?.clientName ?? ""}</p>}
         {!hovering ? (
           isProduction ? (
             <a href={`/order/${item.orderId}/false`}>{item.orderId}</a>
@@ -407,7 +410,6 @@ const OrderItem = ({
         ) : (
           <p className="sheet-item-number">{index + 1}</p>
         )}
-        {isProduction && <p>{item.order?.client?.clientName ?? ""}</p>}
         <DuePicker
           currentDate={currentDueDate}
           updateDate={persistOrderUpdate}
@@ -434,9 +436,11 @@ const OrderItem = ({
         )}
         <p>${cost}</p>
         <p>${price}</p>
-        <p>{item.notes}</p>
-        <p>{item.targetUrl}</p>
-        <p>{item.anchorText}</p>
+        <div className="order-item-p">
+          <p>{item.notes}</p>
+        </div>
+        <p className="order-item-p">{item.targetUrl}</p>
+        <p className="order-item-p">{item.anchorText}</p>
         <OrderItemSettings item={item} setOrderItems={setOrderItems} />
       </div>
       {showVendorRows && (

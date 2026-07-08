@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { TbArrowsSort } from "react-icons/tb";
 import { FaX } from "react-icons/fa6";
 import { FaSortAmountDownAlt, FaSortAmountUp } from "react-icons/fa";
+import { FaCheck } from "react-icons/fa6";
 
 interface props {
   filter: any;
@@ -90,27 +91,30 @@ const Sorter = ({ filter, setFilter, options, direction, position }: props) => {
           }
           ref={dropdownRef}
         >
-          {options.map((option: any) => (
-            <div
-              className="dropdown-item"
-              onClick={() => {
-                if (filter[option.sortHeading] !== option.sortValue) {
-                  setFilter({
-                    ...filter,
-                    [option.sortHeading]: option.sortValue,
-                  });
-                } else {
-                  setFilter({
-                    ...filter,
-                    [option.sortHeading]: option.sortValue,
-                  });
-                }
-                setShowDropdown(false);
-              }}
-            >
-              {option.heading}
-            </div>
-          ))}
+          {options.map((option: any) => {
+            const isSelected = option.sortValue === filter[option.sortHeading];
+            return (
+              <div
+                className="dropdown-item sorter-item"
+                onClick={() => {
+                  if (filter[option.sortHeading] !== option.sortValue) {
+                    setFilter({
+                      ...filter,
+                      [option.sortHeading]: option.sortValue,
+                    });
+                  } else {
+                    setFilter({
+                      ...filter,
+                      [option.sortHeading]: option.sortValue,
+                    });
+                  }
+                }}
+              >
+                {option.heading}
+                {isSelected && <FaCheck />}
+              </div>
+            );
+          })}
         </div>
       )}
     </div>

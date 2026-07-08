@@ -130,7 +130,6 @@ const FilterDropdown = ({
                             ],
                           });
                     }
-                    setShowDropdown(false);
                   }}
                   className="dropdown-item order-filter-dropdown-item"
                 >

@@ -13,15 +13,17 @@
 .order-items-list-item-production {
   display: grid;
   grid-template-columns:
-    minmax(40px, 0.2fr)
+    minmax(20px, 0.1fr)
     minmax(60px, 0.8fr)
+    minmax(40px, 0.2fr)
     minmax(100px, 0.4fr) minmax(200px, 0.75fr) minmax(100px, 0.65fr)
     minmax(75px, 0.75fr) minmax(100px, 0.5fr) minmax(100px, 0.5fr) minmax(
       250px,
-      2fr
+      400px
     )
-    minmax(250px, 2fr)
-    minmax(250px, 2fr) minmax(50px, 0.5fr);
+    minmax(250px, 400px)
+    minmax(250px, 400px)
+    minmax(50px, 0.5fr);
   align-items: center;
   min-width: max-content;
   gap: 10px;
@@ -43,4 +45,14 @@
   background-color: var(--white);
   border: 1px solid var(--border);
   border-radius: 12px;
+}
+.prod-count {
+  color: var(--grey);
+  font-size: 0.8rem;
+}
+.order-items-list-item-production .order-item-p-wrapper {
+  padding-left: 10px;
+}
+.prod-footer-wrapper {
+  border-top: 1px solid var(--border);
 }

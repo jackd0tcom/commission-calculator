@@ -2,9 +2,27 @@ import { formatDollarNoCents, getGPclass } from "../../helpers";
 
 interface props {
   items: any;
+  clients?: number;
 }
 
-const OrderFooter = ({ items }: props) => {
+type FilterOption = {
+  title: string;
+  id?: number;
+  profilePic?: string;
+};
+
+const OrderFooter = ({ items, clients }: props) => {
+  const clientsArray: FilterOption[] = [];
+  items.forEach((item: any) => {
+    if (
+      !clientsArray.some((client: any) => client.id === item.order?.clientId)
+    ) {
+      clientsArray.push({
+        title: item.order?.client?.clientName,
+        id: item.order?.clientId,
+      });
+    }
+  });
   const filteredItems = items.filter((item: any) => item.product || item.link);
   const totalCost: number = filteredItems.reduce((acc: number, item: any) => {
     const cost =
@@ -38,7 +56,7 @@ const OrderFooter = ({ items }: props) => {
       <div className="order-footer-wrapper">
         <div className="order-footer-items">
           <p>Total Cost</p>
-          <p>Delivered</p>
+          <p>{clients ? "Clients" : "Delivered"}</p>
           <p>Total Invoice</p>
           <p>Gross Profit</p>
         </div>
@@ -47,7 +65,9 @@ const OrderFooter = ({ items }: props) => {
         <div className="order-footer-items">
           <p>{formatDollarNoCents(totalCost)}</p>
           <p>
-            {totalDeliveries.length} / {filteredItems.length}
+            {clients ? (clientsArray.length ?? 0) : totalDeliveries.length}{" "}
+            {!clients && `/ `}
+            {!clients && filteredItems.length}
           </p>
           <p>{formatDollarNoCents(grandTotal)}</p>
           <div className="gp-wrapper">

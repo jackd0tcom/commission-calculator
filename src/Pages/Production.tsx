@@ -7,6 +7,7 @@ import { usePersistedFilter } from "../hooks/usePersistedFilter";
 import { useSelector } from "react-redux";
 import OrderItem from "../components/Orders/OrderItem";
 import Sorter from "../components/Clients/Sorter";
+import OrderFooter from "../components/Orders/OrderFooter";
 
 type FilterOption = {
   title: string;
@@ -212,9 +213,7 @@ const Production = () => {
       }
       if (filter.due.length > 0) {
         if (
-          !filter.due.some(
-            (date: any) => item.dueDate?.slice(0, 7) === date.id
-          )
+          !filter.due.some((date: any) => item.dueDate?.slice(0, 7) === date.id)
         )
           return false;
       }
@@ -294,9 +293,9 @@ const Production = () => {
           case "status":
             return filter.direction === "up"
               ? statusOrder.indexOf(a.itemStatus) -
-              statusOrder.indexOf(b.itemStatus)
+                  statusOrder.indexOf(b.itemStatus)
               : statusOrder.indexOf(b.itemStatus) -
-              statusOrder.indexOf(a.itemStatus);
+                  statusOrder.indexOf(a.itemStatus);
             break;
 
           case "price":
@@ -437,7 +436,7 @@ const Production = () => {
             </div>
             <div className="order-items-list" ref={listWrapperRef}>
               <div className="order-items-list-item-production order-items-list-head">
-                <div>Order</div>
+                <div>#</div>
                 <FilterDropdown
                   heading={"Client"}
                   array={true}
@@ -445,6 +444,7 @@ const Production = () => {
                   filter={filter}
                   setFilter={setFilter}
                 />
+                <div>Order</div>
                 <FilterDropdown
                   heading={"Due"}
                   array={true}
@@ -508,6 +508,9 @@ const Production = () => {
             </div>
           </>
         )}
+        <div className="prod-footer-wrapper">
+          <OrderFooter items={filteredOrderItems} clients={clients.length} />
+        </div>
       </div>
     </div>
   );

@@ -274,10 +274,10 @@
     minmax(100px, 0.4fr) minmax(200px, 0.75fr) minmax(100px, 0.65fr)
     minmax(75px, 0.75fr) minmax(100px, 0.5fr) minmax(100px, 0.5fr) minmax(
       250px,
-      2fr
+      400px
     )
-    minmax(250px, 2fr)
-    minmax(250px, 2fr) minmax(50px, 0.5fr);
+    minmax(250px, 400px)
+    minmax(250px, 400px) minmax(50px, 0.5fr);
   align-items: center;
   min-width: max-content;
   gap: 10px;
@@ -295,6 +295,15 @@
   white-space: nowrap;
   text-overflow: ellipsis;
 }
+.order-item-p p {
+  overflow-x: scroll;
+  scrollbar-width: thin;
+}
+.order-item-p p::-webkit-scrollbar {
+  height: 2px;
+  width: 6px;
+}
+
 .selected-order-item {
   background-color: var(--selected);
 }
