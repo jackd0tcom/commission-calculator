@@ -111,7 +111,6 @@ const Orders = () => {
       data = orders;
       const searchTerm = search.toLowerCase();
       data = data.filter((order: any) => {
-        const orderTitle = `order #${order.orderId}`;
         const salesPersonName = `${order.user.firstName} ${order.user.lastName}`;
         const date = new Date(order.createdAt).toDateString();
         const numericDate = new Date(order.createdAt).toLocaleDateString();
@@ -122,8 +121,11 @@ const Orders = () => {
         if (order.client?.clientName?.toLowerCase().includes(searchTerm))
           return true;
 
-        // Search in order title?
-        if (orderTitle.includes(searchTerm)) return true;
+        // Search in order id
+        if (order.orderId?.toString().includes(searchTerm)) return true;
+
+        // Search in order title
+        if (order.orderTitle?.toLowerCase().includes(searchTerm)) return true;
 
         // Search in salesperson
         if (salesPersonName?.toLowerCase().includes(searchTerm)) return true;
