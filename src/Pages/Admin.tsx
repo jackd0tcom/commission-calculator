@@ -29,7 +29,6 @@ const Admin = () => {
         role,
         userId: user.userId,
       });
-      console.log(response.data);
 
       if (response.status === 200) {
         // Update the user in place
