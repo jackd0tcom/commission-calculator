@@ -372,7 +372,9 @@
 /* Order page */
 .orders-list-item {
   display: grid;
-  grid-template-columns: minmax(85px, 0.3fr) 1fr 1fr 0.75fr 0.5fr 0.5fr;
+  grid-template-columns:
+    minmax(15px, 30px) minmax(85px, 0.3fr)
+    1fr 1fr 0.75fr 0.5fr 0.5fr;
   align-items: stretch;
   border-bottom: 1px solid var(--border);
   font-size: 0.9rem;
@@ -901,4 +903,11 @@
   color: inherit;
   font-size: 0.9rem;
   margin: 0;
+}
+.count {
+  font-size: 0.9rem;
+  color: var(--grey);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

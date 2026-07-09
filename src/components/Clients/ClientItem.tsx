@@ -21,6 +21,7 @@ const ClientItem = ({
   handleDeleteClient,
   handleSelectClient,
   currentClient,
+  index,
   setClientList,
 }: props) => {
   const [name, setName] = useState(client?.clientName ?? "");
@@ -99,6 +100,7 @@ const ClientItem = ({
       }
       onClick={() => handleSelectClient(client.clientId)}
     >
+      <div className="count">{index + 1}</div>
       <div className="client-list-user-selector">
         <UserSelector
           users={users}

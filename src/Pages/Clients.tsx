@@ -288,6 +288,7 @@ const Clients = () => {
           </div>
           <div className="clients-list-wrapper">
             <div className="clients-list-item clients-list-head">
+              <div></div>
               <FilterDropdown
                 heading="Sales"
                 array={false}
@@ -296,7 +297,7 @@ const Clients = () => {
                 setFilter={setFilter}
               />
               <p>Name</p>
-              <p>Date Created</p>
+              <p>Created</p>
               <p>Orders</p>
               <p></p>
             </div>
@@ -355,14 +356,15 @@ const Clients = () => {
           </div>
           <div className="clients-sheet-wrapper">
             <div className="clients-sheet-head clients-sheet-item">
+              <p></p>
               <p>Title</p>
               <p>Status</p>
               <p>Date Created</p>
             </div>
             {filteredOrderList?.length > 0 ? (
               <div className="client-orders-list">
-                {filteredOrderList?.map((order: any) => (
-                  <ClientsOrderItem order={order} />
+                {filteredOrderList?.map((order: any, index: number) => (
+                  <ClientsOrderItem order={order} index={index} />
                 ))}
                 <div className="client-list-new-order-button">
                   <button

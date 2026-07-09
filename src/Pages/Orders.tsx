@@ -236,6 +236,7 @@ const Orders = () => {
               <div className="orders-list-wrapper">
                 <div className="orders-list">
                   <div className="orders-list-item orders-list-head">
+                    <div></div>
                     <FilterDropdown
                       heading={"User"}
                       options={salesPeople}
@@ -266,7 +267,7 @@ const Orders = () => {
               <div className="orders-list-wrapper">
                 <div className="orders-list">
                   {allOrders?.length > 0 ? (
-                    allOrders.map((order: any) => {
+                    allOrders.map((order: any, index: number) => {
                       const deliveredItems = order.order_items.filter(
                         (item: any) => item.itemStatus === "complete",
                       );
@@ -278,6 +279,7 @@ const Orders = () => {
                             navigate(`/order/${order.orderId}/false`)
                           }
                         >
+                          <div className="count">{index + 1}</div>
                           <div className="user-width">
                             <ProfilePic src={order.salesPerson?.profilePic} />
                           </div>
