@@ -61,6 +61,7 @@ export default {
         isAdmin: user.isAdmin,
         profilePic: user.profilePic,
         isAllowed: user.isAllowed,
+        isSales: user.isSales,
       };
 
       res.status(200).json({ user: req.session.user });
@@ -99,13 +100,20 @@ export default {
         return;
       }
 
-      const { userId } = req.body;
+      const { userId, role } = req.body;
 
       const user = await User.findOne({ where: { userId } });
 
-      if (user.isAdmin) {
-        await user?.update({ isAdmin: false });
-      } else await user?.update({ isAdmin: true });
+      if (role === "isAdmin") {
+        if (user && user.isAdmin) {
+          await user?.update({ isAdmin: false });
+        } else await user?.update({ isAdmin: true });
+      }
+      if (role === "isSales") {
+        if (user && user.isSales) {
+          await user?.update({ isSales: false });
+        } else await user?.update({ isSales: true });
+      }
 
       if (user) {
         res.send(user);

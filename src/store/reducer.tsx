@@ -23,6 +23,7 @@ const reducer = (state = initialState, action: any) => {
           profilePic: action.payload.profilePic,
           isAllowed: action.payload.isAllowed,
           isAdmin: action.payload.isAdmin,
+          isSales: action.payload.isSales,
         },
       };
     case LOGOUT:
@@ -34,6 +35,7 @@ const reducer = (state = initialState, action: any) => {
           profilePic: null,
           isAllowed: false,
           isAdmin: false,
+          isSales: false,
         },
       };
     default:

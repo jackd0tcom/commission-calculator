@@ -49,6 +49,10 @@ User.init(
       type: DataTypes.DATE,
       allowNull: true,
     },
+    isSales: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
   },
   { sequelize: db, modelName: "user", tableName: "users", timestamps: true },
 );

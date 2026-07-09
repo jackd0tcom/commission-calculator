@@ -22,18 +22,20 @@ const Admin = () => {
     fetchUsers();
   }, []);
 
-  const handleRoleChange = async (user: any) => {
+  const handleRoleChange = async (user: any, role: string) => {
+    console.log(user, role);
     try {
       const response = await axios.post("/api/updateAdmin", {
+        role,
         userId: user.userId,
       });
+      console.log(response.data);
 
       if (response.status === 200) {
-        console.log(response.data);
         // Update the user in place
         setUserList((prevUsers) =>
           prevUsers.map((u: any) =>
-            u.userId === user.userId ? { ...u, isAdmin: !user.isAdmin } : u,
+            u.userId === user.userId ? { ...u, [role]: !user[role] } : u,
           ),
         );
       }
@@ -54,6 +56,7 @@ const Admin = () => {
           <p>Name</p>
           <p>Email</p>
           <p>Admin</p>
+          <p>Sales</p>
         </div>
         {userList?.length > 0 ? (
           userList.map((user: any) => (
@@ -66,6 +69,16 @@ const Admin = () => {
               <AdminUserToggle
                 user={user}
                 handleRoleChange={handleRoleChange}
+                headings={["User", "Admin"]}
+                role={"isAdmin"}
+                checked={user.isAdmin}
+              />
+              <AdminUserToggle
+                user={user}
+                handleRoleChange={handleRoleChange}
+                headings={["Other", "Sales"]}
+                role={"isSales"}
+                checked={user.isSales}
               />
             </div>
           ))

@@ -36,6 +36,7 @@ const Auth0Sync = ({ onSyncComplete }: { onSyncComplete: () => void }) => {
           profilePic: response.data.user.profilePic,
           isAdmin: response.data.user.isAdmin,
           isAllowed: response.data.user.isAllowed,
+          isSales: response.data.user.isSales,
         };
         // console.log("[Auth0Sync] Dispatching LOGIN with payload:", payload);
         dispatch({ type: "LOGIN", payload });

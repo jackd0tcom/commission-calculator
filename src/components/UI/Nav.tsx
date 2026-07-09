@@ -23,6 +23,7 @@ interface props {
 
 const Nav = ({ setShowNav, showNav }: props) => {
   const user = useSelector((state: any) => state.user);
+  const isSales = user.isSales;
 
   return (
     <div className={showNav ? "nav-wrapper" : "nav-wrapper hidden-nav"}>
@@ -72,23 +73,27 @@ const Nav = ({ setShowNav, showNav }: props) => {
               <FaKeyboard />
               Production
             </NavLink>
-            <NavLink
-              to="/commission-sheets"
-              className={({ isActive }) =>
-                isActive ? "active-nav nav-button" : "inactive-nav nav-button"
-              }
-            >
-              <FaMoneyBillWave /> Commission Sheets
-            </NavLink>
-            <NavLink
-              to="/products"
-              className={({ isActive }) =>
-                isActive ? "active-nav nav-button" : "inactive-nav nav-button"
-              }
-            >
-              <FaBasketShopping />
-              Products
-            </NavLink>
+            {isSales && (
+              <NavLink
+                to="/commission-sheets"
+                className={({ isActive }) =>
+                  isActive ? "active-nav nav-button" : "inactive-nav nav-button"
+                }
+              >
+                <FaMoneyBillWave /> Commission Sheets
+              </NavLink>
+            )}
+            {isSales && (
+              <NavLink
+                to="/products"
+                className={({ isActive }) =>
+                  isActive ? "active-nav nav-button" : "inactive-nav nav-button"
+                }
+              >
+                <FaBasketShopping />
+                Products
+              </NavLink>
+            )}
             <NavLink
               to="/links"
               className={({ isActive }) =>

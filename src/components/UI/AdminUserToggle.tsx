@@ -1,28 +1,35 @@
 interface props {
   user: any;
   handleRoleChange: any;
+  headings: any;
+  role: string;
+  checked: boolean;
 }
 
-const AdminUserToggle = ({ user, handleRoleChange }: props) => {
+const AdminUserToggle = ({
+  user,
+  handleRoleChange,
+  headings,
+  role,
+  checked,
+}: props) => {
   const handleRoleToggle = async () => {
-    await handleRoleChange(user);
+    await handleRoleChange(user, role);
   };
 
   return (
     <div className="admin-user-toggle-wrapper">
       <div className="toggle-container">
-        <p>User</p>
-        <label htmlFor={`allow-toggle-${user.userId}`} className="switch">
+        <p>{headings[0]}</p>
+        <label className="switch">
           <input
             type="checkbox"
             onChange={handleRoleToggle}
-            name={`allow-toggle-${user.userId}`}
-            id={`allow-toggle-${user.userId}`}
-            checked={user.isAdmin}
+            checked={checked}
           />
           <span className="slider round"></span>
         </label>
-        <p>Admin</p>
+        <p>{headings[1]}</p>
       </div>
     </div>
   );
