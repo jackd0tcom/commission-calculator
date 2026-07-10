@@ -13,7 +13,7 @@
 .order-items-list-item-production {
   display: grid;
   grid-template-columns:
-    minmax(20px, 0.1fr)
+    minmax(20px, 45px)
     minmax(60px, 0.8fr)
     minmax(40px, 0.2fr)
     minmax(100px, 0.4fr) minmax(200px, 0.75fr) minmax(100px, 0.65fr)

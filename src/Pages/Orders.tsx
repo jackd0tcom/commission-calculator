@@ -279,7 +279,9 @@ const Orders = () => {
                             navigate(`/order/${order.orderId}/false`)
                           }
                         >
-                          <div className="count">{index + 1}</div>
+                          <div className="count">
+                            <p>{index + 1}</p>
+                          </div>
                           <div className="user-width">
                             <ProfilePic src={order.salesPerson?.profilePic} />
                           </div>

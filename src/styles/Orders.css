@@ -373,7 +373,7 @@
 .orders-list-item {
   display: grid;
   grid-template-columns:
-    minmax(15px, 30px) minmax(85px, 0.3fr)
+    minmax(25px, 45px) minmax(85px, 0.3fr)
     1fr 1fr 0.75fr 0.5fr 0.5fr;
   align-items: stretch;
   border-bottom: 1px solid var(--border);
@@ -910,4 +910,5 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  min-width: stretch;
 }
