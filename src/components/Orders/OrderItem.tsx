@@ -54,13 +54,17 @@ const OrderItem = ({
   const [anchorText, setAnchorText] = useState(item.anchorText ?? "");
   let status = item.itemStatus ?? "";
   const price =
-    item.priceSnapshot ??
-    item.price ??
-    item.product?.defaultPrice ??
-    item.link?.defaultPrice ??
-    0;
+    status === "complete"
+      ? item.priceSnapshot
+      : (item.price ??
+        item.product?.defaultPrice ??
+        item.link?.defaultPrice ??
+        0);
 
-  const cost = item.costSnapshot ?? item.cost ?? item.product?.defaultCost ?? 0;
+  const cost =
+    status === "complete"
+      ? item.costSnapshot
+      : (item.cost ?? item.product?.defaultCost ?? 0);
   const [showVendorRows, setShowVendorRows] = useState(false);
   const currentDueDate = item.dueDate ?? null;
   const [vendorPayload, setVendorPayload] = useState(item.vendorPayload ?? {});

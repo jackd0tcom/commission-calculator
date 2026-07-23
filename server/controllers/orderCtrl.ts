@@ -736,13 +736,13 @@ export default {
             }
 
             case "complete": {
-              if (snapshotsNeedHydration) {
-                if (isProduct) {
-                  await orderItem.update(getProductSnapshots());
-                } else {
-                  await orderItem.update(getLinkSnapshots());
-                }
+              // if (snapshotsNeedHydration) {
+              if (isProduct) {
+                await orderItem.update(getProductSnapshots());
+              } else {
+                await orderItem.update(getLinkSnapshots());
               }
+              // }
 
               await orderItem.update({
                 sheetId: currentSheet?.sheetId ?? null,
@@ -761,11 +761,11 @@ export default {
             }
 
             case "in progress": {
-              if (snapshotsNeedHydration) {
-                if (isProduct) {
-                  await orderItem.update(getProductSnapshots());
-                } else await orderItem.update(getLinkSnapshots());
-              }
+              // if (snapshotsNeedHydration) {
+              if (isProduct) {
+                await orderItem.update(getProductSnapshots());
+              } else await orderItem.update(getLinkSnapshots());
+              // }
               await orderItem.update({
                 itemStatus,
                 sheetId: null,
@@ -965,11 +965,11 @@ export default {
         }
 
         case "complete": {
-          if (snapshotsNeedHydration) {
-            if (isProduct) {
-              await orderItem.update(getProductSnapshots());
-            } else await orderItem.update(getLinkSnapshots());
-          }
+          // if (snapshotsNeedHydration) {
+          if (isProduct) {
+            await orderItem.update(getProductSnapshots());
+          } else await orderItem.update(getLinkSnapshots());
+          // }
 
           const currentSheet = await getCurrentSheet();
 
@@ -988,11 +988,11 @@ export default {
         }
 
         case "in progress": {
-          if (snapshotsNeedHydration) {
-            if (isProduct) {
-              await orderItem.update(getProductSnapshots());
-            } else await orderItem.update(getLinkSnapshots());
-          }
+          // if (snapshotsNeedHydration) {
+          if (isProduct) {
+            await orderItem.update(getProductSnapshots());
+          } else await orderItem.update(getLinkSnapshots());
+          // }
 
           await orderItem.update({
             itemStatus,

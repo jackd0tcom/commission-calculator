@@ -119,8 +119,10 @@ const CommissionSheetList = () => {
     return deliveries.reduce((acc: number, delivery: any) => {
       const item = delivery.order_item;
       const price = item.priceSnapshot ?? item.defaultPriceSnapshot ?? 0;
+      const defaultPrice = item.defaultPriceSnapshot ?? 0;
       const cost = item.costSnapshot ?? 0;
-      const spiff = Number(item.spiffSnapshot) ?? 0;
+      const spiff =
+        price >= defaultPrice ? (Number(item.spiffSnapshot) ?? 0) : 0;
       const contribution = price - cost;
       const commission =
         contribution * item.commissionRateSnapshot <= 0
