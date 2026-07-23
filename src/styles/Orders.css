@@ -64,6 +64,22 @@
 .order-profile-wrapper h4 {
   margin: 0;
 }
+.order-client-wrapper div {
+  height: 25px;
+  width: 25px;
+  display: flex;
+  align-items: center;
+}
+.order-client-wrapper svg {
+  fill: var(--dark-hover);
+  transition: 150ms;
+  width: 20px;
+  height: 20px;
+}
+.order-client-wrapper svg:hover {
+  cursor: pointer;
+  fill: var(--grey);
+}
 .order-client-wrapper p {
   margin: 0;
 }

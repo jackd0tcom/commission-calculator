@@ -22,6 +22,8 @@ import Notes from "../components/UI/Notes";
 import ProductPicker from "../components/Orders/ProductPicker";
 import DuePicker from "../components/Orders/DuePicker";
 import M2MIcon from "../components/UI/M2MIcon";
+import ClientOrderScroll from "../components/Orders/ClientOrderScroll";
+import { current } from "@reduxjs/toolkit";
 
 type FilterOption = {
   title: string;
@@ -37,6 +39,7 @@ const OrderPage = () => {
   const [orderItems, setOrderItems] = useState([{}]);
   const [clientList, setClientList] = useState([{}]);
   const [vendorList, setVendorList] = useState([{}]);
+  const [clientOrders, setClientOrders] = useState([{}]);
   const [currentClient, setCurrentClient] = useState({
     clientName: null,
     clientId: null,
@@ -180,6 +183,7 @@ const OrderPage = () => {
                   ),
                 );
               }
+              setClientOrders(res.data.clientOrders ?? []);
               setOrderStatus(res.data.orderStatus);
               setCurrentUserId(res.data.salesPerson ?? 1);
               setCurrentClient(res.data.client ?? {});
@@ -703,10 +707,11 @@ const OrderPage = () => {
                 </div>
               </div>
             </div>
-            <div className="order-client-wrapper">
-              Client:
-              <p>{currentClient?.clientName}</p>
-            </div>
+            <ClientOrderScroll
+              orderId={Number(orderId)}
+              clientOrders={clientOrders}
+              client={currentClient}
+            />
             <div className="order-sales-wrapper">
               <p>Sales Person:</p>
               <UserSelector

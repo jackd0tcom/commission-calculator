@@ -341,10 +341,18 @@ export default {
 
       const orderItems = orderItemGroups.flatMap((g) => g.items);
 
+      const clientOrders = await Order.findAll({
+        where: {
+          clientId: order.clientId,
+        },
+        order: [["createdAt", "ASC"]],
+      });
+
       const orderWithItems = {
         ...order?.dataValues,
         orderItems,
         orderItemGroups,
+        clientOrders,
       };
 
       if (orderWithItems) {
