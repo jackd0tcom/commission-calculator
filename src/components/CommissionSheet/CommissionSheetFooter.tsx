@@ -107,7 +107,7 @@ const CommissionSheetFooter = ({ items, products, filter, userId }: props) => {
       item.price ??
       product?.defaultPrice ??
       0;
-    const spiff = item.spiffSnapshot ?? product?.spiff ?? 0;
+    const spiff = item.spiffSnapshot ?? 0;
     return acc + (Number(price) >= Number(defaultPrice) ? Number(spiff) : 0);
   }, 0);
   const grandTotal: number = commission + bonus;

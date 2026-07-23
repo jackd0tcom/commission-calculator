@@ -110,6 +110,15 @@ const OrderItem = ({
           case "anchorText":
             setAnchorText(value);
             break;
+          case "dueDate":
+            setOrderItems((prev: any) =>
+              prev.map((it: any) =>
+                it.itemId === item.itemId
+                  ? { ...it, dueDate: res.data.dueDate }
+                  : it,
+              ),
+            );
+            break;
         }
       }
     } catch (error) {
@@ -217,7 +226,7 @@ const OrderItem = ({
         />
       )}
     </div>
-  ) : status === "staged" ? (
+  ) : status !== "complete" ? (
     <div className="order-items-list-item-wrapper">
       <div
         className={

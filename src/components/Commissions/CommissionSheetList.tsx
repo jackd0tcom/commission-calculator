@@ -120,12 +120,13 @@ const CommissionSheetList = () => {
       const item = delivery.order_item;
       const price = item.priceSnapshot ?? item.defaultPriceSnapshot ?? 0;
       const cost = item.costSnapshot ?? 0;
+      const spiff = Number(item.spiffSnapshot) ?? 0;
       const contribution = price - cost;
       const commission =
         contribution * item.commissionRateSnapshot <= 0
           ? 0
           : contribution * item.commissionRateSnapshot;
-      return acc + commission;
+      return acc + commission + spiff;
     }, 0);
   };
 

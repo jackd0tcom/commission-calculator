@@ -46,6 +46,7 @@ async function seed() {
       lastName: "User",
       isAdmin: true,
       isAllowed: true,
+      isSales: true,
     },
     {
       auth0Id: seedAuth0Id,

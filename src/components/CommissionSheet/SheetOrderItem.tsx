@@ -39,7 +39,7 @@ const SheetOrderItem = ({ item, productList, userId }: props) => {
       : item.link?.commissionRate;
   const commission =
     contribution * commissionRate <= 0 ? 0 : contribution * commissionRate;
-  const spiff = item.spiffSnapshot ?? product?.spiff ?? 0;
+  const spiff = item.spiffSnapshot ?? 0;
   const bonus = Number(price) >= Number(defaultPrice) ? spiff : 0;
   const total = Number(commission) + Number(bonus);
 
