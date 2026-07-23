@@ -17,12 +17,20 @@ const ClientOrderScroll = ({ orderId, client, clientOrders }: props) => {
 
   return (
     <div className="order-client-wrapper">
-      <div onClick={() => navigate(`/order/${previousOrder.orderId}/false`)}>
+      <div
+        onClick={() =>
+          previousOrder && navigate(`/order/${previousOrder.orderId}/false`)
+        }
+      >
         {previousOrder && <FaArrowAltCircleLeft />}
       </div>
       <p>{client.clientName ?? ""}</p>
 
-      <div onClick={() => navigate(`/order/${nextOrder.orderId}/false`)}>
+      <div
+        onClick={() =>
+          nextOrder && navigate(`/order/${nextOrder.orderId}/false`)
+        }
+      >
         {nextOrder && <FaArrowAltCircleRight />}
       </div>
     </div>
