@@ -50,6 +50,7 @@ const OrderPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [notFound, setNotFound] = useState(false);
   const [bulkDeleting, setBulkDeleting] = useState(false);
+  const [isShiftPressed, setIsShiftPressed] = useState(false);
   const [bulkSelects, setBulkSelects] = useState<any[]>([]);
   const [orderTitle, setOrderTitle] = useState("");
   const [currentUserId, setCurrentUserId] = useState(1);
@@ -268,6 +269,32 @@ const OrderPage = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [showSettings]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: any) => {
+      if (e.key === "Shift") setIsShiftPressed(true);
+    };
+
+    const handleKeyUp = (e: any) => {
+      if (e.key === "Shift") setIsShiftPressed(false);
+    };
+
+    const handleMouseDown = (e: any) => {
+      if (e.shiftKey) e.preventDefault();
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+    window.addEventListener("mousedown", handleMouseDown);
+    window.addEventListener("onselectstart", handleMouseDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+      window.removeEventListener("mousedown", handleMouseDown);
+      window.removeEventListener("onselectstart", handleMouseDown);
+    };
+  }, []);
 
   // Filtering / Sorting
   const filteredOrderItems = useMemo(() => {
@@ -1006,6 +1033,7 @@ const OrderPage = () => {
                     (item: any, index: number) =>
                       item.itemId && (
                         <OrderItem
+                          isShiftPressed={isShiftPressed}
                           isProduction={false}
                           boundaryRef={listWrapperRef}
                           bulkSelects={bulkSelects}
@@ -1013,6 +1041,7 @@ const OrderPage = () => {
                           key={`order-item-${item.itemId}`}
                           item={item}
                           index={index}
+                          orderItems={orderItems}
                           setOrderItems={setOrderItems}
                           products={productList}
                           linkList={linkList}

@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@auth0/auth0-react": "^2.13.0",
+    "@dnd-kit/react": "^0.5.0",
     "@floating-ui/react": "^0.27.19",
     "@reduxjs/toolkit": "^2.11.2",
     "@types/react-redux": "^7.1.34",

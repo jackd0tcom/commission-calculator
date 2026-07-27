@@ -11,9 +11,11 @@ import OrderItemContextMenu from "./OrderItemContextMenu";
 import DuePicker from "./DuePicker";
 
 interface props {
+  isShiftPressed: boolean;
   isProduction: boolean;
   item: any;
   index: number;
+  orderItems: any;
   setOrderItems: any;
   products: any;
   bulkSelects: any;
@@ -29,9 +31,11 @@ interface props {
 }
 
 const OrderItem = ({
+  isShiftPressed,
   isProduction,
   item,
   index,
+  orderItems,
   setOrderItems,
   products,
   onPriceChange,
@@ -157,6 +161,33 @@ const OrderItem = ({
   };
 
   const handleBulkSelect = () => {
+    const bulkLength = bulkSelects.length;
+    const currentIndex = item.orderIndex;
+
+    if (isShiftPressed && bulkLength > 0) {
+      const differences = bulkSelects.map((item: any) => {
+        return {
+          difference: Math.abs(item.orderIndex - currentIndex),
+          ...item,
+        };
+      });
+      const closestItem = differences.reduce((min: any, item: any) =>
+        item.difference < min.difference ? item : min,
+      );
+
+      const itemsBetween = orderItems.filter((item: any) => {
+        const currentLarger = currentIndex > closestItem.orderIndex;
+
+        return currentLarger
+          ? item.orderIndex <= currentIndex &&
+              item.orderIndex >= closestItem.orderIndex
+          : item.orderIndex >= currentIndex &&
+              item.orderIndex <= closestItem.orderIndex;
+      });
+
+      setBulkSelects((prev: any) => [...prev, ...itemsBetween]);
+    }
+
     if (!isSelected) {
       setBulkSelects((prev: any) => [...prev, item]);
     } else {
