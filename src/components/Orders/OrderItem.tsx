@@ -179,10 +179,10 @@ const OrderItem = ({
         const currentLarger = currentIndex > closestItem.orderIndex;
 
         return currentLarger
-          ? item.orderIndex <= currentIndex &&
-              item.orderIndex >= closestItem.orderIndex
-          : item.orderIndex >= currentIndex &&
-              item.orderIndex <= closestItem.orderIndex;
+          ? item.orderIndex < currentIndex &&
+              item.orderIndex > closestItem.orderIndex
+          : item.orderIndex > currentIndex &&
+              item.orderIndex < closestItem.orderIndex;
       });
 
       setBulkSelects((prev: any) => [...prev, ...itemsBetween]);
