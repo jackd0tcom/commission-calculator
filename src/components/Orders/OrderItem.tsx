@@ -9,6 +9,7 @@ import { FaAngleUp, FaCheck } from "react-icons/fa6";
 import { useContextMenu } from "../../hooks/UseContextMenu";
 import OrderItemContextMenu from "./OrderItemContextMenu";
 import DuePicker from "./DuePicker";
+import { useSortable } from "@dnd-kit/react/sortable";
 
 interface props {
   isShiftPressed: boolean;
@@ -73,6 +74,10 @@ const OrderItem = ({
   const currentDueDate = item.dueDate ?? null;
   const [vendorPayload, setVendorPayload] = useState(item.vendorPayload ?? {});
   const { xPos, yPos, showMenu, handleContextMenu } = useContextMenu();
+  const { ref } = useSortable({
+    id: item.itemId,
+    index: index,
+  });
 
   let isSelected = bulkSelects.some((it: any) => it.itemId === item.itemId);
 
@@ -202,7 +207,7 @@ const OrderItem = ({
   )?.vendorName;
 
   return bulkSelects.length > 0 && status !== "complete" ? (
-    <div className="order-items-list-item-wrapper">
+    <div className="order-items-list-item-wrapper" ref={ref}>
       <div
         className={
           isSelected
@@ -262,7 +267,7 @@ const OrderItem = ({
       )}
     </div>
   ) : status !== "complete" ? (
-    <div className="order-items-list-item-wrapper">
+    <div className="order-items-list-item-wrapper" ref={ref}>
       <div
         className={
           isProduction
@@ -412,7 +417,7 @@ const OrderItem = ({
       )}
     </div>
   ) : (
-    <div className="order-items-list-item-wrapper">
+    <div className="order-items-list-item-wrapper" ref={ref}>
       <div
         className={
           isProduction

@@ -50,8 +50,14 @@ const OrderItemContextMenu = ({
           console.log(res.data);
           if (res.status === 200) {
             setOrderItems((prev: any) => {
-              const allItems = [...prev, res.data];
-              return allItems.sort((a, b) => a.orderIndex - b.orderIndex);
+              const allItems = prev.map((it: any) =>
+                it.orderIndex > item.orderIndex
+                  ? { ...it, orderIndex: it.orderIndex + 1 }
+                  : it,
+              );
+              return [...allItems, res.data].sort(
+                (a, b) => a.orderIndex - b.orderIndex,
+              );
             });
           }
         });
@@ -61,17 +67,24 @@ const OrderItemContextMenu = ({
   };
   const handleMassDuplicate = async () => {
     try {
+      const quantity = Number(duplications);
       await axios
         .post("/api/massDuplicateOrderItem", {
           itemId: item.itemId,
-          quantity: duplications,
+          quantity,
         })
         .then((res) => {
           console.log(res.data);
           if (res.status === 200) {
             setOrderItems((prev: any) => {
-              const allItems = [...prev, ...res.data];
-              return allItems.sort((a, b) => a.orderIndex - b.orderIndex);
+              const allItems = prev.map((it: any) =>
+                it.orderIndex > item.orderIndex
+                  ? { ...it, orderIndex: it.orderIndex + quantity }
+                  : it,
+              );
+              return [...allItems, ...res.data].sort(
+                (a, b) => a.orderIndex - b.orderIndex,
+              );
             });
           }
         });

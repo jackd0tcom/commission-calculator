@@ -23,6 +23,8 @@ import ProductPicker from "../components/Orders/ProductPicker";
 import DuePicker from "../components/Orders/DuePicker";
 import M2MIcon from "../components/UI/M2MIcon";
 import ClientOrderScroll from "../components/Orders/ClientOrderScroll";
+import { isSortable } from "@dnd-kit/react/sortable";
+import { DragDropProvider } from "@dnd-kit/react";
 
 type FilterOption = {
   title: string;
@@ -86,6 +88,7 @@ const OrderPage = () => {
   const [M2MId, setM2MId] = useState(0);
   const [count, setCount] = useState(0);
   const [search, setSearch] = useState("");
+
   const statusOrder = [
     "staged",
     "ordered",
@@ -386,9 +389,9 @@ const OrderPage = () => {
           case "status":
             return filter.direction === "up"
               ? statusOrder.indexOf(a.itemStatus) -
-                  statusOrder.indexOf(b.itemStatus)
+              statusOrder.indexOf(b.itemStatus)
               : statusOrder.indexOf(b.itemStatus) -
-                  statusOrder.indexOf(a.itemStatus);
+              statusOrder.indexOf(a.itemStatus);
             break;
 
           case "price":
@@ -578,7 +581,7 @@ const OrderPage = () => {
         .then(() => {
           setCount(0);
         });
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const handleUpdateNotes = (notes: string) => {
@@ -642,6 +645,72 @@ const OrderPage = () => {
         );
         setBulkSelects([]);
       }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleDragEnd = async (event: any) => {
+    if (event?.canceled) {
+      console.log("canceled");
+      return;
+    }
+
+    const { source } = event.operation;
+
+    if (!isSortable(source)) {
+      console.log("no source");
+      return;
+    }
+
+    const { initialIndex, index } = source;
+
+    if (initialIndex === index) {
+      console.log("no change");
+      return;
+    }
+
+    console.log("changing", initialIndex, index);
+
+    try {
+      await axios
+        .post("/api/updateOrderItem", {
+          itemId: source.id,
+          fieldName: "orderIndex",
+          value: index,
+        })
+        .then((res: any) => {
+          if (res.status !== 200) return;
+
+          const oldIndex = initialIndex;
+          const newIndex = index;
+
+          console.log(res.data.orderIndex);
+
+          setOrderItems((prev: any) => {
+            const updated = prev.map((it: any) => {
+              if (it.itemId === source.id) {
+                return { ...it, orderIndex: newIndex };
+              }
+
+              if (oldIndex < newIndex) {
+                if (it.orderIndex > oldIndex && it.orderIndex <= newIndex) {
+                  return { ...it, orderIndex: it.orderIndex - 1 };
+                }
+              } else {
+                if (it.orderIndex >= newIndex && it.orderIndex < oldIndex) {
+                  return { ...it, orderIndex: it.orderIndex + 1 };
+                }
+              }
+
+              return it;
+            });
+
+            return updated.sort(
+              (a: any, b: any) => a.orderIndex - b.orderIndex,
+            );
+          });
+        });
     } catch (error) {
       console.log(error);
     }
@@ -1027,11 +1096,11 @@ const OrderPage = () => {
                   </div>
                 </div>
               )}
-              <div className="order-items-list-wrapper">
-                {filteredOrderItems?.length > 0 &&
-                  filteredOrderItems?.map(
-                    (item: any, index: number) =>
-                      item.itemId && (
+              <DragDropProvider onDragEnd={handleDragEnd}>
+                <div className="order-items-list-wrapper">
+                  {filteredOrderItems?.length > 0 &&
+                    filteredOrderItems?.map((item: any, index: number) => {
+                      const orderItem = item.itemId && (
                         <OrderItem
                           isShiftPressed={isShiftPressed}
                           isProduction={false}
@@ -1052,18 +1121,20 @@ const OrderPage = () => {
                           handleOrderItemUpdate={handleOrderItemUpdate}
                           handleCostChange={handleCostChange}
                         />
-                      ),
-                  )}
-                <div className="new-item-row-wrapper">
-                  <div
-                    className="sheet-item new-item-row"
-                    onClick={() => handleAddItem()}
-                  >
-                    <p>+</p>
-                    <p>Add Product</p>
+                      );
+                      return orderItem;
+                    })}
+                  <div className="new-item-row-wrapper">
+                    <div
+                      className="sheet-item new-item-row"
+                      onClick={() => handleAddItem()}
+                    >
+                      <p>+</p>
+                      <p>Add Product</p>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </DragDropProvider>
             </div>
             <div className="order-sheet-footer">
               <div className="order-notes-wrapper">

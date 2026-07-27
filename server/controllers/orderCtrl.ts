@@ -9,8 +9,10 @@ import {
   UserProductCommission,
   Delivery,
   Vendor,
+  db,
 } from "../model.ts";
 import { Request, Response } from "express";
+import { Op } from "sequelize";
 import { formatMonthlySheetTitle } from "../commissionSheets.ts";
 import { getOrCreateMonthlySheetForUser } from "../helpers.ts";
 
@@ -445,20 +447,56 @@ export default {
         return;
       }
 
-      await orderItem?.update({ [fieldName]: value });
+      if (fieldName === "orderIndex") {
+        // value should be 1-based to match DB (send index + 1 from the client)
+        const oldIndex = Number(orderItem.orderIndex);
+        const newIndex = Number(value);
 
-      if (fieldName === "productId") {
-        newProduct = await Product.findOne({
-          where: { productId: value },
-        });
-        payload = { ...orderItem.toJSON(), newProduct };
-      } else payload = orderItem.toJSON();
+        if (oldIndex !== newIndex) {
+          await db.transaction(async (transaction) => {
+            if (oldIndex < newIndex) {
+              // moving down
+              await OrderItem.increment("orderIndex", {
+                by: -1,
+                where: {
+                  orderId: orderItem.orderId,
+                  orderIndex: { [Op.gt]: oldIndex, [Op.lte]: newIndex },
+                  itemId: { [Op.ne]: orderItem.itemId },
+                },
+                transaction,
+              });
+            } else {
+              // moving up
+              await OrderItem.increment("orderIndex", {
+                by: 1,
+                where: {
+                  orderId: orderItem.orderId,
+                  orderIndex: { [Op.gte]: newIndex, [Op.lt]: oldIndex },
+                  itemId: { [Op.ne]: orderItem.itemId },
+                },
+                transaction,
+              });
+            }
 
-      if (orderItem) {
-        res.send(payload);
+            await orderItem.update({ orderIndex: newIndex }, { transaction });
+          });
+        }
+
+        payload = orderItem.toJSON();
       } else {
-        res.status(400).send("No item found");
+        await orderItem.update({ [fieldName]: value });
+
+        if (fieldName === "productId") {
+          newProduct = await Product.findOne({
+            where: { productId: value },
+          });
+          payload = { ...orderItem.toJSON(), newProduct };
+        } else {
+          payload = orderItem.toJSON();
+        }
       }
+
+      res.send(payload);
     } catch (error) {
       console.error("Error getting sheets:", error);
       res.status(500).send("Internal server error");
@@ -673,14 +711,14 @@ export default {
           const isProduct = currentOrderItem.productType === "product";
           const product: any = isProduct
             ? await Product.findOne({
-                where: { productId: currentOrderItem.productId },
-                include: [{ model: UserProductCommission, required: false }],
-              })
+              where: { productId: currentOrderItem.productId },
+              include: [{ model: UserProductCommission, required: false }],
+            })
             : null;
           const link: any = !isProduct
             ? await Link.findOne({
-                where: { linkId: currentOrderItem.linkId },
-              })
+              where: { linkId: currentOrderItem.linkId },
+            })
             : null;
 
           const userRate = product?.user_product_commissions?.find(
@@ -878,14 +916,14 @@ export default {
       const isProduct = currentOrderItem.productType === "product";
       const product: any = isProduct
         ? await Product.findOne({
-            where: { productId: currentOrderItem.productId },
-            include: [{ model: UserProductCommission, required: false }],
-          })
+          where: { productId: currentOrderItem.productId },
+          include: [{ model: UserProductCommission, required: false }],
+        })
         : null;
       const link: any = !isProduct
         ? await Link.findOne({
-            where: { linkId: currentOrderItem.linkId },
-          })
+          where: { linkId: currentOrderItem.linkId },
+        })
         : null;
 
       const clearSnapshots = () => ({
@@ -1205,11 +1243,20 @@ export default {
       delete itemCopy.createdAt;
       delete itemCopy.updatedAt;
       itemCopy.itemStatus = "staged";
-      itemCopy.orderIndex = Number(item.orderIndex + 0.01);
+      itemCopy.orderIndex = Math.floor(Number(item.orderIndex)) + 1;
 
-      console.log(itemCopy);
+      const newItem = await db.transaction(async (transaction) => {
+        await OrderItem.increment("orderIndex", {
+          by: 1,
+          where: {
+            orderId: item.orderId,
+            orderIndex: { [Op.gt]: item.orderIndex },
+          },
+          transaction,
+        });
 
-      const newItem = await OrderItem.create(itemCopy);
+        return OrderItem.create(itemCopy, { transaction });
+      });
 
       let payload = { ...newItem.toJSON() };
 
@@ -1260,28 +1307,47 @@ export default {
         return;
       }
 
-      const payload: any[] = [];
+      const sourceIndex = Math.floor(Number(item.orderIndex));
 
-      for (let index = 1; index <= quantityNumber; index++) {
-        const newItem = await OrderItem.create({
-          ...itemCopy,
-          orderIndex: Number(item.orderIndex + index * 0.01),
+      const payload = await db.transaction(async (transaction) => {
+        await OrderItem.increment("orderIndex", {
+          by: quantityNumber,
+          where: {
+            orderId: item.orderId,
+            orderIndex: { [Op.gt]: item.orderIndex },
+          },
+          transaction,
         });
 
-        let newPayload = { ...newItem.toJSON() };
+        const createdItems: any[] = [];
 
-        if (newItem.productId) {
-          const currentProduct = await Product.findOne({
-            where: { productId: newItem.productId },
-          });
-          newPayload = {
-            ...newPayload,
-            product: currentProduct,
-          };
+        for (let index = 1; index <= quantityNumber; index++) {
+          const newItem = await OrderItem.create(
+            {
+              ...itemCopy,
+              orderIndex: sourceIndex + index,
+            },
+            { transaction },
+          );
+
+          let newPayload = { ...newItem.toJSON() };
+
+          if (newItem.productId) {
+            const currentProduct = await Product.findOne({
+              where: { productId: newItem.productId },
+              transaction,
+            });
+            newPayload = {
+              ...newPayload,
+              product: currentProduct,
+            };
+          }
+
+          createdItems.push(newPayload);
         }
 
-        payload.push(newPayload);
-      }
+        return createdItems;
+      });
 
       res.status(200).send(payload);
     } catch (error) {
