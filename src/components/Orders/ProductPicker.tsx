@@ -76,6 +76,7 @@ const ProductPicker = ({
             .then((res) => {
               if (res.status === 200) {
                 handleBulkProductChange(res.data);
+                setShowDropdown(false);
               }
             })
         : await axios
