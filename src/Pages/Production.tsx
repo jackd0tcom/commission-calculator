@@ -516,6 +516,8 @@ const Production = () => {
                     (item: any, index: number) =>
                       item.itemId && (
                         <OrderItem
+                          orderItems={orderItems}
+                          isShiftPressed={false}
                           isProduction={true}
                           boundaryRef={listWrapperRef}
                           bulkSelects={bulkSelects}
