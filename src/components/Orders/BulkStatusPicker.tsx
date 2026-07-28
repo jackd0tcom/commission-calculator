@@ -8,11 +8,7 @@ interface props {
   setBulkSelects: any;
 }
 
-const BulkStatusPicker = ({
-  bulkSelects,
-  setOrderItems,
-  setBulkSelects,
-}: props) => {
+const BulkStatusPicker = ({ bulkSelects, setOrderItems }: props) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   let currentStatus = "Staged";

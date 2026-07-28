@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { FaCheck, FaX } from "react-icons/fa6";
+import { FaX } from "react-icons/fa6";
 
 interface props {
   bulkSelects: any;
@@ -8,7 +7,6 @@ interface props {
 }
 
 const BulkSelector = ({ bulkSelects, setBulkSelects, orderItems }: props) => {
-  const [hovering, setHovering] = useState(false);
   const handleBulkSelect = () => {
     if (bulkSelects.length <= 0) {
       const items = [...orderItems];
@@ -22,8 +20,6 @@ const BulkSelector = ({ bulkSelects, setBulkSelects, orderItems }: props) => {
   return (
     <div className="bulk-selector-wrapper">
       <div
-        onMouseEnter={() => setHovering(true)}
-        onMouseLeave={() => setHovering(false)}
         onClick={() => handleBulkSelect()}
         className={
           bulkSelects.length > 0 ? "bulk-toggle bulk-selected" : "bulk-toggle"
