@@ -565,7 +565,11 @@ export default {
 
       const { orderId, orderItemIds } = req.body;
 
-      if (!orderId || !Array.isArray(orderItemIds) || orderItemIds.length === 0) {
+      if (
+        !orderId ||
+        !Array.isArray(orderItemIds) ||
+        orderItemIds.length === 0
+      ) {
         res.status(400).send("orderId and orderItemIds are required");
         return;
       }
@@ -587,12 +591,11 @@ export default {
           }
         }
 
-        // 2) Assign new indices from the ordered id list
-        // Use i if your DB is 0-based; i + 1 if 1-based (your create path uses count + 1)
+        // Assign 1-based indices to match create / duplicate / single-reorder paths
         await Promise.all(
           orderItemIds.map((itemId: number, i: number) =>
             OrderItem.update(
-              { orderIndex: i }, // or i + 1
+              { orderIndex: i + 1 },
               {
                 where: { itemId, orderId },
                 transaction,
@@ -771,14 +774,14 @@ export default {
           const isProduct = currentOrderItem.productType === "product";
           const product: any = isProduct
             ? await Product.findOne({
-              where: { productId: currentOrderItem.productId },
-              include: [{ model: UserProductCommission, required: false }],
-            })
+                where: { productId: currentOrderItem.productId },
+                include: [{ model: UserProductCommission, required: false }],
+              })
             : null;
           const link: any = !isProduct
             ? await Link.findOne({
-              where: { linkId: currentOrderItem.linkId },
-            })
+                where: { linkId: currentOrderItem.linkId },
+              })
             : null;
 
           const userRate = product?.user_product_commissions?.find(
@@ -976,14 +979,14 @@ export default {
       const isProduct = currentOrderItem.productType === "product";
       const product: any = isProduct
         ? await Product.findOne({
-          where: { productId: currentOrderItem.productId },
-          include: [{ model: UserProductCommission, required: false }],
-        })
+            where: { productId: currentOrderItem.productId },
+            include: [{ model: UserProductCommission, required: false }],
+          })
         : null;
       const link: any = !isProduct
         ? await Link.findOne({
-          where: { linkId: currentOrderItem.linkId },
-        })
+            where: { linkId: currentOrderItem.linkId },
+          })
         : null;
 
       const clearSnapshots = () => ({

@@ -647,15 +647,17 @@ const OrderPage = () => {
     }
   };
 
-  let activeDragIds: any;
-  let isMulti = false;
+  const isMultiDragRef = useRef(false);
+  const activeDragIdsRef = useRef<number[]>([]);
 
   const handleDragStart = (event: any) => {
-    const source = event?.operation;
+    const activeId = Number(event?.operation?.source?.id);
     const selectedIds = bulkSelects.map((item: any) => item.itemId);
-    isMulti = selectedIds.includes(source.source.id) && selectedIds.length > 1;
+    const isMulti =
+      selectedIds.includes(activeId) && selectedIds.length > 1;
 
-    activeDragIds = isMulti ? selectedIds : [source.Id];
+    isMultiDragRef.current = isMulti;
+    activeDragIdsRef.current = isMulti ? selectedIds : [activeId];
   };
 
   const moveSelectedAsBlock = ({
@@ -684,7 +686,38 @@ const OrderPage = () => {
       ...remaining.slice(0, insertAt),
       ...moving,
       ...remaining.slice(insertAt),
-    ].map((item, i) => ({ ...item, orderIndex: i }));
+    ];
+  };
+
+  /** Reorder visible ids within the filtered list (0-based indices). */
+  const moveId = (ids: number[], from: number, to: number) => {
+    const next = [...ids];
+    const [moved] = next.splice(from, 1);
+    next.splice(to, 0, moved);
+    return next;
+  };
+
+  /**
+   * Apply a new order among currently visible items while keeping
+   * hidden items in their relative orderIndex slots (1-based).
+   */
+  const applyVisibleReorder = (allItems: any[], visibleOrderedIds: number[]) => {
+    const sorted = [...allItems]
+      .filter((item) => item?.itemId != null)
+      .sort((a, b) => a.orderIndex - b.orderIndex);
+
+    const visibleSet = new Set(visibleOrderedIds);
+    const byId = new Map(sorted.map((item) => [item.itemId, item]));
+
+    let visiblePtr = 0;
+    const next = sorted.map((item) => {
+      if (visibleSet.has(item.itemId)) {
+        return byId.get(visibleOrderedIds[visiblePtr++]) ?? item;
+      }
+      return item;
+    });
+
+    return next.map((item, i) => ({ ...item, orderIndex: i + 1 }));
   };
 
   const handleDragEnd = async (event: any) => {
@@ -707,60 +740,35 @@ const OrderPage = () => {
       return;
     }
 
-    try {
-      if (isMulti) {
-        const next = moveSelectedAsBlock({
-          items: orderItems, // ideally the same list you map for sortable indices
-          activeIds: activeDragIds,
+    const previousItems = orderItems;
+
+    const nextVisibleIds = isMultiDragRef.current
+      ? moveSelectedAsBlock({
+          items: filteredOrderItems,
+          activeIds: activeDragIdsRef.current,
           targetIndex: index,
           activeId: Number(source.id),
-        });
+        }).map((item) => item.itemId)
+      : moveId(
+          filteredOrderItems.map((item: any) => item.itemId),
+          initialIndex,
+          index,
+        );
 
-        setOrderItems(next);
+    const next = applyVisibleReorder(orderItems, nextVisibleIds);
+    setOrderItems(next);
 
-        await axios.post("/api/bulkReorderOrderItem", {
-          orderId,
-          orderItemIds: next.map((item) => item.itemId),
-        });
-      } else
-        await axios
-          .post("/api/updateOrderItem", {
-            itemId: source.id,
-            fieldName: "orderIndex",
-            value: index,
-          })
-          .then((res: any) => {
-            if (res.status !== 200) return;
-
-            const oldIndex = initialIndex;
-            const newIndex = index;
-
-            setOrderItems((prev: any) => {
-              const updated = prev.map((it: any) => {
-                if (it.itemId === source.id) {
-                  return { ...it, orderIndex: newIndex };
-                }
-
-                if (oldIndex < newIndex) {
-                  if (it.orderIndex > oldIndex && it.orderIndex <= newIndex) {
-                    return { ...it, orderIndex: it.orderIndex - 1 };
-                  }
-                } else {
-                  if (it.orderIndex >= newIndex && it.orderIndex < oldIndex) {
-                    return { ...it, orderIndex: it.orderIndex + 1 };
-                  }
-                }
-
-                return it;
-              });
-
-              return updated.sort(
-                (a: any, b: any) => a.orderIndex - b.orderIndex,
-              );
-            });
-          });
+    try {
+      await axios.post("/api/bulkReorderOrderItem", {
+        orderId,
+        orderItemIds: next.map((item) => item.itemId),
+      });
     } catch (error) {
       console.log(error);
+      setOrderItems(previousItems);
+    } finally {
+      isMultiDragRef.current = false;
+      activeDragIdsRef.current = [];
     }
   };
 
