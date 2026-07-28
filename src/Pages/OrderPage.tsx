@@ -651,7 +651,7 @@ const OrderPage = () => {
   };
 
   let activeDragIds: any;
-  let isMulti: boolean;
+  let isMulti = false;
 
   const handleDragStart = (event: any) => {
     const source = event?.operation;
@@ -659,7 +659,6 @@ const OrderPage = () => {
     isMulti = selectedIds.includes(source.source.id) && selectedIds.length > 1;
 
     activeDragIds = isMulti ? selectedIds : [source.Id];
-    console.log(activeDragIds);
   };
 
   const moveSelectedAsBlock = ({ items, activeIds, targetIndex }: any) => {
