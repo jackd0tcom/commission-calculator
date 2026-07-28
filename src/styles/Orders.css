@@ -750,6 +750,11 @@
   stroke: var(---grey);
   fill: var(---grey);
 }
+.bulk-x {
+  stroke: var(---grey);
+  fill: var(---grey);
+  width: 0.6em;
+}
 .bulk-select-radio {
   cursor: pointer;
   width: 10px;

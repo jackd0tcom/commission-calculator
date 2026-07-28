@@ -50,7 +50,6 @@ const BulkStatusPicker = ({
             console.log(sorted);
             return sorted;
           });
-          setBulkSelects([]);
         });
     } catch (error) {
       console.log(error);

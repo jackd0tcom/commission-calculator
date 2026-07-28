@@ -544,7 +544,6 @@ const OrderPage = () => {
           console.log(filteredItems);
           setOrderItems(filteredItems);
           setBulkDeleting(false);
-          setBulkSelects([]);
         });
     } catch (error) {
       console.log(error);
@@ -613,7 +612,6 @@ const OrderPage = () => {
         };
       }),
     );
-    setBulkSelects([]);
   };
 
   const handleBulkUpdate = async (fieldName: string, value: any) => {
@@ -643,7 +641,6 @@ const OrderPage = () => {
             };
           }),
         );
-        setBulkSelects([]);
       }
     } catch (error) {
       console.log(error);
