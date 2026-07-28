@@ -209,7 +209,7 @@ const OrderItem = ({
   return bulkSelects.length > 0 && status !== "complete" ? (
     <div
       className="order-items-list-item-wrapper"
-      ref={isProduction ? ref : null}
+      ref={!isProduction ? ref : null}
     >
       <div
         className={
@@ -272,7 +272,7 @@ const OrderItem = ({
   ) : status !== "complete" ? (
     <div
       className="order-items-list-item-wrapper"
-      ref={isProduction ? ref : null}
+      ref={!isProduction ? ref : null}
     >
       <div
         className={
@@ -425,7 +425,7 @@ const OrderItem = ({
   ) : (
     <div
       className="order-items-list-item-wrapper"
-      ref={isProduction ? ref : null}
+      ref={!isProduction ? ref : null}
     >
       <div
         className={
