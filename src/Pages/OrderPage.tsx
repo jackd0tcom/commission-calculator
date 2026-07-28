@@ -661,24 +661,33 @@ const OrderPage = () => {
     activeDragIds = isMulti ? selectedIds : [source.Id];
   };
 
-  const moveSelectedAsBlock = ({ items, activeIds, targetIndex }: any) => {
-    const moving = items.filter((i: any) => activeIds.includes(i.itemId));
-    // preserve list order among selected
-    const remaining = items.filter((i: any) => !activeIds.includes(i.itemId));
+  const moveSelectedAsBlock = ({
+    items,
+    activeIds,
+    targetIndex,
+    activeId,
+  }: {
+    items: any[];
+    activeIds: number[];
+    targetIndex: number;
+    activeId: number;
+  }) => {
+    const moving = items.filter((i) => activeIds.includes(i.itemId));
+    const remaining = items.filter((i) => !activeIds.includes(i.itemId));
 
-    // adjust insert index: removing items above the target shifts it left
-    const removedBefore = items
-      .slice(0, targetIndex)
-      .filter((i: any) => activeIds.includes(i.itemId)).length;
-    const insertAt = targetIndex - removedBefore;
+    const activeIndex = items.findIndex((i) => i.itemId === activeId);
+    const movingDown = targetIndex > activeIndex;
 
-    const next = [
+    // how many non-selected items should stay above the block
+    const insertAt = items
+      .slice(0, movingDown ? targetIndex + 1 : targetIndex)
+      .filter((i) => !activeIds.includes(i.itemId)).length;
+
+    return [
       ...remaining.slice(0, insertAt),
       ...moving,
       ...remaining.slice(insertAt),
-    ].map((item, i) => ({ ...item, orderIndex: i })); // or i + 1 if 1-based
-
-    return next;
+    ].map((item, i) => ({ ...item, orderIndex: i }));
   };
 
   const handleDragEnd = async (event: any) => {
@@ -704,9 +713,10 @@ const OrderPage = () => {
     try {
       if (isMulti) {
         const next = moveSelectedAsBlock({
-          items: orderItems,
+          items: orderItems, // ideally the same list you map for sortable indices
           activeIds: activeDragIds,
           targetIndex: index,
+          activeId: Number(source.id),
         });
 
         setOrderItems(next);
