@@ -48,6 +48,7 @@ const {
   duplicateOrder,
   bulkUpdateOrderItemProduct,
   bulkUpdateOrderItem,
+  bulkReorderOrderItem,
 } = orderCtrl;
 const {
   getCommissionSheets,
@@ -158,6 +159,7 @@ app.post(`/api/deleteOrder`, deleteOrder);
 app.post(`/api/duplicateOrder`, duplicateOrder);
 app.post(`/api/bulkUpdateOrderItemProduct`, bulkUpdateOrderItemProduct);
 app.post(`/api/bulkUpdateOrderItem`, bulkUpdateOrderItem);
+app.post(`/api/bulkReorderOrderItem`, bulkReorderOrderItem);
 
 // Client endpoints
 app.get(`/api/getClients`, getClients);
@@ -194,7 +196,8 @@ console.log("Database synced");
 
 ViteExpress.listen(app, PORT, () => {
   console.log(
-    `live on http://localhost:${PORT} ${process.env.NODE_ENV === "production" ? "production" : "development"
+    `live on http://localhost:${PORT} ${
+      process.env.NODE_ENV === "production" ? "production" : "development"
     }`,
   );
 });

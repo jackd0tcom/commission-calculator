@@ -389,9 +389,9 @@ const OrderPage = () => {
           case "status":
             return filter.direction === "up"
               ? statusOrder.indexOf(a.itemStatus) -
-              statusOrder.indexOf(b.itemStatus)
+                  statusOrder.indexOf(b.itemStatus)
               : statusOrder.indexOf(b.itemStatus) -
-              statusOrder.indexOf(a.itemStatus);
+                  statusOrder.indexOf(a.itemStatus);
             break;
 
           case "price":
@@ -581,7 +581,7 @@ const OrderPage = () => {
         .then(() => {
           setCount(0);
         });
-    } catch (error) { }
+    } catch (error) {}
   };
 
   const handleUpdateNotes = (notes: string) => {
@@ -650,6 +650,38 @@ const OrderPage = () => {
     }
   };
 
+  let activeDragIds: any;
+  let isMulti: boolean;
+
+  const handleDragStart = (event: any) => {
+    const source = event?.operation;
+    const selectedIds = bulkSelects.map((item: any) => item.itemId);
+    isMulti = selectedIds.includes(source.source.id) && selectedIds.length > 1;
+
+    activeDragIds = isMulti ? selectedIds : [source.Id];
+    console.log(activeDragIds);
+  };
+
+  const moveSelectedAsBlock = ({ items, activeIds, targetIndex }: any) => {
+    const moving = items.filter((i: any) => activeIds.includes(i.itemId));
+    // preserve list order among selected
+    const remaining = items.filter((i: any) => !activeIds.includes(i.itemId));
+
+    // adjust insert index: removing items above the target shifts it left
+    const removedBefore = items
+      .slice(0, targetIndex)
+      .filter((i: any) => activeIds.includes(i.itemId)).length;
+    const insertAt = targetIndex - removedBefore;
+
+    const next = [
+      ...remaining.slice(0, insertAt),
+      ...moving,
+      ...remaining.slice(insertAt),
+    ].map((item, i) => ({ ...item, orderIndex: i })); // or i + 1 if 1-based
+
+    return next;
+  };
+
   const handleDragEnd = async (event: any) => {
     if (event?.canceled) {
       console.log("canceled");
@@ -670,47 +702,57 @@ const OrderPage = () => {
       return;
     }
 
-    console.log("changing", initialIndex, index);
-
     try {
-      await axios
-        .post("/api/updateOrderItem", {
-          itemId: source.id,
-          fieldName: "orderIndex",
-          value: index,
-        })
-        .then((res: any) => {
-          if (res.status !== 200) return;
-
-          const oldIndex = initialIndex;
-          const newIndex = index;
-
-          console.log(res.data.orderIndex);
-
-          setOrderItems((prev: any) => {
-            const updated = prev.map((it: any) => {
-              if (it.itemId === source.id) {
-                return { ...it, orderIndex: newIndex };
-              }
-
-              if (oldIndex < newIndex) {
-                if (it.orderIndex > oldIndex && it.orderIndex <= newIndex) {
-                  return { ...it, orderIndex: it.orderIndex - 1 };
-                }
-              } else {
-                if (it.orderIndex >= newIndex && it.orderIndex < oldIndex) {
-                  return { ...it, orderIndex: it.orderIndex + 1 };
-                }
-              }
-
-              return it;
-            });
-
-            return updated.sort(
-              (a: any, b: any) => a.orderIndex - b.orderIndex,
-            );
-          });
+      if (isMulti) {
+        const next = moveSelectedAsBlock({
+          items: orderItems,
+          activeIds: activeDragIds,
+          targetIndex: index,
         });
+
+        setOrderItems(next);
+
+        await axios.post("/api/bulkReorderOrderItem", {
+          orderId,
+          orderItemIds: next.map((item) => item.itemId),
+        });
+      } else
+        await axios
+          .post("/api/updateOrderItem", {
+            itemId: source.id,
+            fieldName: "orderIndex",
+            value: index,
+          })
+          .then((res: any) => {
+            if (res.status !== 200) return;
+
+            const oldIndex = initialIndex;
+            const newIndex = index;
+
+            setOrderItems((prev: any) => {
+              const updated = prev.map((it: any) => {
+                if (it.itemId === source.id) {
+                  return { ...it, orderIndex: newIndex };
+                }
+
+                if (oldIndex < newIndex) {
+                  if (it.orderIndex > oldIndex && it.orderIndex <= newIndex) {
+                    return { ...it, orderIndex: it.orderIndex - 1 };
+                  }
+                } else {
+                  if (it.orderIndex >= newIndex && it.orderIndex < oldIndex) {
+                    return { ...it, orderIndex: it.orderIndex + 1 };
+                  }
+                }
+
+                return it;
+              });
+
+              return updated.sort(
+                (a: any, b: any) => a.orderIndex - b.orderIndex,
+              );
+            });
+          });
     } catch (error) {
       console.log(error);
     }
@@ -1096,7 +1138,10 @@ const OrderPage = () => {
                   </div>
                 </div>
               )}
-              <DragDropProvider onDragEnd={handleDragEnd}>
+              <DragDropProvider
+                onDragEnd={handleDragEnd}
+                onDragStart={handleDragStart}
+              >
                 <div className="order-items-list-wrapper">
                   {filteredOrderItems?.length > 0 &&
                     filteredOrderItems?.map((item: any, index: number) => {

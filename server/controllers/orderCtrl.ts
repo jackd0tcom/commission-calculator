@@ -556,6 +556,66 @@ export default {
       res.status(500).send("Internal server error");
     }
   },
+  bulkReorderOrderItem: async (req: Request, res: Response) => {
+    try {
+      if (!req.session.user) {
+        res.status(401).send("user not logged in / no session set up");
+        return;
+      }
+
+      const { orderId, orderItemIds } = req.body;
+
+      if (!orderId || !Array.isArray(orderItemIds) || orderItemIds.length === 0) {
+        res.status(400).send("orderId and orderItemIds are required");
+        return;
+      }
+
+      const updatedItems = await db.transaction(async (transaction) => {
+        const existingItems = await OrderItem.findAll({
+          where: { orderId },
+          transaction,
+        });
+
+        if (existingItems.length !== orderItemIds.length) {
+          throw new Error("orderItemIds must include every item on the order");
+        }
+
+        const existingIds = new Set(existingItems.map((item) => item.itemId));
+        for (const id of orderItemIds) {
+          if (!existingIds.has(id)) {
+            throw new Error(`item ${id} does not belong to order ${orderId}`);
+          }
+        }
+
+        // 2) Assign new indices from the ordered id list
+        // Use i if your DB is 0-based; i + 1 if 1-based (your create path uses count + 1)
+        await Promise.all(
+          orderItemIds.map((itemId: number, i: number) =>
+            OrderItem.update(
+              { orderIndex: i }, // or i + 1
+              {
+                where: { itemId, orderId },
+                transaction,
+              },
+            ),
+          ),
+        );
+
+        // 3) Return the fresh ordered rows
+        return OrderItem.findAll({
+          where: { orderId },
+          include: [{ model: Product }, { model: Link }],
+          order: [["orderIndex", "ASC"]],
+          transaction,
+        });
+      });
+
+      res.send(updatedItems.map((item) => item.toJSON()));
+    } catch (error) {
+      console.error("Error reordering order items:", error);
+      res.status(500).send("Internal server error");
+    }
+  },
   updateOrderItemProduct: async (req: Request, res: Response) => {
     try {
       console.log("updateOrderItem");
