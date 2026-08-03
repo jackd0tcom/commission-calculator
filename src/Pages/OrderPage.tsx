@@ -1092,11 +1092,18 @@ const OrderPage = () => {
                           <span>$</span>
                           <input
                             className="order-price-input"
-                            type="number"
-                            value={bulkCost}
-                            onChange={(e) =>
-                              setBulkCost(Number(e.target.value))
-                            }
+                            type="text"
+                            inputMode="numeric"
+                            placeholder="Cost"
+                            value={bulkCost > 0 ? bulkCost : ""}
+                            onChange={(e) => {
+                              let inputValue = e.target.value;
+
+                              if (/^\d*$/.test(inputValue)) {
+                                inputValue = inputValue.replace(/^0+(?!$)/, "");
+                                setBulkCost(Number(inputValue));
+                              }
+                            }}
                           />
                           {bulkCost > 0 && (
                             <>
@@ -1124,21 +1131,39 @@ const OrderPage = () => {
                           <span>$</span>
                           <input
                             className="order-price-input"
-                            type="number"
-                            onChange={(e) =>
-                              setBulkPrice(Number(e.target.value))
-                            }
+                            type="text"
+                            inputMode="numeric"
+                            placeholder="Price"
+                            value={bulkPrice > 0 ? bulkPrice : ""}
+                            onChange={(e) => {
+                              let inputValue = e.target.value;
+
+                              if (/^\d*$/.test(inputValue)) {
+                                inputValue = inputValue.replace(/^0+(?!$)/, "");
+                                setBulkPrice(Number(inputValue));
+                              }
+                            }}
                           />
                           {bulkPrice > 0 && (
-                            <button
-                              className="save-bulk"
-                              onClick={() => {
-                                handleBulkUpdate("price", bulkPrice);
-                                setBulkPrice(0);
-                              }}
-                            >
-                              Save
-                            </button>
+                            <>
+                              <button
+                                className="save-bulk"
+                                onClick={() => {
+                                  handleBulkUpdate("price", bulkPrice);
+                                  setBulkPrice(0);
+                                }}
+                              >
+                                Save
+                              </button>
+                              <button
+                                className="cancel-bulk"
+                                onClick={() => {
+                                  setBulkPrice(0);
+                                }}
+                              >
+                                Cancel
+                              </button>
+                            </>
                           )}
                         </div>
                         <div className="bulk-delete-button-wrapper">

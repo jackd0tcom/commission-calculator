@@ -69,7 +69,6 @@ const Dashboard = () => {
   const fetchStats = async () => {
     try {
       await axios.get("/api/getDashboardStats").then((res) => {
-        console.log(res.data);
         setOrderData(res.data.orders);
         setDeliveries(res.data.deliveries);
         setIsLoading(false);

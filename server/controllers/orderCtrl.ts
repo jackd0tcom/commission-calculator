@@ -15,7 +15,6 @@ import { Request, Response } from "express";
 import { Op } from "sequelize";
 import { formatMonthlySheetTitle } from "../commissionSheets.ts";
 import { getOrCreateMonthlySheetForUser } from "../helpers.ts";
-import { privateDecrypt } from "crypto";
 
 export default {
   getOrders: async (req: Request, res: Response) => {

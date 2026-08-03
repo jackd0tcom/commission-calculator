@@ -115,7 +115,6 @@ const Production = () => {
       promises.push(
         axios.get("/api/getProductionOrderItems").then((res) => {
           setOrderItems(res.data);
-          console.log(res.data);
           setIsLoading(false);
         }),
       );
