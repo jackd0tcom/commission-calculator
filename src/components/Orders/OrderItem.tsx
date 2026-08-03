@@ -60,16 +60,18 @@ const OrderItem = ({
   let status = item.itemStatus ?? "";
   const price =
     status === "complete"
-      ? item.priceSnapshot
-      : (item.price ??
-        item.product?.defaultPrice ??
-        item.link?.defaultPrice ??
-        0);
+      ? Number(item.priceSnapshot)
+      : Number(
+          item.price ??
+            item.product?.defaultPrice ??
+            item.link?.defaultPrice ??
+            0,
+        );
 
   const cost =
     status === "complete"
-      ? item.costSnapshot
-      : (item.cost ?? item.product?.defaultCost ?? 0);
+      ? Number(item.costSnapshot)
+      : Number(item.cost ?? item.product?.defaultCost ?? 0);
   const [showVendorRows, setShowVendorRows] = useState(false);
   const currentDueDate = item.dueDate ?? null;
   const [vendorPayload, setVendorPayload] = useState(item.vendorPayload ?? {});
@@ -351,13 +353,22 @@ const OrderItem = ({
             <span>$</span>
             <input
               className="order-price-input"
-              type="number"
+              type="text"
+              inputMode="numeric"
               onWheel={(e) => e.currentTarget.blur()}
-              value={`${cost}`}
+              value={cost}
               onChange={(e) => {
-                const val = Number(e.target.value);
-                handleCostChange?.(item.itemId, val);
+                let inputValue = e.target.value;
+
+                if (/^\d*$/.test(inputValue)) {
+                  inputValue = inputValue.replace(/^0+(?!$)/, "");
+                }
+                handleCostChange?.(item.itemId, Number(inputValue));
               }}
+              // onChange={(e) => {
+              //   const val = Number(e.target.value);
+              //   handleCostChange?.(item.itemId, val);
+              // }}
               onBlur={(e) => persistOrderUpdate("cost", Number(e.target.value))}
             />
           </div>
@@ -368,12 +379,17 @@ const OrderItem = ({
           <span>$</span>
           <input
             className="order-price-input"
-            type="number"
+            type="text"
+            inputMode="numeric"
             onWheel={(e) => e.currentTarget.blur()}
-            value={`${price}`}
+            value={price}
             onChange={(e) => {
-              const val = Number(e.target.value);
-              onPriceChange?.(item.itemId, val);
+              let inputValue = e.target.value;
+
+              if (/^\d*$/.test(inputValue)) {
+                inputValue = inputValue.replace(/^0+(?!$)/, "");
+              }
+              onPriceChange?.(item.itemId, Number(inputValue));
             }}
             onBlur={(e) => persistOrderUpdate("price", Number(e.target.value))}
           />

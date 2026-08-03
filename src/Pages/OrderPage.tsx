@@ -1095,14 +1095,15 @@ const OrderPage = () => {
                             type="text"
                             inputMode="numeric"
                             placeholder="Cost"
+                            onWheel={(e) => e.currentTarget.blur()}
                             value={bulkCost > 0 ? bulkCost : ""}
                             onChange={(e) => {
                               let inputValue = e.target.value;
 
                               if (/^\d*$/.test(inputValue)) {
                                 inputValue = inputValue.replace(/^0+(?!$)/, "");
-                                setBulkCost(Number(inputValue));
                               }
+                              setBulkCost(Number(inputValue));
                             }}
                           />
                           {bulkCost > 0 && (
@@ -1134,14 +1135,15 @@ const OrderPage = () => {
                             type="text"
                             inputMode="numeric"
                             placeholder="Price"
+                            onWheel={(e) => e.currentTarget.blur()}
                             value={bulkPrice > 0 ? bulkPrice : ""}
                             onChange={(e) => {
                               let inputValue = e.target.value;
 
                               if (/^\d*$/.test(inputValue)) {
                                 inputValue = inputValue.replace(/^0+(?!$)/, "");
-                                setBulkPrice(Number(inputValue));
                               }
+                              setBulkPrice(Number(inputValue));
                             }}
                           />
                           {bulkPrice > 0 && (
