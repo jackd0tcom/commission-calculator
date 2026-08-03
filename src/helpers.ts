@@ -4,6 +4,18 @@ export function capitalize(str: string) {
     .map((word) => word.slice(0, 1).toUpperCase() + word.slice(1))
     .join(" ");
 }
+
+/** Returns cleaned input, or null if the value is invalid. */
+export function sanitizeNumericInput(value: string): string | null {
+  if (!/^\d*$/.test(value)) return null;
+  return value.replace(/^0+(?!$)/, "");
+}
+
+export function parseNumericInput(value: string): number {
+  if (value === "") return 0;
+  const n = Number(value);
+  return Number.isFinite(n) ? n : 0;
+}
 export function formatDollar(number: number) {
   return new Intl.NumberFormat("en-US", {
     style: "currency",

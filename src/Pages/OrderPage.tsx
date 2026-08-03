@@ -10,14 +10,18 @@ import OrderFooter from "../components/Orders/OrderFooter";
 import Loader from "../components/UI/Loader";
 import { FaMagnifyingGlass, FaTrashCan } from "react-icons/fa6";
 import UserSelector from "../components/UI/UserSelector";
-import { capitalize } from "../helpers";
+import {
+  capitalize,
+  parseNumericInput,
+  sanitizeNumericInput,
+  saveOrderNotesKeepAlive,
+} from "../helpers";
 import BulkStatusPicker from "../components/Orders/BulkStatusPicker";
 import BulkSelector from "../components/Orders/BulkSelector";
 import FilterDropdown from "../components/UI/FilterDropdown";
 import Sorter from "../components/Clients/Sorter";
 import DuplicateOrder from "../components/Orders/DuplicateOrder";
 import { usePersistedFilter } from "../hooks/usePersistedFilter";
-import { saveOrderNotesKeepAlive } from "../helpers";
 import Notes from "../components/UI/Notes";
 import ProductPicker from "../components/Orders/ProductPicker";
 import DuePicker from "../components/Orders/DuePicker";
@@ -64,8 +68,10 @@ const OrderPage = () => {
   const isCalculatorOrder = calculatorOrder === "true";
   const [orderNotes, setOrderNotes] = useState("");
   const [originalOrderTitle, setOriginalOrderTitle] = useState("");
-  const [bulkCost, setBulkCost] = useState(0);
-  const [bulkPrice, setBulkPrice] = useState(0);
+  const [bulkCostDraft, setBulkCostDraft] = useState("");
+  const [bulkPriceDraft, setBulkPriceDraft] = useState("");
+  const bulkCost = parseNumericInput(bulkCostDraft);
+  const bulkPrice = parseNumericInput(bulkPriceDraft);
   const listWrapperRef = useRef<HTMLDivElement>(null);
   const [filter, setFilter] = usePersistedFilter(
     `order/${orderId}/${calculatorOrder}`,
@@ -1096,14 +1102,13 @@ const OrderPage = () => {
                             inputMode="numeric"
                             placeholder="Cost"
                             onWheel={(e) => e.currentTarget.blur()}
-                            value={bulkCost > 0 ? bulkCost : ""}
+                            value={bulkCostDraft}
                             onChange={(e) => {
-                              let inputValue = e.target.value;
-
-                              if (/^\d*$/.test(inputValue)) {
-                                inputValue = inputValue.replace(/^0+(?!$)/, "");
-                              }
-                              setBulkCost(Number(inputValue));
+                              const cleaned = sanitizeNumericInput(
+                                e.target.value,
+                              );
+                              if (cleaned === null) return;
+                              setBulkCostDraft(cleaned);
                             }}
                           />
                           {bulkCost > 0 && (
@@ -1112,7 +1117,7 @@ const OrderPage = () => {
                                 className="save-bulk"
                                 onClick={() => {
                                   handleBulkUpdate("cost", bulkCost);
-                                  setBulkCost(0);
+                                  setBulkCostDraft("");
                                 }}
                               >
                                 Save
@@ -1120,7 +1125,7 @@ const OrderPage = () => {
                               <button
                                 className="cancel-bulk"
                                 onClick={() => {
-                                  setBulkCost(0);
+                                  setBulkCostDraft("");
                                 }}
                               >
                                 Cancel
@@ -1136,14 +1141,13 @@ const OrderPage = () => {
                             inputMode="numeric"
                             placeholder="Price"
                             onWheel={(e) => e.currentTarget.blur()}
-                            value={bulkPrice > 0 ? bulkPrice : ""}
+                            value={bulkPriceDraft}
                             onChange={(e) => {
-                              let inputValue = e.target.value;
-
-                              if (/^\d*$/.test(inputValue)) {
-                                inputValue = inputValue.replace(/^0+(?!$)/, "");
-                              }
-                              setBulkPrice(Number(inputValue));
+                              const cleaned = sanitizeNumericInput(
+                                e.target.value,
+                              );
+                              if (cleaned === null) return;
+                              setBulkPriceDraft(cleaned);
                             }}
                           />
                           {bulkPrice > 0 && (
@@ -1152,7 +1156,7 @@ const OrderPage = () => {
                                 className="save-bulk"
                                 onClick={() => {
                                   handleBulkUpdate("price", bulkPrice);
-                                  setBulkPrice(0);
+                                  setBulkPriceDraft("");
                                 }}
                               >
                                 Save
@@ -1160,7 +1164,7 @@ const OrderPage = () => {
                               <button
                                 className="cancel-bulk"
                                 onClick={() => {
-                                  setBulkPrice(0);
+                                  setBulkPriceDraft("");
                                 }}
                               >
                                 Cancel

@@ -10,6 +10,7 @@ import { useContextMenu } from "../../hooks/UseContextMenu";
 import OrderItemContextMenu from "./OrderItemContextMenu";
 import DuePicker from "./DuePicker";
 import { useSortable } from "@dnd-kit/react/sortable";
+import { parseNumericInput, sanitizeNumericInput } from "../../helpers";
 
 interface props {
   isShiftPressed: boolean;
@@ -61,12 +62,10 @@ const OrderItem = ({
   const price =
     status === "complete"
       ? Number(item.priceSnapshot)
-      : Number(
-          item.price ??
-            item.product?.defaultPrice ??
-            item.link?.defaultPrice ??
-            0,
-        );
+      : Number(item.price ??
+        item.product?.defaultPrice ??
+        item.link?.defaultPrice ??
+        0);
 
   const cost =
     status === "complete"
@@ -75,6 +74,8 @@ const OrderItem = ({
   const [showVendorRows, setShowVendorRows] = useState(false);
   const currentDueDate = item.dueDate ?? null;
   const [vendorPayload, setVendorPayload] = useState(item.vendorPayload ?? {});
+  const [costDraft, setCostDraft] = useState<string | null>(null);
+  const [priceDraft, setPriceDraft] = useState<string | null>(null);
   const { xPos, yPos, showMenu, handleContextMenu } = useContextMenu();
   const { ref } = useSortable({
     id: item.itemId,
@@ -93,14 +94,14 @@ const OrderItem = ({
       prev.map((it: any) =>
         it.itemId === item.itemId
           ? {
-              ...it,
-              product: productType === "product" ? newProduct : null,
-              link: productType === "link" ? newProduct : null,
-              productType,
-              price: newProduct.defaultPrice,
-              cost: newProduct.defaultCost,
-              productNameSnapshot: null,
-            }
+            ...it,
+            product: productType === "product" ? newProduct : null,
+            link: productType === "link" ? newProduct : null,
+            productType,
+            price: newProduct.defaultPrice,
+            cost: newProduct.defaultCost,
+            productNameSnapshot: null,
+          }
           : it,
       ),
     );
@@ -187,9 +188,9 @@ const OrderItem = ({
 
         return currentLarger
           ? item.orderIndex < currentIndex &&
-              item.orderIndex > closestItem.orderIndex
+          item.orderIndex > closestItem.orderIndex
           : item.orderIndex > currentIndex &&
-              item.orderIndex < closestItem.orderIndex;
+          item.orderIndex < closestItem.orderIndex;
       });
 
       setBulkSelects((prev: any) => [...prev, ...itemsBetween]);
@@ -356,20 +357,19 @@ const OrderItem = ({
               type="text"
               inputMode="numeric"
               onWheel={(e) => e.currentTarget.blur()}
-              value={cost}
+              value={costDraft ?? String(cost ?? "")}
+              onFocus={() => setCostDraft(String(cost ?? ""))}
               onChange={(e) => {
-                let inputValue = e.target.value;
-
-                if (/^\d*$/.test(inputValue)) {
-                  inputValue = inputValue.replace(/^0+(?!$)/, "");
-                }
-                handleCostChange?.(item.itemId, Number(inputValue));
+                const cleaned = sanitizeNumericInput(e.target.value);
+                if (cleaned === null) return;
+                setCostDraft(cleaned);
               }}
-              // onChange={(e) => {
-              //   const val = Number(e.target.value);
-              //   handleCostChange?.(item.itemId, val);
-              // }}
-              onBlur={(e) => persistOrderUpdate("cost", Number(e.target.value))}
+              onBlur={() => {
+                const n = parseNumericInput(costDraft ?? String(cost ?? ""));
+                setCostDraft(null);
+                handleCostChange?.(item.itemId, n);
+                persistOrderUpdate("cost", n);
+              }}
             />
           </div>
         ) : (
@@ -382,16 +382,19 @@ const OrderItem = ({
             type="text"
             inputMode="numeric"
             onWheel={(e) => e.currentTarget.blur()}
-            value={price}
+            value={priceDraft ?? String(price ?? "")}
+            onFocus={() => setPriceDraft(String(price ?? ""))}
             onChange={(e) => {
-              let inputValue = e.target.value;
-
-              if (/^\d*$/.test(inputValue)) {
-                inputValue = inputValue.replace(/^0+(?!$)/, "");
-              }
-              onPriceChange?.(item.itemId, Number(inputValue));
+              const cleaned = sanitizeNumericInput(e.target.value);
+              if (cleaned === null) return;
+              setPriceDraft(cleaned);
             }}
-            onBlur={(e) => persistOrderUpdate("price", Number(e.target.value))}
+            onBlur={() => {
+              const n = parseNumericInput(priceDraft ?? String(price ?? ""));
+              setPriceDraft(null);
+              onPriceChange?.(item.itemId, n);
+              persistOrderUpdate("price", n);
+            }}
           />
         </div>
         <input
