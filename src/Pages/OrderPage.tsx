@@ -653,8 +653,7 @@ const OrderPage = () => {
   const handleDragStart = (event: any) => {
     const activeId = Number(event?.operation?.source?.id);
     const selectedIds = bulkSelects.map((item: any) => item.itemId);
-    const isMulti =
-      selectedIds.includes(activeId) && selectedIds.length > 1;
+    const isMulti = selectedIds.includes(activeId) && selectedIds.length > 1;
 
     isMultiDragRef.current = isMulti;
     activeDragIdsRef.current = isMulti ? selectedIds : [activeId];
@@ -701,7 +700,10 @@ const OrderPage = () => {
    * Apply a new order among currently visible items while keeping
    * hidden items in their relative orderIndex slots (1-based).
    */
-  const applyVisibleReorder = (allItems: any[], visibleOrderedIds: number[]) => {
+  const applyVisibleReorder = (
+    allItems: any[],
+    visibleOrderedIds: number[],
+  ) => {
     const sorted = [...allItems]
       .filter((item) => item?.itemId != null)
       .sort((a, b) => a.orderIndex - b.orderIndex);

@@ -15,6 +15,7 @@ import { Request, Response } from "express";
 import { Op } from "sequelize";
 import { formatMonthlySheetTitle } from "../commissionSheets.ts";
 import { getOrCreateMonthlySheetForUser } from "../helpers.ts";
+import { privateDecrypt } from "crypto";
 
 export default {
   getOrders: async (req: Request, res: Response) => {
@@ -645,6 +646,7 @@ export default {
           productId: id,
           linkId: null,
           price: null,
+          cost: null,
         });
         newProduct = await Product.findOne({
           where: { productId: id },
@@ -655,6 +657,7 @@ export default {
           linkId: id,
           productId: null,
           price: null,
+          cost: null,
         });
         newProduct = await Link.findOne({ where: { linkId: id } });
       }
@@ -697,6 +700,8 @@ export default {
               productType,
               productId: id,
               linkId: null,
+              price: null,
+              cost: null,
             });
             newProduct = await Product.findOne({
               where: { productId: id },
@@ -707,6 +712,7 @@ export default {
               linkId: id,
               productId: null,
               price: null,
+              cost: null,
             });
             newProduct = await Link.findOne({ where: { linkId: id } });
           }
