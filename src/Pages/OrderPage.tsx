@@ -12,6 +12,7 @@ import { FaMagnifyingGlass, FaTrashCan } from "react-icons/fa6";
 import UserSelector from "../components/UI/UserSelector";
 import {
   capitalize,
+  formatMoneyInput,
   parseNumericInput,
   sanitizeNumericInput,
   saveOrderNotesKeepAlive,
@@ -395,9 +396,9 @@ const OrderPage = () => {
           case "status":
             return filter.direction === "up"
               ? statusOrder.indexOf(a.itemStatus) -
-                  statusOrder.indexOf(b.itemStatus)
+              statusOrder.indexOf(b.itemStatus)
               : statusOrder.indexOf(b.itemStatus) -
-                  statusOrder.indexOf(a.itemStatus);
+              statusOrder.indexOf(a.itemStatus);
             break;
 
           case "price":
@@ -586,7 +587,7 @@ const OrderPage = () => {
         .then(() => {
           setCount(0);
         });
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const handleUpdateNotes = (notes: string) => {
@@ -752,16 +753,16 @@ const OrderPage = () => {
 
     const nextVisibleIds = isMultiDragRef.current
       ? moveSelectedAsBlock({
-          items: filteredOrderItems,
-          activeIds: activeDragIdsRef.current,
-          targetIndex: index,
-          activeId: Number(source.id),
-        }).map((item) => item.itemId)
+        items: filteredOrderItems,
+        activeIds: activeDragIdsRef.current,
+        targetIndex: index,
+        activeId: Number(source.id),
+      }).map((item) => item.itemId)
       : moveId(
-          filteredOrderItems.map((item: any) => item.itemId),
-          initialIndex,
-          index,
-        );
+        filteredOrderItems.map((item: any) => item.itemId),
+        initialIndex,
+        index,
+      );
 
     const next = applyVisibleReorder(orderItems, nextVisibleIds);
     setOrderItems(next);
@@ -1099,7 +1100,7 @@ const OrderPage = () => {
                           <input
                             className="order-price-input"
                             type="text"
-                            inputMode="numeric"
+                            inputMode="decimal"
                             placeholder="Cost"
                             onWheel={(e) => e.currentTarget.blur()}
                             value={bulkCostDraft}
@@ -1138,7 +1139,7 @@ const OrderPage = () => {
                           <input
                             className="order-price-input"
                             type="text"
-                            inputMode="numeric"
+                            inputMode="decimal"
                             placeholder="Price"
                             onWheel={(e) => e.currentTarget.blur()}
                             value={bulkPriceDraft}

@@ -10,7 +10,7 @@ import { useContextMenu } from "../../hooks/UseContextMenu";
 import OrderItemContextMenu from "./OrderItemContextMenu";
 import DuePicker from "./DuePicker";
 import { useSortable } from "@dnd-kit/react/sortable";
-import { parseNumericInput, sanitizeNumericInput } from "../../helpers";
+import { formatMoneyInput, parseNumericInput, sanitizeNumericInput } from "../../helpers";
 
 interface props {
   isShiftPressed: boolean;
@@ -61,16 +61,16 @@ const OrderItem = ({
   let status = item.itemStatus ?? "";
   const price =
     status === "complete"
-      ? Number(item.priceSnapshot)
-      : Number(item.price ??
+      ? item.priceSnapshot
+      : (item.price ??
         item.product?.defaultPrice ??
         item.link?.defaultPrice ??
         0);
 
   const cost =
     status === "complete"
-      ? Number(item.costSnapshot)
-      : Number(item.cost ?? item.product?.defaultCost ?? 0);
+      ? item.costSnapshot
+      : (item.cost ?? item.product?.defaultCost ?? 0);
   const [showVendorRows, setShowVendorRows] = useState(false);
   const currentDueDate = item.dueDate ?? null;
   const [vendorPayload, setVendorPayload] = useState(item.vendorPayload ?? {});
@@ -94,14 +94,14 @@ const OrderItem = ({
       prev.map((it: any) =>
         it.itemId === item.itemId
           ? {
-            ...it,
-            product: productType === "product" ? newProduct : null,
-            link: productType === "link" ? newProduct : null,
-            productType,
-            price: newProduct.defaultPrice,
-            cost: newProduct.defaultCost,
-            productNameSnapshot: null,
-          }
+              ...it,
+              product: productType === "product" ? newProduct : null,
+              link: productType === "link" ? newProduct : null,
+              productType,
+              price: newProduct.defaultPrice,
+              cost: newProduct.defaultCost,
+              productNameSnapshot: null,
+            }
           : it,
       ),
     );
@@ -188,9 +188,9 @@ const OrderItem = ({
 
         return currentLarger
           ? item.orderIndex < currentIndex &&
-          item.orderIndex > closestItem.orderIndex
+              item.orderIndex > closestItem.orderIndex
           : item.orderIndex > currentIndex &&
-          item.orderIndex < closestItem.orderIndex;
+              item.orderIndex < closestItem.orderIndex;
       });
 
       setBulkSelects((prev: any) => [...prev, ...itemsBetween]);
@@ -355,10 +355,10 @@ const OrderItem = ({
             <input
               className="order-price-input"
               type="text"
-              inputMode="numeric"
+              inputMode="decimal"
               onWheel={(e) => e.currentTarget.blur()}
-              value={costDraft ?? String(cost ?? "")}
-              onFocus={() => setCostDraft(String(cost ?? ""))}
+              value={costDraft ?? formatMoneyInput(Number(cost ?? 0))}
+              onFocus={() => setCostDraft(formatMoneyInput(Number(cost ?? 0)))}
               onChange={(e) => {
                 const cleaned = sanitizeNumericInput(e.target.value);
                 if (cleaned === null) return;
@@ -380,10 +380,10 @@ const OrderItem = ({
           <input
             className="order-price-input"
             type="text"
-            inputMode="numeric"
+            inputMode="decimal"
             onWheel={(e) => e.currentTarget.blur()}
-            value={priceDraft ?? String(price ?? "")}
-            onFocus={() => setPriceDraft(String(price ?? ""))}
+            value={priceDraft ?? formatMoneyInput(Number(price ?? 0))}
+            onFocus={() => setPriceDraft(formatMoneyInput(Number(price ?? 0)))}
             onChange={(e) => {
               const cleaned = sanitizeNumericInput(e.target.value);
               if (cleaned === null) return;

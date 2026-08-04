@@ -7,14 +7,19 @@ export function capitalize(str: string) {
 
 /** Returns cleaned input, or null if the value is invalid. */
 export function sanitizeNumericInput(value: string): string | null {
-  if (!/^\d*$/.test(value)) return null;
-  return value.replace(/^0+(?!$)/, "");
+  if (!/^\d*\.?\d*$/.test(value)) return null;
+  return value.replace(/^0+(?=\d)/, "");
 }
 
 export function parseNumericInput(value: string): number {
-  if (value === "") return 0;
+  if (value === "" || value === ".") return 0;
   const n = Number(value);
   return Number.isFinite(n) ? n : 0;
+}
+
+export function formatMoneyInput(value: number): string {
+  if (!Number.isFinite(value)) return "0.00";
+  return value.toFixed(2);
 }
 export function formatDollar(number: number) {
   return new Intl.NumberFormat("en-US", {
