@@ -5,6 +5,7 @@ import {
   FaBarcode,
   FaMagnifyingGlass,
   FaHandPointer,
+  FaCopy,
 } from "react-icons/fa6";
 import { useNavigate } from "react-router";
 import axios from "axios";
@@ -15,6 +16,7 @@ interface props {
   item: any;
   setOrderItems: any;
   setBulkSelects: any;
+  bulkSelects: any;
 }
 
 const OrderItemContextMenu = ({
@@ -23,6 +25,7 @@ const OrderItemContextMenu = ({
   item,
   setOrderItems,
   setBulkSelects,
+  bulkSelects,
 }: props) => {
   const [showMass, setShowMass] = useState(false);
   const [duplications, setDuplications] = useState(0);
@@ -97,6 +100,8 @@ const OrderItemContextMenu = ({
     setBulkSelects((prev: any) => [...prev, item]);
   };
 
+  const handleSelectItems = () => {};
+
   return (
     <ul
       className="context-menu dropdown"
@@ -127,6 +132,15 @@ const OrderItemContextMenu = ({
         <>
           {item.itemStatus !== "complete" && (
             <>
+              {bulkSelects.length > 0 && (
+                <li
+                  className="context-menu-item dropdown-item"
+                  onClick={() => handleDeleteItem()}
+                >
+                  <FaCopy className="context-item-icons" />
+                  Copy Items ({bulkSelects.length})
+                </li>
+              )}
               <li
                 className="context-menu-item dropdown-item"
                 onClick={() => handleSelect()}

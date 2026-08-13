@@ -10,7 +10,11 @@ import { useContextMenu } from "../../hooks/UseContextMenu";
 import OrderItemContextMenu from "./OrderItemContextMenu";
 import DuePicker from "./DuePicker";
 import { useSortable } from "@dnd-kit/react/sortable";
-import { formatMoneyInput, parseNumericInput, sanitizeNumericInput } from "../../helpers";
+import {
+  formatMoneyInput,
+  parseNumericInput,
+  sanitizeNumericInput,
+} from "../../helpers";
 
 interface props {
   isShiftPressed: boolean;
@@ -213,6 +217,7 @@ const OrderItem = ({
     <div
       className="order-items-list-item-wrapper"
       ref={!isProduction ? ref : null}
+      onContextMenu={handleContextMenu}
     >
       <div
         className={
@@ -223,6 +228,16 @@ const OrderItem = ({
         onMouseEnter={() => setHovering(true)}
         onMouseLeave={() => setHovering(false)}
       >
+        {showMenu && (
+          <OrderItemContextMenu
+            item={item}
+            yPos={yPos}
+            xPos={xPos}
+            setOrderItems={setOrderItems}
+            setBulkSelects={setBulkSelects}
+            bulkSelects={bulkSelects}
+          />
+        )}
         <div
           onClick={() => handleBulkSelect()}
           className={
