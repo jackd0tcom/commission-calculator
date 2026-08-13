@@ -7,9 +7,13 @@
   overflow-y: hidden;
   background-color: var(--hover);
   height: 100%;
+  padding: 4px 3px;
+  display: flex;
+  flex-direction: column;
 }
 .commission-sheet-list {
   margin: 15px;
+  margin-top: 5px;
   overflow-y: scroll;
   height: calc(100% - 30px);
   display: flex;
@@ -93,4 +97,11 @@
 .new-sheet-button:disabled {
   background-color: lightgrey;
   cursor: default;
+}
+.archived-badge {
+  background-color: var(--grey);
+  color: white;
+  border-radius: 5px;
+  padding: 4px 10px;
+  margin-left: 10px;
 }

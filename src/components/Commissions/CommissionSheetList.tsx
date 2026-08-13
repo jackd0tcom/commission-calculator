@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import { formatDollar } from "../../helpers";
 import FilterDropdown from "../UI/FilterDropdown";
+import Sorter from "../Clients/Sorter";
 import { usePersistedFilter } from "../../hooks/usePersistedFilter";
 
 type FilterOption = {
@@ -32,19 +33,25 @@ const CommissionSheetList = () => {
   const [userList, setUserList] = useState<FilterOption[]>([]);
   const [titles, setTitles] = useState<FilterOption[]>([]);
   const [statuses, setStatuses] = useState<FilterOption[]>([]);
+  const [archivedSheets, setArchivedSheets] = useState([{}]);
+  const [search, setSearch] = useState("");
 
   const getCommissionSheets = async () => {
     try {
       await axios.get("/api/getCommissionSheets").then((res) => {
         if (res.status === 200) {
-          setCommissionList(res.data);
+          const nonArchivedSheets = res.data?.filter(
+            (sheet: any) => !sheet.isArchived,
+          );
+          setCommissionList(nonArchivedSheets);
+          setArchivedSheets(res.data?.filter((sheet: any) => sheet.isArchived));
           setIsLoading(false);
 
           let users: FilterOption[] = [];
           let titleArray: FilterOption[] = [];
           let statusArray: FilterOption[] = [];
 
-          res.data.forEach((order: any) => {
+          nonArchivedSheets.forEach((order: any) => {
             if (!users.some((user: any) => order.userId === user.id)) {
               users.push({
                 title: `${order.user.firstName ?? ""}`,
@@ -90,6 +97,19 @@ const CommissionSheetList = () => {
 
   const filteredList = useMemo(() => {
     let data = commissionList;
+    if (filter.sort === "archived") data = archivedSheets;
+
+    const searchQuery = search.toLowerCase();
+
+    // Search filtering
+    if (searchQuery.trim() !== "") {
+      data = data.filter((sheet: any) => {
+        if (sheet.sheetTitle.toLowerCase().includes(searchQuery)) return true;
+        if (sheet.user?.firstName.toLowerCase().includes(searchQuery))
+          return true;
+        else return false;
+      });
+    }
 
     // filter
     if (filter.user.length > 0) {
@@ -112,8 +132,47 @@ const CommissionSheetList = () => {
       );
     }
 
+    if (filter.sort !== "") {
+      data = data.sort((a: any, b: any) => {
+        const aTotal = getTotal(a);
+        const bTotal = getTotal(b);
+        switch (filter.sort) {
+          case "name":
+            return filter.direction === "up"
+              ? a.clientName
+                  .toLowerCase()
+                  .localeCompare(b.clientName.toLowerCase())
+              : b.clientName
+                  .toLowerCase()
+                  .localeCompare(a.clientName.toLowerCase());
+
+          case "dateCreated":
+            return filter.direction !== "up"
+              ? new Date(a.createdAt).getTime() -
+                  new Date(b.createdAt).getTime()
+              : new Date(b.createdAt).getTime() -
+                  new Date(a.createdAt).getTime();
+
+          case "commission":
+            return filter.direction === "up"
+              ? aTotal - bTotal
+              : bTotal - aTotal;
+
+          default:
+            break;
+        }
+      });
+    } else
+      data = data.sort((a: any, b: any) => {
+        if (a.newClient) return -1;
+        if (b.newClient) return 1;
+        return a.clientName
+          ?.toLowerCase()
+          .localeCompare(b.clientName?.toLowerCase());
+      });
+
     return data;
-  }, [filter, commissionList]);
+  }, [filter, commissionList, search]);
 
   const getTotal = (deliveries: any) => {
     return deliveries.reduce((acc: number, delivery: any) => {
@@ -134,6 +193,37 @@ const CommissionSheetList = () => {
 
   return (
     <div className="commission-sheet-list-wrapper">
+      <div className="commission-sheet-top-bar">
+        <input
+          type="text"
+          placeholder="Search"
+          className="clients-search"
+          onChange={(e: any) => setSearch(e.target.value)}
+        />
+        <Sorter
+          filter={filter}
+          setFilter={setFilter}
+          direction={"direction"}
+          position="right"
+          options={[
+            {
+              heading: "Date Created",
+              sortHeading: "sort",
+              sortValue: "dateCreated",
+            },
+            {
+              heading: "Commission",
+              sortHeading: "sort",
+              sortValue: "commission",
+            },
+            {
+              heading: "Archived",
+              sortHeading: "sort",
+              sortValue: "archived",
+            },
+          ]}
+        />
+      </div>
       {isLoading ? (
         <Loader />
       ) : (
@@ -158,7 +248,6 @@ const CommissionSheetList = () => {
               />
             </div>
             <div className="commission-sheet-header-item">
-              {" "}
               <FilterDropdown
                 heading="Status"
                 array={true}
@@ -181,6 +270,9 @@ const CommissionSheetList = () => {
                 </div>
                 <div className="commission-sheet-header-item">
                   {sheet.sheetTitle}
+                  {sheet.isArchived && (
+                    <div className="archived-badge">Archived</div>
+                  )}
                 </div>
                 <div className="commission-sheet-header-item">
                   <StatusBadge status={sheet.sheetStatus} />
