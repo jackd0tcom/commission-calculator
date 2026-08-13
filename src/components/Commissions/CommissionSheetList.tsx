@@ -134,8 +134,6 @@ const CommissionSheetList = () => {
 
     if (filter.sort !== "") {
       data = data.sort((a: any, b: any) => {
-        const aTotal = getTotal(a);
-        const bTotal = getTotal(b);
         switch (filter.sort) {
           case "name":
             return filter.direction === "up"
@@ -155,8 +153,8 @@ const CommissionSheetList = () => {
 
           case "commission":
             return filter.direction === "up"
-              ? aTotal - bTotal
-              : bTotal - aTotal;
+              ? getTotal(a) - getTotal(b)
+              : getTotal(b) - getTotal(a);
 
           default:
             break;
