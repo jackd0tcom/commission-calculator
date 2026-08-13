@@ -96,7 +96,7 @@ const CommissionSheetList = () => {
   }, [userId]);
 
   const getTotal = (deliveries: any) => {
-    return deliveries.reduce((acc: number, delivery: any) => {
+    return deliveries?.reduce((acc: number, delivery: any) => {
       const item = delivery.order_item;
       const price = item.priceSnapshot ?? item.defaultPriceSnapshot ?? 0;
       const defaultPrice = item.defaultPriceSnapshot ?? 0;
@@ -170,8 +170,8 @@ const CommissionSheetList = () => {
 
           case "commission":
             return filter.direction === "up"
-              ? getTotal(a) - getTotal(b)
-              : getTotal(b) - getTotal(a);
+              ? getTotal(a.deliveries) - getTotal(b.deliveries)
+              : getTotal(b.deliveries) - getTotal(a.deliveries);
 
           default:
             break;
