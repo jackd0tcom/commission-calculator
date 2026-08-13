@@ -95,6 +95,23 @@ const CommissionSheetList = () => {
     }
   }, [userId]);
 
+  const getTotal = (deliveries: any) => {
+    return deliveries.reduce((acc: number, delivery: any) => {
+      const item = delivery.order_item;
+      const price = item.priceSnapshot ?? item.defaultPriceSnapshot ?? 0;
+      const defaultPrice = item.defaultPriceSnapshot ?? 0;
+      const cost = item.costSnapshot ?? 0;
+      const spiff =
+        price >= defaultPrice ? (Number(item.spiffSnapshot) ?? 0) : 0;
+      const contribution = price - cost;
+      const commission =
+        contribution * item.commissionRateSnapshot <= 0
+          ? 0
+          : contribution * item.commissionRateSnapshot;
+      return acc + commission + spiff;
+    }, 0);
+  };
+
   const filteredList = useMemo(() => {
     let data = commissionList;
     if (filter.sort === "archived") data = archivedSheets;
@@ -171,23 +188,6 @@ const CommissionSheetList = () => {
 
     return data;
   }, [filter, commissionList, search]);
-
-  const getTotal = (deliveries: any) => {
-    return deliveries.reduce((acc: number, delivery: any) => {
-      const item = delivery.order_item;
-      const price = item.priceSnapshot ?? item.defaultPriceSnapshot ?? 0;
-      const defaultPrice = item.defaultPriceSnapshot ?? 0;
-      const cost = item.costSnapshot ?? 0;
-      const spiff =
-        price >= defaultPrice ? (Number(item.spiffSnapshot) ?? 0) : 0;
-      const contribution = price - cost;
-      const commission =
-        contribution * item.commissionRateSnapshot <= 0
-          ? 0
-          : contribution * item.commissionRateSnapshot;
-      return acc + commission + spiff;
-    }, 0);
-  };
 
   return (
     <div className="commission-sheet-list-wrapper">
