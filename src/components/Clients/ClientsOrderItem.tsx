@@ -16,7 +16,9 @@ const ClientsOrderItem = ({ order, index }: props) => {
       onClick={() => navigate(`/order/${order?.orderId}/false`)}
     >
       <div className="count">{index + 1}</div>
-      <p>Order #{order?.orderId}</p>
+      <p>
+        #{order?.orderId} {order?.orderTitle}
+      </p>
       <StatusBadge status={order?.orderStatus} />
       <p>{formatDateNoTime(order?.createdAt)}</p>
     </div>
