@@ -242,6 +242,26 @@ Order.init(
       type: DataTypes.INTEGER,
       allowNull: true,
     },
+    responaOrderId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    responaOrderStatus: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    responaLaunchedAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    responaIdempotencyKey: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    responaAmount: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: true,
+    },
   },
   {
     sequelize: db,
@@ -362,6 +382,22 @@ OrderItem.init(
       type: DataTypes.INTEGER,
       allowNull: true,
       references: { model: "commission_sheets", key: "sheet_id" },
+    },
+    responaItemId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    responaItemStatus: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    responaPublishedUrl: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    responaPublishedDate: {
+      type: DataTypes.DATE,
+      allowNull: true,
     },
     price: { type: DataTypes.DECIMAL(10, 2), allowNull: true },
     cost: { type: DataTypes.DECIMAL(10, 2), allowNull: true },

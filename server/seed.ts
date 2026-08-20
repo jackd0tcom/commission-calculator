@@ -328,6 +328,10 @@ async function seed() {
       googleSheetId: null,
     },
     {
+      vendorName: "Respona",
+      googleSheetId: null,
+    },
+    {
       vendorName: "Next Net",
       googleSheetId: "1BxSeEdSeEd-demo-sheet-primary",
     },
@@ -359,8 +363,8 @@ async function seed() {
   await VendorField.bulkCreate([
     {
       vendorProductId: 1,
-      label: "P1P Team",
-      fieldType: "string",
+      label: "Quality Tier",
+      fieldType: "enum",
       required: true,
       sortIndex: 1,
       defaultValue: null,

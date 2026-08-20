@@ -11,8 +11,11 @@ import orderCtrl from "./controllers/orderCtrl.js";
 import deliveryCtrl from "./controllers/deliveryCtrl.js";
 import linkCtrl from "./controllers/linkCtrl.js";
 import productionCtrl from "./controllers/productionCtrl.js";
+import responaCtrl from "./controllers/responaCtrl.js";
 import statCtrl from "./controllers/statCtrl.js";
 import { db } from "./model.js";
+
+const { newResponaPlacement } = responaCtrl;
 
 const {
   getProducts,
@@ -106,6 +109,9 @@ app.use((req, res, next) => {
 });
 
 // Endpoints
+
+// Respona endpoints
+app.post("/api/respona/newResponaPlacement", newResponaPlacement);
 
 // Product endpoints
 app.get("/api/getProducts/:userId", getProducts);
