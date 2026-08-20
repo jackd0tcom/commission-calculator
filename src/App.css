@@ -291,3 +291,6 @@ p {
   fill: var(--dark-yellow);
   transition: 150ms;
 }
+.relative {
+  position: relative;
+}

@@ -162,9 +162,17 @@ VendorField.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    slug: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     fieldType: {
       type: DataTypes.ENUM("string", "number", "boolean", "date", "enum"),
       allowNull: false,
+    },
+    options: {
+      type: DataTypes.ARRAY(DataTypes.JSONB),
+      allowNull: true,
     },
     required: {
       type: DataTypes.BOOLEAN,
