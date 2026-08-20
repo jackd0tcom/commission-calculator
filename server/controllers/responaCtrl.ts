@@ -1,6 +1,7 @@
 import { createPlacement } from "../services/responaService.js";
-import { Order, OrderItem } from "../model.js";
+import { Order, OrderItem, Client } from "../model.js";
 import { Request, Response } from "express";
+import { verify } from "../helpers.js";
 
 export default {
   newResponaPlacement: async (req: Request, res: Response) => {
@@ -21,7 +22,10 @@ export default {
         return;
       }
 
-      const order = await Order.findByPk(item?.orderId);
+      const order = await Order.findOne({
+        where: { orderId: item?.orderId },
+        include: [{ model: Client, as: "client" }],
+      });
 
       if (!order) {
         res.status(404).send("order not found");
@@ -31,6 +35,62 @@ export default {
       const responaPayload = await createPlacement(order, item);
 
       res.status(200).send(responaPayload);
+    } catch (error) {
+      console.error("Error getting sheets:", error);
+      res.status(500).send("Internal server error");
+    }
+  },
+  newWebhookEvent: async (req: Request, res: Response) => {
+    try {
+      console.log("newWebhookEvent");
+
+      const { event, data } = req.body;
+
+      const verified = verify();
+      if (verified) {
+        res.send(200);
+      } else {
+        res.status(401).send("could not verify respona signature");
+        console.log(
+          `RESPONA WEBHOOK: ERROR could not verify respona signature: ${req.body}`,
+        );
+        return;
+      }
+
+      if (event.event === "placement.status_changed") {
+        const item = await OrderItem.findOne({
+          where: { responaItemId: data.placement_id },
+        });
+        if (!item) {
+          console.log(
+            `RESPONA WEBHOOK: item not found from respona, respona data: ${data}`,
+          );
+          return;
+        }
+        await item.update({ responaItemStatus: data.status });
+        console.log(
+          `RESPONA WEBHOOK: item successfully updated, respona data: ${data}`,
+        );
+        return;
+      }
+
+      if (event.event === "placement.status_changed") {
+        const order = await Order.findOne({
+          where: { responaOrderId: data?.order_id },
+        });
+
+        if (!order) {
+          console.log(
+            `RESPONA WEBHOOK: order not found from respona, respona data: ${data}`,
+          );
+          return;
+        }
+        await order.update({ responaOrderStatus: data.status });
+        console.log(
+          `RESPONA WEBHOOK: order successfully updated, respona data: ${data}`,
+        );
+        return;
+      }
     } catch (error) {
       console.error("Error getting sheets:", error);
       res.status(500).send("Internal server error");

@@ -15,7 +15,7 @@ import responaCtrl from "./controllers/responaCtrl.js";
 import statCtrl from "./controllers/statCtrl.js";
 import { db } from "./model.js";
 
-const { newResponaPlacement } = responaCtrl;
+const { newResponaPlacement, newWebhookEvent } = responaCtrl;
 
 const {
   getProducts,
@@ -109,6 +109,9 @@ app.use((req, res, next) => {
 });
 
 // Endpoints
+
+// Respona Webhook
+app.post("/respona/webhook", newWebhookEvent);
 
 // Respona endpoints
 app.post("/api/respona/newResponaPlacement", newResponaPlacement);

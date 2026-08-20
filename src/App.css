@@ -294,3 +294,11 @@ p {
 .relative {
   position: relative;
 }
+.respona-status-badge {
+  font-size: 0.9rem;
+  padding: 0.5em 1.2em;
+  border-radius: 5px;
+}
+.respona-status-wrapper {
+  display: flex;
+}

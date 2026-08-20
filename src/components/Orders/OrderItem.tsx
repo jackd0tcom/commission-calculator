@@ -10,6 +10,7 @@ import { useContextMenu } from "../../hooks/UseContextMenu";
 import OrderItemContextMenu from "./OrderItemContextMenu";
 import DuePicker from "./DuePicker";
 import { useSortable } from "@dnd-kit/react/sortable";
+import ResponaStatus from "./ResponaStatus";
 import {
   formatMoneyInput,
   parseNumericInput,
@@ -171,6 +172,21 @@ const OrderItem = ({
       console.log(error);
     }
   };
+  const handleCreateResponaOrder = async () => {
+    try {
+      await axios
+        .post("/api/respona/newResponaPlacement", { itemId: item.itemId })
+        .then((res: any) =>
+          setOrderItems((prev: any) =>
+            prev.map((it: any) =>
+              it.itemId === item.itemId ? res.data.updatedItem : it,
+            ),
+          ),
+        );
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleBulkSelect = () => {
     const bulkLength = bulkSelects.length;
@@ -308,6 +324,7 @@ const OrderItem = ({
             yPos={yPos}
             xPos={xPos}
             setOrderItems={setOrderItems}
+            bulkSelects={bulkSelects}
             setBulkSelects={setBulkSelects}
           />
         )}
@@ -356,11 +373,18 @@ const OrderItem = ({
           boundaryRef={boundaryRef}
         />
         {item.product ? (
-          <OrderStatusPicker
-            currentStatus={status}
-            handleUpdateStatus={handleUpdateStatus}
-            boundaryRef={boundaryRef}
-          />
+          currentVendorName === "Respona" ? (
+            <ResponaStatus
+              item={item}
+              handleCreateResponaOrder={handleCreateResponaOrder}
+            />
+          ) : (
+            <OrderStatusPicker
+              currentStatus={status}
+              handleUpdateStatus={handleUpdateStatus}
+              boundaryRef={boundaryRef}
+            />
+          )
         ) : (
           <div></div>
         )}
@@ -476,6 +500,7 @@ const OrderItem = ({
             item={item}
             yPos={yPos}
             xPos={xPos}
+            bulkSelects={bulkSelects}
             setOrderItems={setOrderItems}
             setBulkSelects={setBulkSelects}
           />
@@ -518,11 +543,15 @@ const OrderItem = ({
           <p>{currentVendorName}</p>
         </div>
         {item.product ? (
-          <OrderStatusPicker
-            currentStatus={status}
-            handleUpdateStatus={handleUpdateStatus}
-            boundaryRef={boundaryRef}
-          />
+          currentVendorName === "Respona" ? (
+            <></>
+          ) : (
+            <OrderStatusPicker
+              currentStatus={status}
+              handleUpdateStatus={handleUpdateStatus}
+              boundaryRef={boundaryRef}
+            />
+          )
         ) : (
           <div></div>
         )}

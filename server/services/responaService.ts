@@ -6,10 +6,10 @@ import {
 import { OrderItem, Order } from "../model.js";
 
 const buildOrderTitle = (order: any) => {
-  const client = order.client.clientName;
+  const client = order.client?.clientName;
   const title = order.orderTitle;
 
-  return `${client ?? ""} - ${title ?? ""} - ${order.orderId}`;
+  return `${client ?? ""} - ${title ?? ""}${title && "- "}${order.orderId}`;
 };
 
 const buildPlacementFromOrderItem = (item: any) => {
