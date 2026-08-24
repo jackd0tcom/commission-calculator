@@ -114,7 +114,7 @@ const OrderPage = () => {
     items.forEach((item: any) => {
       if (
         !dueDatesArray.some(
-          (date: any) => item.dueDate?.slice(0, 7) === date.id,
+          (date: any) => item?.dueDate?.slice(0, 7) === date.id,
         )
       ) {
         if (item.dueDate) {

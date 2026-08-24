@@ -46,7 +46,7 @@ export default {
 
       const { event, data } = req.body;
 
-      const verified = verify();
+      const verified = verify(secret);
       if (verified) {
         res.send(200);
       } else {
@@ -57,7 +57,7 @@ export default {
         return;
       }
 
-      if (event.event === "placement.status_changed") {
+      if (event === "placement.status_changed") {
         const item = await OrderItem.findOne({
           where: { responaItemId: data.placement_id },
         });
@@ -74,7 +74,7 @@ export default {
         return;
       }
 
-      if (event.event === "placement.status_changed") {
+      if (event.event === "order.status_changed") {
         const order = await Order.findOne({
           where: { responaOrderId: data?.order_id },
         });
