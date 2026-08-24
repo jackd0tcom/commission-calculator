@@ -100,8 +100,6 @@ const OrderItemContextMenu = ({
     setBulkSelects((prev: any) => [...prev, item]);
   };
 
-  const handleSelectItems = () => {};
-
   return (
     <ul
       className="context-menu dropdown"
