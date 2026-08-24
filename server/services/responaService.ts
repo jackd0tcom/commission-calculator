@@ -1,7 +1,9 @@
 import {
   addPlacements,
   createOrder,
+  deleteOrder,
   launchOrder,
+  removePlacement,
 } from "../integrations/responaClient.js";
 import { OrderItem, Order } from "../model.js";
 
@@ -75,6 +77,47 @@ export const createPlacement = async (order: Order, item: OrderItem) => {
     return { responaOrder, updatedOrder, updatedItem };
   } catch (error) {
     console.log(error);
+    throw error;
+  }
+};
+export const removeResponaPlacement = async (order: Order, item: OrderItem) => {
+  try {
+    let updatedOrder;
+    let updatedItem;
+
+    const removedPlacement = removePlacement(
+      order.responaOrderId,
+      item.responaItemId,
+    );
+    await Promise.all([
+      (updatedOrder = await order.update({
+        responaAmount: removedPlacement.price,
+      })),
+      (updatedItem = await item.update({
+        responaItemId: null,
+        responaItemStatus: null,
+      })),
+    ]);
+    return { updatedOrder, updatedItem };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+export const deleteResponaOrder = async (order: Order) => {
+  try {
+    let updatedOrder;
+
+    await deleteOrder(order.responaOrderId);
+    await Promise.all([
+      (updatedOrder = await order.update({
+        responaOrderId: null,
+      })),
+    ]);
+    return { updatedOrder };
+  } catch (error) {
+    console.log(error);
+    throw error;
   }
 };
 export const launchResponaOrder = async (
@@ -109,5 +152,6 @@ export const launchResponaOrder = async (
     return { responaOrder, updatedOrder, updatedItems };
   } catch (error) {
     console.log(error);
+    throw error;
   }
 };

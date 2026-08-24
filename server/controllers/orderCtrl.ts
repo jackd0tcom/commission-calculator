@@ -15,6 +15,7 @@ import { Request, Response } from "express";
 import { Op } from "sequelize";
 import { formatMonthlySheetTitle } from "../commissionSheets.ts";
 import { getOrCreateMonthlySheetForUser } from "../helpers.ts";
+import { deleteResponaOrder } from "../services/responaService.ts";
 
 export default {
   getOrders: async (req: Request, res: Response) => {
@@ -1439,6 +1440,10 @@ export default {
       if (!order) {
         res.status(400).send("No order found");
         return;
+      }
+
+      if (order.responaOrderId) {
+        await deleteResponaOrder(order);
       }
 
       await order.destroy();

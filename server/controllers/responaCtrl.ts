@@ -1,7 +1,13 @@
-import { createPlacement } from "../services/responaService.js";
+import {
+  createPlacement,
+  deleteResponaOrder,
+  removeResponaPlacement,
+} from "../services/responaService.js";
+import { ResponaApiError } from "../integrations/responaClient.js";
 import { Order, OrderItem, Client } from "../model.js";
 import { Request, Response } from "express";
 import { verify } from "../helpers.js";
+import { Op } from "sequelize";
 
 export default {
   newResponaPlacement: async (req: Request, res: Response) => {
@@ -10,6 +16,7 @@ export default {
 
       if (!req.session.user) {
         console.log("user not logged in / no session set up");
+        res.status(401).send("user not logged in / no session set up");
         return;
       }
 
@@ -33,11 +40,107 @@ export default {
       }
 
       const responaPayload = await createPlacement(order, item);
-
-      res.status(200).send(responaPayload);
+      res.status(200).json(responaPayload);
     } catch (error) {
-      console.error("Error getting sheets:", error);
-      res.status(500).send("Internal server error");
+      console.error("Error making respona placement:", error);
+      if (error instanceof ResponaApiError) {
+        res.status(error.status).json({
+          message: error.message,
+          code: error.code,
+          requestId: error.requestId,
+        });
+        return;
+      }
+      res.status(500).json({
+        message:
+          error instanceof Error ? error.message : "Internal server error",
+      });
+    }
+  },
+  removeResponaPlacement: async (req: Request, res: Response) => {
+    try {
+      console.log("remove ResponaPlacement");
+
+      if (!req.session.user) {
+        console.log("user not logged in / no session set up");
+        res.status(401).send("user not logged in / no session set up");
+        return;
+      }
+
+      const { itemId } = req.body;
+
+      const item = await OrderItem.findByPk(itemId);
+
+      if (!item) {
+        res.status(404).send("item not found");
+        return;
+      }
+
+      const order = await Order.findOne({
+        where: { orderId: item?.orderId },
+        include: [{ model: Client, as: "client" }],
+      });
+
+      if (!order) {
+        res.status(404).send("order not found");
+        return;
+      }
+
+      const responaPayload = await removeResponaPlacement(order, item);
+      res.status(200).json(responaPayload);
+    } catch (error) {
+      console.error("Error making respona placement:", error);
+      if (error instanceof ResponaApiError) {
+        res.status(error.status).json({
+          message: error.message,
+          code: error.code,
+          requestId: error.requestId,
+        });
+        return;
+      }
+      res.status(500).json({
+        message:
+          error instanceof Error ? error.message : "Internal server error",
+      });
+    }
+  },
+  deleteResponaOrder: async (req: Request, res: Response) => {
+    try {
+      console.log("deleteResponaOrder");
+
+      if (!req.session.user) {
+        console.log("user not logged in / no session set up");
+        res.status(401).send("user not logged in / no session set up");
+        return;
+      }
+
+      const { orderId } = req.body;
+
+      const order = await Order.findOne({
+        where: { orderId },
+      });
+
+      if (!order) {
+        res.status(404).send("order not found");
+        return;
+      }
+
+      const responaPayload = await deleteResponaOrder(order);
+      res.status(200).json(responaPayload);
+    } catch (error) {
+      console.error("Error making deleting order:", error);
+      if (error instanceof ResponaApiError) {
+        res.status(error.status).json({
+          message: error.message,
+          code: error.code,
+          requestId: error.requestId,
+        });
+        return;
+      }
+      res.status(500).json({
+        message:
+          error instanceof Error ? error.message : "Internal server error",
+      });
     }
   },
   newWebhookEvent: async (req: Request, res: Response) => {

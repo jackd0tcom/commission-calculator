@@ -81,6 +81,8 @@ const OrderItem = ({
   const [vendorPayload, setVendorPayload] = useState(item.vendorPayload ?? {});
   const [costDraft, setCostDraft] = useState<string | null>(null);
   const [priceDraft, setPriceDraft] = useState<string | null>(null);
+  const [responaErrorMessage, setResponaErrorMessage] = useState("");
+  const [responaStatus, setResponaStatus] = useState("");
   const { xPos, yPos, showMenu, handleContextMenu } = useContextMenu();
   const { ref } = useSortable({
     id: item.itemId,
@@ -173,18 +175,79 @@ const OrderItem = ({
     }
   };
   const handleCreateResponaOrder = async () => {
+    setResponaStatus("sending");
     try {
       await axios
         .post("/api/respona/newResponaPlacement", { itemId: item.itemId })
-        .then((res: any) =>
+        .then((res: any) => {
+          if (!res.data?.updatedItem) return;
+          setTimeout(() => {
+            setResponaStatus("success");
+          }, 2000);
+          const updatedItem = res.data.updatedItem;
           setOrderItems((prev: any) =>
             prev.map((it: any) =>
-              it.itemId === item.itemId ? res.data.updatedItem : it,
+              it.itemId === item.itemId
+                ? {
+                    ...it,
+                    responaItemStatus: updatedItem.responaItemStatus,
+                    responaItemId: updatedItem.responaItemId,
+                  }
+                : it,
             ),
-          ),
-        );
-    } catch (error) {
-      console.log(error);
+          );
+        });
+      setTimeout(() => {
+        setResponaStatus("");
+      }, 3000);
+    } catch (error: any) {
+      const data = error?.response?.data;
+      console.log("Respona placement error:", data);
+      setResponaStatus("");
+      setResponaErrorMessage(
+        data?.message ?? "Failed to create Respona placement",
+      );
+      setTimeout(() => {
+        setResponaErrorMessage("");
+      }, 5000);
+    }
+  };
+  const handleRemoveResponaPlacement = async () => {
+    setResponaStatus("sending");
+    try {
+      await axios
+        .post("/api/respona/removeResponaPlacement", { itemId: item.itemId })
+        .then((res: any) => {
+          if (!res.data?.updatedItem) return;
+          setTimeout(() => {
+            setResponaStatus("success");
+          }, 2000);
+          const updatedItem = res.data.updatedItem;
+          setOrderItems((prev: any) =>
+            prev.map((it: any) =>
+              it.itemId === item.itemId
+                ? {
+                    ...it,
+                    responaItemStatus: updatedItem.respondaItemStatus,
+                    responaItemId: updatedItem.responaItemId,
+                  }
+                : it,
+            ),
+          );
+        });
+      setTimeout(() => {
+        setResponaStatus("");
+      }, 3000);
+    } catch (error: any) {
+      const data = error?.response?.data;
+      console.log("Respona placement error:", data);
+      setResponaStatus("");
+      setResponaErrorMessage(
+        data?.message ?? "Failed to create Respona placement",
+      );
+      setTimeout(() => {
+        setResponaErrorMessage("");
+      }, 5000);
     }
   };
 
@@ -377,6 +440,10 @@ const OrderItem = ({
             <ResponaStatus
               item={item}
               handleCreateResponaOrder={handleCreateResponaOrder}
+              responaErrorMessage={responaErrorMessage}
+              setResponaErrorMessage={setResponaErrorMessage}
+              responaStatus={responaStatus}
+              handleRemoveResponaPlacement={handleRemoveResponaPlacement}
             />
           ) : (
             <OrderStatusPicker

@@ -31,6 +31,22 @@ export class ResponaApiError extends Error {
   }
 }
 
+/** Respona often wraps the real message as `CODE: {"msg":"...","visible":true,...}`. */
+function unwrapResponaMessage(raw: string): string {
+  const colonIdx = raw.indexOf(":");
+  if (colonIdx === -1) return raw;
+
+  const maybeJson = raw.slice(colonIdx + 1).trim();
+  if (!maybeJson.startsWith("{")) return raw;
+
+  try {
+    const parsed = JSON.parse(maybeJson) as { msg?: string };
+    return parsed.msg?.trim() || raw;
+  } catch {
+    return raw;
+  }
+}
+
 export async function parseResponaError(
   res: Response,
 ): Promise<ResponaApiError> {
@@ -38,10 +54,11 @@ export async function parseResponaError(
 
   try {
     const body = (await res.json()) as ResponaErrorBody;
+    const rawMessage = body.error?.message ?? res.statusText;
     return new ResponaApiError(
       res.status,
       body.error?.code ?? "UNKNOWN",
-      body.error?.message ?? res.statusText,
+      unwrapResponaMessage(rawMessage),
       body.error?.request_id ?? requestId,
     );
   } catch {

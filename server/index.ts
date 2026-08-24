@@ -15,7 +15,12 @@ import responaCtrl from "./controllers/responaCtrl.js";
 import statCtrl from "./controllers/statCtrl.js";
 import { db } from "./model.js";
 
-const { newResponaPlacement, newWebhookEvent } = responaCtrl;
+const {
+  newResponaPlacement,
+  newWebhookEvent,
+  removeResponaPlacement,
+  deleteResponaOrder,
+} = responaCtrl;
 
 const {
   getProducts,
@@ -115,6 +120,8 @@ app.post("/respona/webhook", newWebhookEvent);
 
 // Respona endpoints
 app.post("/api/respona/newResponaPlacement", newResponaPlacement);
+app.post("/api/respona/removeResponaPlacement", removeResponaPlacement);
+app.post("/api/respona/deleteResponaOrder", deleteResponaOrder);
 
 // Product endpoints
 app.get("/api/getProducts/:userId", getProducts);

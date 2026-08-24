@@ -933,3 +933,39 @@
   justify-content: center;
   min-width: stretch;
 }
+.respona-error-wrapper {
+  position: absolute;
+  max-width: 120px;
+  background-color: var(--red);
+  text-wrap: wrap;
+  color: var(--white);
+  top: 120%;
+  padding: 10px;
+  border-radius: 10px;
+  z-index: 99;
+}
+.respona-error-message-point {
+  position: absolute;
+  top: -7px;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid var(--red);
+}
+.respona {
+  background-color: #251bb5;
+  color: white;
+}
+.respona:hover {
+  background-color: #251bb5;
+  color: white;
+}
+.respona-remove-placement {
+  background-color: var(--dark-red);
+  color: white;
+}
+.respona-remove-placement:hover {
+  background-color: var(--dark-red);
+  color: white;
+}
