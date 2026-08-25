@@ -294,20 +294,12 @@ p {
 .relative {
   position: relative;
 }
-.respona-status-badge {
-  font-size: 0.9rem;
-  padding: 0.5em 1.2em;
-  border-radius: 5px;
-}
-.respona-status-wrapper {
-  display: flex;
-}
 
 /* From Uiverse.io by dovatgabriel */
 .momentum {
   --uib-size: 20px;
   --uib-speed: 1s;
-  --uib-color: rgb(255, 25, 25);
+  --uib-color: #251bb5;
   position: relative;
   display: flex;
   align-items: center;

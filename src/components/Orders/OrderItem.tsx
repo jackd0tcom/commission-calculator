@@ -90,6 +90,15 @@ const OrderItem = ({
   });
 
   let isSelected = bulkSelects.some((it: any) => it.itemId === item.itemId);
+  const currentVendorName = vendorList.find(
+    (vendor: any) => vendor.vendorId === currentVendor,
+  )?.vendorName;
+
+  const isRespona = currentVendorName.toLowerCase() === "respona";
+  const showBulk = bulkSelects.length > 0 && status !== "complete";
+  const isDraft = isRespona
+    ? item.responaItemStatus === null
+    : status !== "complete";
 
   const handleProductChange = async (newProduct: any, productType: string) => {
     const interiorVendor = vendorList.find(
@@ -185,6 +194,7 @@ const OrderItem = ({
             setResponaStatus("success");
           }, 2000);
           const updatedItem = res.data.updatedItem;
+          console.log(updatedItem);
           setOrderItems((prev: any) =>
             prev.map((it: any) =>
               it.itemId === item.itemId
@@ -192,6 +202,7 @@ const OrderItem = ({
                     ...it,
                     responaItemStatus: updatedItem.responaItemStatus,
                     responaItemId: updatedItem.responaItemId,
+                    cost: updatedItem.cost,
                   }
                 : it,
             ),
@@ -288,11 +299,7 @@ const OrderItem = ({
     }
   };
 
-  const currentVendorName = vendorList.find(
-    (vendor: any) => vendor.vendorId === currentVendor,
-  )?.vendorName;
-
-  return bulkSelects.length > 0 && status !== "complete" ? (
+  return showBulk ? (
     <div
       className="order-items-list-item-wrapper"
       ref={!isProduction ? ref : null}
@@ -349,9 +356,9 @@ const OrderItem = ({
         )}
         <p>${cost}</p>
         <p>${price}</p>
-        <p>{item.notes}</p>
         <p>{item.targetUrl}</p>
         <p>{item.anchorText}</p>
+        <p>{item.notes}</p>
         <OrderItemSettings item={item} setOrderItems={setOrderItems} />
       </div>
       {showVendorRows && (
@@ -366,7 +373,7 @@ const OrderItem = ({
         />
       )}
     </div>
-  ) : status !== "complete" ? (
+  ) : isDraft ? (
     <div
       className="order-items-list-item-wrapper"
       ref={!isProduction ? ref : null}
@@ -436,14 +443,13 @@ const OrderItem = ({
           boundaryRef={boundaryRef}
         />
         {item.product ? (
-          currentVendorName === "Respona" ? (
+          isRespona ? (
             <ResponaStatus
               item={item}
               handleCreateResponaOrder={handleCreateResponaOrder}
               responaErrorMessage={responaErrorMessage}
               setResponaErrorMessage={setResponaErrorMessage}
               responaStatus={responaStatus}
-              handleRemoveResponaPlacement={handleRemoveResponaPlacement}
             />
           ) : (
             <OrderStatusPicker
@@ -570,6 +576,8 @@ const OrderItem = ({
             bulkSelects={bulkSelects}
             setOrderItems={setOrderItems}
             setBulkSelects={setBulkSelects}
+            handleRemoveResponaPlacement={handleRemoveResponaPlacement}
+            isRespona={isRespona}
           />
         )}
         {isProduction && <div className="prod-count">{index + 1}</div>}
@@ -607,11 +615,18 @@ const OrderItem = ({
           </p>
         </div>
         <div className="order-item-p-wrapper">
-          <p>{currentVendorName}</p>
+          <p className={isRespona ? "respona-p" : ""}>{currentVendorName}</p>
         </div>
         {item.product ? (
-          currentVendorName === "Respona" ? (
-            <></>
+          isRespona ? (
+            <ResponaStatus
+              item={item}
+              handleCreateResponaOrder={handleCreateResponaOrder}
+              responaErrorMessage={responaErrorMessage}
+              setResponaErrorMessage={setResponaErrorMessage}
+              responaStatus={responaStatus}
+              handleRemoveResponaPlacement={handleRemoveResponaPlacement}
+            />
           ) : (
             <OrderStatusPicker
               currentStatus={status}
@@ -624,11 +639,13 @@ const OrderItem = ({
         )}
         <p>${cost}</p>
         <p>${price}</p>
+        <a href={item.targetUrl} target="_blank" className="order-item-p">
+          {item.targetUrl}
+        </a>
+        <p className="order-item-p">{item.anchorText}</p>
         <div className="order-item-p">
           <p>{item.notes}</p>
         </div>
-        <p className="order-item-p">{item.targetUrl}</p>
-        <p className="order-item-p">{item.anchorText}</p>
         <OrderItemSettings item={item} setOrderItems={setOrderItems} />
       </div>
       {showVendorRows && (

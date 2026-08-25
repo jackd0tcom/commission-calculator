@@ -969,3 +969,71 @@
   background-color: var(--dark-red);
   color: white;
 }
+.order-item-p-wrapper {
+  display: flex;
+}
+.respona-p {
+  background-color: #5349db23;
+  color: var(--respona-blue);
+  border-radius: 50px;
+  padding: 0.3em 1em;
+  margin: 0;
+}
+.draft-respona-link-button {
+  background-color: var(--green);
+  color: white;
+}
+.draft-respona-link-button:hover {
+  background-color: var(--dark-green);
+}
+.respona-status-badge {
+  font-size: 0.9rem;
+  padding: 0.4em 1.2em;
+  border-radius: 50px;
+}
+.respona-status-wrapper {
+  display: flex;
+}
+.respona-draft {
+  color: var(--dark-grey);
+  background-color: rgb(230, 230, 230);
+}
+.respona-ordered {
+  color: var(--dark-blue);
+  background-color: #0daeb43c;
+}
+.respona-pending-approval {
+  background-color: var(--green);
+  color: white;
+}
+.respona-rejected {
+  color: var(--dark-red);
+  background-color: #c85f5f28;
+}
+.respona-in-progress {
+  background-color: var(--blue);
+  color: white;
+}
+.respona-approved {
+  color: var(--dark-green);
+  background-color: #0cb57d42;
+}
+.respona-live {
+  color: var(--dark-green);
+  background-color: #0cb57d42;
+}
+.respona-refunded {
+  color: var(--purple);
+  background-color: #cd84f236;
+}
+.respona-remove-placement {
+  font-size: 0.9rem;
+  padding: 0.4em 1.2em;
+  border-radius: 50px;
+  border: 1px solid var(--dark-red);
+}
+.respona-success {
+  background-color: var(--green);
+  color: white;
+  display: flex;
+}

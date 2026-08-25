@@ -1,4 +1,4 @@
-import { capitalize } from "../../helpers";
+import { capitalize, skewerCase } from "../../helpers";
 import ResponaError from "./ResponaError";
 import { useState } from "react";
 import { FaCheck } from "react-icons/fa6";
@@ -9,7 +9,6 @@ interface props {
   responaErrorMessage: string;
   setResponaErrorMessage: any;
   responaStatus: any;
-  handleRemoveResponaPlacement: any;
 }
 
 const ResponaStatus = ({
@@ -17,27 +16,31 @@ const ResponaStatus = ({
   handleCreateResponaOrder,
   responaErrorMessage,
   responaStatus,
-  handleRemoveResponaPlacement,
 }: props) => {
-  const currentStatus = item.responaItemStatus;
-  const [hovering, setHovering] = useState(false);
+  const currentStatus = item.responaItemStatus
+    ? capitalize(item.responaItemStatus)
+    : item.responaItemStatus;
 
   return (
     <div className="respona-status-wrapper relative">
       {!currentStatus ? (
-        <button onClick={() => handleCreateResponaOrder()}>Draft</button>
-      ) : hovering && responaStatus === "" ? (
         <button
-          onMouseLeave={() => setHovering(false)}
-          onClick={() => handleRemoveResponaPlacement()}
-          className="respona-remove-placement"
+          className="draft-respona-link-button"
+          onClick={() => handleCreateResponaOrder()}
         >
-          Remove
+          Draft Link
         </button>
       ) : (
         <div
-          onMouseEnter={() => setHovering(true)}
-          className={`respona-status-badge ${currentStatus.toLowerCase()}`}
+          className={
+            responaStatus === ""
+              ? `respona-status-badge respona-${skewerCase(currentStatus.toLowerCase())}`
+              : responaStatus === "sending"
+                ? "respona-status-badge respona-sending"
+                : responaStatus === "success"
+                  ? "respona-status-badge respona-success"
+                  : "respona-status-badge"
+          }
         >
           {responaStatus === "sending" ? (
             <div className="momentum"></div>

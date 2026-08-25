@@ -17,6 +17,8 @@ interface props {
   setOrderItems: any;
   setBulkSelects: any;
   bulkSelects: any;
+  isRespona?: boolean;
+  handleRemoveResponaPlacement?: any;
 }
 
 const OrderItemContextMenu = ({
@@ -26,6 +28,8 @@ const OrderItemContextMenu = ({
   setOrderItems,
   setBulkSelects,
   bulkSelects,
+  isRespona,
+  handleRemoveResponaPlacement,
 }: props) => {
   const [showMass, setShowMass] = useState(false);
   const [duplications, setDuplications] = useState(0);
@@ -109,6 +113,15 @@ const OrderItemContextMenu = ({
         #{item.orderIndex ?? ""}{" "}
         {item.product?.productName ?? item.link?.publication ?? ""}
       </p>
+      {isRespona && (
+        <li
+          className="context-menu-item dropdown-item"
+          onClick={() => handleRemoveResponaPlacement()}
+        >
+          <FaTrashCan className="context-item-icons" />
+          Remove From Respona Order
+        </li>
+      )}
       {showMass ? (
         <div className="mass-duplication">
           <input

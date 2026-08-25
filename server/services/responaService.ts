@@ -1,5 +1,7 @@
+import connectToDb from "../db.js";
 import {
   addPlacements,
+  approvePlacement,
   createOrder,
   deleteOrder,
   launchOrder,
@@ -9,9 +11,9 @@ import { OrderItem, Order } from "../model.js";
 
 const buildOrderTitle = (order: any) => {
   const client = order.client?.clientName;
-  const title = order.orderTitle;
+  const title = order.orderTitle ? `${order.orderTitle} -` : "";
 
-  return `${client ?? ""} - ${title ?? ""}${title && "- "}${order.orderId}`;
+  return `${client ?? ""} - ${title} ${order.orderId}`;
 };
 
 const buildPlacementFromOrderItem = (item: any) => {
@@ -38,6 +40,7 @@ export async function createDraftFromOrderItems(items: OrderItem[]) {
 }
 
 export const createPlacement = async (order: Order, item: OrderItem) => {
+  console.log(buildOrderTitle(order));
   try {
     let responaOrder;
     let updatedOrder;
@@ -57,6 +60,7 @@ export const createPlacement = async (order: Order, item: OrderItem) => {
         (updatedItem = await item.update({
           responaItemId: placement?.placement_id,
           responaItemStatus: placement.status,
+          cost: placement.price / 100,
         })),
       ]);
     } else {
@@ -64,6 +68,7 @@ export const createPlacement = async (order: Order, item: OrderItem) => {
         placements: [buildPlacementFromOrderItem(item)],
       });
       const placement = responaOrder.placements[0];
+
       await Promise.all([
         (updatedOrder = await order.update({
           responaAmount: responaOrder.price,
@@ -71,6 +76,7 @@ export const createPlacement = async (order: Order, item: OrderItem) => {
         (updatedItem = await item.update({
           responaItemId: placement?.placement_id,
           responaItemStatus: placement.status,
+          cost: placement.price / 100,
         })),
       ]);
     }
@@ -96,9 +102,33 @@ export const removeResponaPlacement = async (order: Order, item: OrderItem) => {
       (updatedItem = await item.update({
         responaItemId: null,
         responaItemStatus: null,
+        cost: null,
       })),
     ]);
     return { updatedOrder, updatedItem };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+export const approveResponaPlacement = async (
+  order: Order,
+  item: OrderItem,
+) => {
+  try {
+    let updatedItem;
+
+    const approvedPlacement = approvePlacement(
+      order.responaOrderId,
+      item.responaItemId,
+    );
+    await Promise.all([
+      (updatedItem = await item.update({
+        responaItemId: null,
+        responaItemStatus: null,
+      })),
+    ]);
+    return { updatedItem };
   } catch (error) {
     console.log(error);
     throw error;

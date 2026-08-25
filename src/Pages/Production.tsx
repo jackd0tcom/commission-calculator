@@ -505,9 +505,9 @@ const Production = () => {
                 />
                 <p>Cost</p>
                 <p>Price</p>
-                <p className="input-heading">Notes / Restrictions</p>
                 <p className="input-heading">Target URL</p>
                 <p className="input-heading">Anchor Text</p>
+                <p className="input-heading">Notes / Restrictions</p>
               </div>
               <div className="order-items-list-wrapper">
                 {filteredOrderItems?.length > 0 &&

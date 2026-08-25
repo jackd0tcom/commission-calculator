@@ -1311,6 +1311,10 @@ export default {
       delete itemCopy.itemId;
       delete itemCopy.createdAt;
       delete itemCopy.updatedAt;
+      delete itemCopy.responaItemStatus;
+      delete itemCopy.responaItemId;
+      delete itemCopy.responaPublishedDate;
+      delete itemCopy.responaPublishedUrl;
       itemCopy.itemStatus = "staged";
       itemCopy.orderIndex = Math.floor(Number(item.orderIndex)) + 1;
 
@@ -1368,6 +1372,10 @@ export default {
       delete itemCopy.itemId;
       delete itemCopy.createdAt;
       delete itemCopy.updatedAt;
+      delete itemCopy.responaItemStatus;
+      delete itemCopy.responaItemId;
+      delete itemCopy.responaPublishedDate;
+      delete itemCopy.responaPublishedUrl;
       itemCopy.itemStatus = "staged";
       const quantityNumber = Number(quantity);
 
