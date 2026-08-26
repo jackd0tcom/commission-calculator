@@ -1031,6 +1031,12 @@
   border-radius: 50px;
   border: 1px solid var(--dark-red);
 }
+.respona-sending {
+  background-color: rgb(230, 230, 230);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .respona-success {
   background-color: var(--green);
   color: white;

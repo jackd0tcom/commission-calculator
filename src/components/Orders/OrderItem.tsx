@@ -10,6 +10,7 @@ import OrderItemContextMenu from "./OrderItemContextMenu";
 import DuePicker from "./DuePicker";
 import { useSortable } from "@dnd-kit/react/sortable";
 import ResponaStatus from "./ResponaStatus";
+import { checkResponaPlacement } from "../../helpers";
 import {
   formatMoneyInput,
   parseNumericInput,
@@ -34,6 +35,8 @@ interface props {
   handleOrderItemUpdate: any;
   handleCostChange: any;
   boundaryRef: any;
+  responaFeedback?: any;
+  setResponaFeedback?: any;
 }
 
 const OrderItem = ({
@@ -52,6 +55,8 @@ const OrderItem = ({
   handleOrderItemUpdate,
   handleCostChange,
   boundaryRef,
+  responaFeedback,
+  setResponaFeedback,
 }: props) => {
   const currentProduct = item.linkId
     ? { linkId: item.linkId }
@@ -83,6 +88,8 @@ const OrderItem = ({
   const [priceDraft, setPriceDraft] = useState<string | null>(null);
   const [responaErrorMessage, setResponaErrorMessage] = useState("");
   const [responaStatus, setResponaStatus] = useState("");
+  const displayedResponaError = responaFeedback?.error || responaErrorMessage;
+  const displayedResponaStatus = responaFeedback?.status || responaStatus;
   const { xPos, yPos, showMenu, handleContextMenu } = useContextMenu();
   const { ref } = useSortable({
     id: item.itemId,
@@ -184,6 +191,20 @@ const OrderItem = ({
     }
   };
   const handleCreateResponaOrder = async () => {
+    if (setResponaFeedback) {
+      setResponaFeedback((prev: any) => ({
+        ...prev,
+        [item.itemId]: { status: "", error: "" },
+      }));
+    }
+    const check = checkResponaPlacement(item);
+    if (!check.pass) {
+      setResponaErrorMessage(String(check.error));
+      setTimeout(() => {
+        setResponaErrorMessage("");
+      }, 5000);
+      return;
+    }
     setResponaStatus("sending");
     try {
       await axios
@@ -344,13 +365,25 @@ const OrderItem = ({
             ? (item.productNameSnapshot ?? item.product?.productName)
             : (item.link?.publication ?? "")}
         </p>
-        <p>{currentVendorName}</p>
+        <div className="order-item-p-wrapper">
+          <p className={isRespona ? "respona-p" : ""}>{currentVendorName}</p>
+        </div>
         {item.product ? (
-          <OrderStatusPicker
-            currentStatus={status}
-            handleUpdateStatus={handleUpdateStatus}
-            boundaryRef={boundaryRef}
-          />
+          isRespona ? (
+            <ResponaStatus
+              item={item}
+              handleCreateResponaOrder={handleCreateResponaOrder}
+              responaErrorMessage={displayedResponaError}
+              setResponaErrorMessage={setResponaErrorMessage}
+              responaStatus={displayedResponaStatus}
+            />
+          ) : (
+            <OrderStatusPicker
+              currentStatus={status}
+              handleUpdateStatus={handleUpdateStatus}
+              boundaryRef={boundaryRef}
+            />
+          )
         ) : (
           <div></div>
         )}
@@ -446,9 +479,9 @@ const OrderItem = ({
             <ResponaStatus
               item={item}
               handleCreateResponaOrder={handleCreateResponaOrder}
-              responaErrorMessage={responaErrorMessage}
+              responaErrorMessage={displayedResponaError}
               setResponaErrorMessage={setResponaErrorMessage}
-              responaStatus={responaStatus}
+              responaStatus={displayedResponaStatus}
             />
           ) : (
             <OrderStatusPicker
@@ -630,9 +663,9 @@ const OrderItem = ({
             <ResponaStatus
               item={item}
               handleCreateResponaOrder={handleCreateResponaOrder}
-              responaErrorMessage={responaErrorMessage}
+              responaErrorMessage={displayedResponaError}
               setResponaErrorMessage={setResponaErrorMessage}
-              responaStatus={responaStatus}
+              responaStatus={displayedResponaStatus}
             />
           ) : (
             <OrderStatusPicker

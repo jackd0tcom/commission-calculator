@@ -225,3 +225,20 @@ export function saveOrderNotesKeepAlive(orderId: number, notes: any) {
     }),
   });
 }
+export const checkResponaPlacement = (item: any) => {
+  const hasUrl = item.targetUrl !== "";
+  const hasAnchor = item.anchorText !== "";
+  const hasTier = item.vendorPayload?.qualityTier ?? false;
+  let error = "";
+
+  if (hasUrl && hasAnchor && hasTier) {
+    return { pass: true };
+  } else if (!hasUrl) {
+    error = "No Target URL Found";
+  } else if (!hasAnchor) {
+    error = "No Anchor Text Found";
+  } else if (!hasTier) {
+    error = "No Link Tier Found";
+  }
+  return { pass: false, error };
+};

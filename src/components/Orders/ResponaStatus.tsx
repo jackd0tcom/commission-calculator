@@ -3,7 +3,7 @@ import ResponaError from "./ResponaError";
 import { FaCheck } from "react-icons/fa6";
 
 interface props {
-  item: any;
+  item?: any;
   handleCreateResponaOrder: any;
   responaErrorMessage: string;
   setResponaErrorMessage: any;
@@ -16,13 +16,18 @@ const ResponaStatus = ({
   responaErrorMessage,
   responaStatus,
 }: props) => {
-  const currentStatus = item.responaItemStatus
-    ? capitalize(item.responaItemStatus)
-    : item.responaItemStatus;
+  const currentStatus = item?.responaItemStatus
+    ? capitalize(item?.responaItemStatus)
+    : item?.responaItemStatus;
+
+  const showDraftButton =
+    !currentStatus &&
+    responaStatus !== "sending" &&
+    responaStatus !== "success";
 
   return (
     <div className="respona-status-wrapper relative">
-      {!currentStatus ? (
+      {showDraftButton ? (
         <button
           className="draft-respona-link-button"
           onClick={() => handleCreateResponaOrder()}

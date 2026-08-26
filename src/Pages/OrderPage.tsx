@@ -12,6 +12,7 @@ import { FaMagnifyingGlass, FaTrashCan } from "react-icons/fa6";
 import UserSelector from "../components/UI/UserSelector";
 import {
   capitalize,
+  checkResponaPlacement,
   parseNumericInput,
   sanitizeNumericInput,
   saveOrderNotesKeepAlive,
@@ -29,6 +30,7 @@ import M2MIcon from "../components/UI/M2MIcon";
 import ClientOrderScroll from "../components/Orders/ClientOrderScroll";
 import { isSortable } from "@dnd-kit/react/sortable";
 import { DragDropProvider } from "@dnd-kit/react";
+import ResponaStatus from "../components/Orders/ResponaStatus";
 
 type FilterOption = {
   title: string;
@@ -43,7 +45,7 @@ const OrderPage = () => {
   const [newClient, setNewClient] = useState({ clientId: 0 });
   const [orderItems, setOrderItems] = useState([{}]);
   const [clientList, setClientList] = useState([{}]);
-  const [vendorList, setVendorList] = useState([{}]);
+  const [vendorList, setVendorList] = useState([{ vendorId: null }]);
   const [clientOrders, setClientOrders] = useState([{}]);
   const [currentClient, setCurrentClient] = useState({
     clientName: null,
@@ -73,6 +75,23 @@ const OrderPage = () => {
   const bulkCost = parseNumericInput(bulkCostDraft);
   const bulkPrice = parseNumericInput(bulkPriceDraft);
   const listWrapperRef = useRef<HTMLDivElement>(null);
+  const bulkResponaSendingRef = useRef(false);
+  const [responaFeedback, setResponaFeedback] = useState<any>({});
+  const [bulkResponaStatus, setBulkResponaStatus] = useState("");
+  const [bulkResponaError, setBulkResponaError] = useState("");
+  const responaVendorId =
+    vendorList.find(
+      (vendor: any) => vendor.vendorName?.toLowerCase() === "respona",
+    )?.vendorId ?? null;
+  const selectedBulkItems = orderItems.filter((item: any) =>
+    bulkSelects.some((selected: any) => selected.itemId === item.itemId),
+  );
+  const allRespona =
+    selectedBulkItems.length > 0 &&
+    selectedBulkItems.every(
+      (item: any) => item.vendorId === responaVendorId,
+    );
+  const showBulkResponaButton = allRespona;
   const [filter, setFilter] = usePersistedFilter(
     `order/${orderId}/${calculatorOrder}`,
     user.userId,
@@ -779,6 +798,157 @@ const OrderPage = () => {
       activeDragIdsRef.current = [];
     }
   };
+  // Respona
+  const handleBulkResponaPush = async () => {
+    if (bulkResponaSendingRef.current) return;
+    bulkResponaSendingRef.current = true;
+    setBulkResponaStatus("sending");
+    setBulkResponaError("");
+
+    try {
+      const selectedIds = bulkSelects.map((item: any) => item.itemId);
+      const selected = orderItems.filter((item: any) =>
+        selectedIds.includes(item.itemId),
+      );
+      const candidates = selected.filter(
+        (item: any) => !item.responaItemStatus,
+      );
+
+      if (candidates.length === 0) {
+        setBulkResponaStatus("");
+        setBulkResponaError(
+          "All selected items already have Respona placements",
+        );
+        setTimeout(() => {
+          setBulkResponaError("");
+        }, 5000);
+        return;
+      }
+
+      const failed: any[] = [];
+      const ready: any[] = [];
+
+      candidates.forEach((item: any) => {
+        if (!item.product) {
+          failed.push({ itemId: item.itemId, error: "No Product Found" });
+          return;
+        }
+        const check = checkResponaPlacement(item);
+        if (!check.pass) {
+          failed.push({ itemId: item.itemId, error: String(check.error) });
+        } else {
+          ready.push(item);
+        }
+      });
+
+      const nextFeedback: any = {};
+      selectedIds.forEach((id: number) => {
+        nextFeedback[id] = { status: "", error: "" };
+      });
+      failed.forEach((item: any) => {
+        nextFeedback[item.itemId] = { status: "", error: item.error };
+      });
+      ready.forEach((item: any) => {
+        nextFeedback[item.itemId] = { status: "sending", error: "" };
+      });
+      setResponaFeedback((prev: any) => ({ ...prev, ...nextFeedback }));
+
+      if (ready.length === 0) {
+        setBulkResponaStatus("");
+        setBulkResponaError(
+          `${failed.length} of ${candidates.length} ${
+            candidates.length > 1 ? "items" : "item"
+          } failed - see rows`,
+        );
+        setTimeout(() => {
+          setBulkResponaError("");
+        }, 5000);
+        return;
+      }
+
+      let apiFailCount = 0;
+
+      for (const item of ready) {
+        try {
+          const res: any = await axios.post("/api/respona/newResponaPlacement", {
+            itemId: item.itemId,
+          });
+          if (!res.data?.updatedItem) {
+            apiFailCount += 1;
+            setResponaFeedback((prev: any) => ({
+              ...prev,
+              [item.itemId]: {
+                status: "",
+                error: "Failed to create Respona placement",
+              },
+            }));
+            continue;
+          }
+          const updatedItem = res.data.updatedItem;
+          console.log(updatedItem);
+          setOrderItems((prev: any) =>
+            prev.map((it: any) =>
+              it.itemId === item.itemId
+                ? {
+                    ...it,
+                    responaItemStatus: updatedItem.responaItemStatus,
+                    responaItemId: updatedItem.responaItemId,
+                    cost: updatedItem.cost,
+                  }
+                : it,
+            ),
+          );
+          setResponaFeedback((prev: any) => ({
+            ...prev,
+            [item.itemId]: { status: "success", error: "" },
+          }));
+        } catch (error: any) {
+          const data = error?.response?.data;
+          console.log("Respona placement error:", data);
+          apiFailCount += 1;
+          setResponaFeedback((prev: any) => ({
+            ...prev,
+            [item.itemId]: {
+              status: "",
+              error: data?.message ?? "Failed to create Respona placement",
+            },
+          }));
+        }
+      }
+
+      const failCount = failed.length + apiFailCount;
+      if (failCount > 0) {
+        setBulkResponaStatus("");
+        setBulkResponaError(
+          `${failCount} of ${candidates.length} ${
+            candidates.length > 1 ? "items" : "item"
+          } failed - see rows`,
+        );
+        setTimeout(() => {
+          setBulkResponaError("");
+        }, 5000);
+      } else {
+        setBulkResponaStatus("success");
+        setTimeout(() => {
+          setBulkResponaStatus("");
+        }, 3000);
+      }
+
+      setTimeout(() => {
+        setResponaFeedback((prev: any) => {
+          const next = { ...prev };
+          ready.forEach((item: any) => {
+            if (next[item.itemId]?.status === "success") {
+              next[item.itemId] = { status: "", error: "" };
+            }
+          });
+          return next;
+        });
+      }, 3000);
+    } finally {
+      bulkResponaSendingRef.current = false;
+    }
+  };
 
   return isLoading ? (
     <Loader />
@@ -1088,11 +1258,20 @@ const OrderPage = () => {
                         </div>
                         <div className="vendor-selector-placeholder"></div>
                         <div className="bulk-status-wrapper">
-                          <BulkStatusPicker
-                            bulkSelects={bulkSelects}
-                            setBulkSelects={setBulkSelects}
-                            setOrderItems={setOrderItems}
-                          />
+                          {showBulkResponaButton ? (
+                            <ResponaStatus
+                              handleCreateResponaOrder={handleBulkResponaPush}
+                              responaErrorMessage={bulkResponaError}
+                              setResponaErrorMessage={setBulkResponaError}
+                              responaStatus={bulkResponaStatus}
+                            />
+                          ) : (
+                            <BulkStatusPicker
+                              bulkSelects={bulkSelects}
+                              setBulkSelects={setBulkSelects}
+                              setOrderItems={setOrderItems}
+                            />
+                          )}
                         </div>
                         <div className="order-price-input-wrapper">
                           <span>$</span>
@@ -1212,6 +1391,8 @@ const OrderPage = () => {
                           vendorList={vendorList}
                           handleOrderItemUpdate={handleOrderItemUpdate}
                           handleCostChange={handleCostChange}
+                          responaFeedback={responaFeedback[item.itemId]}
+                          setResponaFeedback={setResponaFeedback}
                         />
                       );
                       return orderItem;
