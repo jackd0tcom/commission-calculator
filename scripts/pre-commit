@@ -1,0 +1,6 @@
+#!/bin/sh
+# Runs unit tests before each commit. Skip with `git commit --no-verify`.
+# API tests (`npm run test:api`) need Postgres and are not run here.
+
+cd "$(git rev-parse --show-toplevel)" || exit 1
+npm test

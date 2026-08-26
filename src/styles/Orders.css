@@ -1042,3 +1042,20 @@
   color: white;
   display: flex;
 }
+.place-respona-logo-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--respona-blue);
+  color: white;
+  border: none;
+  transition: 150ms;
+}
+.place-respona-logo-button:hover {
+  background-color: #1a1287;
+  color: white;
+}
+.respona-logo-wrapper {
+  display: flex;
+  align-items: center;
+}

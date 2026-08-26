@@ -5,7 +5,10 @@ async function connectToDb(dbURI: string) {
 
   const sequelize = new Sequelize(dbURI, {
     dialect: "postgres",
-    logging: process.env.NODE_ENV === "production" ? false : console.log,
+    logging:
+      process.env.NODE_ENV === "production" || process.env.NODE_ENV === "test"
+        ? false
+        : console.log,
     define: {
       timestamps: false,
       underscored: true,

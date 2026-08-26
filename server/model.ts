@@ -536,12 +536,12 @@ UserProductCommission.init(
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: { model: "users" },
+      references: { model: "users", key: "user_id" },
     },
     productId: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: { model: "products" },
+      references: { model: "products", key: "product_id" },
     },
     commissionRate: {
       type: DataTypes.DECIMAL(5, 4),

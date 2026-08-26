@@ -15,7 +15,11 @@
     "seedClients": "npx tsx server/seedClients.ts",
     "seed": "npx tsx server/seed.ts",
     "preview": "vite preview",
-    "cron": "npx tsx server/m2mCron.ts"
+    "cron": "npx tsx server/m2mCron.ts",
+    "test": "vitest run --project unit",
+    "test:watch": "vitest --project unit",
+    "test:api": "vitest run --project api",
+    "prepare": "node scripts/install-git-hooks.js"
   },
   "dependencies": {
     "@auth0/auth0-react": "^2.13.0",
@@ -51,14 +55,17 @@
     "@types/node-cron": "^3.0.11",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
+    "@types/supertest": "^7.2.1",
     "@vitejs/plugin-react": "^5.1.1",
     "eslint": "^9.39.1",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",
     "globals": "^16.5.0",
+    "supertest": "^7.2.2",
     "ts-node": "^10.9.2",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.48.0",
-    "vite": "^7.3.1"
+    "vite": "^7.3.1",
+    "vitest": "^4.1.11"
   }
 }

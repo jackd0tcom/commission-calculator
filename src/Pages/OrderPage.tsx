@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { useParams } from "react-router";
+import ResponaLogo from "../components/UI/ResponaLogo";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import ProfilePic from "../components/UI/ProfilePic";
@@ -31,6 +32,7 @@ import ClientOrderScroll from "../components/Orders/ClientOrderScroll";
 import { isSortable } from "@dnd-kit/react/sortable";
 import { DragDropProvider } from "@dnd-kit/react";
 import ResponaStatus from "../components/Orders/ResponaStatus";
+import PlaceResponaOrderButton from "../components/Orders/PlaceResponaOrderButton";
 
 type FilterOption = {
   title: string;
@@ -88,10 +90,11 @@ const OrderPage = () => {
   );
   const allRespona =
     selectedBulkItems.length > 0 &&
-    selectedBulkItems.every(
-      (item: any) => item.vendorId === responaVendorId,
-    );
+    selectedBulkItems.every((item: any) => item.vendorId === responaVendorId);
   const showBulkResponaButton = allRespona;
+  const showResponaOrderButton = orderItems.some(
+    (item: any) => item.responaItemId && item.responaItemStatus === "DRAFT",
+  );
   const [filter, setFilter] = usePersistedFilter(
     `order/${orderId}/${calculatorOrder}`,
     user.userId,
@@ -870,9 +873,12 @@ const OrderPage = () => {
 
       for (const item of ready) {
         try {
-          const res: any = await axios.post("/api/respona/newResponaPlacement", {
-            itemId: item.itemId,
-          });
+          const res: any = await axios.post(
+            "/api/respona/newResponaPlacement",
+            {
+              itemId: item.itemId,
+            },
+          );
           if (!res.data?.updatedItem) {
             apiFailCount += 1;
             setResponaFeedback((prev: any) => ({
@@ -948,6 +954,9 @@ const OrderPage = () => {
     } finally {
       bulkResponaSendingRef.current = false;
     }
+  };
+  const handlePlaceResponaOrder = () => {
+    // TODO
   };
 
   return isLoading ? (
@@ -1050,7 +1059,6 @@ const OrderPage = () => {
               />
             </div>
             <p className="order-status-p">
-              Order Status:{" "}
               <span
                 className={
                   orderStatus === "in progress"
@@ -1063,6 +1071,11 @@ const OrderPage = () => {
                 {capitalize(orderStatus)}
               </span>
             </p>
+            {showResponaOrderButton && (
+              <PlaceResponaOrderButton
+                handlePlaceResponaOrder={handlePlaceResponaOrder}
+              />
+            )}
             <div className="order-settings-wrapper">
               <button
                 className="order-settings-button"
