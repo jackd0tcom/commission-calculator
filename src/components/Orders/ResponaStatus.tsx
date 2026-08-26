@@ -1,6 +1,7 @@
 import { capitalize, skewerCase } from "../../helpers";
 import ResponaError from "./ResponaError";
 import { FaCheck } from "react-icons/fa6";
+import ResponaLogo from "../UI/ResponaLogo";
 
 interface props {
   item?: any;
@@ -32,7 +33,8 @@ const ResponaStatus = ({
           className="draft-respona-link-button"
           onClick={() => handleCreateResponaOrder()}
         >
-          Draft Link
+          Draft{" "}
+          <ResponaLogo height="12px" width="12px" fill="white" arrow="green" />
         </button>
       ) : (
         <div

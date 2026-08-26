@@ -15,7 +15,11 @@ import { Request, Response } from "express";
 import { Op } from "sequelize";
 import { formatMonthlySheetTitle } from "../commissionSheets.ts";
 import { getOrCreateMonthlySheetForUser } from "../helpers.ts";
-import { deleteResponaOrder } from "../services/responaService.ts";
+import {
+  deleteResponaOrder,
+  removeResponaPlacement,
+} from "../services/responaService.ts";
+import { removePlacement } from "../integrations/responaClient.ts";
 
 export default {
   getOrders: async (req: Request, res: Response) => {
@@ -1251,6 +1255,10 @@ export default {
         return;
       }
 
+      if (item.responaItemId) {
+        const order = await Order.findByPk(item.orderId);
+        await removePlacement(order.responaOrderId, item.responaItemId);
+      }
       await item.destroy();
 
       res.status(200).send("Item deleted successfully");

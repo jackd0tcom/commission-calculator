@@ -151,17 +151,14 @@ export const deleteResponaOrder = async (order: Order) => {
     throw error;
   }
 };
-export const launchResponaOrder = async (
-  order: Order,
-  responaOrderId: number,
-) => {
+export const launchResponaOrder = async (order: Order) => {
   try {
     const idempotencyKey = generateUUID();
     let responaOrder;
     let updatedOrder;
     let updatedItems;
     responaOrder = await launchOrder(
-      String(responaOrderId),
+      String(order.responaOrderId),
       String(idempotencyKey),
     );
     const placements = responaOrder.placements;

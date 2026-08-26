@@ -18,6 +18,7 @@ const {
   newWebhookEvent,
   removeResponaPlacement,
   deleteResponaOrder,
+  pushResponaOrder,
 } = responaCtrl;
 
 const {
@@ -126,6 +127,7 @@ export function createApp() {
   app.post("/api/respona/newResponaPlacement", newResponaPlacement);
   app.post("/api/respona/removeResponaPlacement", removeResponaPlacement);
   app.post("/api/respona/deleteResponaOrder", deleteResponaOrder);
+  app.post("/api/respona/pushResponaOrder", pushResponaOrder);
 
   // Product endpoints
   app.get("/api/getProducts/:userId", getProducts);

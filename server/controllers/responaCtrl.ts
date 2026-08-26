@@ -1,6 +1,7 @@
 import {
   createPlacement,
   deleteResponaOrder,
+  launchResponaOrder,
   removeResponaPlacement,
 } from "../services/responaService.js";
 import {
@@ -108,6 +109,46 @@ export default {
       });
     }
   },
+  pushResponaOrder: async (req: Request, res: Response) => {
+    try {
+      console.log("pushResponaOrder");
+
+      if (!req.session.user) {
+        console.log("user not logged in / no session set up");
+        res.status(401).send("user not logged in / no session set up");
+        return;
+      }
+
+      const { orderId } = req.body;
+
+      const order = await Order.findOne({
+        where: { orderId: item?.orderId },
+        include: [{ model: Client, as: "client" }],
+      });
+
+      if (!order) {
+        res.status(404).send("order not found");
+        return;
+      }
+
+      const responaPayload = await launchResponaOrder(order);
+      res.status(200).json(responaPayload);
+    } catch (error) {
+      console.error("Error launching order:", error);
+      if (error instanceof ResponaApiError) {
+        res.status(error.status).json({
+          message: error.message,
+          code: error.code,
+          requestId: error.requestId,
+        });
+        return;
+      }
+      res.status(500).json({
+        message:
+          error instanceof Error ? error.message : "Internal server error",
+      });
+    }
+  },
   deleteResponaOrder: async (req: Request, res: Response) => {
     try {
       console.log("deleteResponaOrder");
@@ -173,26 +214,18 @@ export default {
           where: { responaItemId: data.placement_id },
         });
         if (!item) {
-          console.log(
-            "RESPONA WEBHOOK: item not found from respona",
-            data,
-          );
+          console.log("RESPONA WEBHOOK: item not found from respona", data);
           res.sendStatus(200);
           return;
         }
 
-        const placement = await getPlacement(
-          data.order_id,
-          data.placement_id,
-        );
+        const placement = await getPlacement(data.order_id, data.placement_id);
         await item.update({
           responaItemStatus: placement.status,
           ...(placement.publisher_url
             ? { responaPublishedUrl: placement.publisher_url }
             : {}),
-          ...(placement.price != null
-            ? { cost: placement.price / 100 }
-            : {}),
+          ...(placement.price != null ? { cost: placement.price / 100 } : {}),
         });
         console.log(
           `RESPONA WEBHOOK: item ${item.itemId} -> ${placement.status}`,
@@ -207,10 +240,7 @@ export default {
         });
 
         if (!order) {
-          console.log(
-            "RESPONA WEBHOOK: order not found from respona",
-            data,
-          );
+          console.log("RESPONA WEBHOOK: order not found from respona", data);
           res.sendStatus(200);
           return;
         }

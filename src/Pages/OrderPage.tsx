@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { useParams } from "react-router";
-import ResponaLogo from "../components/UI/ResponaLogo";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import ProfilePic from "../components/UI/ProfilePic";
@@ -78,6 +77,7 @@ const OrderPage = () => {
   const bulkPrice = parseNumericInput(bulkPriceDraft);
   const listWrapperRef = useRef<HTMLDivElement>(null);
   const bulkResponaSendingRef = useRef(false);
+  const [responaOrderStatus, setResponaOrderStatus] = useState("");
   const [responaFeedback, setResponaFeedback] = useState<any>({});
   const [bulkResponaStatus, setBulkResponaStatus] = useState("");
   const [bulkResponaError, setBulkResponaError] = useState("");
@@ -955,8 +955,28 @@ const OrderPage = () => {
       bulkResponaSendingRef.current = false;
     }
   };
-  const handlePlaceResponaOrder = () => {
+  const handlePlaceResponaOrder = async () => {
     // TODO
+    setResponaOrderStatus("sending");
+    try {
+      await axios
+        .post("/api/pushResponaOrder", { orderId })
+        .then((res: any) => {
+          console.log(res.data);
+          setTimeout(() => {
+            setResponaOrderStatus("success");
+          }, 2000);
+        });
+    } catch (error: any) {
+      const data = error?.response?.data;
+      console.log("Respona placement error:", data);
+      setResponaOrderStatus(
+        data?.message ?? "Failed to create Respona placement",
+      );
+      setTimeout(() => {
+        setResponaOrderStatus("");
+      }, 5000);
+    }
   };
 
   return isLoading ? (
@@ -1074,6 +1094,7 @@ const OrderPage = () => {
             {showResponaOrderButton && (
               <PlaceResponaOrderButton
                 handlePlaceResponaOrder={handlePlaceResponaOrder}
+                responaOrderStatus={responaOrderStatus}
               />
             )}
             <div className="order-settings-wrapper">
