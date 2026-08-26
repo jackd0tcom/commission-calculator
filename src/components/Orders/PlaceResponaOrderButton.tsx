@@ -6,7 +6,7 @@ interface props {
 }
 
 const PlaceResponaOrderButton = ({
-  handlePlaceResponaOrder,
+  //   handlePlaceResponaOrder,
   responaOrderStatus,
 }: props) => {
   return (
