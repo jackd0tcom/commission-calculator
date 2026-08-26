@@ -117,3 +117,22 @@ export interface ResponaErrorBody {
         request_id: string;
     };
 }
+
+export type ResponaWebhookEventType =
+    | "order.status_changed"
+    | "placement.status_changed";
+
+export interface ResponaWebhookPayload {
+    event: ResponaWebhookEventType;
+    delivery_id: string;
+    webhook_id: string;
+    occurred_at: string;
+    api_version: string;
+    data: {
+        order_id: string;
+        placement_id?: string;
+        number?: string;
+        status: OrderStatus | PlacementStatus;
+        previous_status: OrderStatus | PlacementStatus;
+    };
+}

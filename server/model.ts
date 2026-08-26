@@ -407,6 +407,14 @@ OrderItem.init(
       type: DataTypes.DATE,
       allowNull: true,
     },
+    domainRating: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    domainTraffic: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
     price: { type: DataTypes.DECIMAL(10, 2), allowNull: true },
     cost: { type: DataTypes.DECIMAL(10, 2), allowNull: true },
     productNameSnapshot: { type: DataTypes.STRING, allowNull: true },

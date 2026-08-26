@@ -93,7 +93,16 @@ const PORT: number = Number(process.env.PORT) || 2020;
 app.set("trust proxy", 1);
 
 app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
+app.use(
+  express.json({
+    verify: (req, _res, buf) => {
+      // HMAC verification needs the exact bytes Respona signed.
+      if (req.originalUrl?.split("?")[0] === "/api/respona/webhook") {
+        (req as typeof req & { rawBody?: Buffer }).rawBody = buf;
+      }
+    },
+  }),
+);
 app.use(
   session({
     saveUninitialized: true,
@@ -116,7 +125,7 @@ app.use((req, res, next) => {
 // Endpoints
 
 // Respona Webhook
-app.post("/respona/webhook", newWebhookEvent);
+app.post("/api/respona/webhook", newWebhookEvent);
 
 // Respona endpoints
 app.post("/api/respona/newResponaPlacement", newResponaPlacement);

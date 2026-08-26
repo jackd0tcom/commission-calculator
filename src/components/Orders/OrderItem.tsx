@@ -63,6 +63,7 @@ const OrderItem = ({
   const [notes, setNotes] = useState(item.notes ?? "");
   const [targetUrl, setTargetUrl] = useState(item.targetUrl ?? "");
   const [anchorText, setAnchorText] = useState(item.anchorText ?? "");
+  const [publisherUrl, setPublisherUrl] = useState(item.linkingTo ?? "");
   let status = item.itemStatus ?? "";
   const price =
     status === "complete"
@@ -359,7 +360,6 @@ const OrderItem = ({
         <p>{item.targetUrl}</p>
         <p>{item.anchorText}</p>
         <p>{item.notes}</p>
-        <OrderItemSettings item={item} setOrderItems={setOrderItems} />
       </div>
       {showVendorRows && (
         <VendorRow
@@ -512,16 +512,6 @@ const OrderItem = ({
         <input
           className="order-input"
           type="text"
-          value={notes}
-          onChange={(e) => {
-            setNotes(e.target.value);
-            handleOrderItemUpdate?.("notes", item.itemId, e.target.value);
-          }}
-          onBlur={() => persistOrderUpdate("notes", notes)}
-        />
-        <input
-          className="order-input"
-          type="text"
           value={targetUrl}
           onChange={(e) => {
             setTargetUrl(e.target.value);
@@ -539,7 +529,26 @@ const OrderItem = ({
           }}
           onBlur={() => persistOrderUpdate("anchorText", anchorText)}
         />
-        <OrderItemSettings item={item} setOrderItems={setOrderItems} />
+        <input
+          className="order-input"
+          type="text"
+          value={notes}
+          onChange={(e) => {
+            setNotes(e.target.value);
+            handleOrderItemUpdate?.("notes", item.itemId, e.target.value);
+          }}
+          onBlur={() => persistOrderUpdate("notes", notes)}
+        />
+        <input
+          className="order-input"
+          type="text"
+          value={publisherUrl}
+          onChange={(e) => {
+            setPublisherUrl(e.target.value);
+            handleOrderItemUpdate?.("linkingTo", item.itemId, e.target.value);
+          }}
+          onBlur={() => persistOrderUpdate("linkingTo", publisherUrl)}
+        />
       </div>
       {showVendorRows && (
         <VendorRow
@@ -625,7 +634,6 @@ const OrderItem = ({
               responaErrorMessage={responaErrorMessage}
               setResponaErrorMessage={setResponaErrorMessage}
               responaStatus={responaStatus}
-              handleRemoveResponaPlacement={handleRemoveResponaPlacement}
             />
           ) : (
             <OrderStatusPicker
@@ -646,7 +654,9 @@ const OrderItem = ({
         <div className="order-item-p">
           <p>{item.notes}</p>
         </div>
-        <OrderItemSettings item={item} setOrderItems={setOrderItems} />
+        <a href={item.linkingTo} target="_blank" className="order-item-p">
+          {item.linkingTo}
+        </a>
       </div>
       {showVendorRows && (
         <VendorRow

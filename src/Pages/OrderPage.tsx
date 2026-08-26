@@ -1039,7 +1039,7 @@ const OrderPage = () => {
                   <p className="input-heading">Target URL</p>
                   <p className="input-heading">Anchor Text</p>
                   <p className="input-heading">Notes / Restrictions</p>
-                  {/* <p>Linking From</p> */}
+                  <p className="input-heading">Published URL</p>
                 </div>
               ) : (
                 <div className="bulk-select-header-wrapper">

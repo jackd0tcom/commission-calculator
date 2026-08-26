@@ -3,11 +3,15 @@ import {
   deleteResponaOrder,
   removeResponaPlacement,
 } from "../services/responaService.js";
-import { ResponaApiError } from "../integrations/responaClient.js";
+import {
+  getOrder as getResponaOrder,
+  getPlacement,
+  ResponaApiError,
+} from "../integrations/responaClient.js";
 import { Order, OrderItem, Client } from "../model.js";
 import { Request, Response } from "express";
 import { verify } from "../helpers.js";
-import { Op } from "sequelize";
+import type { ResponaWebhookPayload } from "../integrations/responaTypes.js";
 
 export default {
   newResponaPlacement: async (req: Request, res: Response) => {
@@ -145,58 +149,90 @@ export default {
   },
   newWebhookEvent: async (req: Request, res: Response) => {
     try {
-      console.log("newWebhookEvent");
+      const secret = process.env.RESPONA_WEBHOOK_SECRET;
+      const signatureHeader = req.headers["x-respona-signature"];
+      const rawBody = (req as Request & { rawBody?: Buffer }).rawBody;
 
-      const { event, data } = req.body;
-
-      const verified = verify(secret);
-      if (verified) {
-        res.send(200);
-      } else {
+      if (
+        !secret ||
+        typeof signatureHeader !== "string" ||
+        !rawBody ||
+        !verify(secret, signatureHeader, rawBody)
+      ) {
+        console.log("RESPONA WEBHOOK: could not verify signature");
         res.status(401).send("could not verify respona signature");
-        console.log(
-          `RESPONA WEBHOOK: ERROR could not verify respona signature: ${req.body}`,
-        );
         return;
       }
 
-      if (event === "placement.status_changed") {
+      const { event, data } = req.body as ResponaWebhookPayload;
+      const deliveryId = req.headers["x-respona-delivery-id"];
+      console.log(`RESPONA WEBHOOK: ${event} delivery=${deliveryId}`);
+
+      if (event === "placement.status_changed" && data.placement_id) {
         const item = await OrderItem.findOne({
           where: { responaItemId: data.placement_id },
         });
         if (!item) {
           console.log(
-            `RESPONA WEBHOOK: item not found from respona, respona data: ${data}`,
+            "RESPONA WEBHOOK: item not found from respona",
+            data,
           );
+          res.sendStatus(200);
           return;
         }
-        await item.update({ responaItemStatus: data.status });
-        console.log(
-          `RESPONA WEBHOOK: item successfully updated, respona data: ${data}`,
+
+        const placement = await getPlacement(
+          data.order_id,
+          data.placement_id,
         );
+        await item.update({
+          responaItemStatus: placement.status,
+          ...(placement.publisher_url
+            ? { responaPublishedUrl: placement.publisher_url }
+            : {}),
+          ...(placement.price != null
+            ? { cost: placement.price / 100 }
+            : {}),
+        });
+        console.log(
+          `RESPONA WEBHOOK: item ${item.itemId} -> ${placement.status}`,
+        );
+        res.sendStatus(200);
         return;
       }
 
-      if (event.event === "order.status_changed") {
+      if (event === "order.status_changed") {
         const order = await Order.findOne({
-          where: { responaOrderId: data?.order_id },
+          where: { responaOrderId: data.order_id },
         });
 
         if (!order) {
           console.log(
-            `RESPONA WEBHOOK: order not found from respona, respona data: ${data}`,
+            "RESPONA WEBHOOK: order not found from respona",
+            data,
           );
+          res.sendStatus(200);
           return;
         }
-        await order.update({ responaOrderStatus: data.status });
+
+        const responaOrder = await getResponaOrder(data.order_id);
+        await order.update({
+          responaOrderStatus: responaOrder.status,
+          responaAmount: responaOrder.price,
+        });
         console.log(
-          `RESPONA WEBHOOK: order successfully updated, respona data: ${data}`,
+          `RESPONA WEBHOOK: order ${order.orderId} -> ${responaOrder.status}`,
         );
+        res.sendStatus(200);
         return;
       }
+
+      res.sendStatus(200);
     } catch (error) {
-      console.error("Error getting sheets:", error);
-      res.status(500).send("Internal server error");
+      console.error("Error handling Respona webhook:", error);
+      if (!res.headersSent) {
+        res.status(500).send("Internal server error");
+      }
     }
   },
 };

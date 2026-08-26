@@ -250,7 +250,6 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  width: 100%;
   overflow-x: scroll;
   overscroll-behavior: none;
   margin: 0px 15px 15px;
@@ -295,11 +294,11 @@
     minmax(40px, 0.2fr)
     minmax(100px, 0.4fr) minmax(200px, 0.75fr) minmax(100px, 0.65fr)
     minmax(75px, 0.75fr) minmax(100px, 0.5fr) minmax(100px, 0.5fr) minmax(
-      250px,
-      400px
+      150px,
+      250px
     )
-    minmax(250px, 400px)
-    minmax(250px, 400px) minmax(50px, 0.5fr);
+    minmax(150px, 250px)
+    minmax(150px, 250px) minmax(150px, 250px);
   align-items: center;
   min-width: max-content;
   gap: 10px;
@@ -318,7 +317,7 @@
   text-overflow: ellipsis;
 }
 .order-item-p p {
-  overflow-x: scroll;
+  overflow-x: auto;
   scrollbar-width: thin;
 }
 .order-item-p p::-webkit-scrollbar {

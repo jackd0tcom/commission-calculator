@@ -51,6 +51,7 @@ export const createPlacement = async (order: Order, item: OrderItem) => {
         placements: [buildPlacementFromOrderItem(item)],
       });
       const placement = responaOrder.placements[0];
+      console.log(placement);
       await Promise.all([
         (updatedOrder = await order.update({
           responaOrderId: responaOrder.order_id,
@@ -68,7 +69,7 @@ export const createPlacement = async (order: Order, item: OrderItem) => {
         placements: [buildPlacementFromOrderItem(item)],
       });
       const placement = responaOrder.placements[0];
-
+      console.log(placement);
       await Promise.all([
         (updatedOrder = await order.update({
           responaAmount: responaOrder.price,
