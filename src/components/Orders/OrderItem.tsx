@@ -94,7 +94,7 @@ const OrderItem = ({
     (vendor: any) => vendor.vendorId === currentVendor,
   )?.vendorName;
 
-  const isRespona = currentVendorName.toLowerCase() === "respona";
+  const isRespona = currentVendorName?.toLowerCase() === "respona";
   const showBulk = bulkSelects.length > 0 && status !== "complete";
   const isDraft = isRespona
     ? item.responaItemStatus === null
