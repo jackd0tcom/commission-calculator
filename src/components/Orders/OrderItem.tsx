@@ -4,7 +4,6 @@ import OrderStatusPicker from "./OrderStatusPicker";
 import axios from "axios";
 import VendorPicker from "./VendorPicker";
 import VendorRow from "./VendorRow";
-import OrderItemSettings from "./OrderItemSettings";
 import { FaAngleUp, FaCheck } from "react-icons/fa6";
 import { useContextMenu } from "../../hooks/UseContextMenu";
 import OrderItemContextMenu from "./OrderItemContextMenu";
